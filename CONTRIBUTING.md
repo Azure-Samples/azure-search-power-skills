@@ -1,4 +1,4 @@
-# Contributing to [project-title]
+# Contributing to Azure Search Power Skills
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
@@ -51,12 +51,12 @@ chances of your issue being dealt with quickly:
 * **Suggest a Fix** - if you can't fix the bug yourself, perhaps you can point to what might be
   causing the problem (line of code or commit)
 
-You can file new issues by providing the above information at the corresponding repository's issues link: https://github.com/[organization-name]/[repository-name]/issues/new].
+You can file new issues by providing the above information at the corresponding repository's issues link: https://github.com/Azure-Samples/azure-search-power-skills/issues/new.
 
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
 Before you submit your Pull Request (PR) consider the following guidelines:
 
-* Search the repository (https://github.com/[organization-name]/[repository-name]/pulls) for an open or closed PR
+* Search the repository (https://github.com/Azure-Samples/azure-search-power-skills/pulls) for an open or closed PR
   that relates to your submission. You don't want to duplicate effort.
 
 * Make your changes in a new git fork:
@@ -72,5 +72,11 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     git rebase master -i
     git push -f
     ```
+
+A typical contribution will be a bug fix or a new power skill. New power skills should reproduce the existing skills' directory and file structure. As such, each skill should:
+
+* Be a new project, created under the directory for the relevant category (text, geo, etc.)
+* Have its own `README.md` file describing the skill's functionality, and the schema for inputs and outputs
+* Have its own `azuredeploy.json` Azure Resource Manager (ARM) template and corresponding "publish to Azure" button. You should be able to start from [an existing ARM template](Geo/GeoPointFromName/azuredeploy.json) and [README.md](Geo/GeoPointFromName/README.md), then modify the variables section of the former to point to your new project file and the target URL of the button in the latter to point to the template file.
 
 That's it! Thank you for your contribution!
