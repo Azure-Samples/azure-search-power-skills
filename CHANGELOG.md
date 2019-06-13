@@ -5,11 +5,6 @@
 
 Project created
 
-*Features*
-None
+## 2019-06-17
 
-*Bug Fixes*
-None
-
-*Breaking Changes*
-None
+GeoPointFromName skill added.

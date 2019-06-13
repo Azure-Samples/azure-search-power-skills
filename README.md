@@ -6,8 +6,7 @@ A collection of useful functions to be deployed as custom skills for Azure Cogni
 
 This project framework provides the following functions:
 
-* To be continued...
-<!--* [**GeoPointFromName**](Geo/GeoPointFromName/README.md): retrieves coordinates from place names and addresses.-->
+* [**GeoPointFromName**](Geo/GeoPointFromName/README.md): retrieves coordinates from place names and addresses.
 
 ## Getting Started
 
