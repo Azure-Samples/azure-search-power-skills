@@ -7,6 +7,7 @@ A collection of useful functions to be deployed as custom skills for Azure Cogni
 This project framework provides the following functions:
 
 * [**GeoPointFromName**](Geo/GeoPointFromName/README.md): retrieves coordinates from place names and addresses.
+* [**BingEntitySearch**](Text/BingEntitySearch/README.md): finds rich and structured information about public figures, locations, or organizations.
 
 ## Getting Started
 

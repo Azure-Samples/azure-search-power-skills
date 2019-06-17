@@ -7,4 +7,4 @@ Project created
 
 ## 2019-06-17
 
-GeoPointFromName skill added.
+GeoPointFromName and BingEntitySearch skills added.
