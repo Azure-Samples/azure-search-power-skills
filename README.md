@@ -8,6 +8,7 @@ This project framework provides the following functions:
 
 * [**GeoPointFromName**](Geo/GeoPointFromName/README.md): retrieves coordinates from place names and addresses.
 * [**BingEntitySearch**](Text/BingEntitySearch/README.md): finds rich and structured information about public figures, locations, or organizations.
+* [**CryptonymLinker**](Text/CryptonymLinker/README.md): provides definitions for known acronyms.
 
 ## Getting Started
 
