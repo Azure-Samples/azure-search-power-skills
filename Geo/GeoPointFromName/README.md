@@ -68,8 +68,8 @@ If running in an Azure function, this can be set in the application settings.
                     "..."
                 ]
             },
-            "errors": null,
-            "warnings": null
+            "errors": [],
+            "warnings": []
         },
         "..."
     ]
