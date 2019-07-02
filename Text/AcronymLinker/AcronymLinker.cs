@@ -3,19 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace AzureCognitiveSearch.PowerSkills.Text.CryptonymLinker
+namespace AzureCognitiveSearch.PowerSkills.Text.AcronymLinker
 {
-    class CryptonymLinker
+    class AcronymLinker
     {
-        public CryptonymLinker(string executingDirectoryPath)
+        public AcronymLinker(string executingDirectoryPath)
         {
             string json = File.ReadAllText($"{executingDirectoryPath}\\acronyms.json");
-            Cryptonyms = new Dictionary<string, string>(
+            Acronyms = new Dictionary<string, string>(
                 JsonConvert.DeserializeObject<Dictionary<string, string>>(json),
                 StringComparer.InvariantCultureIgnoreCase);
         }
 
-        public Dictionary<string, string> Cryptonyms
+        public Dictionary<string, string> Acronyms
         {
             get; private set;
         }
