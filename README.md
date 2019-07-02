@@ -6,6 +6,7 @@ A collection of useful functions to be deployed as custom skills for Azure Cogni
 
 This project framework provides the following functions:
 
+* [**HelloWorld**](Template/HelloWorld/README.md): a minimal skill that can be used as a starting point or template for your own skills.
 * [**GeoPointFromName**](Geo/GeoPointFromName/README.md): retrieves coordinates from place names and addresses.
 * [**BingEntitySearch**](Text/BingEntitySearch/README.md): finds rich and structured information about public figures, locations, or organizations.
 * [**AcronymLinker**](Text/AcronymLinker/README.md): provides definitions for known acronyms.
@@ -35,6 +36,8 @@ Some functions may require setting environment variables or configuration entrie
 3. Set the project for the function to test as the startup project
 4. Hit F5
 5. Experiment with calling the function using Postman
+
+You can also create your own skills using [our Hello World template skill](Template/HelloWorld/README.md) as a starting point.
 
 ## Resources
 

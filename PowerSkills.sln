@@ -27,6 +27,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcronymLinker", "Text\Acron
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageStore", "Vision\ImageStore\ImageStore.csproj", "{435BDC88-37DC-4DA2-8530-D588BE1BD4E5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{73F12928-D380-4FEA-B0F2-0315EB602491}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld", "Template\HelloWorld\HelloWorld.csproj", "{ADF276A6-DC47-495B-8600-E7ECC8175E50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,10 @@ Global
 		{435BDC88-37DC-4DA2-8530-D588BE1BD4E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{435BDC88-37DC-4DA2-8530-D588BE1BD4E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{435BDC88-37DC-4DA2-8530-D588BE1BD4E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADF276A6-DC47-495B-8600-E7ECC8175E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADF276A6-DC47-495B-8600-E7ECC8175E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADF276A6-DC47-495B-8600-E7ECC8175E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADF276A6-DC47-495B-8600-E7ECC8175E50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +66,7 @@ Global
 		{633DDE34-C2AA-4C7C-91B2-CA54B6B9535A} = {F98E15F9-D6BB-41CE-8B5B-84E624B86203}
 		{CFB328D4-3F48-4D29-960B-B4E429360362} = {F98E15F9-D6BB-41CE-8B5B-84E624B86203}
 		{435BDC88-37DC-4DA2-8530-D588BE1BD4E5} = {10BE854F-F22A-4AE0-8283-688E10C76275}
+		{ADF276A6-DC47-495B-8600-E7ECC8175E50} = {73F12928-D380-4FEA-B0F2-0315EB602491}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C22FE9E-7E11-429D-ADDE-0A220F285B90}
