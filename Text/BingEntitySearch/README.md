@@ -10,7 +10,7 @@ In addition to the common requirements described in [the root `README.md` file](
 
 ## Settings
 
-This functions requires a `BING_API_KEY` setting set to a valid Azure Bing Entity Search API key.
+This function requires a `BING_API_KEY` setting set to a valid Azure Bing Entity Search API key.
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 

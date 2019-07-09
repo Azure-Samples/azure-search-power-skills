@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace AzureCognitiveSearch.PowerSkills.Common
@@ -63,32 +64,54 @@ namespace AzureCognitiveSearch.PowerSkills.Common
             return response;
         }
 
-        public static async Task<IEnumerable<T>> Fetch<T>(string uri, string apiKeyHeader, string apiKey, string collectioPath)
+        public static async Task<IEnumerable<T>> FetchAsync<T>(string uri, string apiKeyHeader, string apiKey, string collectionPath)
+        {
+            return await FetchAsync<T>(uri, apiKeyHeader, apiKey, collectionPath, HttpMethod.Get);
+        }
+
+        public static async Task<IEnumerable<T>> FetchAsync<T>(
+            string uri,
+            string apiKeyHeader,
+            string apiKey,
+            string collectionPath,
+            HttpMethod method,
+            byte[] postBody = null,
+            string contentType = null)
         {
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage())
             {
-                request.Method = HttpMethod.Get;
+                request.Method = method;
                 request.RequestUri = new Uri(uri);
+                if (postBody != null)
+                {
+                    request.Content = new ByteArrayContent(postBody);
+                }
+                if (contentType != null)
+                {
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+                }
                 request.Headers.Add(apiKeyHeader, apiKey);
 
-                HttpResponseMessage response = await client.SendAsync(request);
-                string responseBody = await response.Content.ReadAsStringAsync();
-                JObject responseObject = JObject.Parse(responseBody);
-
-                if (!response.IsSuccessStatusCode)
+                using (HttpResponseMessage response = await client.SendAsync(request))
                 {
-                    throw new HttpRequestException($"The remote service {uri} responded with a {response.StatusCode} error code: {responseObject["message"]?.ToObject<string>()}");
-                }
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    JObject responseObject = JObject.Parse(responseBody);
 
-                if (responseObject == null || !(responseObject.SelectToken(collectioPath) is JToken resultsToken))
-                {
-                    return Array.Empty<T>();
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new HttpRequestException($"The remote service {uri} responded with a {response.StatusCode} error code: {responseObject["message"]?.ToObject<string>()}");
+                    }
+
+                    if (responseObject == null || !(responseObject.SelectToken(collectionPath) is JToken resultsToken))
+                    {
+                        return Array.Empty<T>();
+                    }
+                    return resultsToken
+                        .Children()
+                        .Select(token => token.ToObject<T>())
+                        .ToList();
                 }
-                return resultsToken
-                    .Children()
-                    .Select(token => token.ToObject<T>())
-                    .ToList();
             }
         }
 

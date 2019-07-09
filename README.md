@@ -11,6 +11,8 @@ This project framework provides the following functions:
 * [**BingEntitySearch**](Text/BingEntitySearch/README.md): finds rich and structured information about public figures, locations, or organizations.
 * [**AcronymLinker**](Text/AcronymLinker/README.md): provides definitions for known acronyms.
 * [**ImageStore**](Vision/ImageStore/README.md): stores base64-encoded images into blob storage.
+* [**HocrGenerator**](Vision/HocrGenerator/README.md): transforms the result of OCR into the hOCR format.
+* [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
 
 ## Getting Started
 

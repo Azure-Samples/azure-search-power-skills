@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace AzureCognitiveSearch.PowerSkills.Text.BingEntitySearch
 {
-    public static partial class BingEntitySearch
+    public static class BingEntitySearch
     {
         private static readonly string bingApiEndpoint = "https://api.cognitive.microsoft.com/bing/v7.0/entities/";
         private static readonly string bingApiKeySetting = "BING_API_KEY";
@@ -41,7 +41,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.BingEntitySearch
                     string uri = bingApiEndpoint + "?q=" + Uri.EscapeDataString(entityName) + "&mkt=en-us&count=10&offset=0&safesearch=Moderate";
 
                     IEnumerable<BingEntity> entities =
-                        await WebApiSkillHelpers.Fetch<BingEntity>(uri, "Ocp-Apim-Subscription-Key", bingApiKey, "entities.value");
+                        await WebApiSkillHelpers.FetchAsync<BingEntity>(uri, "Ocp-Apim-Subscription-Key", bingApiKey, "entities.value");
 
                     ExtractTopEntityMetadata(entities, outRecord.Data);
                     outRecord.Data["entities"] = entities;

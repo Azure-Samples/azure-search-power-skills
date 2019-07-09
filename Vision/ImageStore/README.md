@@ -10,7 +10,7 @@ In addition to the common requirements described in [the root `README.md` file](
 
 ## Settings
 
-This functions requires a `BLOB_STORAGE_CONNECTION_STRING` setting set to a valid Azure blob storage connection string, and a `BLOB_STORAGE_CONTAINER_NAME` setting set to the name of the blob storage container under which to save the new images.
+This function requires a `BLOB_STORAGE_CONNECTION_STRING` setting set to a valid Azure blob storage connection string, and a `BLOB_STORAGE_CONTAINER_NAME` setting set to the name of the blob storage container under which to save the new images.
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 

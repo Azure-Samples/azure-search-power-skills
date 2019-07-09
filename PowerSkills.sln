@@ -29,9 +29,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageStore", "Vision\ImageS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{73F12928-D380-4FEA-B0F2-0315EB602491}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld", "Template\HelloWorld\HelloWorld.csproj", "{ADF276A6-DC47-495B-8600-E7ECC8175E50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorld", "Template\HelloWorld\HelloWorld.csproj", "{ADF276A6-DC47-495B-8600-E7ECC8175E50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HocrGenerator", "Vision\HocrGenerator\HocrGenerator.csproj", "{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HocrGenerator", "Vision\HocrGenerator\HocrGenerator.csproj", "{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyzeForm", "Vision\AnalyzeForm\AnalyzeForm.csproj", "{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleData", "SampleData", "{18FA8906-1CE8-43BC-B7CD-737947C335A3}"
+	ProjectSection(SolutionItems) = preProject
+		SampleData\Invoice_1.pdf = SampleData\Invoice_1.pdf
+		SampleData\Invoice_2.pdf = SampleData\Invoice_2.pdf
+		SampleData\Invoice_3.pdf = SampleData\Invoice_3.pdf
+		SampleData\Invoice_4.pdf = SampleData\Invoice_4.pdf
+		SampleData\Invoice_5.pdf = SampleData\Invoice_5.pdf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +74,10 @@ Global
 		{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +89,7 @@ Global
 		{435BDC88-37DC-4DA2-8530-D588BE1BD4E5} = {10BE854F-F22A-4AE0-8283-688E10C76275}
 		{ADF276A6-DC47-495B-8600-E7ECC8175E50} = {73F12928-D380-4FEA-B0F2-0315EB602491}
 		{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B} = {10BE854F-F22A-4AE0-8283-688E10C76275}
+		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884} = {10BE854F-F22A-4AE0-8283-688E10C76275}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C22FE9E-7E11-429D-ADDE-0A220F285B90}
