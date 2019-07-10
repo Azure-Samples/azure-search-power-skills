@@ -62,7 +62,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.AcronymLinker
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
                     var words = JsonConvert.DeserializeObject<JArray>(JsonConvert.SerializeObject(inRecord.Data["words"]));
-                    var cryptos = words.Select(jword =>
+                    var acronyms = words.Select(jword =>
                     {
                         var word = jword.Value<string>();
                         if (word.All(Char.IsUpper) && acronymLinker.Acronyms.TryGetValue(word, out string description))
@@ -72,7 +72,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.AcronymLinker
                         return null;
                     });
 
-                    outRecord.Data["acronyms"] = cryptos.ToArray();
+                    outRecord.Data["acronyms"] = acronyms.ToArray();
                     return outRecord;
                 });
 
