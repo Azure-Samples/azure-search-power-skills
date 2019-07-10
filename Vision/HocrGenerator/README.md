@@ -111,3 +111,31 @@ This function doesn't require any application settings.
     ]
 }
 ```
+
+## Sample Skillset Integration
+
+```json
+{
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "description": "Generate HOCR for webpage rendering",
+    "uri": "[AzureFunctionEndpointUrl]/api/hocr-generator?code=[AzureFunctionDefaultHostKey]",
+    "batchSize": 1,
+    "context": "/document",
+    "inputs": [
+        {
+            "name": "ocrImageMetadataList",
+            "source": "/document/normalized_images/*/ocrImageMetadata"
+        },
+        {
+            "name": "wordAnnotations",
+            "source": "/document/acronyms"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "hocrDocument",
+            "targetName": "hocrDocument"
+        }
+    ]
+}
+```

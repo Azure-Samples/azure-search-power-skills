@@ -55,6 +55,33 @@ If unspecified or empty, `mimeType` defaults to "image/jpeg". If `imageName` is 
 
 The returned `imageStoreUri` points to the image and can be used in its stead.
 
+### Sample Skillset Integration
+
+```json
+{
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "description": "Upload image data to the annotation store",
+    "uri": "[AzureFunctionEndpointUrl]/api/image-store?code=[AzureFunctionDefaultHostKey]",
+    "batchSize": 1,
+    "context": "/document/normalized_images/*",
+    "httpHeaders": {
+        "BlobContainerName": "[BlobContainerName]"
+    },
+    "inputs": [
+        {
+            "name": "imageData",
+            "source": "/document/normalized_images/*/data"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "imageStoreUri",
+            "targetName": "imageStoreUri"
+        }
+    ]
+}
+```
+
 ## `image-fetch` function
 
 This function is the reverse of `image-store`, and the inputs and outputs are identical, just reversed, if one excludes the errors and warnings sections.
@@ -88,6 +115,33 @@ This function is the reverse of `image-store`, and the inputs and outputs are id
             },
             "errors": [],
             "warnings": []
+        }
+    ]
+}
+```
+
+### Sample Skillset Integration
+
+```json
+{
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "description": "Upload image data to the annotation store",
+    "uri": "[AzureFunctionEndpointUrl]/api/image-fetch?code=[AzureFunctionDefaultHostKey]",
+    "batchSize": 1,
+    "context": "/document/normalized_images/*",
+    "httpHeaders": {
+        "BlobContainerName": "[BlobContainerName]"
+    },
+    "inputs": [
+        {
+            "name": "imageStoreUri",
+            "source": "/document/normalized_images/*/uri"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "imageData",
+            "targetName": "data"
         }
     ]
 }

@@ -68,7 +68,7 @@ This function uses a JSON file called `acronyms.json` that can be found at the r
 }
 ```
 
-## link-Acronyms-list
+## link-acronyms-list
 
 ### Sample Input:
 
@@ -107,6 +107,30 @@ This function uses a JSON file called `acronyms.json` that can be found at the r
             },
             "errors": [],
             "warnings": []
+        }
+    ]
+}
+```
+
+### Sample Skillset Integration
+
+```json
+{
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "description": "Acronym linker",
+    "uri": "[AzureFunctionEndpointUrl]/api/link-acronyms-list?code=[AzureFunctionDefaultHostKey]",
+    "batchSize": 1,
+    "context": "/document",
+    "inputs": [
+        {
+            "name": "words",
+            "source": "/document/normalized_images/*/layoutText/words/*/text"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "acronyms",
+            "targetName": "acronyms"
         }
     ]
 }
