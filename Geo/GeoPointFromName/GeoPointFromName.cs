@@ -16,8 +16,8 @@ namespace AzureCognitiveSearch.PowerSkills.Geo.GeoPointFromName
         private static readonly string azureMapsUri = "https://atlas.microsoft.com/search/fuzzy/json";
         private static readonly string azureMapsKeySetting = "AZUREMAPS_APP_KEY";
 
-        [FunctionName("GetGeoPointFromName")]
-        public static async Task<IActionResult> Run(
+        [FunctionName("geo-point-from-name")]
+        public static async Task<IActionResult> RunGeoPointFromName(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log,
             ExecutionContext executionContext)

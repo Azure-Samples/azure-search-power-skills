@@ -55,7 +55,10 @@ If unspecified or empty, `mimeType` defaults to "image/jpeg". If `imageName` is 
 
 The returned `imageStoreUri` points to the image and can be used in its stead.
 
-### Sample Skillset Integration
+## Sample Skillset Integration
+
+In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
 {
@@ -120,7 +123,10 @@ This function is the reverse of `image-store`, and the inputs and outputs are id
 }
 ```
 
-### Sample Skillset Integration
+## Sample Skillset Integration
+
+In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
 {

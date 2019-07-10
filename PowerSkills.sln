@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vision", "Vision", "{10BE85
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Geo", "Geo", "{79C202F2-C57C-41B2-ADBE-A4308DAA101C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FDD25BA0-CA39-4A29-BF7A-356B8DABEE3B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{FDD25BA0-CA39-4A29-BF7A-356B8DABEE3B}"
 	ProjectSection(SolutionItems) = preProject
 		CHANGELOG.md = CHANGELOG.md
 		CONTRIBUTING.md = CONTRIBUTING.md
@@ -33,9 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorld", "Template\Hell
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HocrGenerator", "Vision\HocrGenerator\HocrGenerator.csproj", "{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyzeForm", "Vision\AnalyzeForm\AnalyzeForm.csproj", "{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnalyzeForm", "Vision\AnalyzeForm\AnalyzeForm.csproj", "{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleData", "SampleData", "{18FA8906-1CE8-43BC-B7CD-737947C335A3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SampleData", "_SampleData", "{18FA8906-1CE8-43BC-B7CD-737947C335A3}"
 	ProjectSection(SolutionItems) = preProject
 		SampleData\Invoice_1.pdf = SampleData\Invoice_1.pdf
 		SampleData\Invoice_2.pdf = SampleData\Invoice_2.pdf

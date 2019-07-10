@@ -28,7 +28,7 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
         // Modify this content type if you need to handle file types other than PDF
         private static readonly string contentType = "application/pdf";
 
-        [FunctionName("AnalyzeForm")]
+        [FunctionName("analyze-form")]
         public static async Task<IActionResult> RunAnalyzeForm(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log,

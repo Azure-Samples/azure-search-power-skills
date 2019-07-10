@@ -57,3 +57,33 @@ If running in an Azure function, this can be set in the application settings.
     ]
 }
 ```
+
+## Sample Skillset Integration
+
+In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
+
+```json
+{
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "description": "Our new Bing entity search custom skill",
+    "context": "/document/merged_content/organizations/*",
+    "uri": "[AzureFunctionEndpointUrl]/api/entity-search?code=[AzureFunctionDefaultHostKey]",
+    "batchSize": 1,
+    "inputs": [
+        {
+            "name": "name",
+            "source": "/document/merged_content/organizations/*",
+            "sourceContext": null,
+            "inputs": []
+        }
+    ],
+    "outputs": [
+        {
+            "name": "description",
+            "targetName": "description"
+        }
+    ],
+    "httpHeaders": {}
+}
+```

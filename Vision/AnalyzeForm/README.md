@@ -58,45 +58,39 @@ This sample data is pointing to a file stored in this repository, but when the s
 }
 ```
 
-## Skillset
+## Sample Skillset Integration
 
 In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
-Here's a sample skill definition for this example (outputs need to be updated to reflect your mappings):
+Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
 {
-    "name": "formsdemo",
-    "description": "extract fields usign a pre trained form reconition model",
-    "skills": [
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "name": "formrecognizer", 
+    "description": "Extracts fields from a form using a pre-trained form recognition model",
+    "uri": "[AzureFunctionEndpointUrl]/api/analyze-form?code=[AzureFunctionDefaultHostKey]",
+    "httpMethod": "POST",
+    "timeout": "PT30S",
+    "context": "/document",
+    "batchSize": 1,
+    "inputs": [
         {
-            "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
-            "name": "formrecognizer", 
-            "description": "Extracts fields from a form",
-            "uri": "[the URL of your deployed custom skill]",
-            "httpMethod": "POST",
-            "timeout": "PT30S",
-            "context": "/document",
-            "batchSize": 1,
-            "inputs": [
-                {
-                    "name": "formUrl",
-                    "source": "/document/metadata_storage_path"
-                },
-                {
-                    "name": "formSasToken",
-                    "source": "/document/metadata_storage_sas_token"
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "address",
-                    "targetName": "address"
-                },
-                {
-                    "name": "recipient",
-                    "targetName": "recipient"
-                }
-            ]
+            "name": "formUrl",
+            "source": "/document/metadata_storage_path"
+        },
+        {
+            "name": "formSasToken",
+            "source": "/document/metadata_storage_sas_token"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "address",
+            "targetName": "address"
+        },
+        {
+            "name": "recipient",
+            "targetName": "recipient"
         }
     ]
 }

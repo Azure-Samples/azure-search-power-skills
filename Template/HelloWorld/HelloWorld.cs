@@ -12,7 +12,7 @@ namespace AzureCognitiveSearch.PowerSkills.Template.HelloWorld
     public static class Function1
     {
         [FunctionName("hello-world")]
-        public static async Task<IActionResult> Run(
+        public static async Task<IActionResult> RunHelloWorld(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log,
             ExecutionContext executionContext)

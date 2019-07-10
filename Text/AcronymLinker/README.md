@@ -112,7 +112,10 @@ This function uses a JSON file called `acronyms.json` that can be found at the r
 }
 ```
 
-### Sample Skillset Integration
+## Sample Skillset Integration
+
+In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
 {
@@ -120,7 +123,7 @@ This function uses a JSON file called `acronyms.json` that can be found at the r
     "description": "Acronym linker",
     "uri": "[AzureFunctionEndpointUrl]/api/link-acronyms-list?code=[AzureFunctionDefaultHostKey]",
     "batchSize": 1,
-    "context": "/document",
+    "context": "/document/normalized_images/*/layoutText",
     "inputs": [
         {
             "name": "words",

@@ -18,8 +18,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.BingEntitySearch
 
         private static readonly string[] entityTypes = new[] { "Person", "Organization", "Location" };
 
-        [FunctionName("BingEntitySearch")]
-        public static async Task<IActionResult> Run(
+        [FunctionName("entity-search")]
+        public static async Task<IActionResult> RunEntitySearch(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log,
             ExecutionContext executionContext)

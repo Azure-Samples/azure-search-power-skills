@@ -75,3 +75,31 @@ If running in an Azure function, this can be set in the application settings.
     ]
 }
 ```
+
+## Sample Skillset Integration
+
+In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
+
+```json
+{
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "description": "Geo point from name",
+    "context": "/document/merged_content/locations/*",
+    "uri": "[AzureFunctionEndpointUrl]/api/geo-point-from-name?code=[AzureFunctionDefaultHostKey]",
+    "batchSize": 1,
+    "inputs": [
+        {
+            "name": "address",
+            "source": "/document/merged_content/locations/*"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "mainGeoPoint",
+            "targetName": "geopoint"
+        }
+    ],
+    "httpHeaders": {}
+}
+```
