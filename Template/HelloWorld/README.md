@@ -1,6 +1,17 @@
-﻿# Hello World (template)
+﻿---
+topic: sample
+languages:
+- csharp
+products:
+- azure-cognitive-services
+name: Hello World sample skill for cognitive search
+description: This "Hello World" custom skills can be used as a template to create your own skills.
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Template/HelloWorld/azuredeploy.json
+---
 
- This "Hello World" custom skills can be used as a template to create your own skills.
+# Hello World (template)
+
+This "Hello World" custom skills can be used as a template to create your own skills.
 
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FTemplate%2FHelloWorld%2Fazuredeploy.json)
 
