@@ -1,6 +1,17 @@
-﻿# ImageStore
+﻿---
+topic: sample
+languages:
+- csharp
+products:
+- azure-cognitive-services
+name: Image store sample skills for cognitive search
+description: These custom skills store or retrieve a base64-encoded image to or from blob storage. This is useful to make images extracted from a cognitive search pipeline's data source available downstream as both blob URIs or raw base64 data, and to feed those into other skills.
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/ImageStore/azuredeploy.json
+---
 
- This custom skill stores or retrieves a [base64](https://en.wikipedia.org/wiki/Base64)-encoded image to or from blob storage, and returns the URL of the newly created blob or the image data. This is useful to make images extracted from a cognitive search pipeline's data source available downstream, without copying the actual image data to the index, and to feed stored images into other skills.
+# ImageStore
+
+These custom skills store or retrieve a [base64](https://en.wikipedia.org/wiki/Base64)-encoded image to or from blob storage. This is useful to make images extracted from a cognitive search pipeline's data source available downstream as both blob URIs or raw base64 data, and to feed those into other skills.
 
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FImageStore%2Fazuredeploy.json)
 

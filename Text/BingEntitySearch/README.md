@@ -1,6 +1,17 @@
-﻿# BingEntitySearch
+﻿---
+topic: sample
+languages:
+- csharp
+products:
+- azure-cognitive-services
+name: Bing Entity Search sample skill for cognitive search
+description: This custom skill finds rich and structured information about public figures, locations, or organizations.
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/BingEntitySearch/azuredeploy.json
+---
 
- This custom skill finds rich and structured information about public figures, locations, or organizations.
+# BingEntitySearch
+
+This custom skill finds rich and structured information about public figures, locations, or organizations.
 
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FBingEntitySearch%2Fazuredeploy.json)
 

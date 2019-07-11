@@ -1,6 +1,17 @@
-﻿# GetGeoPointFromName
+﻿---
+topic: sample
+languages:
+- csharp
+products:
+- azure-cognitive-services
+name: Get geo-point from name sample skill for cognitive search
+description: This custom skill takes a string input that represents a location (city, country, address or point of interest) and returns a geo-point with the coordinates for that location.
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Geo/GeoPointFromName/azuredeploy.json
+---
 
- This custom skill takes a string input that represents a location (city, country, address or point of interest) and returns a geo-point with the coordinates for that location.
+# GetGeoPointFromName
+
+This custom skill takes a string input that represents a location (city, country, address or point of interest) and returns a geo-point with the coordinates for that location.
 
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FGeo%2FGeoPointFromName%2Fazuredeploy.json)
 
