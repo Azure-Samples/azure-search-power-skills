@@ -4,8 +4,8 @@ languages:
 - csharp
 products:
 - azure-cognitive-services
-name: Sample skills for cognitive search
-description: This collection of custom skills can be deployed as is, or as templates to create your own.
+name: "Sample skills for cognitive search"
+description: "This collection of custom skills can be deployed as is, or as templates to create your own."
 ---
 
 # Azure Search Power Skills
