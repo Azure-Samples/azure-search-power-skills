@@ -4,6 +4,7 @@ languages:
 - csharp
 products:
 - azure-cognitive-services
+urlFragment: azure-hocr-generator-sample
 name: hOCR generator sample skill for cognitive search
 description: This custom skill generates an hOCR document from the output of the OCR skill.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/HocrGenerator/azuredeploy.json
