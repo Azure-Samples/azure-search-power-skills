@@ -1,6 +1,6 @@
 ---
 page_type: sample
-description: "This collection of custom skills can be deployed as is, or as templates to create your own."
+description: "A collection of useful functions to be deployed as custom skills for Azure Cognitive Search."
 languages:
 - csharp
 products:
