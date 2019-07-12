@@ -28,7 +28,7 @@ This project framework provides the following functions:
 
 ### Prerequisites
 
-In order to use the functions in this project, you'll need an active Azure subscription. Most of the functions can be used on their own for quick evaluation and experimentation, but they are meant to be used as part of an [Azure Cognitive Search pipeline](https://docs.microsoft.com/en-us/azure/search/cognitive-search-quickstart-blob).
+In order to use the functions in this project, you'll need an active Azure subscription. Most of the functions can be used on their own for quick evaluation and experimentation, but they are meant to be used as part of an [Azure Cognitive Search pipeline](https://docs.microsoft.com/azure/search/cognitive-search-quickstart-blob).
 Each function may also add its own specific requirements, such as API keys for services they leverage.
 
 [Visual Studio](https://visualstudio.microsoft.com/) is recommended, but not required. [Postman](https://www.getpostman.com/) is highly recommended as a way to experiment and test skills.
