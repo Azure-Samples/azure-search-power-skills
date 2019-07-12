@@ -1,5 +1,5 @@
 ---
-page_type: sample
+topic: sample
 description: "A collection of useful functions to be deployed as custom skills for Azure Cognitive Search."
 languages:
 - csharp
