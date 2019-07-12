@@ -10,7 +10,7 @@ description: This collection of custom skills can be deployed as is, or as templ
 
 # Azure Search Power Skills
 
-A collection of useful functions to be deployed as custom skills for Azure Cognitive Search .
+A collection of useful functions to be deployed as custom skills for Azure Cognitive Search.
 
 ## Features
 
@@ -54,7 +54,7 @@ You can also create your own skills using [our Hello World template skill](Templ
 ## Resources
 
 - [Contribution guidelines](CONTRIBUTING.md)
-- [Azure Search](https://azure.microsoft.com/en-us/services/search/)
-- [Azure Functions](https://azure.microsoft.com/en-us/services/functions/)
+- [Azure Search](https://azure.microsoft.com/services/search/)
+- [Azure Functions](https://azure.microsoft.com/services/functions/)
 - [JFK Files](https://github.com/microsoft/AzureSearch_JFK_Files)
 - [Knowledge Mining Solution Accelerator Guide](https://github.com/Azure-Samples/azure-search-knowledge-mining)
