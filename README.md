@@ -37,7 +37,7 @@ Each function may also add its own specific requirements, such as API keys for s
 
 If using Visual Studio with the Azure workload installed, no installation is required, and the functions can just be run locally using F5.
 
-Deployment of a function to Azure can be done [through Visual Studio](https://docs.microsoft.com/en-us/azure/azure-functions/deployment-zip-push), the Deploy to Azure button, or [continuous deployment](https://docs.microsoft.com/en-us/azure/azure-functions/functions-continuous-deployment).
+Deployment of a function to Azure can be done [through Visual Studio](https://docs.microsoft.com/azure/azure-functions/deployment-zip-push), the Deploy to Azure button, or [continuous deployment](https://docs.microsoft.com/azure/azure-functions/functions-continuous-deployment).
 
 Some functions may require setting environment variables or configuration entries. Please refer to the readme file in the function's directory.
 
