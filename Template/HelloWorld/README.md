@@ -6,7 +6,7 @@ products:
 - azure-cognitive-services
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Template/HelloWorld/azuredeploy.json
 name: "Hello World sample skill for cognitive search"
-description: "This "Hello World" custom skills can be used as a template to create your own skills."
+description: "This Hello World custom skills can be used as a template to create your own skills."
 ---
 
 # Hello World (template)
