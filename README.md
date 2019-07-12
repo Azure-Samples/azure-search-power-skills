@@ -5,6 +5,7 @@ languages:
 - csharp
 products:
 - azure-cognitive-services
+urlFragment: azure-search-power-skills-sample
 name: "Sample skills for cognitive search"
 ---
 
