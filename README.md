@@ -1,5 +1,5 @@
 ---
-topic: sample
+page_type: sample
 description: "This collection of custom skills can be deployed as is, or as templates to create your own."
 languages:
 - csharp
