@@ -5,7 +5,6 @@ languages:
 products:
 - azure-cognitive-services
 name: Image store sample skills for cognitive search
-urlFragment: azure-imagestore-sample
 description: These custom skills store or retrieve a base64-encoded image to or from blob storage.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/ImageStore/azuredeploy.json
 ---
