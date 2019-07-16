@@ -57,20 +57,8 @@
         "siteConfig": {
           "appSettings": [
             {
-              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('CogSearch','Microsoft.Storage/storageAccounts', variables('storageAccount')), '2015-06-15').key1)]"
-            },
-            {
               "name": "WEBSITE_CONTENTSHARE",
               "value": "[toLower(variables('functionAppName'))]"
-            },
-            {
-              "name": "AzureWebJobsDashboard",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('CogSearch','Microsoft.Storage/storageAccounts', variables('storageAccount')), '2015-06-15').key1)]"
-            },
-            {
-              "name": "AzureWebJobsStorage",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('CogSearch','Microsoft.Storage/storageAccounts', variables('storageAccount')), '2015-06-15').key1)]"
             },
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
