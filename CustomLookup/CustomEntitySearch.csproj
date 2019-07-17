@@ -2,10 +2,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
+    <RootNamespace>AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
-    <PackageReference Include="Moq" Version="4.12.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

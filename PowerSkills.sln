@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SampleData", "_SampleData"
 		SampleData\Invoice_5.pdf = SampleData\Invoice_5.pdf
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomEntitySearch", "CustomLookup\CustomEntitySearch.csproj", "{DA10FEF9-E048-479A-BB1F-B3DC6041013D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA10FEF9-E048-479A-BB1F-B3DC6041013D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA10FEF9-E048-479A-BB1F-B3DC6041013D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA10FEF9-E048-479A-BB1F-B3DC6041013D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA10FEF9-E048-479A-BB1F-B3DC6041013D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +96,7 @@ Global
 		{ADF276A6-DC47-495B-8600-E7ECC8175E50} = {73F12928-D380-4FEA-B0F2-0315EB602491}
 		{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B} = {10BE854F-F22A-4AE0-8283-688E10C76275}
 		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884} = {10BE854F-F22A-4AE0-8283-688E10C76275}
+		{DA10FEF9-E048-479A-BB1F-B3DC6041013D} = {F98E15F9-D6BB-41CE-8B5B-84E624B86203}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C22FE9E-7E11-429D-ADDE-0A220F285B90}
