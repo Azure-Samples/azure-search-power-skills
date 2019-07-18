@@ -108,8 +108,8 @@ Here's a sample skill definition for this example (inputs and outputs should be 
     ],
     "outputs": [
         {
-            "name": "description",
-            "targetName": "description"
+            "name": "entities",
+            "targetName": "entities"
         }
     ]
 }

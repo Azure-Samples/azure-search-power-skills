@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-
+    <RootNamespace>AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -11,9 +11,13 @@
     <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
     <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Compile Include="../../*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../Text\CustomEntitySearch\Entity.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 {
-    public class Entities
+    public class Entity
     {
         public string Name { get; set; }
         public int MatchIndex { get; set; }

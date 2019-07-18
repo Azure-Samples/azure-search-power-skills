@@ -5,14 +5,12 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Linq;
 using AzureCognitiveSearch.PowerSkills.Common;
-/// <summary>
-/// This is my attempt at a unit test. I took information from VSE documentation and the team's current SkillsetsTest.cs
-/// </summary>
-namespace LookupTests
+
+namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
 {
 
     [TestClass]
-    public class CustomLookupTests
+    public class CustomEntitySearchTest
     {
         private static readonly HttpClient client = new HttpClient();
         
@@ -20,7 +18,7 @@ namespace LookupTests
         public void MissingWordsBadRequest()
         {
             // tests against incorrect input (missing words)
-            string inputText = TestData.inputTest1;
+            string inputText = TestData.missingWordsBadRequestInput;
             HttpContent jsonContent = new StringContent(inputText, null, "application/json");
             var response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
@@ -32,7 +30,7 @@ namespace LookupTests
         public void MissingTextBadRequest()
         {
             // tests against incorrect input (missing text)
-            string missingTextPayload = TestData.inputTest2;
+            string missingTextPayload = TestData.missingTextBadRequestInput;
             HttpContent jsonContent = new StringContent(missingTextPayload, null, "application/json");
             var response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
@@ -44,7 +42,7 @@ namespace LookupTests
         public void EmptyTextWordsNotFound()
         {
             // tests against empty string text
-            string emptyText = TestData.GetPayload(@"""""", TestData.inputTest3);
+            string emptyText = TestData.GetPayload(@"""""", TestData.emptyTextWordsNotFoundInput);
             HttpContent jsonContent = new StringContent(emptyText, null, "application/json");
             var response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
@@ -57,7 +55,7 @@ namespace LookupTests
             {
                 Assert.Fail("Skill failed to handle an empty test. Errored out.");
             }
-            string checkTest3 = TestData.GetOutput(TestData.inputTest3, @"-1");
+            string checkTest3 = TestData.GetOutput(TestData.emptyTextWordsNotFoundInput, @"-1");
             Assert.AreEqual(checkTest3, responseString, false);
         }
 
@@ -65,7 +63,7 @@ namespace LookupTests
         public void EmptyWordsEmptyEntities()
         {
             //tests against empty string words
-            string emptyWords = TestData.GetPayload(TestData.inputTest4, @"""""");
+            string emptyWords = TestData.GetPayload(TestData.emptyWordsEmptyEntitiesInput, @"""""");
             HttpContent jsonContent = new StringContent(emptyWords, null, "application/json");
             var response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
@@ -86,7 +84,7 @@ namespace LookupTests
         public void LargeTextQuickResult()
         {
             // tests against large text string
-            string largeText = TestData.GetPayload(TestData.largestText, TestData.inputTest5);
+            string largeText = TestData.GetPayload(TestData.largestText, TestData.largeTextQuickResultInputWords);
             HttpContent jsonContent = new StringContent(largeText, null, "application/json");
             var response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
@@ -99,7 +97,7 @@ namespace LookupTests
             {
                 Assert.Fail("Skill failed to handle an empty test. Errored out.");
             }
-            string checkTest5 = TestData.GetOutput(TestData.inputTest5, TestData.outputTest5);
+            string checkTest5 = TestData.GetOutput(TestData.largeTextQuickResultInputWords, TestData.largeTextQuickResultExpectedOutput);
             Assert.AreEqual(checkTest5, responseString, false);
         }
 
@@ -107,7 +105,7 @@ namespace LookupTests
         public void LargeWordsQuickResult()
         {
             // tests against large pattern in words array
-            string largeWord = TestData.GetPayload(TestData.inputTest6text, TestData.inputTest6words);
+            string largeWord = TestData.GetPayload(TestData.largeWordsQuickResultInputText, TestData.largeWordsQuickResultInputWords);
             HttpContent jsonContent = new StringContent(largeWord, null, "application/json");
             var response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
@@ -120,7 +118,7 @@ namespace LookupTests
             {
                 Assert.Fail("Skill failed to handle an empty test. Errored out.");
             }
-            string checkTest6 = TestData.GetOutput(TestData.inputTest6words, TestData.outputTest6);
+            string checkTest6 = TestData.GetOutput(TestData.largeWordsQuickResultInputWords, TestData.largeWordsQuickResultExpectedOutput);
             Assert.AreEqual(checkTest6, responseString, false);
         }
 
@@ -128,12 +126,7 @@ namespace LookupTests
         public void LargeDatasetQuickResult()
         {
             //tests against a large number of documents inputted (loadtest)
-            string text = TestData.inputElement.Replace("#REPLACE ME#", TestData.largestText);
-            string words = text.Replace("#INSERT WORDS#", TestData.inputTest5);
-            string docs = String.Concat(Enumerable.Repeat(words + ",", TestData.numDocs));
-            docs = docs.Remove(docs.Length - 1);
-            string content = TestData.inputCheckTest.Replace("#REPLACE ME#", docs);
-
+            string content = TestData.GetPayload(TestData.largestText, TestData.largeTextQuickResultInputWords, TestData.numDocs);
             HttpContent jsonContent = new StringContent(content, null, "application/json");
             var response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
             string responseString = response.Content.ReadAsStringAsync().Result;
@@ -146,24 +139,7 @@ namespace LookupTests
             {
                 Assert.Fail("Skill failed to handle an empty test. Errored out.");
             }
-
-            string[] nameReplace = TestData.inputTest5.Split(", ");
-            string[] matchReplace = TestData.outputTest5.Split(", ");
-            string data = "";
-            for (int i = 0; i < nameReplace.Length; i++)
-            {
-                string temp = TestData.outputValue.Replace("#REPLACE ME#", nameReplace[i]);
-                temp = temp.Replace("#NUMBER#", matchReplace[i]);
-                data += temp + ",";
-            }
-            data = data.Remove(data.Length - 1);
-            string allData = "";
-            for (int j = 0; j < TestData.numDocs; j++)
-            {
-                allData += TestData.outputElement.Replace("#REPLACE ME#", data) + ",";
-            }
-            allData = allData.Remove(allData.Length - 1);
-            string checkTest7 = TestData.outputCheckTest.Replace("#REPLACE ME#", allData);
+            string checkTest7 = TestData.GetOutput(TestData.largeTextQuickResultInputWords, TestData.largeTextQuickResultExpectedOutput, TestData.numDocs);
             Assert.AreEqual(checkTest7, responseString, false);
         }
 
@@ -184,7 +160,7 @@ namespace LookupTests
             {
                 Assert.Fail("Skill failed to handle an empty test. Errored out.");
             }
-            string checkTest8 = TestData.GetOutput(TestData.largestWords, TestData.outputTest8);
+            string checkTest8 = TestData.GetOutput(TestData.largestWords, TestData.largeNumWordsQuickResultExpectedOutput);
             Assert.AreEqual(checkTest8, responseString, false);
         } 
     }

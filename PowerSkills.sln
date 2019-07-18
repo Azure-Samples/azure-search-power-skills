@@ -46,6 +46,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SampleData", "_SampleData"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomEntitySearch", "Text\CustomEntitySearch\CustomEntitySearch.csproj", "{F0B21155-829F-4B26-853B-82ECAAB18D23}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F5F3F598-2DCA-42EA-9797-D3A3E7CFA2CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomEntitySearchTest", "Tests\CustomEntitySearchTest\CustomEntitySearchTest.csproj", "{496441CA-21E9-46AE-B1D3-0F2AE2C89CD4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +88,10 @@ Global
 		{F0B21155-829F-4B26-853B-82ECAAB18D23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0B21155-829F-4B26-853B-82ECAAB18D23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0B21155-829F-4B26-853B-82ECAAB18D23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{496441CA-21E9-46AE-B1D3-0F2AE2C89CD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{496441CA-21E9-46AE-B1D3-0F2AE2C89CD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{496441CA-21E9-46AE-B1D3-0F2AE2C89CD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{496441CA-21E9-46AE-B1D3-0F2AE2C89CD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +105,7 @@ Global
 		{0C777E2F-ABEB-4D43-8E5E-6524C2E4BD4B} = {10BE854F-F22A-4AE0-8283-688E10C76275}
 		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884} = {10BE854F-F22A-4AE0-8283-688E10C76275}
 		{F0B21155-829F-4B26-853B-82ECAAB18D23} = {F98E15F9-D6BB-41CE-8B5B-84E624B86203}
+		{496441CA-21E9-46AE-B1D3-0F2AE2C89CD4} = {F5F3F598-2DCA-42EA-9797-D3A3E7CFA2CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C22FE9E-7E11-429D-ADDE-0A220F285B90}

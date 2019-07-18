@@ -16,4 +16,7 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../*.cs" />
+  </ItemGroup>
 </Project>

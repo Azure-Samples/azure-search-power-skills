@@ -14,11 +14,12 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 {
     /// <summary>
     /// Based on sample custom skill provided in Azure Search. Provided a user-defined list of entities
-    /// this function determines the entities first occurrence within a given document. This list of entities
+    /// this function determines the Entity first occurrence within a given document. This list of entities
     /// must repeatedly be provided by the user for each document.
     /// </summary>
     public static class CustomEntitySearch
     {
+        private static int MaxRegexEvalTime = 1;
         /// <summary>
         /// We assert the following assumptions:
         /// 1. All text files are Latin based (i.e. no languageCode)
@@ -40,13 +41,12 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
 
-            const int MAXTIME = 1;
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
                     string text = inRecord.Data["text"] as string;
                     List<string> words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
 
-                    List<Entities> data = new List<Entities>();
+                    List<Entity> data = new List<Entity>();
                     if (!string.IsNullOrWhiteSpace(text))
                     {
                         foreach (string word in words)
@@ -54,9 +54,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             if (string.IsNullOrEmpty(word)) continue;
                             string escapedWord = Regex.Escape(word);
                             string pattern = @"\b(?ix:" + escapedWord + ")";
-                            Match entityMatch = Regex.Match(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MAXTIME));
+                            Match entityMatch = Regex.Match(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MaxRegexEvalTime));
                             data.Add(
-                                new Entities
+                                new Entity
                                 {
                                     Name = word,
                                     MatchIndex = entityMatch.Success ? entityMatch.Index : -1
@@ -64,7 +64,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         }
                     }
 
-                    outRecord.Data["entities"] = data;
+                    outRecord.Data["Entity"] = data;
                     return outRecord;
                 });
 
