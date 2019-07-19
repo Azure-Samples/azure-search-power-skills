@@ -19,4 +19,12 @@
   <ItemGroup>
     <Compile Include="../../*.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="words.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="words.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

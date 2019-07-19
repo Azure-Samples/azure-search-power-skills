@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using AzureCognitiveSearch.PowerSkills.Common;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 // languages used for Azure Search with Text Analytics:
 // el, th, he, tr, cs, hu, ar, ja-jp, fi, da, no, ko, pl, ru, sv, ja, it, pt, fr, es, nl, de, en
@@ -50,11 +51,11 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
-                    string text = Regex.Escape(inRecord.Data["text"] as string);
+                    string text = inRecord.Data["text"] as string;
                     List<string> words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
                     if (words == null)
                     {
-                        words = new WordLinker(executionContext.FunctionAppDirectory).Words;
+                        words = new List<string>(new WordLinker(executionContext.FunctionAppDirectory).Words);
                     }
 
                     var entities = new List<Entity>();
@@ -66,15 +67,17 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             if (string.IsNullOrEmpty(word)) continue;
                             string escapedWord = Regex.Escape(word);
                             string pattern = @"\b(?ix:" + escapedWord + @")\b";
-                            Match entityMatch = Regex.Match(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MaxRegexEvalTime));
-                            if (entityMatch.Success)
+                            MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MaxRegexEvalTime));
+                            if (entityMatch.Count != 0)
                             {
-                                entities.Add(
+                                entityMatch.OfType<Match>()
+                                .Select(m => m.Groups[0].Index)
+                                .ToList().ForEach(index => entities.Add(
                                     new Entity
                                     {
                                         Name = word,
-                                        MatchIndex = entityMatch.Index
-                                    });
+                                        MatchIndex = index
+                                    }));
                                 entitiesFound.Add(word);
                             }
 

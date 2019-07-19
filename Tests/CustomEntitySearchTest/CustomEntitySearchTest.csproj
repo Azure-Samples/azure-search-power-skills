@@ -12,12 +12,9 @@
     <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../../*.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="../../Text\CustomEntitySearch\Entity.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Text\CustomEntitySearch\CustomEntitySearch.csproj" />
   </ItemGroup>
 </Project>

@@ -43,8 +43,7 @@ This function requires Latin-based text (as seen in the sample document provided
                 "words": [
                     "learn",
                     "app"
-                ],
-                "languageCode": "en"
+                ]
             }
         },
         {
@@ -54,8 +53,7 @@ This function requires Latin-based text (as seen in the sample document provided
                 "text":  "Azure Storage includes Azure Blobs (objects), Azure Data Lake Storage Gen2, Azure Files, Azure Queues, and Azure Tables.",
                 "words": [
                     "bing"
-                ],
-                "languageCode": "en"
+                ]
             }
         }
     ]
@@ -110,14 +108,10 @@ Here's a sample skill definition for this example (inputs and outputs should be 
     "inputs": [
         {
             "name": "text",
-            "source": "/document/merged_content/*"
+            "source": "/document/content/*"
         },
         {
             "name": "words",
-            "source": "/document/merged_content/*"
-        },
-		{
-            "name": "languageCode",
             "source": "/document/merged_content/*"
         }
     ],
