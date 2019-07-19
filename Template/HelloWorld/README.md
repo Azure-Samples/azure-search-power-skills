@@ -1,8 +1,9 @@
 ---
-topic: sample
+page_type: sample
 languages:
 - csharp
 products:
+- azure
 - azure-cognitive-services
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Template/HelloWorld/azuredeploy.json
 name: "Hello World sample skill for cognitive search"
