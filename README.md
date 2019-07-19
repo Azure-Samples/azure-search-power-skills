@@ -1,14 +1,3 @@
----
-page_type: sample
-description: "A collection of useful functions to be deployed as custom skills for Azure Cognitive Search."
-languages:
-- csharp
-products:
-- azure-cognitive-services
-urlFragment: azure-search-power-skills-sample
-name: "Sample skills for cognitive search"
----
-
 # Azure Search Power Skills
 
 A collection of useful functions to be deployed as custom skills for Azure Cognitive Search.
