@@ -8,7 +8,7 @@ using System.IO;
 
 namespace AzureCognitiveSearch.PowerSkills.Text.AcronymLinker
 {
-    class AcronymLinker
+    public class AcronymLinker
     {
         public AcronymLinker(string executingDirectoryPath)
         {
