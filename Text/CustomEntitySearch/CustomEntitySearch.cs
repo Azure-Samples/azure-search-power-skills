@@ -11,8 +11,8 @@ using AzureCognitiveSearch.PowerSkills.Common;
 using Newtonsoft.Json.Linq;
 
 // languages used for Azure Search with Text Analytics:
-// th, he, tr, cs, hu, ar, ja-jp, fi, da, no, ko, pl, ru, sv, ja, it, pt, fr, es, nl, de, en
-// thai, hebrew, turkish, czech, hungarian, arabic, japanese, finnish, danish, norwegian, korean, polish, russian, swedish, japanese (again??), 
+// el, th, he, tr, cs, hu, ar, ja-jp, fi, da, no, ko, pl, ru, sv, ja, it, pt, fr, es, nl, de, en
+// greek, thai, hebrew, turkish, czech, hungarian, arabic, japanese, finnish, danish, norwegian, korean, polish, russian, swedish, japanese (again??), 
 // italian, portuguese, french, spanish, dutch, german, english
 // unicode blocks in order:
 // InThai, InHebrew
@@ -50,10 +50,15 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
-                    string text = inRecord.Data["text"] as string;
+                    string text = Regex.Escape(inRecord.Data["text"] as string);
                     List<string> words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
+                    if (words == null)
+                    {
+                        words = new WordLinker(executionContext.FunctionAppDirectory).Words;
+                    }
 
                     var entities = new List<Entity>();
+                    var entitiesFound = new List<string>();
                     if (!string.IsNullOrWhiteSpace(text))
                     {
                         foreach (string word in words)
@@ -62,16 +67,22 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             string escapedWord = Regex.Escape(word);
                             string pattern = @"\b(?ix:" + escapedWord + @")\b";
                             Match entityMatch = Regex.Match(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MaxRegexEvalTime));
-                            entities.Add(
-                                new Entity
-                                {
-                                    Name = word,
-                                    MatchIndex = entityMatch.Success ? entityMatch.Index : -1
-                                }) ;
+                            if (entityMatch.Success)
+                            {
+                                entities.Add(
+                                    new Entity
+                                    {
+                                        Name = word,
+                                        MatchIndex = entityMatch.Index
+                                    });
+                                entitiesFound.Add(word);
+                            }
+
                         }
                     }
 
                     outRecord.Data["Entities"] = entities;
+                    outRecord.Data["EntitiesFound"] = entitiesFound;
                     return outRecord;
                 });
 

@@ -14,7 +14,8 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
             ""recordId"": ""1"",
             ""data"":
             {
-                ""text"":  ""Pablo Picasso""
+                ""text"":  ""Pablo Picasso"",
+                ""languageCode"": ""en""
             }
         }
     ]
@@ -27,7 +28,8 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
             {
                 ""words"":  [
                     ""will you search""
-                ]
+                ],
+                ""languageCode"": ""en""
             }
         }
     ]
@@ -51,7 +53,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
         public const string outputElement = @"{""recordId"":""1"",""data"":[#REPLACE ME#]}";
         public const string outputValue = @"{""name"":#REPLACE ME#,""matchIndex"":#NUMBER#}";
         public const string inputCheckTest = @"{""values"":[#REPLACE ME#]}";
-        public const string inputElement = @"{""recordId"":""1"",""data"":{""text"":#REPLACE ME#,""words"":[#INSERT WORDS#]}}";
+        public const string inputElement = @"{""recordId"":""1"",""data"":{""text"":#REPLACE ME#,""words"":[#INSERT WORDS#],""languageCode"": ""en""}}";
 
         public const int numDocs = 2300;
         public const string largestText =

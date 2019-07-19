@@ -21,7 +21,14 @@ These skills have no additional requirements than the ones described in [the roo
 
 ## Settings
 
-This function requires Latin-based text (as seen in the sample document provided).
+This function requires Latin-based text (as seen in the sample document provided). The input field "words" is optional, where a user can add a "words.json" file instead.
+
+## Sample Config File
+```json
+{
+	["foo1", "foo2"]
+}
+```
 
 ## Sample Input:
 
@@ -36,7 +43,8 @@ This function requires Latin-based text (as seen in the sample document provided
                 "words": [
                     "learn",
                     "app"
-                ]
+                ],
+                "languageCode": "en"
             }
         },
         {
@@ -46,7 +54,8 @@ This function requires Latin-based text (as seen in the sample document provided
                 "text":  "Azure Storage includes Azure Blobs (objects), Azure Data Lake Storage Gen2, Azure Files, Azure Queues, and Azure Tables.",
                 "words": [
                     "bing"
-                ]
+                ],
+                "languageCode": "en"
             }
         }
     ]
@@ -61,6 +70,7 @@ This function requires Latin-based text (as seen in the sample document provided
         {
             "recordId": "1",
             "data": {
+				"entitiesFound": ["learn", "app"],
                 "entities": [
                     {
                         "name": "learn",
@@ -77,12 +87,8 @@ This function requires Latin-based text (as seen in the sample document provided
             "recordId": "foo1",
             "data": 
             {
-                "entities": [
-                    {
-                        "name": "bing",
-                        "matchIndex": -1
-                    }
-                ]
+				"entitiesFound": [],
+                "entities": []
             }
         }
     ]
@@ -109,10 +115,18 @@ Here's a sample skill definition for this example (inputs and outputs should be 
         {
             "name": "words",
             "source": "/document/merged_content/*"
+        },
+		{
+            "name": "languageCode",
+            "source": "/document/merged_content/*"
         }
     ],
     "outputs": [
         {
+            "name": "entitiesFound",
+            "targetName": "entitiesFound"
+        },
+		{
             "name": "entities",
             "targetName": "entities"
         }
