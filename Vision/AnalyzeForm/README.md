@@ -1,8 +1,9 @@
 ---
-topic: sample
+page_type: sample
 languages:
 - csharp
 products:
+- azure
 - azure-cognitive-services
 name: Analyze form sample skill for cognitive search
 urlFragment: azure-analyzeform-sample
