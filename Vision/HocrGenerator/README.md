@@ -1,8 +1,9 @@
 ---
-topic: sample
+page_type: sample
 languages:
 - csharp
 products:
+- azure
 - azure-cognitive-services
 urlFragment: azure-hocr-generator-sample
 name: hOCR generator sample skill for cognitive search
