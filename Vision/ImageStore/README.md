@@ -1,8 +1,9 @@
 ---
-topic: sample
+page_type: sample
 languages:
 - csharp
 products:
+- azure
 - azure-cognitive-services
 name: Image store sample skills for cognitive search
 urlFragment: azure-imagestore-sample
