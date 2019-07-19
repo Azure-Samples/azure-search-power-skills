@@ -1,8 +1,9 @@
 ---
-topic: sample
+page_type: sample
 languages:
 - csharp
 products:
+- azure
 - azure-cognitive-services
 name: Get geo-point from name sample skill for cognitive search
 description: "This custom skill takes a string input that represents a location (city, country, address or point of interest) and returns a geo-point."
