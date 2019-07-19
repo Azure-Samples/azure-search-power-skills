@@ -10,6 +10,13 @@ using Microsoft.Extensions.Logging;
 using AzureCognitiveSearch.PowerSkills.Common;
 using Newtonsoft.Json.Linq;
 
+// languages used for Azure Search with Text Analytics:
+// th, he, tr, cs, hu, ar, ja-jp, fi, da, no, ko, pl, ru, sv, ja, it, pt, fr, es, nl, de, en
+// thai, hebrew, turkish, czech, hungarian, arabic, japanese, finnish, danish, norwegian, korean, polish, russian, swedish, japanese (again??), 
+// italian, portuguese, french, spanish, dutch, german, english
+// unicode blocks in order:
+// InThai, InHebrew
+
 namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 {
     /// <summary>
@@ -46,16 +53,16 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     string text = inRecord.Data["text"] as string;
                     List<string> words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
 
-                    List<Entity> data = new List<Entity>();
+                    var entities = new List<Entity>();
                     if (!string.IsNullOrWhiteSpace(text))
                     {
                         foreach (string word in words)
                         {
                             if (string.IsNullOrEmpty(word)) continue;
                             string escapedWord = Regex.Escape(word);
-                            string pattern = @"\b(?ix:" + escapedWord + ")";
+                            string pattern = @"\b(?ix:" + escapedWord + @")\b";
                             Match entityMatch = Regex.Match(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MaxRegexEvalTime));
-                            data.Add(
+                            entities.Add(
                                 new Entity
                                 {
                                     Name = word,
@@ -64,7 +71,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         }
                     }
 
-                    outRecord.Data["Entity"] = data;
+                    outRecord.Data["Entities"] = entities;
                     return outRecord;
                 });
 

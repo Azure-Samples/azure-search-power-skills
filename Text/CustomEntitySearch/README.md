@@ -33,10 +33,10 @@ This function requires Latin-based text (as seen in the sample document provided
             "data":
             {
                 "text":  "Learn how to leverage Azure Storage in your applications with our quickstarts and tutorials.",
-				"words": [
-					"learn",
-					"app"
-				]
+                "words": [
+                    "learn",
+                    "app"
+                ]
             }
         },
         {
@@ -44,9 +44,9 @@ This function requires Latin-based text (as seen in the sample document provided
             "data":
             {
                 "text":  "Azure Storage includes Azure Blobs (objects), Azure Data Lake Storage Gen2, Azure Files, Azure Queues, and Azure Tables.",
-				"words": [
-					"bing"
-				]
+                "words": [
+                    "bing"
+                ]
             }
         }
     ]
@@ -61,28 +61,29 @@ This function requires Latin-based text (as seen in the sample document provided
         {
             "recordId": "1",
             "data": {
-				"entities": [
-					{
-						"name": "learn",
-						"matchIndex": 1
-					},
-					{
-						"name": "app",
-						"matchIndex": 45
-					}
-			]
+                "entities": [
+                    {
+                        "name": "learn",
+                        "matchIndex": 1
+                    },
+                    {
+                        "name": "app",
+                        "matchIndex": 45
+                    }
+                ]
+            }
         },
         {
             "recordId": "foo1",
             "data": 
-			{
-				"entities": [
-					{
-						"name": "bing",
-						"matchIndex": -1
-					}
-				]
-			}
+            {
+                "entities": [
+                    {
+                        "name": "bing",
+                        "matchIndex": -1
+                    }
+                ]
+            }
         }
     ]
 }
@@ -102,7 +103,11 @@ Here's a sample skill definition for this example (inputs and outputs should be 
     "batchSize": 1,
     "inputs": [
         {
-            "name": "name",
+            "name": "text",
+            "source": "/document/merged_content/*"
+        },
+        {
+            "name": "words",
             "source": "/document/merged_content/*"
         }
     ],

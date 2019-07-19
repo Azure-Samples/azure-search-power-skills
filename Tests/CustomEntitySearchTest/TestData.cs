@@ -198,38 +198,38 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
             }
             else
             {
-                string payload = String.Concat(Enumerable.Repeat(addWordsToElement + ",", numDocs));
-                payload = payload.Remove(payload.Length - 1);
-                return inputCheckTest.Replace("#REPLACE ME#", payload);
+                string entitiesFound = String.Concat(Enumerable.Repeat(addWordsToElement + ",", numDocs));
+                entitiesFound = entitiesFound.Remove(entitiesFound.Length - 1);
+                return inputCheckTest.Replace("#REPLACE ME#", entitiesFound);
             }
         }
         public static string GetOutput(string words, string numbers, int numDocs = 0)
         {
             string[] nameReplace = words.Split(", ");
             string[] matchReplace = numbers.Split(", ");
-            string data = "";
+            string entities = "";
             for (int i = 0; i < nameReplace.Length; i++)
             {
                 string temp = outputValue.Replace("#REPLACE ME#", nameReplace[i]);
                 temp = temp.Replace("#NUMBER#", matchReplace[i]);
-                data += temp + ",";
+                entities += temp + ",";
             }
-            data = data.Remove(data.Length - 1);
+            entities = entities.Remove(entities.Length - 1);
             
             if (numDocs <= 0)
             {
-                string oneEntity = outputElement.Replace("#REPLACE ME#", data);
+                string oneEntity = outputElement.Replace("#REPLACE ME#", entities);
                 return outputCheckTest.Replace("#REPLACE ME#", oneEntity);
             }
             else
             {
-                string allData = "";
+                string allInputEntityElements = "";
                 for (int j = 0; j < TestData.numDocs; j++)
                 {
-                    allData += TestData.outputElement.Replace("#REPLACE ME#", data) + ",";
+                    allInputEntityElements += TestData.outputElement.Replace("#REPLACE ME#", entities) + ",";
                 }
-                allData = allData.Remove(allData.Length - 1);
-                return outputCheckTest.Replace("#REPLACE ME#", allData);
+                allInputEntityElements = allInputEntityElements.Remove(allInputEntityElements.Length - 1);
+                return outputCheckTest.Replace("#REPLACE ME#", allInputEntityElements);
             }
         }
     }
