@@ -52,10 +52,10 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
                     string text = inRecord.Data["text"] as string;
-                    List<string> words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
+                    IList<string> words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
                     if (words == null)
                     {
-                        words = new List<string>(new WordLinker(executionContext.FunctionAppDirectory).Words);
+                        words = new WordLinker(executionContext.FunctionAppDirectory).Words;
                     }
 
                     var entities = new List<Entity>();
@@ -70,14 +70,15 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MaxRegexEvalTime));
                             if (entityMatch.Count != 0)
                             {
-                                entityMatch.OfType<Match>()
-                                .Select(m => m.Groups[0].Index)
-                                .ToList().ForEach(index => entities.Add(
-                                    new Entity
-                                    {
-                                        Name = word,
-                                        MatchIndex = index
-                                    }));
+                                foreach (Match match in entityMatch)
+                                {
+                                    entities.Add(
+                                        new Entity
+                                        {
+                                            Name = match.Value,
+                                            MatchIndex = match.Index
+                                        });
+                                }
                                 entitiesFound.Add(word);
                             }
 

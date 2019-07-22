@@ -1,7 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AzureCognitiveSearch.PowerSkills.Common;
+using AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
 {
@@ -41,19 +48,29 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
         "secure, durable, scalable, and redundant. Azure Storage includes Azure Blobs (objects), Azure Data Lake Storage Gen2, Azure Files, " +
         @"Azure Queues, and Azure Tables. Learn how to leverage Azure Storage in your applications with our quickstarts and tutorials.""";
         public const string largeWordsQuickResultInputWords = @"""check1"", ""AzureStorageinyourapplicationswithourquickstartsandtutorials"", ""queues""";
+        public const string largeWordsOutputNames = @"""Queues""";
+        public const string largeWordsOutputMatchIndex = @"231";
+        public const string largeWordsOutputFound = @"""queues""";
+        public const string largeTextOutputNames = @"""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""Random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""random"", ""eyisi""";
+        public const string largeTextOutputMatchIndex = @"77, 106, 158, 265, 313, 392, 632, 1158, 1447, 1564, 1725, 2026, 2254, 2414, 2732, 5657, 6665, 7316, 8219, 8255, 8477, 8538, 8782, 11759";
+        public const string largeTextOutputFound = @"""random"",""eyisi""";
+        public const string largeNumWordsOutputNames = @"""book"", ""book"", ""book"", ""test"", ""test"", ""page"", ""manual"", ""young"", ""paper"", ""paper"", ""word"", ""walk"", ""look"", ""surprise"", ""sip"", ""challenge"", ""doll"", ""reaction"", ""fish"", ""need"", ""need"", ""need"", ""need"", ""exercise"", ""letter"", ""stay"", ""promotion"", ""writer"", ""writer"", ""writer"", ""writer"", ""writer"", ""enjoy"", ""see"", ""see"", ""see"", ""see"", ""see"", ""see"", ""see"", ""old"", ""fine"", ""post"", ""block"", ""block"", ""block"", ""real"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""sentence"", ""project"", ""project"", ""project"", ""cut"", ""memory"", ""bird"", ""try"", ""try"", ""buy"", ""buy"", ""break"", ""possible"", ""red"", ""party"", ""home"", ""product"", ""hear"", ""proud"", ""brown"", ""night"", ""begin"", ""begin"", ""begin"", ""ice cream"", ""house"", ""fence"", ""Rock"", ""piece"", ""pot"", ""useful"", ""information"", ""allow"", ""ice"", ""common"", ""subject"", ""dark"", ""glass"", ""frame"", ""time"", ""time"", ""time"", ""game"", ""method"", ""method"", ""course"", ""floor"", ""automatic"", ""ruin"", ""brainstorm"", ""day"", ""day"", ""day"", ""move"", ""high"", ""high"", ""get"", ""get"", ""get"", ""get"", ""get"", ""technique"", ""similar"", ""likely"", ""movie"", ""long"", ""long"", ""cream"", ""hand"", ""hand"", ""list"", ""list"", ""list""";
+        public const string largeNumWordsOutputMatchIndex = "4140, 4236, 4985, 5831, 7204, 23, 8689, 3268, 5749, 8757, 113, 7744, 1871, 1981, 10817, 800, 3008, 2083, 4636, 297, 3502, 4374, 5181, 1391, 3951, 7279, 6360, 526, 613, 875, 1093, 8629, 9086, 1192, 2066, 2397, 2467, 4225, 4723, 6635, 5221, 6942, 2189, 1003, 1149, 1339, 7977, 84, 165, 399, 480, 557, 639, 694, 931, 1165, 1307, 1454, 1732, 1831, 2033, 2261, 2739, 7323, 8226, 8484, 8944, 9042, 1200, 1850, 2498, 8596, 5842, 4624, 2386, 4798, 5099, 6502, 1329, 2551, 5107, 5209, 7695, 1714, 7529, 7573, 6204, 3080, 709, 1418, 1536, 4052, 3401, 6648, 5319, 5163, 9657, 2541, 6564, 1178, 4052, 672, 1114, 4949, 4926, 7815, 2971, 4731, 6011, 12232, 8522, 8874, 2363, 7856, 8892, 5036, 8290, 1505, 5051, 6760, 2133, 5344, 7605, 422, 1292, 1403, 4704, 5070, 8603, 8858, 35, 7419, 3124, 3946, 4056, 6294, 8403, 249, 5649, 8415";
+        public const string largeNumWordsOutputFound = @"""book"",""test"",""page"",""manual"",""young"",""paper"",""word"",""walk"",""look"",""surprise"",""sip"",""challenge"",""doll"",""reaction"",""fish"",""need"",""exercise"",""letter"",""stay"",""promotion"",""writer"",""enjoy"",""see"",""old"",""fine"",""post"",""block"",""real"",""sentence"",""project"",""cut"",""memory"",""bird"",""try"",""buy"",""break"",""possible"",""red"",""party"",""home"",""product"",""hear"",""proud"",""brown"",""night"",""begin"",""ice cream"",""house"",""fence"",""rock"",""piece"",""pot"",""useful"",""information"",""allow"",""ice"",""common"",""subject"",""dark"",""glass"",""frame"",""time"",""game"",""method"",""course"",""floor"",""automatic"",""ruin"",""brainstorm"",""day"",""move"",""high"",""get"",""technique"",""similar"",""likely"",""movie"",""long"",""cream"",""hand"",""list""";
 
-        public const string largeTextQuickResultExpectedOutput = @"77, -1, -1, 11759";
-        public const string largeWordsQuickResultExpectedOutput = @"-1, -1, 231";
-        public const string largeNumWordsQuickResultExpectedOutput = @"-1, -1, -1, -1, -1, -1, 4140, -1, 5831, -1, -1, -1, -1, -1, -1, -1, -1, -1, 23, 8689, -1, -1, -1, -1, -1, -1, 3268, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5309, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1930, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 8186, 6069, -1, -1, -1, -1, -1, -1, -1, -1, 5749, -1, -1, -1, -1, -1, -1, 7396, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 113, -1, -1, -1, 7744, -1, -1, -1, -1, -1, 1871, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1981, -1, -1, -1, -1, 7786, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 10817, -1, 800, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3008, -1, -1, -1, -1, -1, -1, -1, 2083, -1, -1, 4636, -1, -1, -1, -1, -1, 10872, -1, -1, -1, -1, -1, -1, 297, -1, -1, -1, 1391, -1, -1, -1, -1, -1, -1, -1, 3951, -1, -1, -1, 9242, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7279, 6360, -1, -1, -1, 10046, -1, -1, 4562, -1, -1, 5463, -1, -1, -1, -1, -1, -1, -1, 381, -1, 9086, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1192, -1, -1, -1, -1, -1, 3306, -1, -1, -1, -1, 2902, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6942, -1, -1, -1, 2189, -1, 1003, -1, -1, -1, -1, -1, 3571, -1, -1, -1, -1, -1, -1, -1, -1, 84, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1200, -1, -1, -1, -1, -1, 8290, -1, -1, 5976, -1, -1, 8596, 5842, -1, -1, 4624, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1656, -1, -1, -1, -1, -1, 5677, -1, -1, -1, -1, 5099, -1, -1, -1, -1, 1329, -1, -1, -1, -1, -1, -1, -1, -1, 6032, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 2551, -1, -1, -1, -1, -1, 5107, 5944, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5209, -1, -1, -1, -1, 7695, -1, -1, 1714, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6005, -1, -1, -1, 7529, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7573, -1, -1, -1, -1, -1, -1, 6204, 3080, -1, -1, -1, -1, 6780, -1, -1, -1, -1, -1, -1, -1, -1, 709, 4052, -1, -1, -1, -1, 3401, -1, -1, -1, 6648, -1, -1, 5319, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5163, -1, -1, -1, -1, -1, -1, -1, 9657, -1, -1, -1, -1, -1, 3163, -1, -1, 2541, -1, -1, 6564, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1025, -1, -1, -1, -1, -1, -1, -1, -1, 7117, -1, -1, -1, -1, -1, -1, -1, -1, 4551, -1, -1, 1178, -1, -1, -1, -1, -1, 4052, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 672, 1114, -1, -1, -1, -1, 1930, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4949, 4926, 6320, -1, -1, -1, -1, -1, 7815, -1, -1, -1, -1, -1, -1, 2971, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6917, -1, -1, -1, -1, 12232, -1, -1, -1, -1, -1, -1, -1, 8522, -1, -1, -1, 2363, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7856, -1, 3738, -1, -1, -1, 8833, 8892, -1, -1, -1, -1, 5036, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 8290, -1, 8990, 1505, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 2133, -1, 5344, -1, -1, -1, -1, -1, -1, 515, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 422, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 8603, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 8858, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 35, -1, 7419, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 5726, -1, -1, -1, 5691, -1, -1, -1, 3124, -1, -1, -1, -1, -1, -1, -1, -1, 4056, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3099, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 11826, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3174, -1, -1, -1, -1, -1, -1, -1, -1, 249";
-
-
-        public const string missingWordsExpectedResponse = "The request schema does not match expected schema. Could not find words array.";
-        public const string missingTextExpectedResponse = "The request schema does not match expected schema. Could not find text string.";
-        public const string outputCheckTest = @"{""values"":[#REPLACE ME#]}";
-        public const string outputElement = @"{""recordId"":""1"",""data"":[#REPLACE ME#]}";
-        public const string outputValue = @"{""name"":#REPLACE ME#,""matchIndex"":#NUMBER#}";
+        public const string missingWordsExpectedResponse = @" - Error processing the request record : System.Collections.Generic.KeyNotFoundException: The given key 'words' was not present in the dictionary.
+   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch.CustomEntitySearch.<>c__DisplayClass1_0.<Run>b__0(WebApiRequestRecord inRecord, WebApiResponseRecord outRecord) in C:\Users\t-neja\azure-search-power-skills\Text\CustomEntitySearch\CustomEntitySearch.cs:line 55
+   at AzureCognitiveSearch.PowerSkills.Common.WebApiSkillHelpers.ProcessRequestRecords(String functionName, IEnumerable`1 requestRecords, Func`3 processRecord) in C:\Users\t-neja\azure-search-power-skills\WebAPISkillHelper.cs:line 33";
+        public const string missingTextExpectedResponse = @" - Error processing the request record : System.Collections.Generic.KeyNotFoundException: The given key 'text' was not present in the dictionary.
+   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch.CustomEntitySearch.<>c__DisplayClass1_0.<Run>b__0(WebApiRequestRecord inRecord, WebApiResponseRecord outRecord) in C:\Users\t-neja\azure-search-power-skills\Text\CustomEntitySearch\CustomEntitySearch.cs:line 54
+   at AzureCognitiveSearch.PowerSkills.Common.WebApiSkillHelpers.ProcessRequestRecords(String functionName, IEnumerable`1 requestRecords, Func`3 processRecord) in C:\Users\t-neja\azure-search-power-skills\WebAPISkillHelper.cs:line 33";
+        public const string outputCheckTest = @"{""Values"":[#REPLACE ME#]}";
+        public const string outputElement = @"{""RecordId"":""1"",""Data"":{""Entities"":[#REPLACE ME#],""EntitiesFound"":[#INSERT WORDS#]},""Errors"":[],""Warnings"":[]}";
+        public const string outputValue = @"{""Name"":#REPLACE ME#,""MatchIndex"":#NUMBER#}";
         public const string inputCheckTest = @"{""values"":[#REPLACE ME#]}";
-        public const string inputElement = @"{""recordId"":""1"",""data"":{""text"":#REPLACE ME#,""words"":[#INSERT WORDS#],""languageCode"": ""en""}}";
+        public const string inputElement = @"{""recordId"":""1"",""data"":{""text"":#REPLACE ME#,""words"":[#INSERT WORDS#]}}";
 
         public const int numDocs = 2300;
         public const string largestText =
@@ -205,10 +222,10 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                 return inputCheckTest.Replace("#REPLACE ME#", entitiesFound);
             }
         }
-        public static string GetOutput(string words, string numbers, int numDocs = 0)
+        public static string GetOutput(string nameEntities, string matchEntities, string foundEntities, int numDocs = 0)
         {
-            string[] nameReplace = words.Split(", ");
-            string[] matchReplace = numbers.Split(", ");
+            string[] nameReplace = nameEntities.Split(", ", StringSplitOptions.RemoveEmptyEntries);
+            string[] matchReplace = matchEntities.Split(", ", StringSplitOptions.RemoveEmptyEntries);
             string entities = "";
             for (int i = 0; i < nameReplace.Length; i++)
             {
@@ -216,11 +233,16 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                 temp = temp.Replace("#NUMBER#", matchReplace[i]);
                 entities += temp + ",";
             }
-            entities = entities.Remove(entities.Length - 1);
+
+            if (nameReplace.Length > 0)
+            {
+                entities = entities.Remove(entities.Length - 1);
+            }
+            
             
             if (numDocs <= 0)
             {
-                string oneEntity = outputElement.Replace("#REPLACE ME#", entities);
+                string oneEntity = outputElement.Replace("#REPLACE ME#", entities).Replace("#INSERT WORDS#", foundEntities);
                 return outputCheckTest.Replace("#REPLACE ME#", oneEntity);
             }
             else
@@ -228,11 +250,25 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                 string allInputEntityElements = "";
                 for (int j = 0; j < TestData.numDocs; j++)
                 {
-                    allInputEntityElements += TestData.outputElement.Replace("#REPLACE ME#", entities) + ",";
+                    allInputEntityElements += TestData.outputElement.Replace("#REPLACE ME#", entities).Replace("#INSERT WORDS#", foundEntities) + ",";
                 }
                 allInputEntityElements = allInputEntityElements.Remove(allInputEntityElements.Length - 1);
                 return outputCheckTest.Replace("#REPLACE ME#", allInputEntityElements);
             }
+        }
+
+        public static async Task<WebApiSkillResponse> GeneratePayloadRequest(String inputText)
+        {
+            var jsonContent = new StringContent(inputText, null, "application/json");
+            var request = new DefaultHttpRequest(new DefaultHttpContext())
+            {
+                ContentType = "application/json; charset=utf-8",
+                Body = await jsonContent.ReadAsStreamAsync(),
+                Method = "POST"
+            };
+            var response = (OkObjectResult)(await CustomEntitySearch.Run(
+                request, new LoggerFactory().CreateLogger("local"), new Microsoft.Azure.WebJobs.ExecutionContext()));
+            return (WebApiSkillResponse)response.Value;
         }
     }
 }

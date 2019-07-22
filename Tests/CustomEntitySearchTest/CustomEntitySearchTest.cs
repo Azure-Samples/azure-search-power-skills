@@ -1,167 +1,91 @@
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Threading.Tasks;
-using System.Linq;
 using AzureCognitiveSearch.PowerSkills.Common;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch;
 
 namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
 {
 
     [TestClass]
     public class CustomEntitySearchTest
-    {
-        private static readonly HttpClient client = new HttpClient();
-        
+    {        
         [TestMethod]
-        public void MissingWordsBadRequest()
+        public async Task MissingWordsBadRequest()
         {
             // tests against incorrect input (missing words)
-            string inputText = TestData.missingWordsBadRequestInput;
-            var jsonContent = new StringContent(inputText, null, "application/json");
-            HttpResponseMessage response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
-            Assert.AreEqual("Bad Request", response.ReasonPhrase, false);
-            Assert.AreEqual(TestData.missingWordsExpectedResponse, responseString, false);
+            var outputContent = await TestData.GeneratePayloadRequest(TestData.missingWordsBadRequestInput);
+            Assert.AreEqual(TestData.missingWordsExpectedResponse, outputContent.Values[0].Errors[0].Message, false);
         }
 
         [TestMethod]
-        public void MissingTextBadRequest()
+        public async Task MissingTextBadRequest()
         {
             // tests against incorrect input (missing text)
-            string missingTextPayload = TestData.missingTextBadRequestInput;
-            var jsonContent = new StringContent(missingTextPayload, null, "application/json");
-            HttpResponseMessage response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
-            Assert.AreEqual("Bad Request", response.ReasonPhrase, false);
-            Assert.AreEqual(TestData.missingTextExpectedResponse, responseString, false);
+            var outputContent = await TestData.GeneratePayloadRequest(TestData.missingTextBadRequestInput);
+            Assert.AreEqual(TestData.missingTextExpectedResponse, outputContent.Values[0].Errors[0].Message, false);
         }
 
         [TestMethod]
-        public void EmptyTextWordsNotFound()
+        public async Task EmptyTextWordsNotFound()
         {
             // tests against empty string text
             string emptyText = TestData.GetPayload(@"""""", TestData.emptyTextWordsNotFoundInput);
-            var jsonContent = new StringContent(emptyText, null, "application/json");
-            HttpResponseMessage response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
-            var output = new WebApiResponseRecord();
-            try
-            {
-                 output = JsonConvert.DeserializeObject<WebApiResponseRecord>(responseString);
-            }
-            catch
-            {
-                Assert.Fail("Skill failed to handle an empty test. Errored out.");
-            }
-            string checkEmptyTextWordsNotFound = TestData.GetOutput(TestData.emptyTextWordsNotFoundInput, @"-1");
-            Assert.AreEqual(checkEmptyTextWordsNotFound, responseString, false);
+            var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(emptyText));
+            var checkEmptyTextWordsNotFound = TestData.GetOutput("", "", "");
+            Assert.AreEqual(checkEmptyTextWordsNotFound, outputContent, false);
         }
 
         [TestMethod]
-        public void EmptyWordsEmptyEntities()
+        public async Task EmptyWordsEmptyEntities()
         {
             //tests against empty string words
             string emptyWords = TestData.GetPayload(TestData.emptyWordsEmptyEntitiesInput, @"""""");
-            var jsonContent = new StringContent(emptyWords, null, "application/json");
-            HttpResponseMessage response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
-            var output = new WebApiResponseRecord();
-            try
-            {
-                output = JsonConvert.DeserializeObject<WebApiResponseRecord>(responseString);
-            }
-            catch
-            {
-                Assert.Fail("Skill failed to handle an empty test. Errored out.");
-            }
-            string checkEmptyWordsEmptyEntities = TestData.GetOutput(@"""""", @"-1");
-            Assert.AreEqual(checkEmptyWordsEmptyEntities, responseString, false);
+            var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(emptyWords));
+            string checkEmptyWordsEmptyEntities = TestData.GetOutput("", "","");
+            Assert.AreEqual(checkEmptyWordsEmptyEntities, outputContent, false);
         }
 
         [TestMethod]
-        public void LargeTextQuickResult()
+        public async Task LargeTextQuickResult()
         {
             // tests against large text string
             string largeText = TestData.GetPayload(TestData.largestText, TestData.largeTextQuickResultInputWords);
-            var jsonContent = new StringContent(largeText, null, "application/json");
-            HttpResponseMessage response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
-            var output = new WebApiResponseRecord();
-            try
-            {
-                output = JsonConvert.DeserializeObject<WebApiResponseRecord>(responseString);
-            }
-            catch
-            {
-                Assert.Fail("Skill failed to handle an empty test. Errored out.");
-            }
-            string checkLargeTextQuickResult = TestData.GetOutput(TestData.largeTextQuickResultInputWords, TestData.largeTextQuickResultExpectedOutput);
-            Assert.AreEqual(checkLargeTextQuickResult, responseString, false);
+            var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(largeText));
+            string checkLargeTextQuickResult = TestData.GetOutput(TestData.largeTextOutputNames, TestData.largeTextOutputMatchIndex, TestData.largeTextOutputFound);
+            Assert.AreEqual(checkLargeTextQuickResult, outputContent, false);
         }
 
         [TestMethod]
-        public void LargeWordsQuickResult()
+        public async Task LargeWordsQuickResult()
         {
             // tests against large pattern in words array
             string largeWord = TestData.GetPayload(TestData.largeWordsQuickResultInputText, TestData.largeWordsQuickResultInputWords);
-            var jsonContent = new StringContent(largeWord, null, "application/json");
-            HttpResponseMessage response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
-            var output = new WebApiResponseRecord();
-            try
-            {
-                output = JsonConvert.DeserializeObject<WebApiResponseRecord>(responseString);
-            }
-            catch
-            {
-                Assert.Fail("Skill failed to handle an empty test. Errored out.");
-            }
-            string checkLargeWordsQuickResult = TestData.GetOutput(TestData.largeWordsQuickResultInputWords, TestData.largeWordsQuickResultExpectedOutput);
-            Assert.AreEqual(checkLargeWordsQuickResult, responseString, false);
+            var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(largeWord));
+            string checkLargeWordsQuickResult = TestData.GetOutput(TestData.largeWordsOutputNames, TestData.largeWordsOutputMatchIndex, TestData.largeWordsOutputFound);
+            Assert.AreEqual(checkLargeWordsQuickResult, outputContent, false);
         }
 
         [TestMethod]
-        public void LargeDatasetQuickResult()
+        public async Task LargeDatasetQuickResult()
         {
             //tests against a large number of documents inputted (loadtest)
-            string content = TestData.GetPayload(TestData.largestText, TestData.largeTextQuickResultInputWords, TestData.numDocs);
-            var jsonContent = new StringContent(content, null, "application/json");
-            HttpResponseMessage response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
-            var output = new WebApiResponseRecord();
-            try
-            {
-                output = JsonConvert.DeserializeObject<WebApiResponseRecord>(responseString);
-            }
-            catch
-            {
-                Assert.Fail("Skill failed to handle an empty test. Errored out.");
-            }
-            string checkLargeDatasetQuickResult = TestData.GetOutput(TestData.largeTextQuickResultInputWords, TestData.largeTextQuickResultExpectedOutput, TestData.numDocs);
-            Assert.AreEqual(checkLargeDatasetQuickResult, responseString, false);
+            string largeDataset = TestData.GetPayload(TestData.largestText, TestData.largeTextQuickResultInputWords, TestData.numDocs);
+            var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(largeDataset));
+            string checkLargeDatasetQuickResult = TestData.GetOutput(TestData.largeTextOutputNames, TestData.largeTextOutputMatchIndex, TestData.largeTextOutputFound, TestData.numDocs);
+            Assert.AreEqual(checkLargeDatasetQuickResult, outputContent, false);
         }
 
         [TestMethod]
-        public void LargeNumWordsQuickResult()
+        public async Task LargeNumWordsQuickResult()
         {
             // tests against a large number of patterns in words array
             string largeNumWords = TestData.GetPayload(TestData.largestText, TestData.largestWords);
-            var jsonContent = new StringContent(largeNumWords, null, "application/json");
-            HttpResponseMessage response = client.PostAsync(TestData.hostAddress, jsonContent).Result;
-            string responseString = response.Content.ReadAsStringAsync().Result;
-            var output = new WebApiResponseRecord();
-            try
-            {
-                output = JsonConvert.DeserializeObject<WebApiResponseRecord>(responseString);
-            }
-            catch
-            {
-                Assert.Fail("Skill failed to handle an empty test. Errored out.");
-            }
-            string checkLargeNumWordsQuickResult = TestData.GetOutput(TestData.largestWords, TestData.largeNumWordsQuickResultExpectedOutput);
-            Assert.AreEqual(checkLargeNumWordsQuickResult, responseString, false);
-        } 
+            var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(largeNumWords));
+            string checkLargeNumWordsQuickResult = TestData.GetOutput(TestData.largeNumWordsOutputNames, TestData.largeNumWordsOutputMatchIndex, TestData.largeNumWordsOutputFound);
+            Assert.AreEqual(checkLargeNumWordsQuickResult, outputContent, false);
+        }
     }
 }
