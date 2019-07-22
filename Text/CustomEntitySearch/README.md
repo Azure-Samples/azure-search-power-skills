@@ -26,7 +26,7 @@ This function requires Latin-based text (as seen in the sample document provided
 ## Sample Config File
 ```json
 {
-	["foo1", "foo2"]
+    ["foo1", "foo2"]
 }
 ```
 
@@ -68,7 +68,7 @@ This function requires Latin-based text (as seen in the sample document provided
         {
             "recordId": "1",
             "data": {
-				"entitiesFound": ["learn", "app"],
+                "entitiesFound": ["learn", "app"],
                 "entities": [
                     {
                         "name": "learn",
@@ -85,7 +85,7 @@ This function requires Latin-based text (as seen in the sample document provided
             "recordId": "foo1",
             "data": 
             {
-				"entitiesFound": [],
+                "entitiesFound": [],
                 "entities": []
             }
         }
@@ -120,7 +120,7 @@ Here's a sample skill definition for this example (inputs and outputs should be 
             "name": "entitiesFound",
             "targetName": "entitiesFound"
         },
-		{
+        {
             "name": "entities",
             "targetName": "entities"
         }
