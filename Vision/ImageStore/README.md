@@ -15,8 +15,6 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 These custom skills store or retrieve a [base64](https://en.wikipedia.org/wiki/Base64)-encoded image to or from blob storage. This is useful to make images extracted from a cognitive search pipeline's data source available downstream as both blob URIs or raw base64 data, and to feed those into other skills.
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FImageStore%2Fazuredeploy.json)
-
 ## Requirements
 
 In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to [Azure blob storage](https://azure.microsoft.com/en-us/services/storage/blobs/).
@@ -26,6 +24,10 @@ In addition to the common requirements described in [the root `README.md` file](
 This function requires a `BLOB_STORAGE_CONNECTION_STRING` setting set to a valid Azure blob storage connection string, and a `BLOB_STORAGE_CONTAINER_NAME` setting set to the name of the blob storage container under which to save the new images.
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
+
+## Deployment
+
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FImageStore%2Fazuredeploy.json)
 
 ## `image-store` function
 
