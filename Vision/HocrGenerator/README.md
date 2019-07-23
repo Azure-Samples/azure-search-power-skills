@@ -3,6 +3,7 @@ page_type: sample
 languages:
 - csharp
 products:
+- dotnet
 - azure
 - azure-cognitive-services
 urlFragment: azure-hocr-generator-sample
@@ -13,9 +14,7 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 # hOCR Generator
 
-This custom skill generates an [hOCR](https://en.wikipedia.org/wiki/HOCR) document from the output of [the OCR skill](https://docs.microsoft.com/en-us/azure/search/cognitive-search-skill-ocr).
-
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FImageStore%2Fazuredeploy.json)
+This custom skill generates an [hOCR](https://en.wikipedia.org/wiki/HOCR) document from the output of [the OCR skill](https://docs.microsoft.com/azure/search/cognitive-search-skill-ocr).
 
 ## Requirements
 
@@ -24,6 +23,10 @@ This skill has no additional requirements than the ones described in [the root `
 ## Settings
 
 This function doesn't require any application settings.
+
+## Deployment
+
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FImageStore%2Fazuredeploy.json)
 
 ## Sample Input:
 
