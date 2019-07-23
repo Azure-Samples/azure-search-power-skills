@@ -18,7 +18,7 @@ This custom skill generates an [hOCR](https://en.wikipedia.org/wiki/HOCR) docume
 
 ## Requirements
 
-This skill has no additional requirements than the ones described in [the root `README.md` file](../../README.md).
+This skill has no additional requirements than the ones described in [the root `README.md` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/README.md).
 
 ## Settings
 
