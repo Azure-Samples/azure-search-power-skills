@@ -14,15 +14,13 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
 {
     public class TestData
     {
-        public const string hostAddress = "http://localhost:7071/api/CustomEntitySearch";
         public const string missingWordsBadRequestInput = @"{
     ""values"": [
         {
             ""recordId"": ""1"",
             ""data"":
             {
-                ""text"":  ""Pablo Picasso"",
-                ""languageCode"": ""en""
+                ""text"":  ""Pablo Picasso""
             }
         }
     ]
@@ -35,8 +33,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
             {
                 ""words"":  [
                     ""will you search""
-                ],
-                ""languageCode"": ""en""
+                ]
             }
         }
     ]

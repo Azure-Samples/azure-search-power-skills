@@ -68,15 +68,15 @@ This function requires Latin-based text (as seen in the sample document provided
         {
             "recordId": "1",
             "data": {
-                "entitiesFound": ["learn", "app"],
-                "entities": [
+                "EntitiesFound": ["learn", "app"],
+                "Entities": [
                     {
-                        "name": "learn",
+                        "Name": "Learn",
                         "matchIndex": 1
                     },
                     {
-                        "name": "app",
-                        "matchIndex": 45
+                        "Name": "app",
+                        "MatchIndex": 45
                     }
                 ]
             }
@@ -85,8 +85,8 @@ This function requires Latin-based text (as seen in the sample document provided
             "recordId": "foo1",
             "data": 
             {
-                "entitiesFound": [],
-                "entities": []
+                "EntitiesFound": [],
+                "Entities": []
             }
         }
     ]
@@ -108,7 +108,7 @@ Here's a sample skill definition for this example (inputs and outputs should be 
     "inputs": [
         {
             "name": "text",
-            "source": "/document/content/*"
+            "source": "/document/content/"
         },
         {
             "name": "words",
@@ -117,12 +117,12 @@ Here's a sample skill definition for this example (inputs and outputs should be 
     ],
     "outputs": [
         {
-            "name": "entitiesFound",
-            "targetName": "entitiesFound"
+            "name": "EntitiesFound",
+            "targetName": "EntitiesFound"
         },
         {
-            "name": "entities",
-            "targetName": "entities"
+            "name": "Entities",
+            "targetName": "Entities"
         }
     ]
 }
