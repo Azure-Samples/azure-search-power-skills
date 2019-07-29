@@ -4,7 +4,7 @@ A collection of useful functions to be deployed as custom skills for Azure Cogni
 
 ## Features
 
-This project framework provides the following functions:
+This project provides the following custom skills:
 
 * [**HelloWorld**](Template/HelloWorld/README.md): a minimal skill that can be used as a starting point or template for your own skills.
 * [**GeoPointFromName**](Geo/GeoPointFromName/README.md): retrieves coordinates from place names and addresses.
@@ -13,6 +13,7 @@ This project framework provides the following functions:
 * [**ImageStore**](Vision/ImageStore/README.md): stores and fetches base64-encoded images to and from blob storage.
 * [**HocrGenerator**](Vision/HocrGenerator/README.md): transforms the result of OCR into the hOCR format.
 * [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
+* [**CustomEntitySearch**](/Text/CustomEntitySearch): finds custom entity names in text.
 
 ## Getting Started
 
