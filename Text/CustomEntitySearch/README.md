@@ -25,9 +25,7 @@ This function requires Latin-based text (as seen in the sample document provided
 
 ## Sample Config File
 ```json
-{
     ["foo1", "foo2"]
-}
 ```
 
 ## Sample Input:

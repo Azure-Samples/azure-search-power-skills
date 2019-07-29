@@ -57,9 +57,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     {
                         words = new WordLinker(executionContext.FunctionAppDirectory).Words;
                     }
-
-                    var entities = new List<Entity>();
-                    var entitiesFound = new List<string>();
+                    
+                    var entities = new HashSet<Entity>();
+                    var entitiesFound = new HashSet<string>();
                     if (!string.IsNullOrWhiteSpace(text))
                     {
                         foreach (string word in words)
