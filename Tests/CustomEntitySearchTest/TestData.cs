@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -14,6 +15,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
 {
     public class TestData
     {
+        public static Dictionary<string, string[]> supportedTextandWords = new Dictionary<string, string[]>();
         public const string missingWordsBadRequestInput = @"{
     ""values"": [
         {
@@ -266,6 +268,185 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
             var response = (OkObjectResult)(await CustomEntitySearch.Run(
                 request, new LoggerFactory().CreateLogger("local"), new Microsoft.Azure.WebJobs.ExecutionContext()));
             return (WebApiSkillResponse)response.Value;
+        }
+        // greek, thai, hebrew, turkish (DONE), czech, hungarian, arabic, japanese, finnish, danish, norwegian, korean, polish, russian, swedish, japanese (again??), 
+        // italian, portuguese, french, spanish, dutch, german, english
+        public static void supportedTextandWordsTempInitializer()
+        {
+            supportedTextandWords.Add("Greek", new string[]
+                {
+                    @"""Tου Αντώνη Ρέλλα - Θα πρέπει να γίνει κατανοητό ότι οι αποκλεισμοί των αναπήρων εκκινούν, έτσι κι αλλιώς, από τις θεσμοθετημένες πρακτικές του κράτους και τα εμπόδια στο δομημένο περιβάλλον. Πώς, λοιπόν, η κυβέρνηση θα κάνει πράξη την ανεξάρτητη διαβίωση""",
+                    @"""έτσι""",
+                    @"""έτσι""",
+                    "90",
+                    @"""έτσι"""
+                });
+            supportedTextandWords.Add("Thai", new string[]
+                {
+                    @"""เพื่อนสนิท ยังบอกอีกว่า ก่อนจะเสียชีวิต ภรรยาของครูประสิทธิ์ ได้เปิดไลน์ส่วนตัวที่ครูประสิทธิ์ ส่งถึงภรรยา มาให้ตนอ่าน พบข้อความว่า ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดท้าย เพราะไม่รู้ว่าจะอยู่ต่อไปได้อีกกี่วัน ซึ่งภรรยาก็บอกว่า ให้กลับมาทานข้าวด้วยกันที่บ้าน แต่ยังไม่ทันได้กลับบ้าน ตำรวจโทรมาบอกว่า พบศพครูประสิทธิ์ตายในรีสอร์ต ภรรยา และลูกๆ ของครู จึงเดินทางไปดู ก็พบว่าเสียชีวิตพร้อมเด็ก 14 ปี ภรรยาและลูกๆ ไม่มีใครพูดอะไร ก่อนจะดำเนินการขอรับศพครู กลับมาที่บ้าน เพื่อประกอบพิธีทางศาสนาและจะมีการฌาปนกิจศพในวันเสาร์ที่จะถึงนี้""",
+                    @"""ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดท้าย""",
+                    @"""ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดท้าย""",
+                    "132",
+                    @"""ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดท้าย"""
+                });
+            supportedTextandWords.Add("Hebrew", new string[]
+                {
+                    @"""מורה לספרות נחשדת בשמאלנות בעיצומה של מלחמת צוק איתן. זהו הנושא הרשמי של בשבח המלחמה. אבל אין זה ספר של תקופה אלא ספר של אמן, סטייליסט מלא תנופה ותעופה. ספרו מחליק בצד התקופה וחותר יותר אל שורשם האפל של הדברים""",
+                    @"""ספר""",
+                    @"""ספר"", ""ספר""",
+                    "97, 114",
+                    @"""ספר"""
+                });
+            supportedTextandWords.Add("Turkish", new string[]
+                {
+                    @"""Brezilya Serie A ekiplerinden Palmeiras, Beşiktaş'ın da transfer gündeminde yer alan Vitor Hugo'yu kadrosuna kattığını açıkladı""",
+                    @"""Vitor""",
+                    @"""Vitor""",
+                    "85",
+                    @"""Vitor"""
+                });
+            supportedTextandWords.Add("Czech", new string[]
+                {
+                    @"""Po vyplnění kontaktního formuláře na e-shopu přijde jen automatická odpověď. Žena na zákaznické lince řekne, že s prodejcem nemá nic společného a že infolinka je i pro další e-shopy se „zázračnými“ léky. Pak přepojí na reklamační oddělení, z něhož se vyklube jen další automat.""",
+                    @"""Žena""",
+                    @"""Žena""",
+                    "77",
+                    @"""Žena"""
+                });
+            supportedTextandWords.Add("Hungarian", new string[]
+                {
+                    @"""Az Aquamant megformáló hollywoodi színész, aki a nyáron több hétig Magyarországon forgatott, egyik legkedvesebb kollégájával találkozott.""",
+                    @"""Magyarországon""",
+                    @"""Magyarországon""",
+                    "67",
+                    @"""Magyarországon"""
+                });
+            supportedTextandWords.Add("Arabic", new string[]
+                {
+                    @"""الأفغانية كابول، ومنطقة بورنو بشمال شرق نيجيريا، وأدت لسقوط عشرات القتلى والجرحى.
+
+وقدم المصدر العزاء والمواساة لذوي الضحايا ولحكومتي وشعبي جمهورية أفغانستان الإسلامية وجمهورية نيجيريا الاتحادية """,
+                    @"""العزاء""",
+                    @"""العزاء""",
+                    "97",
+                    @"""العزاء"""
+                });
+            supportedTextandWords.Add("Japanese", new string[]
+                {
+                    @"""阪急電鉄と阪神電鉄は大阪の玄関口である「梅田駅」を「大阪梅田駅」にそれぞれ変更することを決めた。関係者によると、変更は１０月１日から。外国人観光客の利用が増える中、駅が大阪市の中心部にあることをわかりやすくすることが狙いだという。阪急電鉄は同じ狙いで、京都市中心部の河原町駅についても１０月から「京都河原町駅」に変更する。""",
+                    @"""を""",
+                    @"""を""",
+                    "24",
+                    @"""を"""
+                });
+            supportedTextandWords.Add("Finnish", new string[]
+                {
+                    @"""Kuusi vuotta taksia ajanut Mika Lindberg ei enää aja mielellään Helsinki-Vantaan lentoasemalle. ”Kuskit kiukuttelevat siellä”, hän sanoo. Kiukuttelun syiksi Lindberg mainitsee lentokentän liikennettä sekoittavan terminaalityömaan ja koko taksialaa hämmentäneen taksiuudistuksen.""",
+                    @"""lentoasemalle""",
+                    @"""lentoasemalle""",
+                    "81",
+                    @"""lentoasemalle"""
+                });
+            supportedTextandWords.Add("Danish", new string[]
+                {
+                    @"""Cubanere kan fra i dag tilgå internettet lovligt fra deres nye hjem. Sådan lyder det i en lov, der blev vedtaget i maj, og netop er trådt i kraft.""",
+                    @"""hjem""",
+                    @"""hjem""",
+                    "63",
+                    @"""hjem"""
+                });
+            supportedTextandWords.Add("Norwegian", new string[]
+                {
+                    @"""I en uttalelse melder militæret at fem av de omkomne i styrten i landsbyen Mora Kalu utenfor Rawalpindi var soldater. Flyets to piloter er også bekreftet omkommet.""",
+                    @"""omkomne""",
+                    @"""omkomne""",
+                    "45",
+                    @"""omkomne"""
+                });
+            supportedTextandWords.Add("Korean", new string[]
+                {
+                    @"""왜 그리 내게 차가운가요
+사랑이 그렇게 쉽게
+변하는 거였나요
+내가 뭔가 잘못했나요
+그랬다면 미안합니다""",
+                    @"""나요""",
+                    @"",
+                    "",
+                    @""
+                });
+            supportedTextandWords.Add("Polish", new string[]
+                {
+                    @"""Na przełomie września i października 2017 roku w większości krajów Europy - m.in. w Niemczech, Austrii, Włoszech, Szwajcarii, Francji, Grecji, Norwegii, Rumunii, Bułgarii, a także w Polsce - zanotowano w powietrzu śladowe ilości radioaktywnego rutenu-106.""",
+                    @"""a""",
+                    @"""a""",
+                    "172",
+                    @"""a"""
+                });
+            supportedTextandWords.Add("Russian", new string[]
+                {
+                    @"""Неадекватный поклонник разгромил машину культовой рок-исполнительницы Земфиры в центре Москвы. Вандал обрушился на «Мерседес» артистки, разбил стёкла и значительно повредил кузов авто. Безумец пояснил правоохранителям""",
+                    @"""в""",
+                    @"""в""",
+                    "78",
+                    @"""в"""
+                });
+            supportedTextandWords.Add("Swedish", new string[]
+                {
+                    @"""När den amerikanske rapartisten ASAP Rocky frihetsberövas i Stockholm, misstänkt för misshandel, väcker det starka reaktioner i USA.""",
+                    @"""misshandel""",
+                    @"""misshandel""",
+                    "85",
+                    @"""misshandel"""
+                });
+            supportedTextandWords.Add("Italian", new string[]
+                {
+                    @"""Nel governo la temperatura sale e non per il caldo. Nei rapporti tra Lega e 5Stelle - chiusa la finestra del voto a settembre - i rapporti sono diventati roventi.""",
+                    @"""roventi""",
+                    @"""roventi""",
+                    "154",
+                    @"""roventi"""
+                });
+            supportedTextandWords.Add("Portugese", new string[]
+                {
+                    @"""Discute com ex-patrão por salário de mil euros em atraso e acaba morto à pancada""",
+                    @"""salário""",
+                    @"""salário""",
+                    "26",
+                    @"""salário"""
+                });
+            supportedTextandWords.Add("French", new string[]
+                {
+                    @"""Le corps retrouvé lundi dans la Loire est «très probablement» celui du jeune Steve Maia Caniço, a indiqué à l'AFP une source proche du dossier. Cécile de Oliveira, avocate de la famille du jeune homme, a également indiqué qu'il s'agit «probablement» du corps de Steve sur BFMTV. Une autre source proche du dossier a affirmé dans la soirée que l'autopsie aurait lieu mardi, «à 10h30».""",
+                    @"""dossier""",
+                    @"""dossier"", ""dossier""",
+                    "135, 306",
+                    @"""dossier"""
+                });
+            supportedTextandWords.Add("Spanish", new string[]
+                {
+                    @"""Dieciséis de los fallecidos en las cinco horas que duró el suceso fueron decapitados y el resto murió asfixiado por el humo. Los reclusos patearon las cabezas cortadas, grabaron las imágenes y las difundieron por WhatsApp, según informa el digital Ponte. Las autoridades han detallado que dos funcionarios de prisiones fueron hechos rehenes, pero ya han sido liberados tras las negociaciones de las autoridades""",
+                    @"""liberados""",
+                    @"""liberados""",
+                    "359",
+                    @"""liberados"""
+                });
+            supportedTextandWords.Add("Dutch", new string[]
+                {
+                    @"""Nog enkele dagen en het veelbesproken boerkaverbod gaat in. Nikabdraagsters roepen om het hardst dat de overheid hun vrijheid aantast. De Rotterdamse Jamila (37) maakte echter kennis met de onvrijwillige kant van de sluier. In Pakistan dwong haar schoonfamilie haar om een boerka te dragen. Terug in Nederland wierp ze het ding af. Het stuk stof is niet het grootste probleem, vindt ze. """,
+                    @"""aantast""",
+                    @"""aantast""",
+                    "126",
+                    @"""aantast"""
+                });
+            supportedTextandWords.Add("German", new string[]
+                {
+                    @"""üngstes Beispiel ist die Festsetzung eines russischen Tankers im Gebiet Odessa. Das Schiff war nach ukrainischen Angaben im November an Russlands Blockade der Meerenge von Kertsch beteiligt, bei der drei ukrainische Marineschiffe aufgebracht wurden. Die 24 Ukrainer auf den drei Schiffen sind, trotz einer Anordnung des Internationalen Seegerichtshofs von Ende Mai, weiter in russischer Untersuchungshaft; Selenskyj will ihre Freilassung erreichen.""",
+                    @"""Untersuchungshaft""",
+                    @"""Untersuchungshaft""",
+                    "387",
+                    @"""Untersuchungshaft"""
+                });
         }
     }
 }

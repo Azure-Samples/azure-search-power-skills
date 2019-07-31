@@ -5,6 +5,8 @@ using AzureCognitiveSearch.PowerSkills.Common;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
+using System;
 
 namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
 {
@@ -86,6 +88,24 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
             var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(largeNumWords));
             string checkLargeNumWordsQuickResult = TestData.GetOutput(TestData.largeNumWordsOutputNames, TestData.largeNumWordsOutputMatchIndex, TestData.largeNumWordsOutputFound);
             Assert.AreEqual(checkLargeNumWordsQuickResult, outputContent, false);
+        }
+        // greek, thai, hebrew, turkish, czech, hungarian, arabic, japanese, finnish, danish, norwegian, korean, polish, russian, swedish, japanese (again??), 
+        // italian, portuguese, french, spanish, dutch, german, english
+        [TestMethod]
+        public async Task SupportAllOtherCurrentLanguages()
+        {
+            TestData.supportedTextandWordsTempInitializer();
+            Dictionary<string, string[]> supportedLangTextandWords = TestData.supportedTextandWords;
+            foreach (string key in supportedLangTextandWords.Keys)
+            {
+                Console.WriteLine("Testing language: {0}", key);
+                string[] currentLangTest = supportedLangTextandWords[key];
+                string tryCurrentLang = TestData.GetPayload(currentLangTest[0], currentLangTest[1]);
+                var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(tryCurrentLang));
+                string checkCurrentLang = TestData.GetOutput(currentLangTest[2], currentLangTest[3], currentLangTest[4]);
+                Assert.AreEqual(checkCurrentLang, outputContent);
+                Console.WriteLine("Passed Test in {0}", key);
+            }
         }
     }
 }
