@@ -14,6 +14,7 @@ This project provides the following custom skills:
 * [**HocrGenerator**](Vision/HocrGenerator/README.md): transforms the result of OCR into the hOCR format.
 * [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
 * [**CustomEntitySearch**](/Text/CustomEntitySearch): finds custom entity names in text.
+* [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
 
 ## Getting Started
 
