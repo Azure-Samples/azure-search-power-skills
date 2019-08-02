@@ -12,7 +12,7 @@ using AzureCognitiveSearch.PowerSkills.Common;
 
 namespace AzureCognitiveSearch.PowerSkills.Template.HelloWorld
 {
-    public static class Function1
+    public static class HelloWorld
     {
         [FunctionName("hello-world")]
         public static async Task<IActionResult> RunHelloWorld(
