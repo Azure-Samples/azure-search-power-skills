@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RootNamespace>AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest</RootNamespace>
+    <RootNamespace>AzureCognitiveSearch.PowerSkills.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
+    <AssemblyName>PowerSkillTests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +16,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Template\HelloWorld\HelloWorld.csproj" />
     <ProjectReference Include="..\..\Text\CustomEntitySearch\CustomEntitySearch.csproj" />
   </ItemGroup>
 </Project>

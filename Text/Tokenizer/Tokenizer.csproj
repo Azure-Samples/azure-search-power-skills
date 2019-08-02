@@ -18,6 +18,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../../*.cs" />
+    <ProjectReference Include="..\..\Common\Common.csproj" />
   </ItemGroup>
 </Project>
