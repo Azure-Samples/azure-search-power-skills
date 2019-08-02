@@ -1,4 +1,7 @@
-﻿using AzureCognitiveSearch.PowerSkills.Common;
+﻿// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.  
+
+using AzureCognitiveSearch.PowerSkills.Common;
 using AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
