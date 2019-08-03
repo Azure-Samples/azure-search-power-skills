@@ -5,9 +5,12 @@ using AzureCognitiveSearch.PowerSkills.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -19,6 +22,15 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
+
+        public static async Task<object> QuerySkill(
+            this Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> skillFunction,
+            object payload,
+            string outputPath)
+        {
+            WebApiSkillResponse skillOutput = await QueryFunction(BuildPayload(payload), skillFunction);
+            return skillOutput.Values[0].Data[outputPath];
+        }
 
         public static async Task<WebApiSkillResponse> QueryFunction(string inputText, Func<HttpRequest, Task<IActionResult>> function)
         {
@@ -32,6 +44,11 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
             var response = (OkObjectResult)(await function(request));
             return (WebApiSkillResponse)response.Value;
         }
+
+        public static async Task<string> QueryFunctionAndSerialize(
+            string inputText,
+            Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> function)
+            => await QueryFunctionAndSerialize(inputText, CurrySkillFunction(function));
 
         public static async Task<string> QueryFunctionAndSerialize(string inputText, Func<HttpRequest, Task<IActionResult>> function)
             => JsonConvert.SerializeObject(await QueryFunction(inputText, function), _jsonSettings);
@@ -50,5 +67,26 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
                     }
                 }
             }, _jsonSettings);
+
+        public static HttpResponseMessage RespondRequestWith(this HttpRequestMessage req, object responseBody)
+        {
+            req.Properties.Add(nameof(HttpContext), new DefaultHttpContext
+            {
+                RequestServices = new ServiceCollection()
+                .AddMvc()
+                .AddWebApiConventions()
+                .Services
+                .BuildServiceProvider()
+            });
+            return req.CreateResponse(HttpStatusCode.OK, responseBody);
+        }
+
+        public static Func<HttpRequest, Task<IActionResult>> CurrySkillFunction(Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> skillFunction)
+            => request => skillFunction(request, new LoggerFactory().CreateLogger("local"), new Microsoft.Azure.WebJobs.ExecutionContext());
+
+        private static async Task<WebApiSkillResponse> QueryFunction(
+            string inputText,
+            Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> function)
+            => await QueryFunction(inputText, CurrySkillFunction(function));
     }
 }

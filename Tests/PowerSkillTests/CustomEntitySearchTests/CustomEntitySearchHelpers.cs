@@ -5,7 +5,6 @@ using AzureCognitiveSearch.PowerSkills.Common;
 using AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
     public static class CustomEntitySearchHelpers
     {
         private static readonly Func<HttpRequest, Task<IActionResult>> _entitySearchFunction =
-            request => CustomEntitySearch.RunCustomEntitySearch(request, new LoggerFactory().CreateLogger("local"), new Microsoft.Azure.WebJobs.ExecutionContext());
+            Helpers.CurrySkillFunction(CustomEntitySearch.RunCustomEntitySearch);
 
         public static string BuildInput(string text, string[] words)
             => Helpers.BuildPayload(new
@@ -36,12 +35,6 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
                 EntitiesFound = entities
             });
 
-        public static async Task<string> QueryEntitySearchFunctionAndSerialize(string inputText)
-            => await Helpers.QueryFunctionAndSerialize(inputText, _entitySearchFunction);
-
-        public static async Task<WebApiSkillResponse> QueryEntitySearchFunction(string inputText)
-            => await Helpers.QueryFunction(inputText, _entitySearchFunction);
-
         public static async Task CallEntitySearchFunctionAndCheckResults(
             string[] expectedFoundEntities, string[] expectedMatches, int[] expectedMatchIndices,
             string text, string[] words)
@@ -51,5 +44,11 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
+
+        public static async Task<WebApiSkillResponse> QueryEntitySearchFunction(string inputText)
+            => await Helpers.QueryFunction(inputText, _entitySearchFunction);
+
+        private static async Task<string> QueryEntitySearchFunctionAndSerialize(string inputText)
+            => await Helpers.QueryFunctionAndSerialize(inputText, _entitySearchFunction);
     }
 }
