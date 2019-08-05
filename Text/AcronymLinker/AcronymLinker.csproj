@@ -17,14 +17,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../../*.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="acronyms.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="acronyms.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj" />
   </ItemGroup>
 </Project>

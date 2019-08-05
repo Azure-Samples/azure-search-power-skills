@@ -17,11 +17,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../../*.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="words.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj" />
   </ItemGroup>
 </Project>

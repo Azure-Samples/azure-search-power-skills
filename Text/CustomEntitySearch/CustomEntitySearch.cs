@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.  
+
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -9,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using AzureCognitiveSearch.PowerSkills.Common;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 
 // languages used for Azure Search with Text Analytics:
 // el, th, he, tr, cs, hu, ar, ja-jp, fi, da, no, ko, pl, ru, sv, ja, it, pt, fr, es, nl, de, en
@@ -27,7 +29,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
     /// </summary>
     public static class CustomEntitySearch
     {
-        private static int MaxRegexEvalTime = 1;
+        private static readonly int MaxRegexEvalTime = 1;
         /// <summary>
         /// We assert the following assumptions:
         /// 1. All text files are Latin based (i.e. no languageCode)
@@ -36,7 +38,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         /// </summary>
 
         [FunctionName("custom-search")]
-        public static async Task<IActionResult> Run(
+        public static async Task<IActionResult> RunCustomEntitySearch(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log, ExecutionContext executionContext)
         {
