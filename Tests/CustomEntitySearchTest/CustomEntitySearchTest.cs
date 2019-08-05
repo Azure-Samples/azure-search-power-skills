@@ -96,15 +96,13 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
         {
             TestData.supportedTextandWordsTempInitializer();
             Dictionary<string, string[]> supportedLangTextandWords = TestData.supportedTextandWords;
-            foreach (string key in supportedLangTextandWords.Keys)
+            foreach (string language in supportedLangTextandWords.Keys)
             {
-                Console.WriteLine("Testing language: {0}", key);
-                string[] currentLangTest = supportedLangTextandWords[key];
+                string[] currentLangTest = supportedLangTextandWords[language];
                 string tryCurrentLang = TestData.GetPayload(currentLangTest[0], currentLangTest[1]);
                 var outputContent = JsonConvert.SerializeObject(await TestData.GeneratePayloadRequest(tryCurrentLang));
                 string checkCurrentLang = TestData.GetOutput(currentLangTest[2], currentLangTest[3], currentLangTest[4]);
                 Assert.AreEqual(checkCurrentLang, outputContent);
-                Console.WriteLine("Passed Test in {0}", key);
             }
         }
     }
