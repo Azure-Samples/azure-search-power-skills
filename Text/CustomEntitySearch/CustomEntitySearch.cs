@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using AzureCognitiveSearch.PowerSkills.Common;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using System.Collections;
+using System.IO;
 
 // languages used for Azure Search with Text Analytics:
 // el, th, he, tr, cs, hu, ar, ja-jp, fi, da, no, ko, pl, ru, sv, ja, it, pt, fr, es, nl, de, en
@@ -50,12 +52,19 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             }
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
-                (inRecord, outRecord) => {
+                 (inRecord, outRecord) => {
                     string text = inRecord.Data["text"] as string;
                     IList<string> words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
-                    if (words == null)
+                    Dictionary<string, string[]> synonyms = (inRecord.Data.ContainsKey("synonyms")) ? ((JContainer)inRecord.Data["synonyms"]).ToObject<Dictionary<string, string[]>>() : new Dictionary<string, string[]>();
+                    IList<string> exactMatches = (inRecord.Data.ContainsKey("exactMatches")) ? ((JArray)inRecord.Data["exactMatches"]).ToObject<List<string>>() : new List<string>();
+                    int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset") && (int)inRecord.Data["fuzzyMatchOffset"] >= 0) ? (int)inRecord.Data["fuzzyMatchOffset"] : 0;
+                    if (words.Count == 1 && words[0] == "")
                     {
-                        words = new WordLinker(executionContext.FunctionAppDirectory).Words;
+                        WordLinker userInput = new WordLinker(executionContext.FunctionAppDirectory);
+                        words = userInput.Words;
+                        synonyms = userInput.Synonyms;
+                        exactMatches = userInput.ExactMatch;
+                        offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
                     }
                     
                     var entities = new List<Entity>();
@@ -65,23 +74,16 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         foreach (string word in words)
                         {
                             if (string.IsNullOrEmpty(word)) continue;
-                            string escapedWord = Regex.Escape(word);
-                            string pattern = @"\b(?ix:" + escapedWord + @")\b";
-                            MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MaxRegexEvalTime));
-                            if (entityMatch.Count != 0)
+                            int leniency = (exactMatches != null && exactMatches.Contains(word)) ? 0 : offset;
+                            AddValues(word, text, entities, entitiesFound, leniency);
+                            if (synonyms != null && synonyms.ContainsKey(word))
                             {
-                                foreach (Match match in entityMatch)
-                                {
-                                    entities.Add(
-                                        new Entity
-                                        {
-                                            Name = match.Value,
-                                            MatchIndex = match.Index
-                                        });
-                                }
-                                entitiesFound.Add(word);
+                                foreach (string synonym in synonyms[word])
+                                 {
+                                     leniency = (exactMatches != null && exactMatches.Contains(synonym)) ? 0 : offset;
+                                     AddValues(synonym, text, entities, entitiesFound, leniency);
+                                 }
                             }
-
                         }
                     }
 
@@ -93,5 +95,146 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             return new OkObjectResult(response);
         }
 
+        private static void AddValues(string checkMatch, string text, List<Entity> entities, HashSet<string> entitiesFound, int leniency)
+        {
+            bool addWord = false;
+            string escapedWord = Regex.Escape(checkMatch);
+            string pattern = @"\b(?ix:" + escapedWord + @")\b";
+            MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.IgnoreCase, TimeSpan.FromSeconds(MaxRegexEvalTime));
+            if (entityMatch.Count != 0)
+            {
+                foreach (Match match in entityMatch)
+                {
+                    entities.Add(
+                        new Entity
+                        {
+                            Category = "customEntity",
+                            Value = match.Value,
+                            Offset = match.Index,
+                            Confidence = 1
+                        });
+                }
+                addWord = true;
+            }
+
+            if (leniency > 0)
+            {
+                // using KMP for now
+                // Create Table
+                IList<int> KMPTable = new List<int>(new int[checkMatch.Length + 1]);
+                IList<char> wordCharArray = checkMatch.ToCharArray();
+                int pos = 1;
+                int cmd = 0;
+                KMPTable[0] = -1;
+
+                while (pos < checkMatch.Length)
+                {
+                    if (wordCharArray[pos] == wordCharArray[cmd])
+                    {
+                        KMPTable[pos] = KMPTable[cmd];
+                    }
+                    else
+                    {
+                        KMPTable[pos] = cmd;
+                        cmd = KMPTable[cmd];
+                        while (cmd >= 0 && wordCharArray[pos] != wordCharArray[cmd])
+                        {
+                            cmd = KMPTable[cmd];
+                        }
+                    }
+                    pos++;
+                    cmd++;
+                }
+                KMPTable[pos] = cmd;
+
+                // Begin searching!
+                int currTextChar = 0;
+                int currWordChar = 0;
+                int offset = 0;
+                StringWriter wordFound = new StringWriter();
+                double currMismatch = 0;
+                IList<char> textCharArray = text.ToCharArray();
+
+                while (currTextChar < textCharArray.Count)
+                {
+                    if(wordCharArray[currWordChar] == textCharArray[currTextChar])
+                    {
+                        wordFound.Write(textCharArray[currTextChar]);
+                        currTextChar++;
+                        currWordChar++;
+
+                        if (currWordChar >= wordCharArray.Count)
+                        {
+                            if (currMismatch < leniency && offset > 0)
+                            {
+                                entities.Add(
+                                    new Entity
+                                    {
+                                        Category = "customEntity",
+                                        Value = wordFound.ToString(),
+                                        Offset = currTextChar - (currWordChar + offset),
+                                        Confidence = (currMismatch / leniency)
+                                    });
+                                addWord = true;
+                                currWordChar = KMPTable[currWordChar];
+                                wordFound.Flush();
+                                currMismatch = 0;
+                                offset = 0;
+                            }
+                            else
+                            {
+                                currWordChar = wordCharArray.Count - 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // fuzzy situation?
+                        if (currMismatch < leniency)
+                        {
+                            string accents = @"[\p{Mn}\p{Mc}]";
+                            currMismatch += Regex.IsMatch(wordCharArray[currWordChar].ToString(), accents) ? 0.5 : 1;
+                            offset++;
+
+                            wordFound.Write(textCharArray[currTextChar]);
+                            currTextChar++;
+                            currWordChar++;
+
+                            if (currWordChar >= wordCharArray.Count && currMismatch < leniency)
+                            {
+                                addWord = true;
+                                entities.Add(
+                                    new Entity
+                                    {
+                                        Category = "customEntity",
+                                        Value = wordFound.ToString(),
+                                        Offset = currTextChar - (currWordChar + offset),
+                                        Confidence = (currMismatch / leniency)
+                                    });
+                                currWordChar = KMPTable[currWordChar];
+                                wordFound.Flush();
+                                currMismatch = 0;
+                                offset = 0;
+                            }
+                        }
+                        else
+                        {
+                            currWordChar = KMPTable[currWordChar];
+                            if (currWordChar < 0)
+                            {
+                                currWordChar++;
+                                currTextChar++;
+                            }
+                            wordFound.Flush();
+                            currMismatch = 0;
+                            offset = 0;
+                        }
+
+                    }
+                }
+            }
+            if (addWord)
+                entitiesFound.Add(checkMatch);
+        }
     }
 }

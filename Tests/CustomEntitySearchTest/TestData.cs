@@ -41,7 +41,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
     ]
 }";
         public const string emptyTextWordsNotFoundInput = @"""will you search?""";
-        public const string emptyWordsEmptyEntitiesInput = @"""if you find when searching, i will be sad""";
+        public const string emptyWordsEmptyEntitiesInput = @"""in""";
         public const string largeTextQuickResultInputWords = @"""random"", ""drefke"", ""customLookup"", ""eyisi""";
         public const string largeWordsQuickResultInputText = @"""Azure Storage is a Microsoft-managed service providing cloud storage that is highly available," + 
         "secure, durable, scalable, and redundant. Azure Storage includes Azure Blobs (objects), Azure Data Lake Storage Gen2, Azure Files, " +
@@ -59,15 +59,15 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTest
 
         public const string missingWordsExpectedResponse = @" - Error processing the request record : System.Collections.Generic.KeyNotFoundException: The given key 'words' was not present in the dictionary.
    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
-   at AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch.CustomEntitySearch.<>c__DisplayClass1_0.<Run>b__0(WebApiRequestRecord inRecord, WebApiResponseRecord outRecord) in C:\Users\t-neja\azure-search-power-skills\Text\CustomEntitySearch\CustomEntitySearch.cs:line 55
+   at AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch.CustomEntitySearch.<>c__DisplayClass1_0.<Run>b__0(WebApiRequestRecord inRecord, WebApiResponseRecord outRecord) in C:\Users\t-neja\azure-search-power-skills\Text\CustomEntitySearch\CustomEntitySearch.cs:line 57
    at AzureCognitiveSearch.PowerSkills.Common.WebApiSkillHelpers.ProcessRequestRecords(String functionName, IEnumerable`1 requestRecords, Func`3 processRecord) in C:\Users\t-neja\azure-search-power-skills\WebAPISkillHelper.cs:line 33";
         public const string missingTextExpectedResponse = @" - Error processing the request record : System.Collections.Generic.KeyNotFoundException: The given key 'text' was not present in the dictionary.
    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
-   at AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch.CustomEntitySearch.<>c__DisplayClass1_0.<Run>b__0(WebApiRequestRecord inRecord, WebApiResponseRecord outRecord) in C:\Users\t-neja\azure-search-power-skills\Text\CustomEntitySearch\CustomEntitySearch.cs:line 54
+   at AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch.CustomEntitySearch.<>c__DisplayClass1_0.<Run>b__0(WebApiRequestRecord inRecord, WebApiResponseRecord outRecord) in C:\Users\t-neja\azure-search-power-skills\Text\CustomEntitySearch\CustomEntitySearch.cs:line 56
    at AzureCognitiveSearch.PowerSkills.Common.WebApiSkillHelpers.ProcessRequestRecords(String functionName, IEnumerable`1 requestRecords, Func`3 processRecord) in C:\Users\t-neja\azure-search-power-skills\WebAPISkillHelper.cs:line 33";
         public const string outputCheckTest = @"{""Values"":[#REPLACE ME#]}";
         public const string outputElement = @"{""RecordId"":""1"",""Data"":{""Entities"":[#REPLACE ME#],""EntitiesFound"":[#INSERT WORDS#]},""Errors"":[],""Warnings"":[]}";
-        public const string outputValue = @"{""Name"":#REPLACE ME#,""MatchIndex"":#NUMBER#}";
+        public const string outputValue = @"{""Category"":""customEntity"",""Value"":#REPLACE ME#,""Offset"":#NUMBER#,""Confidence"":1.0}";
         public const string inputCheckTest = @"{""values"":[#REPLACE ME#]}";
         public const string inputElement = @"{""recordId"":""1"",""data"":{""text"":#REPLACE ME#,""words"":[#INSERT WORDS#]}}";
 
@@ -269,8 +269,7 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                 request, new LoggerFactory().CreateLogger("local"), new Microsoft.Azure.WebJobs.ExecutionContext()));
             return (WebApiSkillResponse)response.Value;
         }
-        // greek, thai, hebrew, turkish (DONE), czech, hungarian, arabic, japanese, finnish, danish, norwegian, korean, polish, russian, swedish, japanese (again??), 
-        // italian, portuguese, french, spanish, dutch, german, english
+
         public static void supportedTextandWordsTempInitializer()
         {
             supportedTextandWords.Add("Greek", new string[]

@@ -2,7 +2,9 @@
 {
     public class Entity
     {
-        public string Name { get; set; }
-        public int MatchIndex { get; set; }
+        public string Category { get; set; }
+        public string Value { get; set; }
+        public int Offset { get; set; }
+        public double Confidence { get; set; }
     }
 }

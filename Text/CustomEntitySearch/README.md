@@ -21,11 +21,19 @@ These skills have no additional requirements than the ones described in [the roo
 
 ## Settings
 
-This function requires Latin-based text (as seen in the sample document provided). The input field "words" is optional, where a user can add a "words.json" file instead.
+This function by default performs exact matches with no synonym detection. Based on user input in the JSON file or in the posted values, this skill can perform fuzzy matching on some or all of the entities provided. The input field "words" is optional, where a user can add a "words.json" file instead.
 
 ## Sample Config File
 ```json
-    ["foo1", "foo2"]
+{
+    "words": [ "foo1", "foo2" ],
+    "synonyms":
+    {
+        "foo1": [ "i" ]
+    },
+    "exactMatch": [ "foo2" ],
+    "fuzzyMatchOffset": 1
+}
 ```
 
 ## Sample Input:
@@ -69,12 +77,16 @@ This function requires Latin-based text (as seen in the sample document provided
                 "EntitiesFound": ["learn", "app"],
                 "Entities": [
                     {
-                        "Name": "Learn",
-                        "matchIndex": 1
+                        "Category": "customEntity",
+                        "Value": "Learn",
+                        "Offset": 1,
+                        "Confidence": 1.0
                     },
                     {
-                        "Name": "app",
-                        "MatchIndex": 45
+                        "Category": "customEntity",
+                        "Value": "app",
+                        "Offset": 45,
+                        "Confidence": 1.0
                     }
                 ]
             }

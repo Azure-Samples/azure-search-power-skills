@@ -1,1 +1,8 @@
-[ "foo1", "foo2" ]
+{
+  "words": [ "foo1", "foo2" ],
+  "synonyms": {
+    "foo1": [ "i" ]
+  },
+  "exactMatch": [ "foo2" ],
+  "fuzzyMatchOffset": 1
+}
