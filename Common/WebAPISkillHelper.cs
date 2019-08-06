@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.  
+
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -13,6 +16,9 @@ namespace AzureCognitiveSearch.PowerSkills.Common
 {
     public static class WebApiSkillHelpers
     {
+        public static bool TestMode = false;
+        public static Func<HttpRequestMessage, HttpResponseMessage> TestWww;
+
         public static IEnumerable<WebApiRequestRecord> GetRequestRecords(HttpRequest req)
         {
             string jsonRequest = new StreamReader(req.Body).ReadToEnd();
@@ -93,7 +99,7 @@ namespace AzureCognitiveSearch.PowerSkills.Common
                 }
                 request.Headers.Add(apiKeyHeader, apiKey);
 
-                using (HttpResponseMessage response = await client.SendAsync(request))
+                using (HttpResponseMessage response = TestMode ? TestWww(request) : await client.SendAsync(request))
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
                     JObject responseObject = JObject.Parse(responseBody);

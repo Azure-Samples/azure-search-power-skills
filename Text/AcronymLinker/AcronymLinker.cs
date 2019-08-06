@@ -1,11 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.  
+
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace AzureCognitiveSearch.PowerSkills.Text.AcronymLinker
 {
-    class AcronymLinker
+    public class AcronymLinker
     {
         public AcronymLinker(string executingDirectoryPath)
         {

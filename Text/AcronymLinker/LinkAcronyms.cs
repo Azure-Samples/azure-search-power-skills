@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.  
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;

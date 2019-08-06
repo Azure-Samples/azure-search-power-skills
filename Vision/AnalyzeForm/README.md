@@ -1,8 +1,9 @@
 ---
-topic: sample
+page_type: sample
 languages:
 - csharp
 products:
+- azure
 - azure-cognitive-services
 name: Analyze form sample skill for cognitive search
 urlFragment: azure-analyzeform-sample
@@ -13,8 +14,6 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 # AnalyzeForm
 
 This custom skill extracts specific fields from the results of a trained form recognition.
-
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FAnalyzeForm%2Fazuredeploy.json)
 
 ## Requirements
 
@@ -33,6 +32,10 @@ After training, you will need to set the `FORMS_RECOGNIZER_MODEL_ID` application
 The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `fieldMappings` dictionary in the `AnalyzeForm.cs` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/AnalyzeForm.cs#L24).
 
 This example was written to deal with PDF files, but if you are working different file types, you may change the content-type sent to the forms recognizer [by modifying the `contentType` constant in the `AnalyzeForm.cs` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/AnalyzeForm.cs#L29).
+
+## Deployment
+
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FAnalyzeForm%2Fazuredeploy.json)
 
 ## Sample Input:
 
