@@ -24,7 +24,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
         };
 
         public static async Task<object> QuerySkill(
-            this Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> skillFunction,
+            Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> skillFunction,
             object payload,
             string outputPath)
         {
@@ -33,13 +33,18 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
         }
 
         public static async Task<object> QuerySkill(
-            this Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, IActionResult> skillFunction,
+            Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, IActionResult> skillFunction,
             object payload,
             string outputPath)
             => await QuerySkill(
                 (HttpRequest req, ILogger logger, Microsoft.Azure.WebJobs.ExecutionContext ctx)
                     => Task.FromResult(skillFunction(req, logger, ctx)),
                 payload, outputPath);
+
+        public static async Task<WebApiSkillResponse> QueryFunction(
+            string inputText,
+            Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> function)
+            => await QueryFunction(inputText, CurrySkillFunction(function));
 
         public static async Task<WebApiSkillResponse> QueryFunction(string inputText, Func<HttpRequest, Task<IActionResult>> function)
         {
@@ -95,10 +100,5 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
 
         public static T GetProperty<T>(this object obj, string propertyName) where T : class
             => obj.GetType().GetProperty(propertyName).GetValue(obj, null) as T;
-
-        private static async Task<WebApiSkillResponse> QueryFunction(
-            string inputText,
-            Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> function)
-            => await QueryFunction(inputText, CurrySkillFunction(function));
     }
 }
