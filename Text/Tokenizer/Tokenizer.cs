@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.  
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.  
 
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -11,10 +10,11 @@ using AzureCognitiveSearch.PowerSkills.Common;
 using System.Collections.Generic;
 using Microsoft.ML;
 using Microsoft.ML.Transforms.Text;
-using System;
 using Microsoft.ML.Data;
+using System;
+using static Microsoft.ML.Transforms.Text.StopWordsRemovingEstimator.Language;
 
-namespace Tokenizer
+namespace AzureCognitiveSearch.PowerSkills.Text.Tokenizer
 {
     public static class Tokenizer
     {
@@ -33,24 +33,49 @@ namespace Tokenizer
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
 
-            var mlContext = new MLContext();
-            IDataView emptyDataView = mlContext.Data.LoadFromEnumerable(new List<TextData>());
-            EstimatorChain<StopWordsRemovingTransformer> textPipeline = mlContext.Transforms.Text
-                .NormalizeText("Text", caseMode: TextNormalizingEstimator.CaseMode.Lower, keepDiacritics: true, keepPunctuations: false, keepNumbers: false)
-                .Append(mlContext.Transforms.Text.TokenizeIntoWords("Words", "Text", separators: new[] { ' ' }))
-                .Append(mlContext.Transforms.Text.RemoveDefaultStopWords("Words", language: StopWordsRemovingEstimator.Language.English));
-            TransformerChain<StopWordsRemovingTransformer> textTransformer = textPipeline.Fit(emptyDataView);
-            PredictionEngine<TextData, TransformedTextData> predictionEngine = mlContext.Model.CreatePredictionEngine<TextData, TransformedTextData>(textTransformer);
-
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) =>
                 {
                     var text = new TextData { Text = inRecord.Data["text"] as string };
-                    outRecord.Data["words"] = predictionEngine.Predict(text).Words;
+                    StopWordsRemovingEstimator.Language language =
+                        MapToMlNetLanguage(inRecord.Data.TryGetValue("languageCode", out object languageCode) ? languageCode as string : "en");
+
+                    var mlContext = new MLContext();
+                    IDataView emptyDataView = mlContext.Data.LoadFromEnumerable(new List<TextData>());
+                    EstimatorChain<StopWordsRemovingTransformer> textPipeline = mlContext.Transforms.Text
+                        .NormalizeText("Text", caseMode: TextNormalizingEstimator.CaseMode.Lower, keepDiacritics: true, keepPunctuations: false, keepNumbers: false)
+                        .Append(mlContext.Transforms.Text.TokenizeIntoWords("Words", "Text", separators: new[] { ' ' }))
+                        .Append(mlContext.Transforms.Text.RemoveDefaultStopWords("Words", language: language));
+                    TransformerChain<StopWordsRemovingTransformer> textTransformer = textPipeline.Fit(emptyDataView);
+                    PredictionEngine<TextData, TransformedTextData> predictionEngine = mlContext.Model.CreatePredictionEngine<TextData, TransformedTextData>(textTransformer);
+
+                    outRecord.Data["words"] = predictionEngine.Predict(text).Words ?? Array.Empty<string>();
                     return outRecord;
                 });
 
             return new OkObjectResult(response);
+        }
+
+        private static StopWordsRemovingEstimator.Language MapToMlNetLanguage(string languageCode)
+        {
+            switch(languageCode)
+            {
+                case "ar": return Arabic;
+                case "cs": return Czech;
+                case "da": return Danish;
+                case "de": return German;
+                case "es": return Spanish;
+                case "fr": return French;
+                case "it": return Italian;
+                case "jp": return Japanese;
+                case "nb": return Norwegian_Bokmal;
+                case "nl": return Dutch;
+                case "pl": return Polish;
+                case "pt": return Portuguese;
+                case "sv": return Swedish;
+                case "ru": return Russian;
+                default: return English;
+            }
         }
 
         private class TextData
