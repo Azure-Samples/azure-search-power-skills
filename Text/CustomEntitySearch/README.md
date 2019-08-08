@@ -3,7 +3,8 @@ topic: sample
 languages:
 - csharp
 products:
-- azure-cognitive-services
+- azure
+- azure-search
 name: Custom Entity Search sample skill for cognitive search
 description: This custom skill finds user defined entities in given texts.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/CustomEntitySearch/azuredeploy.json
