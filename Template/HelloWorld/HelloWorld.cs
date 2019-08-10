@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.  
+
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -9,7 +12,7 @@ using AzureCognitiveSearch.PowerSkills.Common;
 
 namespace AzureCognitiveSearch.PowerSkills.Template.HelloWorld
 {
-    public static class Function1
+    public static class HelloWorld
     {
         [FunctionName("hello-world")]
         public static async Task<IActionResult> RunHelloWorld(

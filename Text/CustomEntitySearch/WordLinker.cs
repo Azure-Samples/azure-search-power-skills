@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.  
+
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,12 +14,13 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
     {
         public WordLinker(string executingDirectoryPath)
         {
-            string json = File.ReadAllText($"{executingDirectoryPath}\\Users\\t-neja\\azure-search-power-skills\\Text\\CustomEntitySearch\\words.json");
-            Value convert = JsonConvert.DeserializeObject<Value>(json);
+            string json = File.ReadAllText($"{executingDirectoryPath}\\words.json");
+            WordLinker convert = JsonConvert.DeserializeObject<WordLinker>(json);
             Words = convert.Words;
             Synonyms = convert.Synonyms;
             ExactMatch = convert.ExactMatch;
             FuzzyMatchOffset = convert.FuzzyMatchOffset;
+            CaseSensitive = convert.CaseSensitive;
         }
 
         public IList<string> Words
@@ -35,13 +39,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         {
             get; private set;
         }
-
-        private class Value
+        public bool CaseSensitive
         {
-            public IList<string> Words { get; set; }
-            public Dictionary<string, string[]> Synonyms { get; set; }
-            public IList<string> ExactMatch { get; set; }
-            public int FuzzyMatchOffset { get; set; }
+            get; private set;
         }
     }
 }
