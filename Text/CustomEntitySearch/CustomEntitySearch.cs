@@ -33,7 +33,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         private static int MaxRegexEvalTime = 1;
         /// <summary>
         /// We assert the following assumptions:
-        /// 1. All text files only characters provided in Unicode Character Database 
+        /// 1. All text files contain characters with unicode encoding
         /// 2. Words can contain special characters and numbers
         /// 3. The provided entities are not case sensitive
         /// </summary>
@@ -51,75 +51,82 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             {
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
-
+            
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                  (inRecord, outRecord) => {
-                     if (!inRecord.Data.ContainsKey("text"))
-                     {
-                         outRecord.Errors.Add(new WebApiErrorWarningContract { Message = "The given key 'text' was not present in the dictionary." });
-                     }
-                     else if (!inRecord.Data.ContainsKey("words") && 
-                     (inRecord.Data.ContainsKey("synonyms") || inRecord.Data.ContainsKey("exactMatches") || inRecord.Data.ContainsKey("fuzzyMatchOffset")))
-                     {
-                         outRecord.Errors.Add(new WebApiErrorWarningContract { Message = "Cannot process record without the given key 'words' in the dictionary"});
-                     }
-                     else
-                     {
-                         string text = inRecord.Data["text"] as string;
-                         IList<string> words = (inRecord.Data.ContainsKey("words")) ? 
-                         ((JArray)inRecord.Data["words"]).ToObject<List<string>>() : new List<string>();
-                         Dictionary<string, string[]> synonyms = (inRecord.Data.ContainsKey("synonyms")) ? 
-                         ((JContainer)inRecord.Data["synonyms"]).ToObject<Dictionary<string, string[]>>() : new Dictionary<string, string[]>();
-                         IList<string> exactMatches = (inRecord.Data.ContainsKey("exactMatches")) ? 
-                         ((JArray)inRecord.Data["exactMatches"]).ToObject<List<string>>() : new List<string>();
-                         int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset") && (int)(long)inRecord.Data["fuzzyMatchOffset"] >= 0) ? 
-                         (int)(long)inRecord.Data["fuzzyMatchOffset"] : 0;
-                         bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
-                         if (words.Count == 0 || (words.Count == 1 && words[0] == ""))
-                         {
-                             outRecord.Warnings.Add(new WebApiErrorWarningContract { Message = "The given key 'words' was not present in the dictionary." });
-                             WordLinker userInput = new WordLinker(executionContext.FunctionAppDirectory);
-                             words = userInput.Words;
-                             synonyms = userInput.Synonyms;
-                             exactMatches = userInput.ExactMatch;
-                             offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
-                             caseSensitive = userInput.CaseSensitive;
-                         }
+                    if (!inRecord.Data.ContainsKey("text"))
+                    {
+                        outRecord.Errors.Add(new WebApiErrorWarningContract { Message = "The given key 'text' was not present in the dictionary." });
+                        return outRecord;
+                    }
+                    if (!inRecord.Data.ContainsKey("words") && 
+                    (inRecord.Data.ContainsKey("synonyms") || inRecord.Data.ContainsKey("exactMatches") || inRecord.Data.ContainsKey("fuzzyMatchOffset")))
+                    {
+                        outRecord.Errors.Add(new WebApiErrorWarningContract {
+                            Message = "Cannot process record without the given key 'words' in the dictionary"});
+                        return outRecord;
+                    }
+                    string text = inRecord.Data["text"] as string;
+                    IList<string> words = (inRecord.Data.ContainsKey("words")) ? 
+                    ((JArray)inRecord.Data["words"]).ToObject<List<string>>() : new List<string>();
+                    Dictionary<string, string[]> synonyms = (inRecord.Data.ContainsKey("synonyms")) ? 
+                    ((JContainer)inRecord.Data["synonyms"]).ToObject<Dictionary<string, string[]>>() : new Dictionary<string, string[]>();
+                    IList<string> exactMatches = (inRecord.Data.ContainsKey("exactMatches")) ? 
+                    ((JArray)inRecord.Data["exactMatches"]).ToObject<List<string>>() : new List<string>();
+                    int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset") && (int)(long)inRecord.Data["fuzzyMatchOffset"] >= 0) ? 
+                    (int)(long)inRecord.Data["fuzzyMatchOffset"] : 0;
+                    bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
+                    if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
+                    {
+                        outRecord.Warnings.Add(new WebApiErrorWarningContract {
+                            Message = "Used predefined key words from customLookupSkill configuration file " +
+                            "since no 'words' parameter was supplied in web request" });
+                        WordLinker userInput = WordLinker.WordLink(executionContext.FunctionAppDirectory);
+                        words = userInput.Words;
+                        synonyms = userInput.Synonyms;
+                        exactMatches = userInput.ExactMatch;
+                        offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
+                        caseSensitive = userInput.CaseSensitive;
+                    }
 
-                         var entities = new List<Entity>();
-                         var entitiesFound = new HashSet<string>();
-                         if (!string.IsNullOrWhiteSpace(text))
-                         {
-                             foreach (string word in words)
-                             {
-                                 if (string.IsNullOrEmpty(word)) continue;
-                                 int leniency = (exactMatches != null && exactMatches.Contains(word)) ? 0 : offset;
-                                 AddValues(word, text, entities, entitiesFound, leniency, caseSensitive);
-                                 if (synonyms != null && synonyms.ContainsKey(word))
-                                 {
-                                     foreach (string synonym in synonyms[word])
-                                     {
-                                         leniency = (exactMatches != null && exactMatches.Contains(synonym)) ? 0 : offset;
-                                         AddValues(synonym, text, entities, entitiesFound, leniency, caseSensitive);
-                                     }
-                                 }
-                             }
-                         }
+                    var entities = new List<Entity>();
+                    var entitiesFound = new HashSet<string>();
+                    if (!string.IsNullOrWhiteSpace(text))
+                    {
+                        foreach (string word in words)
+                        {
+                            if (string.IsNullOrEmpty(word)) continue;
+                            int leniency = (exactMatches != null && exactMatches.Contains(word)) ? 0 : offset;
+                            AddValues(word, text, entities, entitiesFound, leniency, caseSensitive);
+                            if (synonyms.TryGetValue(word, out string[] wordSynonyms))
+                            {
+                                foreach (string synonym in wordSynonyms)
+                                {
+                                    leniency = (exactMatches != null && exactMatches.Contains(synonym)) ? 0 : offset;
+                                    AddValues(synonym, text, entities, entitiesFound, leniency, caseSensitive);
+                                }
+                            }
+                        }
+                    }
 
-                         outRecord.Data["Entities"] = entities;
-                         outRecord.Data["EntitiesFound"] = entitiesFound;
-                     }
+                    outRecord.Data["Entities"] = entities;
+                    outRecord.Data["EntitiesFound"] = entitiesFound;
                     return outRecord;
                 });
 
             return new OkObjectResult(response);
         }
 
-        public static void AddValues(string checkMatch, string text, List<Entity> entities, HashSet<string> entitiesFound, int leniency, bool caseSensitive)
+        public static void AddValues(string checkMatch, string text, List<Entity> entities, 
+            HashSet<string> entitiesFound, int leniency, bool caseSensitive)
         {
             bool addWord = false;
             string escapedWord = Regex.Escape(checkMatch);
-            string pattern = (caseSensitive) ? @"\b(?x:" + escapedWord + @")\b" : @"\b(?ix:" + escapedWord + @")\b";
+            string pattern = (caseSensitive) ? @"(?x:" + escapedWord + @")" : @"(?ix:" + escapedWord + @")";
+            if (!(Char.IsPunctuation(escapedWord.First()) || Char.IsWhiteSpace(escapedWord.First())))
+                pattern = @"\b" + pattern;
+            if (!(Char.IsPunctuation(escapedWord.Last()) || Char.IsWhiteSpace(escapedWord.Last())))
+                pattern += @"\b";
             MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.Compiled, TimeSpan.FromSeconds(MaxRegexEvalTime));
             if (entityMatch.Count != 0)
             {
@@ -144,147 +151,106 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 IList<int> KMPTable = (caseSensitive) ? CreateKMPTable(checkMatch) : CreateKMPTable(checkMatch.ToLower());
 
                 // Begin searching!
-                int currTextChar = 0;
-                int currWordChar = 0;
+                int currTextCharIndex = 0;
+                int currWordCharIndex = 0;
                 StringWriter wordFound = new StringWriter();
                 double currMismatch = 0;
                 IList<char> wordCharArray = (caseSensitive) ? checkMatch.ToCharArray() : checkMatch.ToLower().ToCharArray();
                 IList<char> textCharArray = (caseSensitive) ? text.ToCharArray() : text.ToLower().ToCharArray();
-                IList<string> valuesList = new List<string>();
-                IList<int> offsetList = new List<int>();
-                IList<double> confidenceList = new List<double>();
-                int minVal = -1;
 
-                while (currTextChar < textCharArray.Count)
+                while (currTextCharIndex < textCharArray.Count)
                 {
-                    if (currWordChar == 0 && currMismatch > 0)
+                    if (currWordCharIndex == 0 && currMismatch > 0)
                     {
                         wordFound.GetStringBuilder().Remove(0, 1);
                         currMismatch--;
                     }
                     if (currMismatch <= leniency)
                     {
-                        if (wordCharArray[currWordChar] == textCharArray[currTextChar])
+                        if (wordCharArray[currWordCharIndex] == textCharArray[currTextCharIndex])
                         {
-                            wordFound.Write(text.ElementAt(currTextChar));
-                            currTextChar++;
-                            currWordChar++;
+                            wordFound.Write(text.ElementAt(currTextCharIndex));
+                            currTextCharIndex++;
+                            currWordCharIndex++;
 
-                            if (currWordChar >= wordCharArray.Count || (currTextChar >= textCharArray.Count 
-                                && currMismatch + (wordCharArray.Count - currWordChar) <= leniency))
+                            if (currWordCharIndex >= wordCharArray.Count && currTextCharIndex < textCharArray.Count
+                                && Char.IsLetterOrDigit(wordCharArray.Last<char>()) && Char.IsLetterOrDigit(textCharArray[currTextCharIndex]))
                             {
-                                // Code Cleanup?
-                                if (currMismatch > 0 || entityMatch.Count == 0)
-                                {
-                                    if (!entityMatch.Where(x => (x.Index >= currTextChar - (wordCharArray.Count + leniency)) &&
-                                    (x.Index <= currTextChar - wordCharArray.Count)).Any())
-                                    {
-                                        valuesList.Add(wordFound.ToString());
-                                        offsetList.Add(currTextChar - wordFound.ToString().Length);
-                                        confidenceList.Add(currMismatch + (wordCharArray.Count - currWordChar) / leniency);
-                                        if (minVal < 0 || wordFound.ToString().Length < minVal)
-                                            minVal = wordFound.ToString().Length;
-                                        addWord = true;
-                                    }
-                                    currWordChar = KMPTable[currWordChar];
-                                    wordFound.GetStringBuilder().Clear();
-                                    currMismatch = 0;
-                                }
-                                else
-                                {
-                                    currWordChar = KMPTable[currWordChar];
-                                    if (currWordChar < 0)
-                                    {
-                                        currWordChar++;
-                                        currTextChar++;
-                                    }
-                                    wordFound.GetStringBuilder().Clear();
-                                    currMismatch = 0;
-                                }
+                                currWordCharIndex = wordCharArray.Count - 1;
+                                wordCharArray[currWordCharIndex] = textCharArray[currTextCharIndex];
+                                currMismatch++;
                             }
                         }
                         else
                         {
-                            string accents = @"[\p{Mn}\p{Sk}\p{Mc}]";
-                            bool wordHalfMark = Regex.Match(wordCharArray[currWordChar].ToString(), accents).Success;
-                            bool textHalfMark = Regex.Match(textCharArray[currTextChar].ToString(), accents).Success;
 
                             // fuzzy situation?
                             // accent case adds 0.5
-                            if ((wordHalfMark && textHalfMark) ||
-                                String.Compare(wordCharArray[currWordChar].ToString(), textCharArray[currTextChar].ToString(),
+                            if (String.Compare(wordCharArray[currWordCharIndex].ToString(), textCharArray[currTextCharIndex].ToString(),
                                 CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) == 0)
                             {
                                 currMismatch += 0.5;
-                                wordFound.Write(text.ElementAt(currTextChar));
-                                currTextChar++;
-                                currWordChar++;
+                                wordFound.Write(text.ElementAt(currTextCharIndex));
+                                currTextCharIndex++;
+                                currWordCharIndex++;
                             }
-                            else if (currTextChar < textCharArray.Count - 1 && String.Compare(wordCharArray[currWordChar].ToString(), 
-                                textCharArray[currTextChar+1].ToString(), CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) == 0)
+                            else if (currTextCharIndex < textCharArray.Count - leniency && String.Compare(wordCharArray[currWordCharIndex].ToString(), 
+                                textCharArray[currTextCharIndex+1].ToString(), CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) == 0)
                             {
-                                currMismatch += (textHalfMark) ? 0.5 : 1;
-                                wordFound.Write(text.ElementAt(currTextChar));
-                                currTextChar++;
+                                currMismatch += (Char.GetUnicodeCategory(textCharArray[currTextCharIndex]) == UnicodeCategory.NonSpacingMark ||
+                                    Char.GetUnicodeCategory(textCharArray[currTextCharIndex]) == UnicodeCategory.SpacingCombiningMark) ? 0.5 : 1;
+                                wordFound.Write(text.ElementAt(currTextCharIndex));
+                                currTextCharIndex++;
                             }
-                            else if (currWordChar < wordCharArray.Count - 1 && String.Compare(wordCharArray[currWordChar + 1].ToString(),
-                                textCharArray[currTextChar].ToString(), CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) == 0)
+                            else if (currWordCharIndex < wordCharArray.Count - 1 && String.Compare(wordCharArray[currWordCharIndex + 1].ToString(),
+                                textCharArray[currTextCharIndex].ToString(), CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) == 0)
                             {
-                                currMismatch += (wordHalfMark) ? 0.5 : 1;
-                                currWordChar++;
+                                currMismatch += (Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) == UnicodeCategory.NonSpacingMark ||
+                                    Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) == UnicodeCategory.SpacingCombiningMark) ? 0.5 : 1;
+                                currWordCharIndex++;
                             }
                             else
                             {
                                 currMismatch += 1;
-                                wordFound.Write(text.ElementAt(currTextChar));
-                                currTextChar++;
-                                currWordChar++;
+                                wordFound.Write(text.ElementAt(currTextCharIndex));
+                                currTextCharIndex++;
+                                currWordCharIndex++;
                             }
-
-                            if((currWordChar >= wordCharArray.Count || (currTextChar >= textCharArray.Count
-                                && currMismatch + (wordCharArray.Count - currWordChar) <= leniency))  && currMismatch <= leniency)
+                        }
+                        if ((currWordCharIndex >= wordCharArray.Count || (currTextCharIndex >= textCharArray.Count
+                            && currMismatch + (wordCharArray.Count - currWordCharIndex) <= leniency)) && currMismatch <= leniency)
+                        {
+                            // Code Cleanup?
+                            if (!entityMatch.Where(x => (x.Index >= currTextCharIndex - (wordCharArray.Count + leniency)) &&
+                                (x.Index <= currTextCharIndex - wordCharArray.Count)).Any())
                             {
-                                if (!entityMatch.Where(x => (x.Index >= currTextChar - (wordCharArray.Count + leniency)) &&
-                                    (x.Index <= currTextChar - wordCharArray.Count)).Any())
-                                {
-                                    addWord = true;
-                                    valuesList.Add(wordFound.ToString());
-                                    offsetList.Add(currTextChar - wordFound.ToString().Length);
-                                    confidenceList.Add(currMismatch + (wordCharArray.Count - currWordChar) / leniency);
-                                    if (minVal < 0 || wordFound.ToString().Length < minVal)
-                                        minVal = wordFound.ToString().Length;
-                                }
-                                currWordChar = KMPTable[currWordChar];
+                                entities.Add(
+                                    new Entity
+                                    {
+                                        Category = "customEntity",
+                                        Value = wordFound.ToString(),
+                                        Offset = currTextCharIndex - wordFound.ToString().Length,
+                                        Confidence = 1 - (currMismatch + (wordCharArray.Count - currWordCharIndex) / leniency)
+                                    });
+                                addWord = true;
+                                currWordCharIndex = KMPTable[currWordCharIndex];
                                 wordFound.GetStringBuilder().Clear();
                                 currMismatch = 0;
                             }
+                            else
+                                currMismatch = leniency + 1;
                         }
                     }
                     else
                     {
-                        currWordChar = KMPTable[currWordChar];
-                        if (currWordChar < 0)
+                        currWordCharIndex = KMPTable[currWordCharIndex];
+                        if (currWordCharIndex < 0)
                         {
-                            currWordChar++;
-                            currTextChar++;
+                            currWordCharIndex++;
+                            currTextCharIndex++;
                         }
                         wordFound.GetStringBuilder().Clear();
                         currMismatch = 0;
-                    }
-                }
-
-                for (int i = 0; i < valuesList.Count; i++)
-                {
-                    if (valuesList[i].Length == minVal)
-                    {
-                        entities.Add(
-                            new Entity
-                            {
-                                Category = "customEntity",
-                                Value = valuesList[i],
-                                Offset = offsetList[i],
-                                Confidence = 1 - confidenceList[i]
-                            });
                     }
                 }
             }

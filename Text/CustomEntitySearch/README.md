@@ -33,6 +33,7 @@ This function by default performs exact matches with no synonym detection. Based
     },
     "exactMatch": [ "foo2" ],
     "fuzzyMatchOffset": 1
+	"caseSensitive": true
 }
 ```
 

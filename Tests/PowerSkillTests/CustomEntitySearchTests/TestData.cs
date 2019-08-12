@@ -34,7 +34,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
     ]
 }";
 
-        public const string MissingWordsExpectedResponse = @"The given key 'words' was not present in the dictionary.";
+        public const string MissingWordsExpectedResponse = @"Used predefined key words from customLookupSkill configuration file since no 'words' parameter was supplied in web request";
         public const string MissingTextExpectedResponse = @"The given key 'text' was not present in the dictionary.";
 
         public static readonly string PopulateKMPTableWords =  "participate in parachute";
@@ -51,9 +51,9 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 
         public static readonly string OnlyFindEntitiesUnderOffsetLimitText = "hellc hello  helloo   ";
         public static readonly string[] OnlyFindEntitiesUnderOffsetLimitWords = new[] { "hello " };
-        public static readonly string[] OnlyFindEntitiesUnderOffsetLimitMatches = new[] { "hellc ", "hello " };
-        public static readonly int[] OnlyFindEntitiesUnderOffsetLimitIndices = new[] { 0, 6 };
-        public static readonly double[] OnlyFindEntitiesUnderOffsetLimitConfidence = new[] { 0.0, 1.0 };
+        public static readonly string[] OnlyFindEntitiesUnderOffsetLimitMatches = new[] { "hello ", "hellc ", "helloo " };
+        public static readonly int[] OnlyFindEntitiesUnderOffsetLimitIndices = new[] { 6, 0, 13 };
+        public static readonly double[] OnlyFindEntitiesUnderOffsetLimitConfidence = new[] { 1.0, 0.0, 0.0 };
 
         public static readonly string FuzzyWordsLongerThanTextText = "hello";
         public static readonly string[] FuzzyWordsLongerThanTextWords = new[] { "hello!" };

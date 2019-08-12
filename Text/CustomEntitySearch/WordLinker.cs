@@ -12,36 +12,31 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 {
     internal class WordLinker
     {
-        public WordLinker(string executingDirectoryPath)
+        public static WordLinker WordLink(string executingDirectoryPath)
         {
             string json = File.ReadAllText($"{executingDirectoryPath}\\words.json");
-            WordLinker convert = JsonConvert.DeserializeObject<WordLinker>(json);
-            Words = convert.Words;
-            Synonyms = convert.Synonyms;
-            ExactMatch = convert.ExactMatch;
-            FuzzyMatchOffset = convert.FuzzyMatchOffset;
-            CaseSensitive = convert.CaseSensitive;
+            return JsonConvert.DeserializeObject<WordLinker>(json);
         }
 
         public IList<string> Words
         {
-            get; private set;
+            get;
         }
         public IList<string> ExactMatch
         {
-            get; private set;
+            get;
         }
         public int FuzzyMatchOffset
         {
-            get; private set;
+            get;
         }
         public Dictionary<string, string[]> Synonyms
         {
-            get; private set;
+            get;
         }
         public bool CaseSensitive
         {
-            get; private set;
+            get;
         }
     }
 }

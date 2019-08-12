@@ -149,7 +149,8 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         [TestMethod]
         public async Task CheckFuzzySituationAllLang()
         {
-            TestData.supportedTextandWordsTempInitializer();
+            if (!TestData.supportedTextandWords.ContainsKey("Greek"))
+                TestData.supportedTextandWordsTempInitializer();
             Dictionary<string, string[]> supportedLangTextandWords = TestData.supportedTextandWords;
             Dictionary<string, int[]> matchIndices = TestData.supportedMatchIndices;
             Dictionary<string, double[]> confidenceScore = TestData.supportedConfidence;
