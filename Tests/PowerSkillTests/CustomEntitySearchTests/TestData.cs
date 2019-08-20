@@ -60,10 +60,42 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public static readonly int[] FuzzyWordsLongerThanTextIndices = new[] { 0 };
         public static readonly double[] FuzzyWordsLongerThanTextConfidence = new[] { 0.0 };
 
-        public static readonly string FuzzyTextLongerThanWordsText = "hello";
+        public static readonly string FuzzyTextLongerThanWordsText = "hello hlloyy";
         public static readonly string[] FuzzyTextLongerThanWordsWords = new[] { "hllo" };
+        public static readonly string[] FuzzyTextLongerThanWordsMatches = new[] { "hello" };
         public static readonly int[] FuzzyTextLongerThanWordsIndices = new[] { 0 };
         public static readonly double[] FuzzyTextLongerThanWordsConfidence = new[] { 0.0 };
+
+        public static readonly string LargeLeniencyMismatchedWordText = "hello help!";
+        public static readonly string[] LargeLeniencyMismatchedWordWords = new[] { "helcfo" };
+        public static readonly string[] LargeLeniencyMismatchedWordMatches = new[] { "hello" };
+        public static readonly int[] LargeLeniencyMismatchedWordIndices = new[] { 0 };
+        public static readonly double[] LargeLeniencyMismatchedWordConfidence = new[] { 0.0 };
+
+        public static readonly string WordSmallerThanLeniencyText = "this took way too long, iam so sorry.";
+        public static readonly string[] WordSmallerThanLeniencyWords = new[] { "i" };
+        public static readonly string[] WordSmallerThanLeniencyMatches = new[] { "i", "i" };
+        public static readonly int[] WordSmallerThanLeniencyIndices = new[] { 2, 24 };
+        public static readonly double[] WordSmallerThanLeniencyConfidence = new[] { 1.0, 1.0 };
+
+        public static readonly string LargeLeniencyMismatchedTextText = "mo vealong";
+        public static readonly string[] LargeLeniencyMismatchedTextWords = new[] { "along" };
+        public static readonly string[] LargeLeniencyMismatchedTextMatches = new[] { "vealong" };
+        public static readonly int[] LargeLeniencyMismatchedTextIndices = new[] { 3 };
+        public static readonly double[] LargeLeniencyMismatchedTextConfidence = new[] { 1.0 };
+
+        public static readonly string LargeLeniencyMismatchedMixText = "its friday! have a gréat greeken.";
+        public static readonly string[] LargeLeniencyMismatchedMixWords = new[] { "greek" };
+        public static readonly string[] LargeLeniencyMismatchedMixMatches = new[] { "gréat", "greeken" };
+        public static readonly int[] LargeLeniencyMismatchedMixIndices = new[] { 19, 25 };
+        public static readonly double[] LargeLeniencyMismatchedMixConfidence = new[] { 0.5, 1.0};
+
+        public static readonly string LargestLeniencyCheckText = "the fix was so simple, I overlooked it... Should work on all tests now!";
+        public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo ", "overlooking", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "overlooked", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "overlooking", "overlooked" };
+        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 22, 22 };
+        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 1.0, 1.0, 1.0 };
 
         public static readonly string[] EmptyTextWordsNotFoundInput = new[] { "will you search?" };
         public static readonly string[] EmptyWordsEmptyEntitiesInput = new[] { "if you find when searching, i will be sad" };
@@ -327,6 +359,7 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
         public static readonly Dictionary<string, string[]> supportedTextandWords = new Dictionary<string, string[]>();
         public static readonly Dictionary<string, int[]> supportedMatchIndices = new Dictionary<string, int[]>();
         public static readonly Dictionary<string, double[]> supportedConfidence = new Dictionary<string, double[]>();
+
         public static void supportedTextandWordsTempInitializer()
         {
             supportedTextandWords.Add("Greek", new string[]

@@ -141,7 +141,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         [TestMethod]
         public async Task FuzzyTextLongerThanWords()
         {
-            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.FuzzyTextLongerThanWordsWords, new[] { TestData.FuzzyTextLongerThanWordsText },
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.FuzzyTextLongerThanWordsWords, TestData.FuzzyTextLongerThanWordsMatches,
                 TestData.FuzzyTextLongerThanWordsIndices, TestData.FuzzyTextLongerThanWordsConfidence, TestData.FuzzyTextLongerThanWordsText,
                 TestData.FuzzyTextLongerThanWordsWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
         }
@@ -162,6 +162,46 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
                 matchIndices[language], confidenceScore[language], supportedLangTextandWords[language][0],
                 new string[] { supportedLangTextandWords[language][4] }, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
             }
+        }
+
+        [TestMethod]
+        public async Task LargeLeniencyMismatchedWord()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargeLeniencyMismatchedWordWords, TestData.LargeLeniencyMismatchedWordMatches,
+                TestData.LargeLeniencyMismatchedWordIndices, TestData.LargeLeniencyMismatchedWordConfidence, TestData.LargeLeniencyMismatchedWordText,
+                TestData.LargeLeniencyMismatchedWordWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 2);
+        }
+
+        [TestMethod]
+        public async Task WordSmallerThanLeniency()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.WordSmallerThanLeniencyWords, TestData.WordSmallerThanLeniencyMatches,
+                TestData.WordSmallerThanLeniencyIndices, TestData.WordSmallerThanLeniencyConfidence, TestData.WordSmallerThanLeniencyText,
+                TestData.WordSmallerThanLeniencyWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 2);
+        }
+
+        [TestMethod]
+        public async Task LargeLeniencyMismatchedText()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargeLeniencyMismatchedTextWords, TestData.LargeLeniencyMismatchedTextMatches,
+                TestData.LargeLeniencyMismatchedTextIndices, TestData.LargeLeniencyMismatchedTextConfidence, TestData.LargeLeniencyMismatchedTextText,
+                TestData.LargeLeniencyMismatchedTextWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 3);
+        }
+
+        [TestMethod]
+        public async Task LargeLeniencyMismatchedMix()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargeLeniencyMismatchedMixWords, TestData.LargeLeniencyMismatchedMixMatches,
+                TestData.LargeLeniencyMismatchedMixIndices, TestData.LargeLeniencyMismatchedMixConfidence, TestData.LargeLeniencyMismatchedMixText,
+                TestData.LargeLeniencyMismatchedMixWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 3);
+        }
+
+        [TestMethod]
+        public async Task LargestLeniencyCheck()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargestLeniencyCheckMatchesFound, TestData.LargestLeniencyCheckMatches,
+                TestData.LargestLeniencyCheckIndices, TestData.LargestLeniencyCheckConfidence, TestData.LargestLeniencyCheckText,
+                TestData.LargestLeniencyCheckWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 10);
         }
     }
 }
