@@ -100,11 +100,6 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             }
 
         }
-        [TestMethod]
-        public void PopulateKMPTable()
-        {
-            CollectionAssert.AreEqual(new List<int>(TestData.PopulateKMPTableOutput), new List<int>(CustomEntitySearch.CreateKMPTable(TestData.PopulateKMPTableWords)));
-        }
 
         [TestMethod]
         public async Task NoDoubleCountedExactMatch()

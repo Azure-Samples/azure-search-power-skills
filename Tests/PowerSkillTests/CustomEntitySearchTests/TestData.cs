@@ -51,9 +51,9 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 
         public static readonly string OnlyFindEntitiesUnderOffsetLimitText = "hellc hello  helloo   ";
         public static readonly string[] OnlyFindEntitiesUnderOffsetLimitWords = new[] { "hello " };
-        public static readonly string[] OnlyFindEntitiesUnderOffsetLimitMatches = new[] { "hello ", "hellc ", "helloo " };
-        public static readonly int[] OnlyFindEntitiesUnderOffsetLimitIndices = new[] { 6, 0, 13 };
-        public static readonly double[] OnlyFindEntitiesUnderOffsetLimitConfidence = new[] { 1.0, 0.0, 0.0 };
+        public static readonly string[] OnlyFindEntitiesUnderOffsetLimitMatches = new[] { "hellc", "hello", "helloo" };
+        public static readonly int[] OnlyFindEntitiesUnderOffsetLimitIndices = new[] { 0, 6, 13 };
+        public static readonly double[] OnlyFindEntitiesUnderOffsetLimitConfidence = new[] { 0.0, 1.0, 0.0 };
 
         public static readonly string FuzzyWordsLongerThanTextText = "hello";
         public static readonly string[] FuzzyWordsLongerThanTextWords = new[] { "hello!" };
@@ -92,10 +92,10 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 
         public static readonly string LargestLeniencyCheckText = "the fix was so simple, I overlooked it... Should work on all tests now!";
         public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo ", "overlooking", "overlooked" };
-        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "overlooked", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "the fix ", "overlooked", "work on ", "overlooked" };
         public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "overlooking", "overlooked" };
-        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 22, 22 };
-        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 1.0, 1.0, 1.0 };
+        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 0, 25, 49, 25 };
+        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 1.0, 1.0, 7.0, 1.0, 1.0 };
 
         public static readonly string[] EmptyTextWordsNotFoundInput = new[] { "will you search?" };
         public static readonly string[] EmptyWordsEmptyEntitiesInput = new[] { "if you find when searching, i will be sad" };
@@ -503,12 +503,12 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
             supportedTextandWords.Add("Russian", new string[]
                 {
                     @"Неадекватный поклонник разгромил машину культовой рок-исполнительницы Земфиры в центре Москвы. Вандал обрушился на «Мерседес» артистки, разбил стёкла и значительно повредил кузов авто. Безумец пояснил правоохранителям",
-                    @" в ",
-                    @" в ",
-                    @" в ",
-                    @" вы "
+                    @"в ",
+                    @"в ",
+                    @"в ",
+                    @"вы "
                 });
-            supportedMatchIndices.Add("Russian", new int[] { 77 });
+            supportedMatchIndices.Add("Russian", new int[] { 78 });
             supportedConfidence.Add("Russian", new double[] { 0.0 });
             supportedTextandWords.Add("Swedish", new string[]
                 {

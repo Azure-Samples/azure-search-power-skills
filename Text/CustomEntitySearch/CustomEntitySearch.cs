@@ -121,45 +121,53 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             HashSet<string> entitiesFound, int leniency, bool caseSensitive)
         {
             bool addWord = false;
-            string escapedWord = Regex.Escape(checkMatch);
-            string pattern = (caseSensitive) ? @"(?x:" + escapedWord + @")" : @"(?ix:" + escapedWord + @")";
-            if (!(Char.IsPunctuation(escapedWord.First()) || Char.IsWhiteSpace(escapedWord.First())) && leniency < checkMatch.Length)
-                pattern = @"\b" + pattern;
-            if (!(Char.IsPunctuation(escapedWord.Last()) || Char.IsWhiteSpace(escapedWord.Last())) && leniency < checkMatch.Length)
-                pattern += @"\b";
-            MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.Compiled, TimeSpan.FromSeconds(MaxRegexEvalTime));
-            if (entityMatch.Count != 0)
+
+            if (leniency == 0 || leniency >= checkMatch.Length)
             {
-                foreach (Match match in entityMatch)
+                string escapedWord = Regex.Escape(checkMatch);
+                string pattern = (caseSensitive) ? @"(?x:" + escapedWord + @")" : @"(?ix:" + escapedWord + @")";
+                if (!(Char.IsPunctuation(escapedWord.First()) || Char.IsWhiteSpace(escapedWord.First())) && leniency < checkMatch.Length)
+                    pattern = @"\b" + pattern;
+                if (!(Char.IsPunctuation(escapedWord.Last()) || Char.IsWhiteSpace(escapedWord.Last())) && leniency < checkMatch.Length)
+                    pattern += @"\b";
+                MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.Compiled, TimeSpan.FromSeconds(MaxRegexEvalTime));
+                if (entityMatch.Count != 0)
                 {
-                    entities.Add(
-                        new Entity
-                        {
-                            Category = "customEntity",
-                            Value = match.Value,
-                            Offset = match.Index,
-                            Confidence = 1
-                        });
+                    foreach (Match match in entityMatch)
+                    {
+                        entities.Add(
+                            new Entity
+                            {
+                                Category = "customEntity",
+                                Value = match.Value,
+                                Offset = match.Index,
+                                Confidence = 1
+                            });
+                    }
+                    addWord = true;
                 }
-                addWord = true;
             }
 
-            if (leniency > 0 && leniency <= checkMatch.Length)
+            if (leniency > 0 && leniency < checkMatch.Length)
             {
-                // using KMP for now
-                // Create Table
-                IList<int> KMPTable = (caseSensitive) ? CreateKMPTable(checkMatch) : CreateKMPTable(checkMatch.ToLower());
-
                 // Begin searching!
+                int whitespaceOffset = 0;
+                double bestMismatchPreWhitespace = -1;
+                int prevWhiteSpaceIndex = 0;
                 int currTextCharIndex = 0;
                 int currWordCharIndex = 0;
                 StringWriter wordFound = new StringWriter();
                 double currMismatch = 0;
-                IList<char> wordCharArray = (caseSensitive) ? checkMatch.ToCharArray() : checkMatch.ToLower().ToCharArray();
+                IList<char> wordCharArray = (caseSensitive) ? CreateWordArray(checkMatch) : CreateWordArray(checkMatch.ToLower());
                 IList<char> textCharArray = (caseSensitive) ? text.ToCharArray() : text.ToLower().ToCharArray();
 
                 while (currTextCharIndex < textCharArray.Count)
                 {
+                    // First 
+                    if ((currWordCharIndex == 0 || currMismatch > 0) && 
+                        (Char.IsWhiteSpace(textCharArray[currTextCharIndex]) || Char.IsSeparator(textCharArray[currTextCharIndex]) 
+                        || Char.IsPunctuation(textCharArray[currTextCharIndex])))
+                        prevWhiteSpaceIndex = currTextCharIndex;
                     if (currWordCharIndex == 0 && currMismatch > 0 
                         && Char.GetUnicodeCategory(textCharArray[currTextCharIndex - 1]) != Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]))
                     {
@@ -170,17 +178,14 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     {
                         if (wordCharArray[currWordCharIndex] == textCharArray[currTextCharIndex])
                         {
+                            if (Char.IsWhiteSpace(wordCharArray[currWordCharIndex]))
+                            {
+                                whitespaceOffset = currTextCharIndex;
+                                bestMismatchPreWhitespace = currMismatch + (wordCharArray.Count - currWordCharIndex);
+                            }
                             wordFound.Write(text.ElementAt(currTextCharIndex));
                             currTextCharIndex++;
                             currWordCharIndex++;
-
-                            if (currWordCharIndex >= wordCharArray.Count && currTextCharIndex < textCharArray.Count
-                                && Char.IsLetterOrDigit(wordCharArray.Last<char>()) && Char.IsLetterOrDigit(textCharArray[currTextCharIndex]))
-                            {
-                                currWordCharIndex = wordCharArray.Count - 1;
-                                wordCharArray[currWordCharIndex] = textCharArray[currTextCharIndex];
-                                currMismatch++;
-                            }
                         }
                         else
                         {
@@ -219,7 +224,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 {
                                     for (int i = currWordCharIndex + 1; i < wordCharArray.Count; i++)
                                     {
-                                        if (potWordMismatch >= leniency)
+                                        if (potWordMismatch >= leniency - currMismatch)
                                             break;
                                         potWordMismatch++;
                                         offsetWord++;
@@ -235,7 +240,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 {
                                     for (int i = currTextCharIndex + 1; i < textCharArray.Count; i++)
                                     {
-                                        if (potTextMismatch > leniency)
+                                        if (potTextMismatch >= leniency - currMismatch)
                                             break;
                                         if (currWordCharIndex == wordCharArray.Count - 1 &&
                                             Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) != Char.GetUnicodeCategory(textCharArray[i]))
@@ -246,6 +251,14 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                              CompareOptions.IgnoreNonSpace) == 0)
                                         {
                                             trueTextComp = true;
+                                            if (Char.IsWhiteSpace(textCharArray[i-1]) || Char.IsSeparator(textCharArray[i-1]))
+                                            {
+                                                if (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Count - currWordCharIndex))
+                                                {
+                                                    whitespaceOffset = i;
+                                                    bestMismatchPreWhitespace = currMismatch + (wordCharArray.Count - currWordCharIndex);
+                                                }
+                                            }
                                             break;
                                         }
                                     }
@@ -295,66 +308,101 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 }
                                 
                             }
-
-
-                            //else if (currTextCharIndex < textCharArray.Count - 1 && String.Compare(wordCharArray[currWordCharIndex].ToString(), 
-                            //    textCharArray[currTextCharIndex+1].ToString(), CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) == 0)
-                            //{
-                            //    currMismatch += (Char.GetUnicodeCategory(textCharArray[currTextCharIndex]) == UnicodeCategory.NonSpacingMark ||
-                            //        Char.GetUnicodeCategory(textCharArray[currTextCharIndex]) == UnicodeCategory.SpacingCombiningMark) ? 0.5 : 1;
-                            //    wordFound.Write(text.ElementAt(currTextCharIndex));
-                            //    currTextCharIndex++;
-                            //}
-                            //else if (currWordCharIndex < wordCharArray.Count - 1 && String.Compare(wordCharArray[currWordCharIndex + 1].ToString(),
-                            //    textCharArray[currTextCharIndex].ToString(), CultureInfo.CurrentCulture, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) == 0)
-                            //{
-                            //    currMismatch += (Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) == UnicodeCategory.NonSpacingMark ||
-                            //        Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) == UnicodeCategory.SpacingCombiningMark) ? 0.5 : 1;
-                            //    currWordCharIndex++;
-                            //}
-                            //else
-                            //{
-                            //    currMismatch += 1;
-                            //    wordFound.Write(text.ElementAt(currTextCharIndex));
-                            //    currTextCharIndex++;
-                            //    currWordCharIndex++;
-                            //}
                         }
-
+                        int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
+                        int finalOffsetIndex = (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? initialOffsetIndex : prevWhiteSpaceIndex + 1;
+                        double secondCheck = (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? currMismatch : initialOffsetIndex - prevWhiteSpaceIndex - 1 + currMismatch;
                         if (((currTextCharIndex >= textCharArray.Count && currMismatch + (wordCharArray.Count - currWordCharIndex) <= leniency)
-                            || currWordCharIndex >= wordCharArray.Count) && currMismatch <= leniency)
+                            || currWordCharIndex >= wordCharArray.Count) && (secondCheck <= leniency))
                         {
-                            // Code Cleanup?
-                            if (!entityMatch.Where(x => (x.Index >= currTextCharIndex - (wordCharArray.Count + leniency)) &&
-                                (x.Index <= currTextCharIndex - wordCharArray.Count)).Any())
+                            if (currWordCharIndex >= wordCharArray.Count && currTextCharIndex < textCharArray.Count
+                                && Char.IsLetterOrDigit(wordCharArray.Last<char>()))
                             {
-                                entities.Add(
+                                if (!Char.IsWhiteSpace(textCharArray[currTextCharIndex - 1]))
+                                {
+                                    while (currTextCharIndex < textCharArray.Count)
+                                    {
+                                        if (Char.IsLetterOrDigit(textCharArray[currTextCharIndex]))
+                                        {
+                                            wordFound.Write(textCharArray[currTextCharIndex]);
+                                            currTextCharIndex++;
+                                            secondCheck++;
+                                        }
+                                        else
+                                            break;
+                                    }
+                                }
+                            }
+                            int addToWord = initialOffsetIndex - finalOffsetIndex;
+                            if (addToWord > 0)
+                            {
+                                // write prefix before hand to reduce number of insertions into StringWriter
+                                List<char> prefix = new List<char>();
+                                while (addToWord > 0)
+                                {
+                                    prefix.Add(textCharArray[initialOffsetIndex - addToWord]);
+                                    addToWord--;
+                                }
+                                wordFound.GetStringBuilder().Insert(0, prefix.ToArray());
+                            }
+                            // Code Cleanup?
+                            if (secondCheck <= leniency)
+                            {
+                                if (bestMismatchPreWhitespace > -1 && bestMismatchPreWhitespace < secondCheck)
+                                {
+                                    entities.Add(
+                                    new Entity
+                                    {
+                                        Category = "customEntity",
+                                        Value = wordFound.GetStringBuilder().Remove(whitespaceOffset - finalOffsetIndex - 1, (int)bestMismatchPreWhitespace + 1).ToString(),
+                                        Offset = finalOffsetIndex,
+                                        Confidence = leniency - bestMismatchPreWhitespace - (wordCharArray.Count - currWordCharIndex)
+                                    });
+                                    currTextCharIndex = whitespaceOffset;
+                                }
+                                else
+                                {
+                                    entities.Add(
                                     new Entity
                                     {
                                         Category = "customEntity",
                                         Value = wordFound.ToString(),
-                                        Offset = currTextCharIndex - wordFound.ToString().Length,
-                                        Confidence = leniency - currMismatch - (wordCharArray.Count - currWordCharIndex)
+                                        Offset = finalOffsetIndex,
+                                        Confidence = leniency - secondCheck - (wordCharArray.Count - currWordCharIndex)
                                     });
+
+                                    if (bestMismatchPreWhitespace > -1 && whitespaceOffset != initialOffsetIndex)
+                                    {
+                                        currTextCharIndex = whitespaceOffset;
+                                    }
+                                }
+                                
                                 addWord = true;
-                                currWordCharIndex = KMPTable[currWordCharIndex];
+                                currWordCharIndex = 0;
                                 wordFound.GetStringBuilder().Clear();
                                 currMismatch = 0;
+                                bestMismatchPreWhitespace = -1;
                             }
                             else
                                 currMismatch = leniency + 1;
                         }
+                        else if (currWordCharIndex >= wordCharArray.Count && secondCheck > leniency)
+                        {
+                            currMismatch = leniency + 1;
+                        }
                     }
                     else
                     {
-                        currWordCharIndex = KMPTable[currWordCharIndex];
-                        if (currWordCharIndex < 0)
+                        int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
+                        currWordCharIndex = 0;
+                        currTextCharIndex++;
+                        if (bestMismatchPreWhitespace > -1 && whitespaceOffset != initialOffsetIndex)
                         {
-                            currWordCharIndex++;
-                            currTextCharIndex++;
+                            currTextCharIndex = whitespaceOffset;
                         }
                         wordFound.GetStringBuilder().Clear();
                         currMismatch = 0;
+                        bestMismatchPreWhitespace = -1;
                     }
                 }
             }
@@ -362,34 +410,23 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 entitiesFound.Add(checkMatch);
         }
 
-        public static IList<int> CreateKMPTable(string checkMatch)
+        public static IList<char> CreateWordArray(string checkMatch)
         {
-            IList<int> KMPTable = new List<int>(new int[checkMatch.Length + 1]);
-            IList<char> wordCharArray = checkMatch.ToCharArray();
-            int pos = 1;
-            int cmd = 0;
-            KMPTable[0] = -1;
+            int initCheckIndex = 0;
+            int endCheckIndex = checkMatch.Length - 1;
 
-            while (pos < checkMatch.Length)
+            IList<char> wordCharArray = checkMatch.ToCharArray();
+
+            while (initCheckIndex < checkMatch.Length && Char.IsWhiteSpace(wordCharArray[initCheckIndex]))
+                initCheckIndex++;
+            while (endCheckIndex >= 0 && Char.IsWhiteSpace(wordCharArray[endCheckIndex]))
+                endCheckIndex--;
+            if (initCheckIndex != 0 || endCheckIndex != checkMatch.Length - 1)
             {
-                if (wordCharArray[pos] == wordCharArray[cmd])
-                {
-                    KMPTable[pos] = KMPTable[cmd];
-                }
-                else
-                {
-                    KMPTable[pos] = cmd;
-                    cmd = KMPTable[cmd];
-                    while (cmd >= 0 && wordCharArray[pos] != wordCharArray[cmd])
-                    {
-                        cmd = KMPTable[cmd];
-                    }
-                }
-                pos++;
-                cmd++;
+                wordCharArray = wordCharArray.ToList<char>().GetRange(initCheckIndex, endCheckIndex + 1);
             }
-            KMPTable[pos] = cmd;
-            return KMPTable;
+
+            return wordCharArray;
         }
     }
 }
