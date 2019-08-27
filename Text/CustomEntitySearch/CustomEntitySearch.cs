@@ -163,11 +163,12 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 
                 while (currTextCharIndex < textCharArray.Count)
                 {
-                    // First 
+                    // First find the delineating character for prefix addition later on
                     if ((currWordCharIndex == 0 || currMismatch > 0) && 
                         (Char.IsWhiteSpace(textCharArray[currTextCharIndex]) || Char.IsSeparator(textCharArray[currTextCharIndex]) 
                         || Char.IsPunctuation(textCharArray[currTextCharIndex])))
                         prevWhiteSpaceIndex = currTextCharIndex;
+                    // Clear extra delineating characters that may be in front of the word in the text
                     if (currWordCharIndex == 0 && currMismatch > 0 
                         && Char.GetUnicodeCategory(textCharArray[currTextCharIndex - 1]) != Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]))
                     {
@@ -309,12 +310,14 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 
                             }
                         }
+                        // Determine if there is a prefix case
                         int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
                         int finalOffsetIndex = (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? initialOffsetIndex : prevWhiteSpaceIndex + 1;
                         double secondCheck = (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? currMismatch : initialOffsetIndex - prevWhiteSpaceIndex - 1 + currMismatch;
                         if (((currTextCharIndex >= textCharArray.Count && currMismatch + (wordCharArray.Count - currWordCharIndex) <= leniency)
                             || currWordCharIndex >= wordCharArray.Count) && (secondCheck <= leniency))
                         {
+                            // Determine if there is a suffix case
                             if (currWordCharIndex >= wordCharArray.Count && currTextCharIndex < textCharArray.Count
                                 && Char.IsLetterOrDigit(wordCharArray.Last<char>()))
                             {

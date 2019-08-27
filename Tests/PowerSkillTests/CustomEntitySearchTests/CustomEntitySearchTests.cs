@@ -198,5 +198,13 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
                 TestData.LargestLeniencyCheckIndices, TestData.LargestLeniencyCheckConfidence, TestData.LargestLeniencyCheckText,
                 TestData.LargestLeniencyCheckWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 10);
         }
+
+        [TestMethod]
+        public async Task OverlapInText()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.OverlapInTextWords, TestData.OverlapInTextMatches,
+                TestData.OverlapInTextIndices, TestData.OverlapInTextConfidence, TestData.OverlapInTextText,
+                TestData.OverlapInTextWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
+        }
     }
 }

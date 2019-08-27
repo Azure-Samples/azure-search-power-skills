@@ -37,8 +37,11 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public const string MissingWordsExpectedResponse = @"Used predefined key words from customLookupSkill configuration file since no 'words' parameter was supplied in web request";
         public const string MissingTextExpectedResponse = @"The given key 'text' was not present in the dictionary.";
 
-        public static readonly string PopulateKMPTableWords =  "participate in parachute";
-        public static readonly IList<int> PopulateKMPTableOutput = new[] { -1, 0, 0, 0, 0, 0, 0, -1, 0, 2, 0, 0, 0, 0, 0, -1, 0, 0, 3, 0, 0, 0, 0, 0, 0};
+        public static readonly string OverlapInTextText = "hellc helllo hello   ";
+        public static readonly string[] OverlapInTextWords = new[] { "hello hello" };
+        public static readonly string[] OverlapInTextMatches = new[] { "helllo hello" };
+        public static readonly int[] OverlapInTextIndices = new[] { 6 };
+        public static readonly double[] OverlapInTextConfidence = new[] { 0.0 };
 
         public static readonly string AccentsHalfMismatchText = "héllo";
         public static readonly string[] AccentsHalfMismatchWords = new[] { "hello" };
