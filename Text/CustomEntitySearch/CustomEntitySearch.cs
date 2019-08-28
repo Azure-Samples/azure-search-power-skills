@@ -161,8 +161,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 int currWordCharIndex = 0;
                 StringWriter wordFound = new StringWriter();
                 double currMismatch = 0;
-                IList<char> wordCharArray = (caseSensitive) ? CreateWordArray(checkMatch) : CreateWordArray(checkMatch.ToLower());
-                IList<char> textCharArray = (caseSensitive) ? text.ToCharArray() : text.ToLower().ToCharArray();
+                IList<char> wordCharArray = (caseSensitive) ? CreateWordArray(checkMatch) : CreateWordArray(checkMatch.ToLower(CultureInfo.CurrentCulture));
+                IList<char> textCharArray = (caseSensitive) ? text.ToCharArray() : text.ToLower(CultureInfo.CurrentCulture).ToCharArray();
 
                 while (currTextCharIndex < textCharArray.Count)
                 {
