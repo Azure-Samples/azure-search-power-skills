@@ -54,9 +54,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                  (inRecord, outRecord) => {
-                    if (!inRecord.Data.ContainsKey("text"))
+                    if (!inRecord.Data.ContainsKey("text") || inRecord.Data["text"] == null)
                     {
-                        outRecord.Errors.Add(new WebApiErrorWarningContract { Message = "The given key 'text' was not present in the dictionary." });
+                        outRecord.Errors.Add(new WebApiErrorWarningContract { Message = "Cannot process record without the given key 'text' with a string value" });
                         return outRecord;
                     }
                     if (!inRecord.Data.ContainsKey("words") && 
@@ -73,8 +73,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     ((JContainer)inRecord.Data["synonyms"]).ToObject<Dictionary<string, string[]>>() : new Dictionary<string, string[]>();
                     IList<string> exactMatches = (inRecord.Data.ContainsKey("exactMatches")) ? 
                     ((JArray)inRecord.Data["exactMatches"]).ToObject<List<string>>() : new List<string>();
-                    int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset") && (int)(long)inRecord.Data["fuzzyMatchOffset"] >= 0) ? 
-                    (int)(long)inRecord.Data["fuzzyMatchOffset"] : 0;
+                    int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset")) ? Math.Max(0, Convert.ToInt32(inRecord.Data["fuzzyMatchOffset"])) : 0;
                     bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
                     if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
                     {
@@ -120,8 +119,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         public static void AddValues(string checkMatch, string text, List<Entity> entities, 
             HashSet<string> entitiesFound, int leniency, bool caseSensitive)
         {
-            bool addWord = false;
-
+            leniency = 10;
             if (leniency == 0 || leniency >= checkMatch.Length)
             {
                 string escapedWord = Regex.Escape(checkMatch);
@@ -144,7 +142,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 Confidence = 1
                             });
                     }
-                    addWord = true;
+                    entitiesFound.Add(checkMatch);
                 }
             }
 
@@ -164,25 +162,28 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 while (currTextCharIndex < textCharArray.Count)
                 {
                     // First find the delineating character for prefix addition later on
-                    if ((currWordCharIndex == 0 || currMismatch > 0) && 
-                        (Char.IsWhiteSpace(textCharArray[currTextCharIndex]) || Char.IsSeparator(textCharArray[currTextCharIndex]) 
-                        || Char.IsPunctuation(textCharArray[currTextCharIndex])))
+                    if ((currWordCharIndex == 0 || currMismatch > 0) && textCharArray[currTextCharIndex].IsDiatric())
                         prevWhiteSpaceIndex = currTextCharIndex;
-                    // Clear extra delineating characters that may be in front of the word in the text
-                    if (currWordCharIndex == 0 && currMismatch > 0 
-                        && Char.GetUnicodeCategory(textCharArray[currTextCharIndex - 1]) != Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]))
+                    // Skip past extra delineating characters in the front of the word in the text
+                    if (currWordCharIndex == 0 && currMismatch >= 0 && textCharArray[currTextCharIndex].IsDiatric())
                     {
+                        currTextCharIndex++;
                         wordFound.GetStringBuilder().Clear();
                         currMismatch = 0;
+                        continue;
                     }
+
                     if (currMismatch <= leniency)
                     {
                         if (wordCharArray[currWordCharIndex] == textCharArray[currTextCharIndex])
                         {
-                            if (Char.IsWhiteSpace(wordCharArray[currWordCharIndex]))
+                            if (textCharArray[currTextCharIndex].IsDiatric())
                             {
-                                whitespaceOffset = currTextCharIndex;
-                                bestMismatchPreWhitespace = currMismatch + (wordCharArray.Count - currWordCharIndex);
+                                if (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Count - currWordCharIndex))
+                                {
+                                    whitespaceOffset = currTextCharIndex;
+                                    bestMismatchPreWhitespace = currMismatch + (wordCharArray.Count - currWordCharIndex);
+                                }
                             }
                             wordFound.Write(text.ElementAt(currTextCharIndex));
                             currTextCharIndex++;
@@ -190,10 +191,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         }
                         else
                         {
-                            double potTextMismatch = (Char.GetUnicodeCategory(textCharArray[currTextCharIndex]) == UnicodeCategory.NonSpacingMark ||
-                                        Char.GetUnicodeCategory(textCharArray[currTextCharIndex]) == UnicodeCategory.SpacingCombiningMark) ? 0.5 : 0;
-                            double potWordMismatch = (Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) == UnicodeCategory.NonSpacingMark ||
-                                        Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) == UnicodeCategory.SpacingCombiningMark) ? 0.5 : 0;
+                            double potTextMismatch = (textCharArray[currTextCharIndex].IsAccent()) ? 0.5 : 0;
+                            double potWordMismatch = (wordCharArray[currWordCharIndex].IsAccent()) ? 0.5 : 0;
                             // fuzzy situation?
                             // accent case adds 0.5
                             if (String.Compare(wordCharArray[currWordCharIndex].ToString(), textCharArray[currTextCharIndex].ToString(),
@@ -217,7 +216,6 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             }
                             else
                             {
-                                int offsetText = 0;
                                 int offsetWord = 0;
                                 bool trueWordComp = false;
                                 bool trueTextComp = false;
@@ -247,12 +245,11 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                             Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) != Char.GetUnicodeCategory(textCharArray[i]))
                                             break;
                                         potTextMismatch++;
-                                        offsetText++;
                                         if (String.Compare(wordCharArray[currWordCharIndex].ToString(), textCharArray[i].ToString(), CultureInfo.CurrentCulture,
                                              CompareOptions.IgnoreNonSpace) == 0)
                                         {
                                             trueTextComp = true;
-                                            if (Char.IsWhiteSpace(textCharArray[i-1]) || Char.IsSeparator(textCharArray[i-1]))
+                                            if (textCharArray[i - 1].IsDiatric())
                                             {
                                                 if (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Count - currWordCharIndex))
                                                 {
@@ -264,17 +261,15 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                         }
                                     }
                                 }
-                                else
-                                    potWordMismatch = potTextMismatch;
 
                                 if (trueTextComp && trueWordComp)
                                 {
                                     if (potWordMismatch == potTextMismatch)
                                     {
-                                        currMismatch += 1;
+                                        currMismatch += potWordMismatch;
                                         wordFound.Write(text.ElementAt(currTextCharIndex));
-                                        currTextCharIndex++;
-                                        currWordCharIndex++;
+                                        currTextCharIndex += offsetWord;
+                                        currWordCharIndex += offsetWord;
                                     }
                                     else if ((potWordMismatch > potTextMismatch && potTextMismatch != 0) || potWordMismatch == 0)
                                     {
@@ -311,17 +306,18 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             }
                         }
                         // Determine if there is a prefix case
-                        int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
-                        int finalOffsetIndex = (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? initialOffsetIndex : prevWhiteSpaceIndex + 1;
-                        double secondCheck = (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? currMismatch : initialOffsetIndex - prevWhiteSpaceIndex - 1 + currMismatch;
+                        
                         if (((currTextCharIndex >= textCharArray.Count && currMismatch + (wordCharArray.Count - currWordCharIndex) <= leniency)
-                            || currWordCharIndex >= wordCharArray.Count) && (secondCheck <= leniency))
+                            || currWordCharIndex >= wordCharArray.Count))
                         {
+                            int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
+                            int finalOffsetIndex = (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? initialOffsetIndex : prevWhiteSpaceIndex + 1;
+                            currMismatch += (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? 0 : initialOffsetIndex - prevWhiteSpaceIndex - 1;
                             // Determine if there is a suffix case
                             if (currWordCharIndex >= wordCharArray.Count && currTextCharIndex < textCharArray.Count
                                 && Char.IsLetterOrDigit(wordCharArray.Last<char>()))
                             {
-                                if (!Char.IsWhiteSpace(textCharArray[currTextCharIndex - 1]))
+                                if (!textCharArray[currTextCharIndex - 1].IsDiatric())
                                 {
                                     while (currTextCharIndex < textCharArray.Count)
                                     {
@@ -329,7 +325,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                         {
                                             wordFound.Write(textCharArray[currTextCharIndex]);
                                             currTextCharIndex++;
-                                            secondCheck++;
+                                            currMismatch++;
                                         }
                                         else
                                             break;
@@ -349,9 +345,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 wordFound.GetStringBuilder().Insert(0, prefix.ToArray());
                             }
                             // Code Cleanup?
-                            if (secondCheck <= leniency)
+                            if (currMismatch <= leniency)
                             {
-                                if (bestMismatchPreWhitespace > -1 && bestMismatchPreWhitespace < secondCheck)
+                                if (bestMismatchPreWhitespace > -1 && bestMismatchPreWhitespace < currMismatch)
                                 {
                                     entities.Add(
                                     new Entity
@@ -371,7 +367,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                         Category = "customEntity",
                                         Value = wordFound.ToString(),
                                         Offset = finalOffsetIndex,
-                                        Confidence = leniency - secondCheck - (wordCharArray.Count - currWordCharIndex)
+                                        Confidence = leniency - currMismatch - (wordCharArray.Count - currWordCharIndex)
                                     });
 
                                     if (bestMismatchPreWhitespace > -1 && whitespaceOffset != initialOffsetIndex)
@@ -380,7 +376,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                     }
                                 }
                                 
-                                addWord = true;
+                                if (!entitiesFound.Contains(checkMatch))
+                                    entitiesFound.Add(checkMatch);
                                 currWordCharIndex = 0;
                                 wordFound.GetStringBuilder().Clear();
                                 currMismatch = 0;
@@ -388,10 +385,6 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             }
                             else
                                 currMismatch = leniency + 1;
-                        }
-                        else if (currWordCharIndex >= wordCharArray.Count && secondCheck > leniency)
-                        {
-                            currMismatch = leniency + 1;
                         }
                     }
                     else
@@ -409,8 +402,6 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     }
                 }
             }
-            if (addWord)
-                entitiesFound.Add(checkMatch);
         }
 
         public static IList<char> CreateWordArray(string checkMatch)
@@ -420,9 +411,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 
             IList<char> wordCharArray = checkMatch.ToCharArray();
 
-            while (initCheckIndex < checkMatch.Length && Char.IsWhiteSpace(wordCharArray[initCheckIndex]))
+            while (initCheckIndex < checkMatch.Length && wordCharArray[initCheckIndex].IsDiatric())
                 initCheckIndex++;
-            while (endCheckIndex >= 0 && Char.IsWhiteSpace(wordCharArray[endCheckIndex]))
+            while (endCheckIndex >= 0 && wordCharArray[endCheckIndex].IsDiatric())
                 endCheckIndex--;
             if (initCheckIndex != 0 || endCheckIndex != checkMatch.Length - 1)
             {
@@ -431,5 +422,14 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 
             return wordCharArray;
         }
+        public static bool IsDiatric(this char checkSymbol)
+        {
+            return (Char.IsWhiteSpace(checkSymbol) || Char.IsSeparator(checkSymbol) || Char.IsPunctuation(checkSymbol));
+        }
+        public static bool IsAccent(this char checkSymbol)
+        {
+            return Char.GetUnicodeCategory(checkSymbol) == UnicodeCategory.NonSpacingMark || Char.GetUnicodeCategory(checkSymbol) == UnicodeCategory.SpacingCombiningMark;
+        }
     }
+
 }

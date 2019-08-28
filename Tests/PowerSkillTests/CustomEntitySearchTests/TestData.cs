@@ -35,7 +35,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 }";
 
         public const string MissingWordsExpectedResponse = @"Used predefined key words from customLookupSkill configuration file since no 'words' parameter was supplied in web request";
-        public const string MissingTextExpectedResponse = @"The given key 'text' was not present in the dictionary.";
+        public const string MissingTextExpectedResponse = "Cannot process record without the given key 'text' with a string value";
 
         public static readonly string OverlapInTextText = "hellc helllo hello   ";
         public static readonly string[] OverlapInTextWords = new[] { "hello hello" };
@@ -61,7 +61,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public static readonly string FuzzyWordsLongerThanTextText = "hello";
         public static readonly string[] FuzzyWordsLongerThanTextWords = new[] { "hello!" };
         public static readonly int[] FuzzyWordsLongerThanTextIndices = new[] { 0 };
-        public static readonly double[] FuzzyWordsLongerThanTextConfidence = new[] { 0.0 };
+        public static readonly double[] FuzzyWordsLongerThanTextConfidence = new[] { 1.0 };
 
         public static readonly string FuzzyTextLongerThanWordsText = "hello hlloyy";
         public static readonly string[] FuzzyTextLongerThanWordsWords = new[] { "hllo" };
