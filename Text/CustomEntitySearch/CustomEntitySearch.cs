@@ -161,10 +161,10 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 int currWordCharIndex = 0;
                 StringWriter wordFound = new StringWriter();
                 double currMismatch = 0;
-                IList<char> wordCharArray = (caseSensitive) ? CreateWordArray(checkMatch) : CreateWordArray(checkMatch.ToLower(CultureInfo.CurrentCulture));
-                IList<char> textCharArray = (caseSensitive) ? text.ToCharArray() : text.ToLower(CultureInfo.CurrentCulture).ToCharArray();
+                string wordCharArray = (caseSensitive) ? CreateWordArray(checkMatch) : CreateWordArray(checkMatch.ToLower(CultureInfo.CurrentCulture));
+                string textCharArray = (caseSensitive) ? text : text.ToLower(CultureInfo.CurrentCulture);
 
-                while (currTextCharIndex < textCharArray.Count)
+                while (currTextCharIndex < textCharArray.Length)
                 {
                     // First find the delineating character for prefix addition later on
                     if ((currWordCharIndex == 0 || currMismatch > 0) && textCharArray[currTextCharIndex].IsDelineating())
@@ -183,10 +183,10 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         if (wordCharArray[currWordCharIndex] == textCharArray[currTextCharIndex])
                         {
                             if (textCharArray[currTextCharIndex].IsDelineating() && 
-                                (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Count - currWordCharIndex)))
+                                (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Length - currWordCharIndex)))
                             {
                                     whitespaceOffset = currTextCharIndex;
-                                    bestMismatchPreWhitespace = currMismatch + (wordCharArray.Count - currWordCharIndex);
+                                    bestMismatchPreWhitespace = currMismatch + (wordCharArray.Length - currWordCharIndex);
                             }
                             wordFound.Write(text[currTextCharIndex]);
                             currTextCharIndex++;
@@ -222,9 +222,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 int offsetWord = 0;
                                 bool trueWordComp = false;
                                 bool trueTextComp = false;
-                                if (currWordCharIndex < wordCharArray.Count - 1)
+                                if (currWordCharIndex < wordCharArray.Length - 1)
                                 {
-                                    for (int i = currWordCharIndex + 1; i < wordCharArray.Count; i++)
+                                    for (int i = currWordCharIndex + 1; i < wordCharArray.Length; i++)
                                     {
                                         if (potWordMismatch >= leniency - currMismatch)
                                             break;
@@ -238,13 +238,13 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                         }
                                     }
                                 }
-                                if (currTextCharIndex < textCharArray.Count - 1)
+                                if (currTextCharIndex < textCharArray.Length - 1)
                                 {
-                                    for (int i = currTextCharIndex + 1; i < textCharArray.Count; i++)
+                                    for (int i = currTextCharIndex + 1; i < textCharArray.Length; i++)
                                     {
                                         if (potTextMismatch >= leniency - currMismatch)
                                             break;
-                                        if (currWordCharIndex == wordCharArray.Count - 1 &&
+                                        if (currWordCharIndex == wordCharArray.Length - 1 &&
                                             Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) != Char.GetUnicodeCategory(textCharArray[i]))
                                             break;
                                         potTextMismatch++;
@@ -253,10 +253,10 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                         {
                                             trueTextComp = true;
                                             if (textCharArray[i - 1].IsDelineating() && 
-                                                (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Count - currWordCharIndex)))
+                                                (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Length - currWordCharIndex)))
                                             {
                                                     whitespaceOffset = i;
-                                                    bestMismatchPreWhitespace = currMismatch + (wordCharArray.Count - currWordCharIndex);
+                                                    bestMismatchPreWhitespace = currMismatch + (wordCharArray.Length - currWordCharIndex);
                                             }
                                             break;
                                         }
@@ -310,8 +310,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             }
                         }
                         
-                        if (((currTextCharIndex >= textCharArray.Count && currMismatch + (wordCharArray.Count - currWordCharIndex) <= leniency)
-                            || currWordCharIndex >= wordCharArray.Count))
+                        if (((currTextCharIndex >= textCharArray.Length && currMismatch + (wordCharArray.Length - currWordCharIndex) <= leniency)
+                            || currWordCharIndex >= wordCharArray.Length))
                         {
                             // Determine if there is a prefix case
                             int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
@@ -319,12 +319,12 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                             currMismatch += (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? 0 : initialOffsetIndex - prevWhiteSpaceIndex - 1;
 
                             // Determine if there is a suffix case
-                            if (currWordCharIndex >= wordCharArray.Count && currTextCharIndex < textCharArray.Count
+                            if (currWordCharIndex >= wordCharArray.Length && currTextCharIndex < textCharArray.Length
                                 && Char.IsLetterOrDigit(wordCharArray.Last<char>()))
                             {
                                 if (!textCharArray[currTextCharIndex - 1].IsDelineating())
                                 {
-                                    while (currTextCharIndex < textCharArray.Count)
+                                    while (currTextCharIndex < textCharArray.Length)
                                     {
                                         if (Char.IsLetterOrDigit(textCharArray[currTextCharIndex]))
                                         {
@@ -360,7 +360,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                         Category = "customEntity",
                                         Value = wordFound.GetStringBuilder().Remove(whitespaceOffset - finalOffsetIndex - 1, (int)bestMismatchPreWhitespace + 1).ToString(),
                                         Offset = finalOffsetIndex,
-                                        Confidence = leniency - bestMismatchPreWhitespace - (wordCharArray.Count - currWordCharIndex)
+                                        Confidence = leniency - bestMismatchPreWhitespace - (wordCharArray.Length - currWordCharIndex)
                                     });
                                     currTextCharIndex = whitespaceOffset;
                                 }
@@ -372,7 +372,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                         Category = "customEntity",
                                         Value = wordFound.ToString(),
                                         Offset = finalOffsetIndex,
-                                        Confidence = leniency - currMismatch - (wordCharArray.Count - currWordCharIndex)
+                                        Confidence = leniency - currMismatch - (wordCharArray.Length - currWordCharIndex)
                                     });
 
                                     if (bestMismatchPreWhitespace > -1 && whitespaceOffset != initialOffsetIndex)
@@ -412,23 +412,21 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
          * Given an entity the user wants to find, this method removes delineating characters if they are found in the
          * beginning or end of the entity definition. The method then returns the exact word that will be used for fuzzy matching
          */
-        public static IList<char> CreateWordArray(string checkMatch)
+        public static string CreateWordArray(string checkMatch)
         {
             int initCheckIndex = 0;
             int endCheckIndex = checkMatch.Length - 1;
 
-            IList<char> wordCharArray = checkMatch.ToCharArray();
-
-            while (initCheckIndex < checkMatch.Length && wordCharArray[initCheckIndex].IsDelineating())
+            while (initCheckIndex < checkMatch.Length && checkMatch[initCheckIndex].IsDelineating())
                 initCheckIndex++;
-            while (endCheckIndex >= 0 && wordCharArray[endCheckIndex].IsDelineating())
+            while (endCheckIndex >= 0 && checkMatch[endCheckIndex].IsDelineating())
                 endCheckIndex--;
             if (initCheckIndex != 0 || endCheckIndex != checkMatch.Length - 1)
             {
-                wordCharArray = wordCharArray.ToList<char>().GetRange(initCheckIndex, endCheckIndex + 1);
+                return checkMatch.Substring(initCheckIndex, endCheckIndex - initCheckIndex + 1);
             }
 
-            return wordCharArray;
+            return checkMatch;
         }
 
         public static bool IsDelineating(this char checkSymbol)
