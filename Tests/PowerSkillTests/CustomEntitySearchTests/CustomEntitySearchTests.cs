@@ -170,9 +170,8 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         [TestMethod]
         public async Task WordSmallerThanLeniency()
         {
-            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.WordSmallerThanLeniencyWords, TestData.WordSmallerThanLeniencyMatches,
-                TestData.WordSmallerThanLeniencyIndices, TestData.WordSmallerThanLeniencyConfidence, TestData.WordSmallerThanLeniencyText,
-                TestData.WordSmallerThanLeniencyWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 2);
+            WebApiSkillResponse outputContent = await CustomEntitySearchHelpers.QueryEntitySearchFunction(TestData.WordSmallerThanLeniencyInput);
+            Assert.IsTrue(outputContent.Values[0].Warnings[0].Message.Contains(TestData.WordSmallerThanLeniencyWarning));
         }
 
         [TestMethod]
@@ -196,7 +195,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         {
             await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargestLeniencyCheckMatchesFound, TestData.LargestLeniencyCheckMatches,
                 TestData.LargestLeniencyCheckIndices, TestData.LargestLeniencyCheckConfidence, TestData.LargestLeniencyCheckText,
-                TestData.LargestLeniencyCheckWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 10);
+                TestData.LargestLeniencyCheckWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 10, TestData.LargestLeniencyCheckWarning);
         }
 
         [TestMethod]

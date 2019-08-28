@@ -63,11 +63,14 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 
         public static async Task CallEntitySearchFunctionAndCheckResults(
             string[] expectedFoundEntities, string[] expectedMatches, int[] expectedMatchIndices, double[] confidence,
-            string text, string[] words, Dictionary<string, string[]> synonyms, string[] exactMatches, int offset)
+            string text, string[] words, Dictionary<string, string[]> synonyms, string[] exactMatches, int offset,
+            string warningMessage = "")
         {
             string input = BuildInput(text, words, synonyms, exactMatches, offset);
             string expectedOutput = BuildOutput(expectedFoundEntities, expectedMatches, expectedMatchIndices, confidence);
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
+            if (warningMessage != "")
+                expectedOutput = expectedOutput.Replace(@"""warnings"":[]", warningMessage);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 

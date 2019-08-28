@@ -31,6 +31,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
     public static class CustomEntitySearch
     {
         private static int MaxRegexEvalTime = 1;
+        private static bool substringMatch = false;
         /// <summary>
         /// We assert the following assumptions:
         /// 1. All text files contain characters with unicode encoding
@@ -96,6 +97,14 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         {
                             if (string.IsNullOrEmpty(word)) continue;
                             int leniency = (exactMatches != null && exactMatches.Contains(word)) ? 0 : offset;
+                            if (leniency >= word.Length)
+                             {
+                                 outRecord.Warnings.Add(new WebApiErrorWarningContract
+                                 {
+                                     Message = @"The provided fuzzy offset of " + leniency + @", is larger than the length of the provided word, """ + word + @"""."
+                                 });
+                                 leniency = word.Length - 2;
+                             }
                             AddValues(word, text, entities, entitiesFound, leniency, caseSensitive);
                             if (synonyms.TryGetValue(word, out string[] wordSynonyms))
                             {
@@ -119,14 +128,13 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         public static void AddValues(string checkMatch, string text, List<Entity> entities, 
             HashSet<string> entitiesFound, int leniency, bool caseSensitive)
         {
-            leniency = 10;
-            if (leniency == 0 || leniency >= checkMatch.Length)
+            if (leniency == 0)
             {
                 string escapedWord = Regex.Escape(checkMatch);
                 string pattern = (caseSensitive) ? @"(?x:" + escapedWord + @")" : @"(?ix:" + escapedWord + @")";
-                if (!(Char.IsPunctuation(escapedWord.First()) || Char.IsWhiteSpace(escapedWord.First())) && leniency < checkMatch.Length)
+                if (!escapedWord.First().IsDiatric() && !substringMatch)
                     pattern = @"\b" + pattern;
-                if (!(Char.IsPunctuation(escapedWord.Last()) || Char.IsWhiteSpace(escapedWord.Last())) && leniency < checkMatch.Length)
+                if (!escapedWord.Last().IsDiatric() && !substringMatch)
                     pattern += @"\b";
                 MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.Compiled, TimeSpan.FromSeconds(MaxRegexEvalTime));
                 if (entityMatch.Count != 0)
@@ -146,7 +154,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 }
             }
 
-            if (leniency > 0 && leniency < checkMatch.Length)
+            if (leniency > 0)
             {
                 // Begin searching!
                 int whitespaceOffset = 0;
@@ -267,7 +275,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                     if (potWordMismatch == potTextMismatch)
                                     {
                                         currMismatch += potWordMismatch;
-                                        wordFound.Write(text.ElementAt(currTextCharIndex));
+                                        for (int i = 0; i < offsetWord; i++)
+                                            wordFound.Write(text.ElementAt(currTextCharIndex + i));
                                         currTextCharIndex += offsetWord;
                                         currWordCharIndex += offsetWord;
                                     }
@@ -297,22 +306,25 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 else
                                 {
                                     currMismatch += 1;
-                                    wordFound.Write(text.ElementAt(currTextCharIndex));
                                     if (currMismatch <= leniency)
+                                    {
+                                        wordFound.Write(text.ElementAt(currTextCharIndex));
                                         currTextCharIndex++;
+                                    }
                                     currWordCharIndex++;
                                 }
                                 
                             }
                         }
-                        // Determine if there is a prefix case
                         
                         if (((currTextCharIndex >= textCharArray.Count && currMismatch + (wordCharArray.Count - currWordCharIndex) <= leniency)
                             || currWordCharIndex >= wordCharArray.Count))
                         {
+                            // Determine if there is a prefix case
                             int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
                             int finalOffsetIndex = (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? initialOffsetIndex : prevWhiteSpaceIndex + 1;
                             currMismatch += (initialOffsetIndex - prevWhiteSpaceIndex - 1 <= 0) ? 0 : initialOffsetIndex - prevWhiteSpaceIndex - 1;
+
                             // Determine if there is a suffix case
                             if (currWordCharIndex >= wordCharArray.Count && currTextCharIndex < textCharArray.Count
                                 && Char.IsLetterOrDigit(wordCharArray.Last<char>()))

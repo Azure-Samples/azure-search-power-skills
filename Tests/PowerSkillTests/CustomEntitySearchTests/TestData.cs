@@ -75,11 +75,22 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public static readonly int[] LargeLeniencyMismatchedWordIndices = new[] { 0 };
         public static readonly double[] LargeLeniencyMismatchedWordConfidence = new[] { 0.0 };
 
-        public static readonly string WordSmallerThanLeniencyText = "this took way too long, iam so sorry.";
-        public static readonly string[] WordSmallerThanLeniencyWords = new[] { "i" };
-        public static readonly string[] WordSmallerThanLeniencyMatches = new[] { "i", "i" };
-        public static readonly int[] WordSmallerThanLeniencyIndices = new[] { 2, 24 };
-        public static readonly double[] WordSmallerThanLeniencyConfidence = new[] { 1.0, 1.0 };
+        public const string WordSmallerThanLeniencyInput = @"{
+    ""values"": [
+        {
+            ""recordId"": ""1"",
+            ""data"":
+            {
+                ""text"": ""this took way too long, iam so sorry."",
+                ""words"":  [
+                    ""i""
+                ],
+                ""fuzzyMatchOffset"": 2
+            }
+        }
+    ]
+}";
+        public static readonly string WordSmallerThanLeniencyWarning = "The provided fuzzy offset of 2, is larger than the length of the provided word, \"i\".";
 
         public static readonly string LargeLeniencyMismatchedTextText = "mo vealong";
         public static readonly string[] LargeLeniencyMismatchedTextWords = new[] { "along" };
@@ -95,10 +106,13 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 
         public static readonly string LargestLeniencyCheckText = "the fix was so simple, I overlooked it... Should work on all tests now!";
         public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo ", "overlooking", "overlooked" };
-        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "the fix ", "overlooked", "work on ", "overlooked" };
-        public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "overlooking", "overlooked" };
-        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 0, 25, 49, 25 };
-        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 1.0, 1.0, 7.0, 1.0, 1.0 };
+        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "so ", "on", "the fix ", "overlooked", "work on ", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "soo ", "overlooking", "overlooked" };
+        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 12, 54, 0, 25, 49, 25 };
+        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 1.0, 1.0, 0.0, 1.0, 7.0, 1.0, 8.0 };
+        public static readonly string LargestLeniencyCheckWarning = @"""warnings"":[{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
+                @"\""fix\"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
+                @"\""soo \"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, \""overlooked\"".""}]";
 
         public static readonly string[] EmptyTextWordsNotFoundInput = new[] { "will you search?" };
         public static readonly string[] EmptyWordsEmptyEntitiesInput = new[] { "if you find when searching, i will be sad" };
