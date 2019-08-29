@@ -106,10 +106,10 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 
         public static readonly string LargestLeniencyCheckText = "the fix was so simple, I overlooked it... Should work on all tests now!";
         public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo ", "overlooking", "overlooked" };
-        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "so ", "on", "the fix ", "overlooked", "work on ", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "so", "the fix", "overlooked", "work on", "overlooked" };
         public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "soo ", "overlooking", "overlooked" };
-        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 12, 54, 0, 25, 49, 25 };
-        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 1.0, 1.0, 0.0, 1.0, 7.0, 1.0, 8.0 };
+        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 12, 0, 25, 49, 25 };
+        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 1.0, 0.0, 1.0, 7.0, 1.0, 8.0 };
         public static readonly string LargestLeniencyCheckWarning = @"""warnings"":[{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
                 @"\""fix\"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
                 @"\""soo \"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, \""overlooked\"".""}]";
@@ -520,9 +520,9 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
             supportedTextandWords.Add("Russian", new string[]
                 {
                     @"Неадекватный поклонник разгромил машину культовой рок-исполнительницы Земфиры в центре Москвы. Вандал обрушился на «Мерседес» артистки, разбил стёкла и значительно повредил кузов авто. Безумец пояснил правоохранителям",
-                    @"в ",
-                    @"в ",
-                    @"в ",
+                    @"в",
+                    @"в",
+                    @"в",
                     @"вы "
                 });
             supportedMatchIndices.Add("Russian", new int[] { 78 });
