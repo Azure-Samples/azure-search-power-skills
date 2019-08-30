@@ -71,7 +71,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.BingEntitySearch
 
                 if (entity.ContractualRules != null)
                 {
-                    foreach (Contractualrule rule in entity.ContractualRules)
+                    foreach (ContractualRule rule in entity.ContractualRules)
                     {
                         if (rule.TargetPropertyName == "description" && rule._type == "ContractualRules/LinkAttribution")
                         {

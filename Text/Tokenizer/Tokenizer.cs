@@ -58,7 +58,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.Tokenizer
 
         private static StopWordsRemovingEstimator.Language MapToMlNetLanguage(string languageCode)
         {
-            switch(languageCode)
+            switch(languageCode.Trim().ToLowerInvariant())
             {
                 case "ar": return Arabic;
                 case "cs": return Czech;
