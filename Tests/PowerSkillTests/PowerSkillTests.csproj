@@ -23,6 +23,7 @@
     <ProjectReference Include="..\..\Text\AcronymLinker\AcronymLinker.csproj" />
     <ProjectReference Include="..\..\Text\BingEntitySearch\BingEntitySearch.csproj" />
     <ProjectReference Include="..\..\Text\CustomEntitySearch\CustomEntitySearch.csproj" />
+    <ProjectReference Include="..\..\Text\Distinct\Distinct.csproj" />
     <ProjectReference Include="..\..\Text\Tokenizer\Tokenizer.csproj" />
     <ProjectReference Include="..\..\Vision\AnalyzeForm\AnalyzeForm.csproj" />
     <ProjectReference Include="..\..\Vision\HocrGenerator\HocrGenerator.csproj" />

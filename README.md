@@ -15,6 +15,7 @@ This project provides the following custom skills:
 * [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
 * [**CustomEntitySearch**](/Text/CustomEntitySearch): finds custom entity names in text.
 * [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
+* [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
 
 ## Getting Started
 

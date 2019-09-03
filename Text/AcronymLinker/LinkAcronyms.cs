@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using AzureCognitiveSearch.PowerSkills.Common;
 using System.Linq;
-using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
