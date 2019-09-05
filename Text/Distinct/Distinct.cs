@@ -31,7 +31,15 @@ namespace AzureCognitiveSearch.PowerSkills.Text.Distinct
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
 
-            Thesaurus thesaurus = new Thesaurus(executionContext.FunctionAppDirectory);
+            Thesaurus thesaurus = null;
+            try
+            {
+                thesaurus = new Thesaurus(executionContext.FunctionAppDirectory);
+            }
+            catch(Exception e)
+            {
+                throw new Exception("Failed to read and parse thesaurus.json.", e);
+            }
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) =>
                 {
