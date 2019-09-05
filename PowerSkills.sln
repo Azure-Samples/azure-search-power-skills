@@ -51,7 +51,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tokenizer", "Text\Tokenizer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerSkillTests", "Tests\PowerSkillTests\PowerSkillTests.csproj", "{6F3E1DE3-7C77-49ED-BF9C-1FED8B318386}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{30F1ECE3-0B5D-4ACF-A375-B7C3721AF654}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{30F1ECE3-0B5D-4ACF-A375-B7C3721AF654}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distinct", "Text\Distinct\Distinct.csproj", "{63C364D1-FE52-45EC-B23E-20720201844A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{30F1ECE3-0B5D-4ACF-A375-B7C3721AF654}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30F1ECE3-0B5D-4ACF-A375-B7C3721AF654}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30F1ECE3-0B5D-4ACF-A375-B7C3721AF654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63C364D1-FE52-45EC-B23E-20720201844A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63C364D1-FE52-45EC-B23E-20720201844A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63C364D1-FE52-45EC-B23E-20720201844A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63C364D1-FE52-45EC-B23E-20720201844A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +123,7 @@ Global
 		{0D165CE1-66B6-47AE-ABA1-EF157C4E2884} = {10BE854F-F22A-4AE0-8283-688E10C76275}
 		{F0B21155-829F-4B26-853B-82ECAAB18D23} = {F98E15F9-D6BB-41CE-8B5B-84E624B86203}
 		{54AFF776-801F-4328-9EEE-CFFCD20B5497} = {F98E15F9-D6BB-41CE-8B5B-84E624B86203}
+		{63C364D1-FE52-45EC-B23E-20720201844A} = {F98E15F9-D6BB-41CE-8B5B-84E624B86203}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C22FE9E-7E11-429D-ADDE-0A220F285B90}
