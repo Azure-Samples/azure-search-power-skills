@@ -18,21 +18,25 @@ namespace AzureCognitiveSearch.PowerSkills.Text.Distinct
 
         public Thesaurus(IEnumerable<IEnumerable<string>> dataset)
         {
-            Synonyms = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            Synonyms = new Dictionary<string, string>();
             foreach (IEnumerable<string> lemma in dataset)
             {
+                if (!lemma.Any()) continue;
                 string canonicalForm = lemma.First();
                 foreach (string form in lemma)
                 {
-                    Synonyms.Add(Normalize(form), canonicalForm);
+                    string normalizedForm = Normalize(form);
+                    if (Synonyms.TryGetValue(normalizedForm, out string existingCanonicalForm))
+                    {
+                        throw new InvalidDataException(
+                            $"Thesaurus parsing error: the form '{form}' of the lemma '{canonicalForm}' looks the same, once normalized, as one of the forms of '{existingCanonicalForm}'. Please disambiguate or merge lemmas.");
+                    }
+                    Synonyms.Add(normalizedForm, canonicalForm);
                 }
             }
         }
 
-        public Dictionary<string, string> Synonyms
-        {
-            get; private set;
-        }
+        public Dictionary<string, string> Synonyms { get; }
 
         public IEnumerable<string> Dedupe(IEnumerable<string> words)
         {
@@ -54,7 +58,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.Distinct
         public static string Normalize(string word)
             => new string(word
                 .Normalize()
-                .ToLower()
+                .ToLowerInvariant()
                 .Where(c => !(char.IsPunctuation(c) || char.IsSeparator(c)))
                 .ToArray());
     }

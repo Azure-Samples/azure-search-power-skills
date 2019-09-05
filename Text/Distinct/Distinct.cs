@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using AzureCognitiveSearch.PowerSkills.Common;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace AzureCognitiveSearch.PowerSkills.Text.Distinct
 {
@@ -34,7 +35,13 @@ namespace AzureCognitiveSearch.PowerSkills.Text.Distinct
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) =>
                 {
-                    var words = ((JArray)inRecord.Data["words"]).Values<string>();
+                    JArray wordsParameter = inRecord.Data.TryGetValue("words", out object wordsParameterObject) ?
+                        wordsParameterObject as JArray : null;
+                    if (wordsParameter is null)
+                    {
+                        throw new ArgumentException("Input data is missing a `words` array of words to de-duplicate.", "words");
+                    }
+                    var words = wordsParameter.Values<string>();
                     outRecord.Data["distinct"] = thesaurus.Dedupe(words);
                     return outRecord;
                 });

@@ -14,6 +14,8 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 This custom skill removes duplicates from a list of terms.
 
+Terms are considered the same if they only differ by casing, separators such as spaces, or punctuation, or if they have a common entry in the thesaurus.
+
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FDistinct%2Fazuredeploy.json)
 
 ## Requirements

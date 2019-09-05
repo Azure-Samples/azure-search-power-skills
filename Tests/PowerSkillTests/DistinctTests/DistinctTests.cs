@@ -5,6 +5,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AzureCognitiveSearch.PowerSkills.Text.Distinct;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using System.IO;
 
 namespace AzureCognitiveSearch.PowerSkills.Tests.DistinctTests
 {
@@ -47,6 +49,40 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.DistinctTests
             var deduped = new Thesaurus(_synonyms).Dedupe(text.Split(' ')).OrderBy(term => term);
 
             Assert.IsTrue(expectedTerms.SequenceEqual(deduped), $"Expected [{ string.Join(", ", expectedTerms) }] but was [{ string.Join(", ", deduped) }].");
+        }
+
+        [TestMethod]
+        public void ThesaurusBuildsNormalizedSynonymToCanonicalFormDictionaryAndIgnoresEmptyLemmas()
+        {
+            const string canonicalAcronym = "acronym";
+            const string canonicalMicrosoft = "Microsoft";
+            var synonyms = new Thesaurus(new[]
+            {
+                new[] { canonicalAcronym, "acornym", "acronyms" },
+                Array.Empty<string>(),
+                new[] { canonicalMicrosoft, "Microsoft Corporation", "Microsoft corp.", "MSFT" }
+            }).Synonyms;
+
+            Assert.AreEqual(7, synonyms.Count());
+            Assert.AreEqual(canonicalAcronym, synonyms["acronym"]);
+            Assert.AreEqual(canonicalAcronym, synonyms["acornym"]);
+            Assert.AreEqual(canonicalAcronym, synonyms["acronyms"]);
+            Assert.AreEqual(canonicalMicrosoft, synonyms["microsoft"]);
+            Assert.AreEqual(canonicalMicrosoft, synonyms["microsoftcorporation"]);
+            Assert.AreEqual(canonicalMicrosoft, synonyms["microsoftcorp"]);
+            Assert.AreEqual(canonicalMicrosoft, synonyms["msft"]);
+        }
+
+        [TestMethod]
+        public void ThesaurusConstructorThrowsForDuplicateLemmas()
+        {
+            Assert.ThrowsException<InvalidDataException>(() => {
+                _ = new Thesaurus(new[]
+                {
+                    new[] {"foo", "bar"},
+                    new[] {"baz", "bar"}
+                });
+            });
         }
     }
 }
