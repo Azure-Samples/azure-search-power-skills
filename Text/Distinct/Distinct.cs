@@ -31,9 +31,10 @@ namespace AzureCognitiveSearch.PowerSkills.Text.Distinct
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
 
+            Thesaurus thesaurus = null;
             try
             {
-                Thesaurus thesaurus = new Thesaurus(executionContext.FunctionAppDirectory);
+                thesaurus = new Thesaurus(executionContext.FunctionAppDirectory);
             }
             catch(Exception e)
             {
