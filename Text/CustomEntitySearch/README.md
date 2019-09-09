@@ -22,12 +22,23 @@ These skills have no additional requirements than the ones described in [the roo
 
 ## Settings
 
-This function requires Latin-based text (as seen in the sample document provided). The input field "words" is optional, where a user can add a "words.json" file instead.
+This function requires Latin-based text (as seen in the sample document provided). The input field "words" is optional, where a user can add a "words.json" or "words.csv" file instead.  To load a JSON file, change "csv" to "json" in the following line within CustomEntitySearch.cs 
 
-## Sample Config File
+```
+public static IList<string> preLoadedWords = new WordLinker("csv").Words;
+```
+
+## Sample Config File (JSON)
 ```json
     ["foo1", "foo2"]
 ```
+
+## Sample Config File (CSV)
+```json
+    foo1
+    foo2
+```
+
 
 ## Sample Input:
 
