@@ -5,6 +5,9 @@
     <RootNamespace>AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="words.csv" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.29" />
   </ItemGroup>
   <ItemGroup>
@@ -23,5 +26,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="words.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

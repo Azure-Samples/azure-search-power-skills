@@ -29,6 +29,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
     /// </summary>
     public static class CustomEntitySearch
     {
+        // Use this to load from "csv" or "json" file 
+        public static IList<string> preLoadedWords = new WordLinker("csv").Words;
+
         private static readonly int MaxRegexEvalTime = 1;
         /// <summary>
         /// We assert the following assumptions:
@@ -54,10 +57,13 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
                     string text = inRecord.Data["text"] as string;
-                    IList<string> words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
-                    if (words == null)
+
+                    IList<string> words = preLoadedWords;
+
+                    // Check if user supplied their own words
+                    if (inRecord.Data.ContainsKey("words") == true)
                     {
-                        words = new WordLinker(executionContext.FunctionAppDirectory).Words;
+                        words = ((JArray)inRecord.Data["words"]).ToObject<List<string>>();
                     }
                     
                     var entities = new HashSet<Entity>();
