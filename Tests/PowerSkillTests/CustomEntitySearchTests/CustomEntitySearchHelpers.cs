@@ -43,7 +43,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
                     Category = "customEntity",
                     Value = entity,
                     Offset = matchIndices[i],
-                    Confidence = 1.0
+                    Confidence = 0.0
                 }),
                 EntitiesFound = entities
             });
@@ -71,6 +71,8 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
             if (warningMessage != "")
                 expectedOutput = expectedOutput.Replace(@"""warnings"":[]", warningMessage);
+            Console.WriteLine(expectedOutput);
+            Console.WriteLine(actualOutput);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 

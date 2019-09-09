@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -150,7 +153,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 Category = "customEntity",
                                 Value = match.Value,
                                 Offset = match.Index,
-                                Confidence = 1
+                                Confidence = 0
                             });
                     }
                     entitiesFound.Add(checkMatch);
@@ -159,13 +162,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             else
             {
                 // Begin searching!
-                int whitespaceOffset = 0;
-                double bestMismatchPreWhitespace = -1;
-                int prevWhiteSpaceIndex = 0;
-                int currTextCharIndex = 0;
+                int bestMismatchPreWhitespace = -1;
                 int currWordCharIndex = 0;
-                StringWriter wordFound = new StringWriter();
-                double currMismatch = 0;
                 string wordCharArray = (caseSensitive) ? CreateWordArray(checkMatch) : CreateWordArray(checkMatch.ToLower(CultureInfo.CurrentCulture));
                 string textCharArray = (caseSensitive) ? text : text.ToLower(CultureInfo.CurrentCulture);
                 if (leniency >= wordCharArray.Length)
@@ -173,102 +171,88 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 
                 if (leniency >= 0)
                 {
-                    while (currTextCharIndex < textCharArray.Length)
+                    PotentialEntity.Clear();
+                    while (PotentialEntity.GetEndIndex() < textCharArray.Length)
                     {
-                        // First find the delineating character for prefix addition later on
-                        if ((currWordCharIndex == 0 || currMismatch > 0) && textCharArray[currTextCharIndex].IsDelineating())
-                            prevWhiteSpaceIndex = currTextCharIndex;
                         // Skip past extra delineating characters in the front of the word in the text
-                        if (currWordCharIndex == 0 && currMismatch >= 0 && textCharArray[currTextCharIndex].IsDelineating())
+                        if (currWordCharIndex == 0 && PotentialEntity.mismatchScore >= 0 && textCharArray[PotentialEntity.GetEndIndex()].IsDelineating())
                         {
-                            currTextCharIndex++;
-                            wordFound.GetStringBuilder().Clear();
-                            currMismatch = 0;
+                            PotentialEntity.ResetPotentialEntity();
                             continue;
                         }
 
-                        if (currMismatch <= leniency)
+                        if (PotentialEntity.mismatchScore - PotentialEntity.CheckDiff() <= leniency)
                         {
-                            if (wordCharArray[currWordCharIndex] == textCharArray[currTextCharIndex])
+                            if (wordCharArray[currWordCharIndex] == textCharArray[PotentialEntity.GetEndIndex()])
                             {
-                                if (textCharArray[currTextCharIndex].IsDelineating() &&
-                                    (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Length - currWordCharIndex)))
+                                if (textCharArray[PotentialEntity.GetEndIndex()].IsDelineating() &&
+                                    (bestMismatchPreWhitespace == -1 || 
+                                    bestMismatchPreWhitespace > PotentialEntity.mismatchScore + (wordCharArray.Length - currWordCharIndex)))
                                 {
-                                    whitespaceOffset = currTextCharIndex;
-                                    bestMismatchPreWhitespace = currMismatch + (wordCharArray.Length - currWordCharIndex);
+                                    bestMismatchPreWhitespace = (int)PotentialEntity.mismatchScore + (wordCharArray.Length - currWordCharIndex);
                                 }
-                                wordFound.Write(text[currTextCharIndex]);
-                                currTextCharIndex++;
+                                PotentialEntity.MatchInText(text[PotentialEntity.GetEndIndex()]);
                                 currWordCharIndex++;
                             }
                             else
                             {
-                                double potTextMismatch = (textCharArray[currTextCharIndex].IsAccent()) ? 0.5 : 0;
+                                double potTextMismatch = (textCharArray[PotentialEntity.GetEndIndex()].IsAccent()) ? 0.5 : 0;
                                 double potWordMismatch = (wordCharArray[currWordCharIndex].IsAccent()) ? 0.5 : 0;
                                 // fuzzy situation?
                                 // accent case adds 0.5
-                                if (String.Compare(wordCharArray[currWordCharIndex].ToString(), textCharArray[currTextCharIndex].ToString(),
+                                if (String.Compare(wordCharArray[currWordCharIndex].ToString(), textCharArray[PotentialEntity.GetEndIndex()].ToString(),
                                     CultureInfo.CurrentCulture, CompareOptions.IgnoreNonSpace) == 0)
                                 {
-                                    currMismatch += 0.5;
-                                    wordFound.Write(text[currTextCharIndex]);
-                                    currTextCharIndex++;
+                                    PotentialEntity.MatchInText(text[PotentialEntity.GetEndIndex()], 0.5);
                                     currWordCharIndex++;
                                 }
                                 else if (potWordMismatch > 0 && potTextMismatch == 0)
                                 {
-                                    currMismatch += 0.5;
+                                    PotentialEntity.mismatchScore += 0.5;
                                     currWordCharIndex++;
                                 }
                                 else if (potWordMismatch == 0 && potTextMismatch > 0)
                                 {
-                                    currMismatch += 0.5;
-                                    wordFound.Write(text[currTextCharIndex]);
-                                    currTextCharIndex++;
+                                    PotentialEntity.MatchInText(text[PotentialEntity.GetEndIndex()], 0.5);
                                 }
                                 else
                                 {
                                     int offsetWord = 0;
                                     bool trueWordComp = false;
                                     bool trueTextComp = false;
-                                    if (currWordCharIndex < wordCharArray.Length - 1)
+                                    for (int i = currWordCharIndex + 1; i < wordCharArray.Length; i++)
                                     {
-                                        for (int i = currWordCharIndex + 1; i < wordCharArray.Length; i++)
+                                        if (potWordMismatch >= leniency - PotentialEntity.mismatchScore)
+                                            break;
+                                        potWordMismatch++;
+                                        offsetWord++;
+                                        if (String.Compare(wordCharArray[i].ToString(), 
+                                            textCharArray[PotentialEntity.GetEndIndex()].ToString(), CultureInfo.CurrentCulture,
+                                                CompareOptions.IgnoreNonSpace) == 0)
                                         {
-                                            if (potWordMismatch >= leniency - currMismatch)
-                                                break;
-                                            potWordMismatch++;
-                                            offsetWord++;
-                                            if (String.Compare(wordCharArray[i].ToString(), textCharArray[currTextCharIndex].ToString(), CultureInfo.CurrentCulture,
-                                                 CompareOptions.IgnoreNonSpace) == 0)
-                                            {
-                                                trueWordComp = true;
-                                                break;
-                                            }
+                                            trueWordComp = true;
+                                            break;
                                         }
                                     }
-                                    if (currTextCharIndex < textCharArray.Length - 1)
+                                    for (int i = PotentialEntity.GetEndIndex() + 1; i < textCharArray.Length; i++)
                                     {
-                                        for (int i = currTextCharIndex + 1; i < textCharArray.Length; i++)
+                                        if (potTextMismatch >= leniency - PotentialEntity.mismatchScore)
+                                            break;
+                                        if (currWordCharIndex == wordCharArray.Length - 1 &&
+                                            Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) != Char.GetUnicodeCategory(textCharArray[i]))
+                                            break;
+                                        potTextMismatch++;
+                                        if (String.Compare(wordCharArray[currWordCharIndex].ToString(), textCharArray[i].ToString(), CultureInfo.CurrentCulture,
+                                                CompareOptions.IgnoreNonSpace) == 0)
                                         {
-                                            if (potTextMismatch >= leniency - currMismatch)
-                                                break;
-                                            if (currWordCharIndex == wordCharArray.Length - 1 &&
-                                                Char.GetUnicodeCategory(wordCharArray[currWordCharIndex]) != Char.GetUnicodeCategory(textCharArray[i]))
-                                                break;
-                                            potTextMismatch++;
-                                            if (String.Compare(wordCharArray[currWordCharIndex].ToString(), textCharArray[i].ToString(), CultureInfo.CurrentCulture,
-                                                 CompareOptions.IgnoreNonSpace) == 0)
+                                            trueTextComp = true;
+                                            if (textCharArray[i - 1].IsDelineating() &&
+                                                (bestMismatchPreWhitespace == -1 || 
+                                                bestMismatchPreWhitespace > (int)PotentialEntity.mismatchScore + (wordCharArray.Length - currWordCharIndex)))
                                             {
-                                                trueTextComp = true;
-                                                if (textCharArray[i - 1].IsDelineating() &&
-                                                    (bestMismatchPreWhitespace == -1 || bestMismatchPreWhitespace > currMismatch + (wordCharArray.Length - currWordCharIndex)))
-                                                {
-                                                    whitespaceOffset = i;
-                                                    bestMismatchPreWhitespace = currMismatch + (wordCharArray.Length - currWordCharIndex);
-                                                }
-                                                break;
+                                                bestMismatchPreWhitespace = (int)PotentialEntity.mismatchScore + (wordCharArray.Length - currWordCharIndex);
                                             }
+                                            break;
                                         }
                                     }
 
@@ -276,43 +260,39 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                     {
                                         if (potWordMismatch == potTextMismatch)
                                         {
-                                            currMismatch += potWordMismatch;
-                                            for (int i = 0; i < offsetWord; i++)
-                                                wordFound.Write(text[currTextCharIndex + i]);
-                                            currTextCharIndex += offsetWord;
-                                            currWordCharIndex += offsetWord;
+                                            PotentialEntity.AddToDiff(wordCharArray[currWordCharIndex], textCharArray[PotentialEntity.GetEndIndex()]);
+                                            PotentialEntity.MatchInText(text[PotentialEntity.GetEndIndex()], 1);
+                                            currWordCharIndex += 1;
                                         }
                                         else if ((potWordMismatch > potTextMismatch && potTextMismatch != 0) || potWordMismatch == 0)
                                         {
-                                            currMismatch += 1;
-                                            wordFound.Write(text[currTextCharIndex]);
-                                            currTextCharIndex++;
+                                            PotentialEntity.MatchInText(text[PotentialEntity.GetEndIndex()], 1);
                                         }
                                         else
                                         {
-                                            currMismatch += potWordMismatch;
+                                            PotentialEntity.mismatchScore += potWordMismatch;
                                             currWordCharIndex += offsetWord;
                                         }
                                     }
                                     else if (trueTextComp)
                                     {
-                                        currMismatch += 1;
-                                        wordFound.Write(text[currTextCharIndex]);
-                                        currTextCharIndex++;
+                                        PotentialEntity.MatchInText(text[PotentialEntity.GetEndIndex()], 1);
                                     }
                                     else if (trueWordComp)
                                     {
-                                        currMismatch += potWordMismatch;
+                                        PotentialEntity.mismatchScore += potWordMismatch;
                                         currWordCharIndex += offsetWord;
                                     }
                                     else
                                     {
-                                        currMismatch += 1;
+                                        PotentialEntity.AddToDiff(wordCharArray[currWordCharIndex], textCharArray[PotentialEntity.GetEndIndex()]);
+                                        PotentialEntity.mismatchScore += 1;
                                         currWordCharIndex++;
-                                        if (!(currWordCharIndex >= wordCharArray.Length && textCharArray[currTextCharIndex].IsDelineating()) && currMismatch <= leniency)
+                                        if (!(currWordCharIndex >= wordCharArray.Length && 
+                                            textCharArray[PotentialEntity.GetEndIndex()].IsDelineating()) && 
+                                            PotentialEntity.mismatchScore - PotentialEntity.CheckDiff() <= leniency)
                                         {
-                                            wordFound.Write(text[currTextCharIndex]);
-                                            currTextCharIndex++;
+                                            PotentialEntity.MatchInText(text[PotentialEntity.GetEndIndex()]);
                                         }
                                     }
 
@@ -321,50 +301,42 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         }
                         else
                         {
-                            int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
                             currWordCharIndex = 0;
-
-                            if (bestMismatchPreWhitespace > -1 && whitespaceOffset != initialOffsetIndex)
-                            {
-                                currTextCharIndex = whitespaceOffset;
-                            }
-                            wordFound.GetStringBuilder().Clear();
-                            currMismatch = 0;
+                            if (bestMismatchPreWhitespace > -1 && PotentialEntity.GetEndIndex() - bestMismatchPreWhitespace < PotentialEntity.GetStartIndex() - leniency)
+                                PotentialEntity.ResetPotentialEntity(-1 * (bestMismatchPreWhitespace - 1));
+                            else
+                                PotentialEntity.ResetPotentialEntity(0);
                             bestMismatchPreWhitespace = -1;
                         }
-                        if (currWordCharIndex >= wordCharArray.Length && !textCharArray[currTextCharIndex - 1].IsDelineating())
+                        if (currWordCharIndex >= wordCharArray.Length && !textCharArray[PotentialEntity.GetEndIndex() - 1].IsDelineating())
                         {
-                            while (currTextCharIndex < textCharArray.Length)
+                            while (PotentialEntity.GetEndIndex() < textCharArray.Length)
                             {
-                                if (!textCharArray[currTextCharIndex].IsDelineating())
+                                if (!textCharArray[PotentialEntity.GetEndIndex()].IsDelineating())
                                 {
-                                    wordFound.Write(text[currTextCharIndex]);
-                                    currTextCharIndex++;
-                                    currMismatch++;
+                                    PotentialEntity.MatchInText(text[PotentialEntity.GetEndIndex()], 1);
                                 }
                                 else
                                     break;
                             }
                         }
-                        if (currTextCharIndex >= textCharArray.Length || 
-                            (currWordCharIndex >= wordCharArray.Length && textCharArray[currTextCharIndex].IsDelineating()))
+                        if (PotentialEntity.GetEndIndex() >= textCharArray.Length || 
+                            (currWordCharIndex >= wordCharArray.Length && textCharArray[PotentialEntity.GetEndIndex()].IsDelineating()))
                         {
-                            if (wordCharArray.Length - currWordCharIndex > 0)
-                                currMismatch += wordCharArray.Length - currWordCharIndex;
-                            int initialOffsetIndex = currTextCharIndex - wordFound.ToString().Length;
-                            if (currMismatch <= leniency)
+                            PotentialEntity.mismatchScore += Math.Max(0, wordCharArray.Length - currWordCharIndex);
+                            PotentialEntity.mismatchScore -= PotentialEntity.CheckDiff();
+                            if (PotentialEntity.mismatchScore <= leniency)
                             {
-                                if (bestMismatchPreWhitespace > -1 && bestMismatchPreWhitespace < currMismatch)
+                                if (bestMismatchPreWhitespace > -1 && bestMismatchPreWhitespace < PotentialEntity.mismatchScore)
                                 {
                                     entities.Add(
                                     new Entity
                                     {
                                         Category = "customEntity",
-                                        Value = wordFound.GetStringBuilder().Remove(whitespaceOffset - initialOffsetIndex - 1, (int)bestMismatchPreWhitespace).ToString(),
-                                        Offset = initialOffsetIndex,
-                                        Confidence = leniency - bestMismatchPreWhitespace - (wordCharArray.Length - currWordCharIndex)
+                                        Value = PotentialEntity.GetMatch((int) bestMismatchPreWhitespace),
+                                        Offset = PotentialEntity.GetStartIndex(),
+                                        Confidence = bestMismatchPreWhitespace + (wordCharArray.Length - currWordCharIndex)
                                     });
-                                    currTextCharIndex = whitespaceOffset;
                                 }
                                 else
                                 {
@@ -372,26 +344,21 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                     new Entity
                                     {
                                         Category = "customEntity",
-                                        Value = wordFound.ToString(),
-                                        Offset = initialOffsetIndex,
-                                        Confidence = leniency - currMismatch - (wordCharArray.Length - currWordCharIndex)
+                                        Value = PotentialEntity.GetMatch(),
+                                        Offset = PotentialEntity.GetStartIndex(),
+                                        Confidence = PotentialEntity.mismatchScore + (wordCharArray.Length - currWordCharIndex)
                                     });
-
-                                    if (bestMismatchPreWhitespace > -1 && whitespaceOffset != initialOffsetIndex)
-                                    {
-                                        currTextCharIndex = whitespaceOffset;
-                                    }
                                 }
 
-                                if (!entitiesFound.Contains(checkMatch))
-                                    entitiesFound.Add(checkMatch);
+                                entitiesFound.Add(checkMatch);
                                 currWordCharIndex = 0;
-                                wordFound.GetStringBuilder().Clear();
-                                currMismatch = 0;
+                                if (bestMismatchPreWhitespace > -1 && bestMismatchPreWhitespace < PotentialEntity.mismatchScore
+                                    && PotentialEntity.GetEndIndex() - bestMismatchPreWhitespace != PotentialEntity.GetStartIndex() - 1)
+                                    PotentialEntity.ResetPotentialEntity(-1 * (bestMismatchPreWhitespace - 1));
+                                else
+                                    PotentialEntity.ResetPotentialEntity(0);
                                 bestMismatchPreWhitespace = -1;
                             }
-                            else
-                                currMismatch = leniency + 1;
                         }
                     }
                 }

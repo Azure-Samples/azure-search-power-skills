@@ -41,7 +41,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public static readonly string[] OverlapInTextWords = new[] { "hello hello" };
         public static readonly string[] OverlapInTextMatches = new[] { "helllo hello" };
         public static readonly int[] OverlapInTextIndices = new[] { 6 };
-        public static readonly double[] OverlapInTextConfidence = new[] { 0.0 };
+        public static readonly double[] OverlapInTextConfidence = new[] { 1.0 };
 
         public static readonly string AccentsHalfMismatchText = "héllo";
         public static readonly string[] AccentsHalfMismatchWords = new[] { "hello" };
@@ -50,30 +50,30 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public static readonly string[] NoDoubleCountedExactMatchWords = new[] { "hello" };
         public static readonly string[] NoDoubleCountedExactMatches = new[] { "hello", "hellc" };
         public static readonly int[] NoDoubleCountedExactMatchIndices = new[] { 0, 6 };
-        public static readonly double[] NoDoubleCountedExactMatchConfidence = new[] { 1.0, 0.0 };
+        public static readonly double[] NoDoubleCountedExactMatchConfidence = new[] { 0.0, 1.0 };
 
         public static readonly string OnlyFindEntitiesUnderOffsetLimitText = "hellc hello  helloo   ";
         public static readonly string[] OnlyFindEntitiesUnderOffsetLimitWords = new[] { "hello " };
         public static readonly string[] OnlyFindEntitiesUnderOffsetLimitMatches = new[] { "hellc", "hello", "helloo" };
         public static readonly int[] OnlyFindEntitiesUnderOffsetLimitIndices = new[] { 0, 6, 13 };
-        public static readonly double[] OnlyFindEntitiesUnderOffsetLimitConfidence = new[] { 0.0, 1.0, 0.0 };
+        public static readonly double[] OnlyFindEntitiesUnderOffsetLimitConfidence = new[] { 1.0, 0.0, 1.0 };
 
         public static readonly string FuzzyWordsLongerThanTextText = "hello";
         public static readonly string[] FuzzyWordsLongerThanTextWords = new[] { "hello!" };
         public static readonly int[] FuzzyWordsLongerThanTextIndices = new[] { 0 };
-        public static readonly double[] FuzzyWordsLongerThanTextConfidence = new[] { 1.0 };
+        public static readonly double[] FuzzyWordsLongerThanTextConfidence = new[] { 0.0 };
 
         public static readonly string FuzzyTextLongerThanWordsText = "hello hlloyy";
         public static readonly string[] FuzzyTextLongerThanWordsWords = new[] { "hllo" };
         public static readonly string[] FuzzyTextLongerThanWordsMatches = new[] { "hello" };
         public static readonly int[] FuzzyTextLongerThanWordsIndices = new[] { 0 };
-        public static readonly double[] FuzzyTextLongerThanWordsConfidence = new[] { 0.0 };
+        public static readonly double[] FuzzyTextLongerThanWordsConfidence = new[] { 1.0 };
 
         public static readonly string LargeLeniencyMismatchedWordText = "hello help!";
         public static readonly string[] LargeLeniencyMismatchedWordWords = new[] { "helcfo" };
         public static readonly string[] LargeLeniencyMismatchedWordMatches = new[] { "hello" };
         public static readonly int[] LargeLeniencyMismatchedWordIndices = new[] { 0 };
-        public static readonly double[] LargeLeniencyMismatchedWordConfidence = new[] { 0.0 };
+        public static readonly double[] LargeLeniencyMismatchedWordConfidence = new[] { 2.0 };
 
         public const string WordSmallerThanLeniencyInput = @"{
     ""values"": [
@@ -96,20 +96,20 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public static readonly string[] LargeLeniencyMismatchedTextWords = new[] { "along" };
         public static readonly string[] LargeLeniencyMismatchedTextMatches = new[] { "vealong" };
         public static readonly int[] LargeLeniencyMismatchedTextIndices = new[] { 3 };
-        public static readonly double[] LargeLeniencyMismatchedTextConfidence = new[] { 1.0 };
+        public static readonly double[] LargeLeniencyMismatchedTextConfidence = new[] { 2.0 };
 
         public static readonly string LargeLeniencyMismatchedMixText = "its friday! have a gréat greeken.";
         public static readonly string[] LargeLeniencyMismatchedMixWords = new[] { "greek" };
         public static readonly string[] LargeLeniencyMismatchedMixMatches = new[] { "gréat", "greeken" };
         public static readonly int[] LargeLeniencyMismatchedMixIndices = new[] { 19, 25 };
-        public static readonly double[] LargeLeniencyMismatchedMixConfidence = new[] { 0.5, 1.0};
+        public static readonly double[] LargeLeniencyMismatchedMixConfidence = new[] { 2.5, 2.0};
 
         public static readonly string LargestLeniencyCheckText = "the fix was so simple, I overlooked it... Should work on all tests now!";
-        public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo ", "overlooking", "overlooked" };
-        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "so", "the fix", "overlooked", "work on", "overlooked" };
-        public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "soo ", "overlooking", "overlooked" };
-        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 12, 0, 25, 49, 25 };
-        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 1.0, 0.0, 1.0, 7.0, 1.0, 8.0 };
+        public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo", "overlooking", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "so", "the fix", "overlooked", "work on", "on", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "soo", "overlooking", "overlooked" };
+        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 12, 0, 25, 49, 54, 25 };
+        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 0.0, 1.0, 9.0, 3.0, 9.0, 9.0, 0.0 };
         public static readonly string LargestLeniencyCheckWarning = @"""warnings"":[{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
                 @"\""fix\"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
                 @"\""soo \"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, \""overlooked\"".""}]";
@@ -460,7 +460,7 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                         @"外国人観光客の利用が増える中"
                 });
             supportedMatchIndices.Add("Japanese", new int[] { 67 });
-            supportedConfidence.Add("Japanese", new double[] { 1.0 });
+            supportedConfidence.Add("Japanese", new double[] { 0.0 });
             supportedTextandWords.Add("Finnish", new string[]
                 {
                         @"Kuusi vuotta taksia ajanut Mika Lindberg ei enää aja mielellään Helsinki-Vantaan lentoasemalle. ”Kuskit kiukuttelevat siellä”, hän sanoo. Kiukuttelun syiksi Lindberg mainitsee lentokentän liikennettä sekoittavan terminaalityömaan ja koko taksialaa hämmentäneen taksiuudistuksen.",
@@ -480,7 +480,7 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                         @"hjæm"
                 });
             supportedMatchIndices.Add("Danish", new int[] { 63 });
-            supportedConfidence.Add("Danish", new double[] { 0.0 });
+            supportedConfidence.Add("Danish", new double[] { 1.0 });
             supportedTextandWords.Add("Norwegian", new string[]
                 {
                         @"I en uttalelse melder militæret at fem av de omkomne i styrten i landsbyen Mora Kalu utenfor Rawalpindi var soldater. Flyets to piloter er også bekreftet omkommet.",
@@ -491,7 +491,7 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
 
                 });
             supportedMatchIndices.Add("Norwegian", new int[] { 45 });
-            supportedConfidence.Add("Norwegian", new double[] { 0.0 });
+            supportedConfidence.Add("Norwegian", new double[] { 1.0 });
             supportedTextandWords.Add("Korean", new string[]
                 {
                         @"왜 그리 내게 차가운가요
@@ -506,7 +506,7 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
 
                 });
             supportedMatchIndices.Add("Korean", new int[] { 43 });
-            supportedConfidence.Add("Korean", new double[] { 0.0 });
+            supportedConfidence.Add("Korean", new double[] { 1.0 });
             supportedTextandWords.Add("Polish", new string[]
                 {
                         @"Na przełomie września i października 2017 roku w większości krajów Europy - m.in. w Niemczech, Austrii, Włoszech, Szwajcarii, Francji, Grecji, Norwegii, Rumunii, Bułgarii, a także w Polsce - zanotowano w powietrzu śladowe ilości radioaktywnego rutenu-106.",
@@ -526,7 +526,7 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                     @"вы "
                 });
             supportedMatchIndices.Add("Russian", new int[] { 78 });
-            supportedConfidence.Add("Russian", new double[] { 0.0 });
+            supportedConfidence.Add("Russian", new double[] { 1.0 });
             supportedTextandWords.Add("Swedish", new string[]
                 {
                     @"När den amerikanske rapartisten ASAP Rocky frihetsberövas i Stockholm, misstänkt för misshandel, väcker det starka reaktioner i USA.",
@@ -586,7 +586,7 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                     @"antast"
                 });
             supportedMatchIndices.Add("Dutch", new int[] { 126 });
-            supportedConfidence.Add("Dutch", new double[] { 0.0 });
+            supportedConfidence.Add("Dutch", new double[] { 1.0 });
             supportedTextandWords.Add("German", new string[]
                 {
                     @"üngstes Beispiel ist die Festsetzung eines russischen Tankers im Gebiet Odessa. Das Schiff war nach ukrainischen Angaben im November an Russlands Blockade der Meerenge von Kertsch beteiligt, bei der drei ukrainische Marineschiffe aufgebracht wurden. Die 24 Ukrainer auf den drei Schiffen sind, trotz einer Anordnung des Internationalen Seegerichtshofs von Ende Mai, weiter in russischer Untersuchungshaft; Selenskyj will ihre Freilassung erreichen.",

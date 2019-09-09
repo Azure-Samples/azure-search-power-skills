@@ -42,6 +42,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
                 Method = "POST"
             };
             var response = (OkObjectResult)(await function(request));
+            Console.WriteLine(JsonConvert.SerializeObject((WebApiSkillResponse)response.Value));
             return (WebApiSkillResponse)response.Value;
         }
 
