@@ -105,11 +105,15 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public static readonly double[] LargeLeniencyMismatchedMixConfidence = new[] { 2.5, 2.0};
 
         public static readonly string LargestLeniencyCheckText = "the fix was so simple, I overlooked it... Should work on all tests now!";
-        public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo", "overlooking", "overlooked" };
-        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "so", "the fix", "overlooked", "work on", "on", "overlooked" };
-        public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "soo", "overlooking", "overlooked" };
-        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 12, 0, 25, 49, 54, 25 };
-        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 0.0, 1.0, 9.0, 3.0, 9.0, 9.0, 0.0 };
+        public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo ", "overlooking", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "I", "it", "so", "on", "now", "the fix", "fix",
+            "was so", "so", "simple, I", "I overlooked", "overlooked", "it", "Should", "work on", "on", "all", "tests", "now", "the", "was so",
+            "so", "simple", "I overlooked", "overlooked", "Should", "work", "on all", "all", "tests", "now" };
+        public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "soo ", "overlooking", "overlooked" };
+        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 23, 36, 12, 54, 67, 0, 4, 8, 12, 15, 23, 25,
+            36, 42, 49, 54, 57, 61, 67, 0, 8, 12, 15, 23, 25, 42, 49, 54, 57, 61, 67};
+        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 0.0, 2.0, 2.0, 1.0, 2.0, 2.0, 9.0, 10.0, 10.0, 10.0, 9.0,
+        5.0, 3.0, 10.0, 10.0, 8.0, 9.0, 10.0, 10.0, 10.0, 9.0, 9.0, 9.0, 8.0, 2.0, 0.0, 8.0, 8.0, 8.0, 9.0, 9.0, 9.0};
         public static readonly string LargestLeniencyCheckWarning = @"""warnings"":[{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
                 @"\""fix\"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
                 @"\""soo \"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, \""overlooked\"".""}]";
@@ -597,6 +601,14 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
                 });
             supportedMatchIndices.Add("German", new int[] { 387 });
             supportedConfidence.Add("German", new double[] { 0.5 });
+            supportedTextandWords.Add("Basic Overlap", new string[]
+                {
+                    @"a a a c a a c",
+                    @"a a",
+                    @"a a, a a, a a",
+                    @"a a"
+                });
+            supportedMatchIndices.Add("Basic Overlap", new int[] { 0, 2, 8 });
         }
     }
 }

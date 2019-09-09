@@ -149,9 +149,8 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             Dictionary<string, string[]> supportedLangTextandWords = TestData.supportedTextandWords;
             Dictionary<string, int[]> matchIndices = TestData.supportedMatchIndices;
             Dictionary<string, double[]> confidenceScore = TestData.supportedConfidence;
-            foreach (string language in supportedLangTextandWords.Keys)
+            foreach (string language in confidenceScore.Keys)
             {
-                Console.WriteLine(language);
                 await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
                 new string[] { supportedLangTextandWords[language][4] }, supportedLangTextandWords[language][2].Split(", "),
                 matchIndices[language], confidenceScore[language], supportedLangTextandWords[language][0],
