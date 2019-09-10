@@ -4,7 +4,6 @@ languages:
 - csharp
 products:
 - azure
-- azure-search
 - azure-cognitive-services
 name: Analyze form sample skill for cognitive search
 urlFragment: azure-analyzeform-sample

@@ -6,7 +6,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.BingEntitySearch
     public class BingEntity
     {
 
-        public ContractualRule[] ContractualRules { get; set; }
+        public Contractualrule[] contractualRules { get; set; }
         public Image Image { get; set; }
         public string Description { get; set; }
         public string BingId { get; set; }

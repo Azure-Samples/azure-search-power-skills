@@ -10,15 +10,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.AcronymLinker
 {
     public class AcronymLinker
     {
-        public static Dictionary<string, string> TestDataSet { get; set; }
-
         public AcronymLinker(string executingDirectoryPath)
         {
-            if (TestDataSet != null)
-            {
-                Acronyms = TestDataSet;
-                return;
-            }
             string json = File.ReadAllText($"{executingDirectoryPath}\\acronyms.json");
             Acronyms = new Dictionary<string, string>(
                 JsonConvert.DeserializeObject<Dictionary<string, string>>(json),

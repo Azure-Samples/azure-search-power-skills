@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-search
+- azure-cognitive-services
 name: Image store sample skills for cognitive search
 urlFragment: azure-imagestore-sample
 description: These custom skills store or retrieve a base64-encoded image to or from blob storage.

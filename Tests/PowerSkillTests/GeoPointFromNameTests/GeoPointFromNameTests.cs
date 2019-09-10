@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.  
 
 using AzureCognitiveSearch.PowerSkills.Common;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,8 +15,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.GeoPointFromNameTests
     [TestClass]
     public class GeoPointFromNameTests
     {
-        [ClassInitialize]
-        public static void Setup(TestContext context)
+        public GeoPointFromNameTests()
         {
             WebApiSkillHelpers.TestMode = true;
             WebApiSkillHelpers.TestWww = req =>
@@ -46,7 +46,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.GeoPointFromNameTests
                 Geo.GeoPointFromName.GeoPointFromName.RunGeoPointFromName,
                 new { Address = JsonConvert.SerializeObject(new { X = 50, Y = 100 }) },
                 "mainGeoPoint");
-            var coordinates = mainGeoPoint.GetProperty<double[]>("Coordinates");
+            var coordinates = mainGeoPoint.GetType().GetProperty("Coordinates").GetValue(mainGeoPoint, null) as double[];
             Assert.AreEqual(100, coordinates[0]);
             Assert.AreEqual(50, coordinates[1]);
         }
