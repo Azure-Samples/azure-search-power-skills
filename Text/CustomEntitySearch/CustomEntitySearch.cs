@@ -35,7 +35,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
     public static class CustomEntitySearch
     {
         // Use this to load from "csv" or "json" file 
-        public static IList<string> preLoadedWords = new WordLinker("csv").Words;
+        public static IList<string> preLoadedWords = WordLinker.WordLink("csv").Words;
 
         private static readonly int MaxRegexEvalTime = 1;
         private static bool substringMatch = false;
@@ -91,7 +91,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 Message = "Used predefined key words from customLookupSkill configuration file " +
                                 "since no 'words' parameter was supplied in web request"
                             });
-                            WordLinker userInput = WordLinker.WordLink(executionContext.FunctionAppDirectory);
+                            WordLinker userInput = WordLinker.WordLink("json");
                             words = userInput.Words;
                             synonyms = userInput.Synonyms;
                             exactMatches = userInput.ExactMatch;
