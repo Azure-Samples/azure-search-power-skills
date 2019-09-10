@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-services
+- azure-search
 name: Acronym Linker sample skills for cognitive search
 description: These two custom skills (link-acronyms and link-acronyms-list) give definitions for known acronyms.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/AcronymLinker/azuredeploy.json

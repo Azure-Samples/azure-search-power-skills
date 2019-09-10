@@ -3,7 +3,7 @@
 
 namespace AzureCognitiveSearch.PowerSkills.Text.BingEntitySearch
 {
-    public class Contractualrule
+    public class ContractualRule
     {
         public string _type { get; set; }
         public string TargetPropertyName { get; set; }
