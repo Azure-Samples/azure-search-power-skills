@@ -34,8 +34,12 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
     /// </summary>
     public static class CustomEntitySearch
     {
-        private static int MaxRegexEvalTime = 1;
+        // Use this to load from "csv" or "json" file 
+        public static IList<string> preLoadedWords = new WordLinker("csv").Words;
+
+        private static readonly int MaxRegexEvalTime = 1;
         private static bool substringMatch = false;
+
         /// <summary>
         /// We assert the following assumptions:
         /// 1. All text files contain characters with unicode encoding
@@ -72,13 +76,14 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         return outRecord;
                     }
                     string text = inRecord.Data["text"] as string;
-                    IList<string> words = inRecord.GetOrCreateList<List<string>>("words");
-                    Dictionary<string, string[]> synonyms = inRecord.GetOrCreateDictionary<Dictionary<string, string[]>>("synonyms");
-                    IList<string> exactMatches = inRecord.GetOrCreateList<List<string>>("exactMatches");
-                    int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset")) ? Math.Max(0, Convert.ToInt32(inRecord.Data["fuzzyMatchOffset"])) : 0;
-                    bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
-                    if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
-                    {
+
+                     IList<string> words = (inRecord.Data.ContainsKey("words") == true) ? inRecord.GetOrCreateList<List<string>>("words") : preLoadedWords;
+                     Dictionary<string, string[]> synonyms = inRecord.GetOrCreateDictionary<Dictionary<string, string[]>>("synonyms");
+                     IList<string> exactMatches = inRecord.GetOrCreateList<List<string>>("exactMatches");
+                     int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset")) ? Math.Max(0, Convert.ToInt32(inRecord.Data["fuzzyMatchOffset"])) : 0;
+                     bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
+                     if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
+                     {
                         try
                         {
                             outRecord.Warnings.Add(new WebApiErrorWarningContract
