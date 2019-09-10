@@ -3,37 +3,40 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 {
     internal class WordLinker
     {
-        public WordLinker(string fileType)
+        public static WordLinker WordLink(string executingDirectoryPath)
         {
-            var local_root = Environment.GetEnvironmentVariable("AzureWebJobsScriptRoot");
-            var azure_root = $"{Environment.GetEnvironmentVariable("HOME")}/site/wwwroot";
-            var actual_root = local_root ?? azure_root;
-
-            if (fileType == "json")
-            {
-                string json = File.ReadAllText($"{actual_root}\\words.json");
-                Words = new List<string>(JsonConvert.DeserializeObject<List<string>>(json));
-            }
-            else if (fileType == "csv")
-            {
-                Words = File.ReadAllLines($"{actual_root}\\words.csv").ToList();
-            }
-
+            string json = File.ReadAllText($"{executingDirectoryPath}\\words.json");
+            return JsonConvert.DeserializeObject<WordLinker>(json);
         }
 
         public IList<string> Words
         {
-            get; private set;
+            get;
+        }
+        public IList<string> ExactMatch
+        {
+            get;
+        }
+        public int FuzzyMatchOffset
+        {
+            get;
+        }
+        public Dictionary<string, string[]> Synonyms
+        {
+            get;
+        }
+        public bool CaseSensitive
+        {
+            get;
         }
     }
-
 }

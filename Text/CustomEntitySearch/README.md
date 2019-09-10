@@ -3,8 +3,7 @@ topic: sample
 languages:
 - csharp
 products:
-- azure
-- azure-search
+- azure-cognitive-services
 name: Custom Entity Search sample skill for cognitive search
 description: This custom skill finds user defined entities in given texts.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/CustomEntitySearch/azuredeploy.json
@@ -22,23 +21,21 @@ These skills have no additional requirements than the ones described in [the roo
 
 ## Settings
 
-This function requires Latin-based text (as seen in the sample document provided). The input field "words" is optional, where a user can add a "words.json" or "words.csv" file instead.  To load a JSON file, change "csv" to "json" in the following line within CustomEntitySearch.cs 
+This function by default performs exact matches with no synonym detection. Based on user input in the JSON file or in the posted values, this skill can perform fuzzy matching on some or all of the entities provided. The input field "words" is optional, where a user can add a "words.json" file instead.
 
-```
-public static IList<string> preLoadedWords = new WordLinker("csv").Words;
-```
-
-## Sample Config File (JSON)
+## Sample Config File
 ```json
-    ["foo1", "foo2"]
+{
+    "words": [ "foo1", "foo2" ],
+    "synonyms":
+    {
+        "foo1": [ "i" ]
+    },
+    "exactMatch": [ "foo2" ],
+    "fuzzyMatchOffset": 1
+	"caseSensitive": true
+}
 ```
-
-## Sample Config File (CSV)
-```json
-    foo1
-    foo2
-```
-
 
 ## Sample Input:
 
@@ -81,12 +78,16 @@ public static IList<string> preLoadedWords = new WordLinker("csv").Words;
                 "EntitiesFound": ["learn", "app"],
                 "Entities": [
                     {
-                        "Name": "Learn",
-                        "matchIndex": 1
+                        "Category": "customEntity",
+                        "Value": "Learn",
+                        "Offset": 1,
+                        "Confidence": 1.0
                     },
                     {
-                        "Name": "app",
-                        "MatchIndex": 45
+                        "Category": "customEntity",
+                        "Value": "app",
+                        "Offset": 45,
+                        "Confidence": 1.0
                     }
                 ]
             }
