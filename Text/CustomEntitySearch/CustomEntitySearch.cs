@@ -79,15 +79,28 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
                     if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
                     {
-                        outRecord.Warnings.Add(new WebApiErrorWarningContract {
-                            Message = "Used predefined key words from customLookupSkill configuration file " +
-                            "since no 'words' parameter was supplied in web request" });
-                        WordLinker userInput = WordLinker.WordLink(executionContext.FunctionAppDirectory);
-                        words = userInput.Words;
-                        synonyms = userInput.Synonyms;
-                        exactMatches = userInput.ExactMatch;
-                        offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
-                        caseSensitive = userInput.CaseSensitive;
+                        try
+                        {
+                            outRecord.Warnings.Add(new WebApiErrorWarningContract
+                            {
+                                Message = "Used predefined key words from customLookupSkill configuration file " +
+                                "since no 'words' parameter was supplied in web request"
+                            });
+                            WordLinker userInput = WordLinker.WordLink(executionContext.FunctionAppDirectory);
+                            words = userInput.Words;
+                            synonyms = userInput.Synonyms;
+                            exactMatches = userInput.ExactMatch;
+                            offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
+                            caseSensitive = userInput.CaseSensitive;
+                        }
+                        catch (Exception)
+                        {
+                            outRecord.Errors.Add(new WebApiErrorWarningContract
+                            {
+                                Message = "Could not parse predefined words.json"
+                            });
+                            return outRecord;
+                        }
                     }
 
                     var entities = new List<Entity>();
@@ -98,27 +111,31 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         {
                             if (string.IsNullOrEmpty(word)) continue;
                             int leniency = (exactMatches != null && exactMatches.Contains(word)) ? 0 : offset;
-                            if (leniency >= word.Length)
+                            string wordCharArray = (caseSensitive) ? CreateWordArray(word) : CreateWordArray(word.ToLower(CultureInfo.CurrentCulture));
+                             if (leniency >= wordCharArray.Length)
                              {
                                  outRecord.Warnings.Add(new WebApiErrorWarningContract
                                  {
                                      Message = @"The provided fuzzy offset of " + leniency + @", is larger than the length of the provided word, """ + word + @"""."
                                  });
+                                 leniency = Math.Max(0, wordCharArray.Length - 1);
                              }
-                            AddValues(word, text, entities, entitiesFound, leniency, caseSensitive);
+                             AddValues(word, text, wordCharArray, entities, entitiesFound, leniency, caseSensitive);
                             if (synonyms.TryGetValue(word, out string[] wordSynonyms))
                             {
                                 foreach (string synonym in wordSynonyms)
                                 {
                                     leniency = (exactMatches != null && exactMatches.Contains(synonym)) ? 0 : offset;
-                                    if (leniency >= synonym.Length)
-                                    {
+                                    string synonymCharArray = (caseSensitive) ? CreateWordArray(synonym) : CreateWordArray(synonym.ToLower(CultureInfo.CurrentCulture));
+                                     if (leniency >= synonym.Length)
+                                     {
                                         outRecord.Warnings.Add(new WebApiErrorWarningContract
                                         {
                                             Message = @"The provided fuzzy offset of " + leniency + @", is larger than the length of the provided synonym, """ + synonym + @"""."
                                         });
-                                    }
-                                     AddValues(synonym, text, entities, entitiesFound, leniency, caseSensitive);
+                                        leniency = Math.Max(0, synonymCharArray.Length - 1);
+                                     }
+                                     AddValues(synonym, text, synonymCharArray, entities, entitiesFound, leniency, caseSensitive);
                                 }
                             }
                         }
@@ -132,10 +149,15 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             return new OkObjectResult(response);
         }
 
-        public static void AddValues(string checkMatch, string text, List<Entity> entities, 
-            HashSet<string> entitiesFound, int leniency, bool caseSensitive)
+        public static void AddValues(
+            string checkMatch, 
+            string text, 
+            string wordCharArray, 
+            List<Entity> entities, 
+            HashSet<string> entitiesFound, 
+            int leniency, 
+            bool caseSensitive)
         {
-            string wordCharArray = (caseSensitive) ? CreateWordArray(checkMatch) : CreateWordArray(checkMatch.ToLower(CultureInfo.CurrentCulture));
             if (leniency == 0)
             {
                 // Overlap checker now also included in Regex expression using delineating characters as overlap lookahead
@@ -177,38 +199,39 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             }
             else
             {
-                List<int> pointersInText = new List<int>{ 0 };
+                List<int> startPointersInText = new List<int> { 0 };
+                List<int> endPointersInText = new List<int>();
                 string textCharArray = (caseSensitive) ? text : text.ToLower(CultureInfo.CurrentCulture);
                 for (int currTextCharIndex = 0; currTextCharIndex < textCharArray.Length; currTextCharIndex++)
                 {
                     if (textCharArray[currTextCharIndex].IsDelineating())
-                        pointersInText.Add(currTextCharIndex + 1);
-                }
-                pointersInText.Add(textCharArray.Length + 1);
-
-                double[] minLevenshteinDistance = new double[pointersInText.Count];
-                int[] endofMatchInTextPointer = new int[pointersInText.Count];
-                if (leniency > wordCharArray.Length - 1)
-                    leniency = Math.Max(0, wordCharArray.Length - 1);
-                for (int pointer = 0; pointer < pointersInText.Count - 1; pointer++)
-                {
-                    minLevenshteinDistance[pointer] = -1;
-                    for (int nextPointer = pointer + 1; nextPointer < pointersInText.Count; nextPointer++)
                     {
-                        if (pointersInText[nextPointer] == pointersInText[pointer] + 1)
-                            break;
-                        double distance = DamerauLevenshteinCalculation(textCharArray.Substring(pointersInText[pointer], 
-                            pointersInText[nextPointer] - pointersInText[pointer] - 1), wordCharArray);
-                        if (distance > -1 && (minLevenshteinDistance[pointer] == -1 || minLevenshteinDistance[pointer] > distance))
+                        if (currTextCharIndex + 1 < textCharArray.Length && !textCharArray[currTextCharIndex + 1].IsDelineating())
+                            startPointersInText.Add(currTextCharIndex + 1);
+                        if (currTextCharIndex - 1 >= 0 && !textCharArray[currTextCharIndex - 1].IsDelineating())
+                            endPointersInText.Add(currTextCharIndex - 1);
+                    }
+                }
+                endPointersInText.Add(textCharArray.Length - 1);
+
+                double[] minLevenshteinDistance = new double[startPointersInText.Count];
+                int[] endofMatchInTextPointer = new int[startPointersInText.Count];
+                for (int startIndex = 0; startIndex < startPointersInText.Count; startIndex++)
+                {
+                    minLevenshteinDistance[startIndex] = -1;
+                    for (int endIndex = startIndex; endIndex < endPointersInText.Count; endIndex++)
+                    {
+                        double distance = DamerauLevenshteinCalculation(textCharArray.Substring(startPointersInText[startIndex],
+                            endPointersInText[endIndex] - startPointersInText[startIndex] + 1), wordCharArray);
+                        if (distance > -1 && (minLevenshteinDistance[startIndex] == -1 || minLevenshteinDistance[startIndex] > distance))
                         {
-                            minLevenshteinDistance[pointer] = distance;
-                            endofMatchInTextPointer[pointer] = nextPointer;
+                            minLevenshteinDistance[startIndex] = distance;
+                            endofMatchInTextPointer[startIndex] = endIndex;
                         }
                         else if (distance > checkMatch.Length * 2)
                             break;
                     }
                 }
-                minLevenshteinDistance[pointersInText.Count - 1] = -1;
 
                 for (int i = 0; i < minLevenshteinDistance.Length; i++)
                 {
@@ -218,8 +241,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 new Entity
                                 {
                                     Category = "customEntity",
-                                    Value = text.Substring(pointersInText[i], pointersInText[endofMatchInTextPointer[i]] - pointersInText[i] - 1),
-                                    Offset = pointersInText[i],
+                                    Value = text.Substring(startPointersInText[i], endPointersInText[endofMatchInTextPointer[i]] - startPointersInText[i] + 1),
+                                    Offset = startPointersInText[i],
                                     Confidence = minLevenshteinDistance[i]
                                 });
                         entitiesFound.Add(checkMatch);
@@ -254,11 +277,12 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     if (checkMatch[currWordIndex].IsAccent() ^ text[currTextIndex].IsAccent())
                         accentAddition = 0.5;
                     dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1] = Math.Min(
-                        Math.Min(dynamicDistanceCalc[currTextIndex, currWordIndex + 1] + accentAddition, 
-                        dynamicDistanceCalc[currTextIndex + 1, currWordIndex] + accentAddition), dynamicDistanceCalc[currTextIndex, currWordIndex] + substitutionCost);
+                        Math.Min(dynamicDistanceCalc[currTextIndex, currWordIndex + 1] + accentAddition, // deletion
+                        dynamicDistanceCalc[currTextIndex + 1, currWordIndex] + accentAddition), // insertion
+                        dynamicDistanceCalc[currTextIndex, currWordIndex] + substitutionCost); // substitution
                     if (currTextIndex > 0 && currWordIndex > 0 && text[currTextIndex].Equals(checkMatch[currWordIndex - 1]) && checkMatch[currWordIndex].Equals(text[currTextIndex - 1]))
                         dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1] = Math.Min(dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1], 
-                            dynamicDistanceCalc[currTextIndex - 1, currWordIndex - 1] + substitutionCost);
+                            dynamicDistanceCalc[currTextIndex - 1, currWordIndex - 1] + substitutionCost); // transposition
                 }
             }
 
@@ -266,9 +290,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         }
 
         /*
-* Given an entity the user wants to find, this method removes delineating characters if they are found in the
-* beginning or end of the entity definition. The method then returns the exact word that will be used for fuzzy matching
-*/
+        * Given an entity the user wants to find, this method removes delineating characters if they are found in the
+        * beginning or end of the entity definition. The method then returns the exact word that will be used for fuzzy matching
+        */
         public static string CreateWordArray(string checkMatch)
         {
             int initCheckIndex = 0;
