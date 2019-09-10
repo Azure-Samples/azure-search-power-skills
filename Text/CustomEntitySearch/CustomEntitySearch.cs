@@ -35,7 +35,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
     public static class CustomEntitySearch
     {
         // Use this to load from "csv" or "json" file 
-        public static IList<string> preLoadedWords = WordLinker.WordLink("csv").Words;
+        public static IList<string> preLoadedWords = WordLinker.WordLink(Environment.CurrentDirectory, "csv").Words;
 
         private static readonly int MaxRegexEvalTime = 1;
         private static bool substringMatch = false;
@@ -76,8 +76,20 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         return outRecord;
                     }
                     string text = inRecord.Data["text"] as string;
-
-                     IList<string> words = (inRecord.Data.ContainsKey("words") == true) ? inRecord.GetOrCreateList<List<string>>("words") : preLoadedWords;
+                     IList<string> words;
+                     if (inRecord.Data.ContainsKey("words") == true)
+                     {
+                         words = inRecord.GetOrCreateList<List<string>>("words");
+                     }
+                     else
+                     {
+                         outRecord.Warnings.Add(new WebApiErrorWarningContract
+                         {
+                             Message = "Used predefined key words from customLookupSkill configuration file " +
+                                "since no 'words' parameter was supplied in web request"
+                         });
+                         words = preLoadedWords;
+                     }
                      Dictionary<string, string[]> synonyms = inRecord.GetOrCreateDictionary<Dictionary<string, string[]>>("synonyms");
                      IList<string> exactMatches = inRecord.GetOrCreateList<List<string>>("exactMatches");
                      int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset")) ? Math.Max(0, Convert.ToInt32(inRecord.Data["fuzzyMatchOffset"])) : 0;
@@ -86,18 +98,18 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                      {
                         try
                         {
-                            outRecord.Warnings.Add(new WebApiErrorWarningContract
-                            {
-                                Message = "Used predefined key words from customLookupSkill configuration file " +
-                                "since no 'words' parameter was supplied in web request"
-                            });
-                            WordLinker userInput = WordLinker.WordLink("json");
+                            WordLinker userInput = WordLinker.WordLink(executionContext.FunctionDirectory, "json");
                             words = userInput.Words;
                             synonyms = userInput.Synonyms;
                             exactMatches = userInput.ExactMatch;
                             offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
                             caseSensitive = userInput.CaseSensitive;
-                        }
+                            outRecord.Warnings.Add(new WebApiErrorWarningContract
+                            {
+                                Message = "Used predefined key words from customLookupSkill configuration file " +
+                            "since no 'words' parameter was supplied in web request"
+                            });
+                         }
                         catch (Exception)
                         {
                             outRecord.Errors.Add(new WebApiErrorWarningContract

@@ -13,22 +13,18 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 {
     internal class WordLinker
     {
-        public static WordLinker WordLink(string fileType)
+        public static WordLinker WordLink(string executingPathDirectory, string fileType)
         {
-            var local_root = Environment.GetEnvironmentVariable("AzureWebJobsScriptRoot");
-            var azure_root = $"{Environment.GetEnvironmentVariable("HOME")}/site/wwwroot";
-            var actual_root = local_root ?? azure_root;
-
             if (fileType == "json")
             {
-                string json = File.ReadAllText($"{actual_root}\\words.json");
+                string json = File.ReadAllText($"{executingPathDirectory}\\words.json");
                 return JsonConvert.DeserializeObject<WordLinker>(json);
             }
             else if (fileType == "csv")
             {
                 return new WordLinker
                 {
-                    Words = File.ReadAllLines($"{actual_root}\\words.csv").ToList()
+                    Words = File.ReadAllLines($"{executingPathDirectory}\\words.csv").ToList()
                 };
             }
             return new WordLinker();
