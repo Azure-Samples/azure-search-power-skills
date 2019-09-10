@@ -71,8 +71,6 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
             if (warningMessage != "")
                 expectedOutput = expectedOutput.Replace(@"""warnings"":[]", warningMessage);
-            Console.WriteLine(expectedOutput);
-            Console.WriteLine(actualOutput);
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 

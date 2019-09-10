@@ -93,7 +93,6 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             Dictionary<string, int[]> matchIndices = TestData.supportedMatchIndices;
             foreach (string language in supportedLangTextandWords.Keys)
             {
-                Console.WriteLine(language);
                 await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
                 new string[] { supportedLangTextandWords[language][3] }, supportedLangTextandWords[language][2].Split(", "),
                 matchIndices[language], supportedLangTextandWords[language][0], new string[] { supportedLangTextandWords[language][1] });
