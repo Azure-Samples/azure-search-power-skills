@@ -157,7 +157,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         public static void AddValues(
             string checkMatch, 
             string text, 
-            string wordCharArray, 
+            string word, 
             List<Entity> entities, 
             HashSet<string> entitiesFound, 
             int leniency, 
@@ -167,20 +167,20 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             {
                 // Overlap checker now also included in Regex expression using delineating characters as overlap lookahead
                 StringBuilder escapedWord = new StringBuilder(@"(?=(");
-                if (!wordCharArray.First().IsDelineating() && !substringMatch)
+                if (!word.First().IsDelineating() && !substringMatch)
                     escapedWord.Append(@"\b");
-                for (int currWordCharIndex = 0; currWordCharIndex < wordCharArray.Length; currWordCharIndex++)
+                for (int currWordCharIndex = 0; currWordCharIndex < word.Length; currWordCharIndex++)
                 {
-                    if (wordCharArray[currWordCharIndex].IsDelineating())
+                    if (word[currWordCharIndex].IsDelineating())
                     {
                         escapedWord.Append(".");
                     }
                     else
                     {
-                        escapedWord.Append(wordCharArray[currWordCharIndex]);
+                        escapedWord.Append(word[currWordCharIndex]);
                     }
                 }
-                if (!wordCharArray.Last().IsDelineating() && !substringMatch)
+                if (!word.Last().IsDelineating() && !substringMatch)
                     escapedWord.Append(@"\b");
                 escapedWord.Append("))");
                 string pattern = (caseSensitive) ? @"(?x)" + escapedWord : @"(?ix)" + escapedWord;
@@ -206,7 +206,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             {
                 List<int> startPointersInText = new List<int> { 0 };
                 List<int> endPointersInText = new List<int>();
-                string textCharArray = (caseSensitive) ? text : text.ToLower(CultureInfo.CurrentCulture);
+                string textCharArray = (caseSensitive) ? CreateWordArray(text) : CreateWordArray(text.ToLower(CultureInfo.CurrentCulture));
                 for (int currTextCharIndex = 0; currTextCharIndex < textCharArray.Length; currTextCharIndex++)
                 {
                     if (textCharArray[currTextCharIndex].IsDelineating())
@@ -221,26 +221,25 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 
                 double[] minLevenshteinDistance = new double[startPointersInText.Count];
                 int[] endofMatchInTextPointer = new int[startPointersInText.Count];
-                for (int startIndex = 0; startIndex < startPointersInText.Count; startIndex++)
+                for (int startPointerIndex = 0; startPointerIndex < startPointersInText.Count; startPointerIndex++)
                 {
-                    minLevenshteinDistance[startIndex] = -1;
-                    for (int endIndex = startIndex; endIndex < endPointersInText.Count; endIndex++)
+                    minLevenshteinDistance[startPointerIndex] = leniency + 1;
+                    for (int endPointerIndex = startPointerIndex; endPointerIndex < endPointersInText.Count; endPointerIndex++)
                     {
-                        double distance = DamerauLevenshteinCalculation(textCharArray.Substring(startPointersInText[startIndex],
-                            endPointersInText[endIndex] - startPointersInText[startIndex] + 1), wordCharArray);
-                        if (distance > -1 && (minLevenshteinDistance[startIndex] == -1 || minLevenshteinDistance[startIndex] > distance))
+                        if (endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1 > checkMatch.Length * 2) break;
+                        double distance = DamerauLevenshteinCalculation(textCharArray.Substring(startPointersInText[startPointerIndex],
+                            endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1), word);
+                        if (distance > -1 && minLevenshteinDistance[startPointerIndex] > distance)
                         {
-                            minLevenshteinDistance[startIndex] = distance;
-                            endofMatchInTextPointer[startIndex] = endIndex;
+                            minLevenshteinDistance[startPointerIndex] = distance;
+                            endofMatchInTextPointer[startPointerIndex] = endPointerIndex;
                         }
-                        else if (distance > checkMatch.Length * 2)
-                            break;
                     }
                 }
 
                 for (int i = 0; i < minLevenshteinDistance.Length; i++)
                 {
-                    if (minLevenshteinDistance[i] > -1 && minLevenshteinDistance[i] <= leniency)
+                    if (minLevenshteinDistance[i] <= leniency)
                     {
                         entities.Add(
                                 new Entity
