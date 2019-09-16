@@ -2,8 +2,10 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.  
 
 using AzureCognitiveSearch.PowerSkills.Common;
+using AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
@@ -17,7 +19,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         {
             // tests against incorrect input (missing words)
             WebApiSkillResponse outputContent = await CustomEntitySearchHelpers.QueryEntitySearchFunction(TestData.MissingWordsBadRequestInput);
-            Assert.IsTrue(outputContent.Values[0].Errors[0].Message.Contains(TestData.MissingWordsExpectedResponse));
+            Assert.IsTrue(outputContent.Values[0].Warnings[0].Message.Contains(TestData.MissingWordsExpectedResponse));
         }
 
         [TestMethod]
@@ -81,6 +83,125 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
                 TestData.LargeNumWordsOutputFound, TestData.LargeNumWordsOutputNames, TestData.LargeNumWordsOutputMatchIndex,
                 TestData.LargestText, TestData.LargestWords);
+        }
+
+        [TestMethod]
+        public async Task SupportAllOtherCurrentLanguages()
+        {
+            TestData.supportedTextandWordsTempInitializer();
+            Dictionary<string, string[]> supportedLangTextandWords = TestData.supportedTextandWords;
+            Dictionary<string, int[]> matchIndices = TestData.supportedMatchIndices;
+            foreach (string language in supportedLangTextandWords.Keys)
+            {
+                await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
+                new string[] { supportedLangTextandWords[language][3] }, supportedLangTextandWords[language][2].Split(", "),
+                matchIndices[language], supportedLangTextandWords[language][0], new string[] { supportedLangTextandWords[language][1] });
+            }
+
+        }
+
+        [TestMethod]
+        public async Task NoDoubleCountedExactMatch()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.NoDoubleCountedExactMatchWords, TestData.NoDoubleCountedExactMatches,
+                TestData.NoDoubleCountedExactMatchIndices, TestData.NoDoubleCountedExactMatchConfidence, TestData.NoDoubleCountedExactMatchText, 
+                TestData.NoDoubleCountedExactMatchWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
+        }
+
+        [TestMethod]
+        public async Task AccentsHalfMismatch()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.AccentsHalfMismatchWords,
+                new string[] { TestData.AccentsHalfMismatchText }, new int[] { 0 }, new double[] { 0.5 }, TestData.AccentsHalfMismatchText,
+                TestData.AccentsHalfMismatchWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
+        }
+
+        [TestMethod]
+        public async Task OnlyFindEntitiesUnderOffsetLimit()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.OnlyFindEntitiesUnderOffsetLimitWords, TestData.OnlyFindEntitiesUnderOffsetLimitMatches,
+                TestData.OnlyFindEntitiesUnderOffsetLimitIndices, TestData.OnlyFindEntitiesUnderOffsetLimitConfidence, TestData.OnlyFindEntitiesUnderOffsetLimitText,
+                TestData.OnlyFindEntitiesUnderOffsetLimitWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
+        }
+
+        [TestMethod]
+        public async Task FuzzyWordsLongerThanText()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.FuzzyWordsLongerThanTextWords, new[] { TestData.FuzzyWordsLongerThanTextText },
+                TestData.FuzzyWordsLongerThanTextIndices, TestData.FuzzyWordsLongerThanTextConfidence, TestData.FuzzyWordsLongerThanTextText, 
+                TestData.FuzzyWordsLongerThanTextWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
+        }
+
+        [TestMethod]
+        public async Task FuzzyTextLongerThanWords()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.FuzzyTextLongerThanWordsWords, TestData.FuzzyTextLongerThanWordsMatches,
+                TestData.FuzzyTextLongerThanWordsIndices, TestData.FuzzyTextLongerThanWordsConfidence, TestData.FuzzyTextLongerThanWordsText,
+                TestData.FuzzyTextLongerThanWordsWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
+        }
+
+        [TestMethod]
+        public async Task CheckFuzzySituationAllLang()
+        {
+            if (!TestData.supportedTextandWords.ContainsKey("Greek"))
+                TestData.supportedTextandWordsTempInitializer();
+            Dictionary<string, string[]> supportedLangTextandWords = TestData.supportedTextandWords;
+            Dictionary<string, int[]> matchIndices = TestData.supportedMatchIndices;
+            Dictionary<string, double[]> confidenceScore = TestData.supportedConfidence;
+            foreach (string language in confidenceScore.Keys)
+            {
+                await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
+                new string[] { supportedLangTextandWords[language][4] }, supportedLangTextandWords[language][2].Split(", "),
+                matchIndices[language], confidenceScore[language], supportedLangTextandWords[language][0],
+                new string[] { supportedLangTextandWords[language][4] }, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
+            }
+        }
+
+        [TestMethod]
+        public async Task LargeLeniencyMismatchedWord()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargeLeniencyMismatchedWordWords, TestData.LargeLeniencyMismatchedWordMatches,
+                TestData.LargeLeniencyMismatchedWordIndices, TestData.LargeLeniencyMismatchedWordConfidence, TestData.LargeLeniencyMismatchedWordText,
+                TestData.LargeLeniencyMismatchedWordWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 2);
+        }
+
+        [TestMethod]
+        public async Task WordSmallerThanLeniency()
+        {
+            WebApiSkillResponse outputContent = await CustomEntitySearchHelpers.QueryEntitySearchFunction(TestData.WordSmallerThanLeniencyInput);
+            Assert.IsTrue(outputContent.Values[0].Warnings[0].Message.Contains(TestData.WordSmallerThanLeniencyWarning));
+        }
+
+        [TestMethod]
+        public async Task LargeLeniencyMismatchedText()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargeLeniencyMismatchedTextWords, TestData.LargeLeniencyMismatchedTextMatches,
+                TestData.LargeLeniencyMismatchedTextIndices, TestData.LargeLeniencyMismatchedTextConfidence, TestData.LargeLeniencyMismatchedTextText,
+                TestData.LargeLeniencyMismatchedTextWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 3);
+        }
+
+        [TestMethod]
+        public async Task LargeLeniencyMismatchedMix()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargeLeniencyMismatchedMixWords, TestData.LargeLeniencyMismatchedMixMatches,
+                TestData.LargeLeniencyMismatchedMixIndices, TestData.LargeLeniencyMismatchedMixConfidence, TestData.LargeLeniencyMismatchedMixText,
+                TestData.LargeLeniencyMismatchedMixWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 3);
+        }
+
+        [TestMethod]
+        public async Task LargestLeniencyCheck()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargestLeniencyCheckMatchesFound, TestData.LargestLeniencyCheckMatches,
+                TestData.LargestLeniencyCheckIndices, TestData.LargestLeniencyCheckConfidence, TestData.LargestLeniencyCheckText,
+                TestData.LargestLeniencyCheckWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 10, TestData.LargestLeniencyCheckWarning);
+        }
+
+        [TestMethod]
+        public async Task OverlapInText()
+        {
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.OverlapInTextWords, TestData.OverlapInTextMatches,
+                TestData.OverlapInTextIndices, TestData.OverlapInTextConfidence, TestData.OverlapInTextText,
+                TestData.OverlapInTextWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 1);
         }
     }
 }
