@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,16 +25,54 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
                 Words = words
             });
 
+        public static string BuildInput(string text, string[] words, Dictionary<string, string[]> synonyms, string[] exactMatches, int offset)
+            => Helpers.BuildPayload(new
+            {
+                Text = text,
+                Words = words,
+                Synonyms = synonyms,
+                ExactMatches = exactMatches,
+                FuzzyMatchOffset = offset
+            });
+
         public static string BuildOutput(string[] entities, string[] matches, int[] matchIndices)
             => Helpers.BuildPayload(new
             {
                 Entities = matches.Select((entity, i) => new
                 {
-                    Name = entity,
-                    MatchIndex = matchIndices[i]
+                    Category = "customEntity",
+                    Value = entity,
+                    Offset = matchIndices[i],
+                    Confidence = 0.0
                 }),
                 EntitiesFound = entities
             });
+
+        public static string BuildOutput(string[] entities, string[] matches, int[] matchIndices, double[] confidence)
+            => Helpers.BuildPayload(new
+            {
+                Entities = matches.Select((entity, i) => new
+                {
+                    Category = "customEntity",
+                    Value = entity,
+                    Offset = matchIndices[i],
+                    Confidence = confidence[i]
+                }),
+                EntitiesFound = entities
+            });
+
+        public static async Task CallEntitySearchFunctionAndCheckResults(
+            string[] expectedFoundEntities, string[] expectedMatches, int[] expectedMatchIndices, double[] confidence,
+            string text, string[] words, Dictionary<string, string[]> synonyms, string[] exactMatches, int offset,
+            string warningMessage = "")
+        {
+            string input = BuildInput(text, words, synonyms, exactMatches, offset);
+            string expectedOutput = BuildOutput(expectedFoundEntities, expectedMatches, expectedMatchIndices, confidence);
+            string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
+            if (warningMessage != "")
+                expectedOutput = expectedOutput.Replace(@"""warnings"":[]", warningMessage);
+            Assert.AreEqual(expectedOutput, actualOutput);
+        }
 
         public static async Task CallEntitySearchFunctionAndCheckResults(
             string[] expectedFoundEntities, string[] expectedMatches, int[] expectedMatchIndices,
