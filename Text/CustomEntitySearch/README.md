@@ -32,7 +32,7 @@ This function by default performs exact matches with no synonym detection. Based
         "foo1": [ "i" ]
     },
     "exactMatch": [ "foo2" ],
-    "fuzzyMatchOffset": 1
+    "fuzzyMatchOffset": 1,
 	"caseSensitive": true
 }
 ```

@@ -54,7 +54,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         {
             if (preLoadedWords == null)
             {
-                preLoadedWords = WordLinker.WordLink(executionContext.FunctionAppDirectory, "json").Words;
+                preLoadedWords = WordLinker.WordLink(executionContext.FunctionAppDirectory, "csv").Words;
             }
 
             log.LogInformation("Custom Entity Search function: C# HTTP trigger function processed a request.");
