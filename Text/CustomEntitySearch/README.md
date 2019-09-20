@@ -3,8 +3,7 @@ topic: sample
 languages:
 - csharp
 products:
-- azure
-- azure-search
+- azure-cognitive-services
 name: Custom Entity Search sample skill for cognitive search
 description: This custom skill finds user defined entities in given texts.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/CustomEntitySearch/azuredeploy.json
@@ -22,11 +21,20 @@ These skills have no additional requirements than the ones described in [the roo
 
 ## Settings
 
-This function requires Latin-based text (as seen in the sample document provided). The input field "words" is optional, where a user can add a "words.json" file instead.
+This function by default performs exact matches with no synonym detection. Based on user input in the JSON file or in the posted values, this skill can perform fuzzy matching on some or all of the entities provided. The input field "words" is optional, where a user can add a "words.json" file instead.
 
 ## Sample Config File
 ```json
-    ["foo1", "foo2"]
+{
+    "words": [ "foo1", "foo2" ],
+    "synonyms":
+    {
+        "foo1": [ "i" ]
+    },
+    "exactMatch": [ "foo2" ],
+    "fuzzyMatchOffset": 1
+	"caseSensitive": true
+}
 ```
 
 ## Sample Input:
@@ -70,12 +78,16 @@ This function requires Latin-based text (as seen in the sample document provided
                 "EntitiesFound": ["learn", "app"],
                 "Entities": [
                     {
-                        "Name": "Learn",
-                        "matchIndex": 1
+                        "Category": "customEntity",
+                        "Value": "Learn",
+                        "Offset": 1,
+                        "Confidence": 1.0
                     },
                     {
-                        "Name": "app",
-                        "MatchIndex": 45
+                        "Category": "customEntity",
+                        "Value": "app",
+                        "Offset": 45,
+                        "Confidence": 1.0
                     }
                 ]
             }

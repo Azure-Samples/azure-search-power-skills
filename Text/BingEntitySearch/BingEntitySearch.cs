@@ -69,11 +69,11 @@ namespace AzureCognitiveSearch.PowerSkills.Text.BingEntitySearch
                     target["imageUrl"] = entity.Image.ThumbnailUrl;
                 }
 
-                if (entity.contractualRules != null)
+                if (entity.ContractualRules != null)
                 {
-                    foreach (Contractualrule rule in entity.contractualRules)
+                    foreach (ContractualRule rule in entity.ContractualRules)
                     {
-                        if (rule.TargetPropertyName == "description")
+                        if (rule.TargetPropertyName == "description" && rule._type == "ContractualRules/LinkAttribution")
                         {
                             target["url"] = rule.Url;
                         }

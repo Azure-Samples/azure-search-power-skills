@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.  
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.  
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
 namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 {
     public static class TestData
@@ -30,8 +34,89 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
     ]
 }";
 
-        public const string MissingWordsExpectedResponse = @"The given key 'words' was not present in the dictionary.";
-        public const string MissingTextExpectedResponse = @"The given key 'text' was not present in the dictionary.";
+        public const string MissingWordsExpectedResponse = @"Used predefined key words from customLookupSkill configuration file since no 'words' parameter was supplied in web request";
+        public const string MissingTextExpectedResponse = "Cannot process record without the given key 'text' with a string value";
+
+        public static readonly string OverlapInTextText = "hellc helllo hello   ";
+        public static readonly string[] OverlapInTextWords = new[] { "hello hello" };
+        public static readonly string[] OverlapInTextMatches = new[] { "helllo hello" };
+        public static readonly int[] OverlapInTextIndices = new[] { 6 };
+        public static readonly double[] OverlapInTextConfidence = new[] { 1.0 };
+
+        public static readonly string AccentsHalfMismatchText = "héllo";
+        public static readonly string[] AccentsHalfMismatchWords = new[] { "hello" };
+
+        public static readonly string NoDoubleCountedExactMatchText = "hello hellc";
+        public static readonly string[] NoDoubleCountedExactMatchWords = new[] { "hello" };
+        public static readonly string[] NoDoubleCountedExactMatches = new[] { "hello", "hellc" };
+        public static readonly int[] NoDoubleCountedExactMatchIndices = new[] { 0, 6 };
+        public static readonly double[] NoDoubleCountedExactMatchConfidence = new[] { 0.0, 1.0 };
+
+        public static readonly string OnlyFindEntitiesUnderOffsetLimitText = "hellc hello  helloo   ";
+        public static readonly string[] OnlyFindEntitiesUnderOffsetLimitWords = new[] { "hello " };
+        public static readonly string[] OnlyFindEntitiesUnderOffsetLimitMatches = new[] { "hellc", "hello", "helloo" };
+        public static readonly int[] OnlyFindEntitiesUnderOffsetLimitIndices = new[] { 0, 6, 13 };
+        public static readonly double[] OnlyFindEntitiesUnderOffsetLimitConfidence = new[] { 1.0, 0.0, 1.0 };
+
+        public static readonly string FuzzyWordsLongerThanTextText = "hello";
+        public static readonly string[] FuzzyWordsLongerThanTextWords = new[] { "hello!" };
+        public static readonly int[] FuzzyWordsLongerThanTextIndices = new[] { 0 };
+        public static readonly double[] FuzzyWordsLongerThanTextConfidence = new[] { 0.0 };
+
+        public static readonly string FuzzyTextLongerThanWordsText = "hello hlloyy";
+        public static readonly string[] FuzzyTextLongerThanWordsWords = new[] { "hllo" };
+        public static readonly string[] FuzzyTextLongerThanWordsMatches = new[] { "hello" };
+        public static readonly int[] FuzzyTextLongerThanWordsIndices = new[] { 0 };
+        public static readonly double[] FuzzyTextLongerThanWordsConfidence = new[] { 1.0 };
+
+        public static readonly string LargeLeniencyMismatchedWordText = "hello help!";
+        public static readonly string[] LargeLeniencyMismatchedWordWords = new[] { "helcfo" };
+        public static readonly string[] LargeLeniencyMismatchedWordMatches = new[] { "hello" };
+        public static readonly int[] LargeLeniencyMismatchedWordIndices = new[] { 0 };
+        public static readonly double[] LargeLeniencyMismatchedWordConfidence = new[] { 2.0 };
+
+        public const string WordSmallerThanLeniencyInput = @"{
+    ""values"": [
+        {
+            ""recordId"": ""1"",
+            ""data"":
+            {
+                ""text"": ""this took way too long, iam so sorry."",
+                ""words"":  [
+                    ""i""
+                ],
+                ""fuzzyMatchOffset"": 2
+            }
+        }
+    ]
+}";
+        public static readonly string WordSmallerThanLeniencyWarning = "The provided fuzzy offset of 2, is larger than the length of the provided word, \"i\".";
+
+        public static readonly string LargeLeniencyMismatchedTextText = "mo vealong";
+        public static readonly string[] LargeLeniencyMismatchedTextWords = new[] { "along" };
+        public static readonly string[] LargeLeniencyMismatchedTextMatches = new[] { "vealong" };
+        public static readonly int[] LargeLeniencyMismatchedTextIndices = new[] { 3 };
+        public static readonly double[] LargeLeniencyMismatchedTextConfidence = new[] { 2.0 };
+
+        public static readonly string LargeLeniencyMismatchedMixText = "its friday! have a gréat greeken.";
+        public static readonly string[] LargeLeniencyMismatchedMixWords = new[] { "greek" };
+        public static readonly string[] LargeLeniencyMismatchedMixMatches = new[] { "gréat", "greeken" };
+        public static readonly int[] LargeLeniencyMismatchedMixIndices = new[] { 19, 25 };
+        public static readonly double[] LargeLeniencyMismatchedMixConfidence = new[] { 2.5, 2.0};
+
+        public static readonly string LargestLeniencyCheckText = "the fix was so simple, I overlooked it... Should work on all tests now!";
+        public static readonly string[] LargestLeniencyCheckWords = new[] { "fix", "soo ", "overlooking", "overlooked" };
+        public static readonly string[] LargestLeniencyCheckMatches = new[] { "fix", "I", "it", "so", "on", "now", "the fix", "fix",
+            "was so", "so", "simple, I", "I overlooked", "overlooked", "it", "Should", "work on", "on", "all", "tests", "now", "the", "was so",
+            "so", "simple", "I overlooked", "overlooked", "Should", "work", "on all", "all", "tests", "now" };
+        public static readonly string[] LargestLeniencyCheckMatchesFound = new[] { "fix", "soo ", "overlooking", "overlooked" };
+        public static readonly int[] LargestLeniencyCheckIndices = new[] { 4, 23, 36, 12, 54, 67, 0, 4, 8, 12, 15, 23, 25,
+            36, 42, 49, 54, 57, 61, 67, 0, 8, 12, 15, 23, 25, 42, 49, 54, 57, 61, 67};
+        public static readonly double[] LargestLeniencyCheckConfidence = new[] { 0.0, 2.0, 2.0, 1.0, 2.0, 2.0, 9.0, 10.0, 10.0, 10.0, 9.0,
+        5.0, 3.0, 10.0, 10.0, 8.0, 9.0, 10.0, 10.0, 10.0, 9.0, 9.0, 9.0, 8.0, 2.0, 0.0, 8.0, 8.0, 8.0, 9.0, 9.0, 9.0};
+        public static readonly string LargestLeniencyCheckWarning = @"""warnings"":[{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
+                @"\""fix\"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, " +
+                @"\""soo \"".""},{""message"":""The provided fuzzy offset of 10, is larger than the length of the provided word, \""overlooked\"".""}]";
 
         public static readonly string[] EmptyTextWordsNotFoundInput = new[] { "will you search?" };
         public static readonly string[] EmptyWordsEmptyEntitiesInput = new[] { "if you find when searching, i will be sad" };
@@ -292,5 +377,238 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
             "creep", "knowledge", "deport", "trouble", "dawn", "measure", "radio", "motorist", "staff", "constant", "behave", "relieve", "sensitivity",
             "crossing", "knit", "civilian", "arise", "menu", "bronze", "strikebreaker", "color-blind", "hand", "gravel", "society", "tube", "swim",
             "ample", "eyebrow", "taxi", "association", "list" };
+        public static readonly Dictionary<string, string[]> supportedTextandWords = new Dictionary<string, string[]>();
+        public static readonly Dictionary<string, int[]> supportedMatchIndices = new Dictionary<string, int[]>();
+        public static readonly Dictionary<string, double[]> supportedConfidence = new Dictionary<string, double[]>();
+
+        public static void supportedTextandWordsTempInitializer()
+        {
+            supportedTextandWords.Add("Greek", new string[]
+                {
+                    @"Tου Αντώνη Ρέλλα - Θα πρέπει να γίνει κατανοητό ότι οι αποκλεισμοί των αναπήρων εκκινούν, έτσι κι αλλιώς, από τις θεσμοθετημένες πρακτικές του κράτους και τα εμπόδια στο δομημένο περιβάλλον. Πώς, λοιπόν, η κυβέρνηση θα κάνει πράξη την ανεξάρτητη διαβίωση",
+                    @"έτσι",
+                    @"έτσι",
+                    @"έτσι",
+                    @"ετσι"
+                });
+            supportedMatchIndices.Add("Greek", new int[] { 90 });
+            supportedConfidence.Add("Greek", new double[] { 0.5 });
+            supportedTextandWords.Add("Thai", new string[]
+                {
+                    @"เพื่อนสนิท ยังบอกอีกว่า ก่อนจะเสียชีวิต ภรรยาของครูประสิทธิ์ ได้เปิดไลน์ส่วนตัวที่ครูประสิทธิ์ ส่งถึงภรรยา มาให้ตนอ่าน พบข้อความว่า ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดท้าย เพราะไม่รู้ว่าจะอยู่ต่อไปได้อีกกี่วัน ซึ่งภรรยาก็บอกว่า ให้กลับมาทานข้าวด้วยกันที่บ้าน แต่ยังไม่ทันได้กลับบ้าน ตำรวจโทรมาบอกว่า พบศพครูประสิทธิ์ตายในรีสอร์ต ภรรยา และลูกๆ ของครู จึงเดินทางไปดู ก็พบว่าเสียชีวิตพร้อมเด็ก 14 ปี ภรรยาและลูกๆ ไม่มีใครพูดอะไร ก่อนจะดำเนินการขอรับศพครู กลับมาที่บ้าน เพื่อประกอบพิธีทางศาสนาและจะมีการฌาปนกิจศพในวันเสาร์ที่จะถึงนี้",
+                    @"ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดท้าย",
+                    @"ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดท้าย",
+                    @"ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดท้าย",
+                    @"ครูประสิทธิ์ไลน์มาขอกินข้าวกับภรรยาเป็นมื้อสุดทาย"
+                });
+            supportedMatchIndices.Add("Thai", new int[] { 132 });
+            supportedConfidence.Add("Thai", new double[] { 0.5 });
+            supportedTextandWords.Add("Hebrew", new string[]
+                {
+                    @"מורה לספרות נחשדת בשמאלנות בעיצומה של מלחמת צוק איתן. זהו הנושא הרשמי של בשבח המלחמה. אבל אין זה םפר של תקופה אלא םפר של אמן, סטייליסט מלא תנופה ותעופה. ספרו מחליק בצד התקופה וחותר יותר אל שורשם האפל של הדברים",
+                    @"םפר",
+                    @"םפר, םפר",
+                    @"םפר",
+                    @"ם֫פר"
+                });
+            supportedMatchIndices.Add("Hebrew", new int[] { 97, 114 });
+            supportedConfidence.Add("Hebrew", new double[] { 0.5, 0.5 });
+            supportedTextandWords.Add("Turkish", new string[]
+                {
+                    @"Brezilya Serie A ekiplerinden Palmeiras, Beşiktaş'ın da transfer gündeminde yer alan Vitor Hugo'yu kadrosuna kattığını açıkladı",
+                    @"Vitor",
+                    @"Vitor",
+                    @"Vitor",
+                    @"Vîtor"
+                });
+            supportedMatchIndices.Add("Turkish", new int[] { 85 });
+            supportedConfidence.Add("Turkish", new double[] { 0.5 });
+            supportedTextandWords.Add("Czech", new string[]
+                {
+                    @"Po vyplnění kontaktního formuláře na e-shopu přijde jen automatická odpověď. Žena na zákaznické lince řekne, že s prodejcem nemá nic společného a že infolinka je i pro další e-shopy se „zázračnými“ léky. Pak přepojí na reklamační oddělení, z něhož se vyklube jen další automat.",
+                    @"Žena",
+                    @"Žena",
+                    @"Žena",
+                    @"Zena"
+                });
+            supportedMatchIndices.Add("Czech", new int[] { 77 });
+            supportedConfidence.Add("Czech", new double[] { 0.5 });
+            supportedTextandWords.Add("Hungarian", new string[]
+                {
+                    @"Az Aquamant megformáló hollywoodi színész, aki a nyáron több hétig Magyarországon forgatott, egyik legkedvesebb kollégájával találkozott.",
+                    @"Magyarországon",
+                    @"Magyarországon",
+                    @"Magyarországon",
+                    @"Magyarórszágon"
+                });
+            supportedMatchIndices.Add("Hungarian", new int[] { 67 });
+            supportedConfidence.Add("Hungarian", new double[] { 0.5 });
+            supportedTextandWords.Add("Arabic", new string[]
+                {
+                        @"الأفغانية كابول، ومنطقة بورنو بشمال شرق نيجيريا، وأدت لسقوط عشرات القتلى والجرحى.
+
+وقدم المصدر العزاء والمواساة لذوي الضحايا ولحكومتي وشعبي جمهورية أفغانستان الإسلامية وجمهورية نيجيريا الاتحادية",
+                        @"العزاء",
+                        @"العزاء",
+                        @"العزاء",
+                        @"العٌزاء"
+                });
+            supportedMatchIndices.Add("Arabic", new int[] { 97 });
+            supportedConfidence.Add("Arabic", new double[] { 0.5 });
+            supportedTextandWords.Add("Japanese", new string[]
+                {
+                        @"阪急電鉄と阪神電鉄は大阪の玄関口である「梅田駅」を「大阪梅田駅」にそれぞれ変更することを決めた。関係者によると、変更は１０月１日から。外国人観光客の利用が増える中、駅が大阪市の中心部にあることをわかりやすくすることが狙いだという。阪急電鉄は同じ狙いで、京都市中心部の河原町駅についても１０月から「京都河原町駅」に変更する。",
+                        @"外国人観光客の利用が増える中",
+                        @"外国人観光客の利用が増える中",
+                        @"外国人観光客の利用が増える中",
+                        @"外国人観光客の利用が増える中"
+                });
+            supportedMatchIndices.Add("Japanese", new int[] { 67 });
+            supportedConfidence.Add("Japanese", new double[] { 0.0 });
+            supportedTextandWords.Add("Finnish", new string[]
+                {
+                        @"Kuusi vuotta taksia ajanut Mika Lindberg ei enää aja mielellään Helsinki-Vantaan lentoasemalle. ”Kuskit kiukuttelevat siellä”, hän sanoo. Kiukuttelun syiksi Lindberg mainitsee lentokentän liikennettä sekoittavan terminaalityömaan ja koko taksialaa hämmentäneen taksiuudistuksen.",
+                        @"enää",
+                        @"enää",
+                        @"enää",
+                        @"enäa"
+                });
+            supportedMatchIndices.Add("Finnish", new int[] { 44 });
+            supportedConfidence.Add("Finnish", new double[] { 0.5 });
+            supportedTextandWords.Add("Danish", new string[]
+                {
+                        @"Cubanere kan fra i dag tilgå internettet lovligt fra deres nye hjem. Sådan lyder det i en lov, der blev vedtaget i maj, og netop er trådt i kraft.",
+                        @"hjem",
+                        @"hjem",
+                        @"hjem",
+                        @"hjæm"
+                });
+            supportedMatchIndices.Add("Danish", new int[] { 63 });
+            supportedConfidence.Add("Danish", new double[] { 1.0 });
+            supportedTextandWords.Add("Norwegian", new string[]
+                {
+                        @"I en uttalelse melder militæret at fem av de omkomne i styrten i landsbyen Mora Kalu utenfor Rawalpindi var soldater. Flyets to piloter er også bekreftet omkommet.",
+                        @"omkomne",
+                        @"omkomne",
+                        @"omkomne",
+                        @"omkone"
+
+                });
+            supportedMatchIndices.Add("Norwegian", new int[] { 45 });
+            supportedConfidence.Add("Norwegian", new double[] { 1.0 });
+            supportedTextandWords.Add("Korean", new string[]
+                {
+                        @"왜 그리 내게 차가운가요
+사랑이 그렇게 쉽게
+변하는 거였나요
+내가 뭔가 잘못했나요
+그랬다면 미안합니다",
+                        @"잘못했나요",
+                        @"잘못했나요",
+                        @"잘못했나요",
+                        @"잘못했나ㅇ",
+
+                });
+            supportedMatchIndices.Add("Korean", new int[] { 43 });
+            supportedConfidence.Add("Korean", new double[] { 1.0 });
+            supportedTextandWords.Add("Polish", new string[]
+                {
+                        @"Na przełomie września i października 2017 roku w większości krajów Europy - m.in. w Niemczech, Austrii, Włoszech, Szwajcarii, Francji, Grecji, Norwegii, Rumunii, Bułgarii, a także w Polsce - zanotowano w powietrzu śladowe ilości radioaktywnego rutenu-106.",
+                        @"przełomie",
+                        @"przełomie",
+                        @"przełomie",
+                        @"przelomie",
+                });
+            supportedMatchIndices.Add("Polish", new int[] { 3 });
+            supportedConfidence.Add("Polish", new double[] { 0.5 });
+            supportedTextandWords.Add("Russian", new string[]
+                {
+                    @"Неадекватный поклонник разгромил машину культовой рок-исполнительницы Земфиры в центре Москвы. Вандал обрушился на «Мерседес» артистки, разбил стёкла и значительно повредил кузов авто. Безумец пояснил правоохранителям",
+                    @"в",
+                    @"в",
+                    @"в",
+                    @"вы "
+                });
+            supportedMatchIndices.Add("Russian", new int[] { 78 });
+            supportedConfidence.Add("Russian", new double[] { 1.0 });
+            supportedTextandWords.Add("Swedish", new string[]
+                {
+                    @"När den amerikanske rapartisten ASAP Rocky frihetsberövas i Stockholm, misstänkt för misshandel, väcker det starka reaktioner i USA.",
+                    @"misshandel",
+                    @"misshandel",
+                    @"misshandel",
+                    @"misshändel"
+                });
+            supportedMatchIndices.Add("Swedish", new int[] { 85 });
+            supportedConfidence.Add("Swedish", new double[] { 0.5 });
+            supportedTextandWords.Add("Italian", new string[]
+                {
+                    @"Nel governo la temperatura sale e non per il caldo. Nei rapporti tra Lega e 5Stelle - chiusa la finestra del voto a settembre - i rapporti sono diventati roventi.",
+                    @"roventi",
+                    @"roventi",
+                    @"roventi",
+                    @"róventi"
+                });
+            supportedMatchIndices.Add("Italian", new int[] { 154 });
+            supportedConfidence.Add("Italian", new double[] { 0.5 });
+            supportedTextandWords.Add("Portugese", new string[]
+                {
+                    @"Discute com ex-patrão por salário de mil euros em atraso e acaba morto à pancada",
+                    @"salário",
+                    @"salário",
+                    @"salário",
+                    @"salario"
+                });
+            supportedMatchIndices.Add("Portugese", new int[] { 26 });
+            supportedConfidence.Add("Portugese", new double[] { 0.5 });
+            supportedTextandWords.Add("French", new string[]
+                {
+                    @"Le corps retrouvé lundi dans la Loire est «très probablement» celui du jeune Steve Maia Caniço, a indiqué à l'AFP une source proche du dossier. Cécile de Oliveira, avocate de la famille du jeune homme, a également indiqué qu'il s'agit «probablement» du corps de Steve sur BFMTV. Une autre source proche du dossier a affirmé dans la soirée que l'autopsie aurait lieu mardi, «à 10h30».",
+                    @"dossier",
+                    @"dossier, dossier",
+                    @"dossier",
+                    @"dossìer"
+                });
+            supportedMatchIndices.Add("French", new int[] { 135, 306 });
+            supportedConfidence.Add("French", new double[] { 0.5, 0.5 });
+            supportedTextandWords.Add("Spanish", new string[]
+                {
+                    @"Dieciséis de los fallecidos en las cinco horas que duró el suceso fueron decapitados y el resto murió asfixiado por el humo. Los reclusos patearon las cabezas cortadas, grabaron las imágenes y las difundieron por WhatsApp, según informa el digital Ponte. Las autoridades han detallado que dos funcionarios de prisiones fueron hechos rehenes, pero ya han sido liberados tras las negociaciones de las autoridades",
+                    @"liberados",
+                    @"liberados",
+                    @"liberados",
+                    @"liberadós"
+                });
+            supportedMatchIndices.Add("Spanish", new int[] { 359 });
+            supportedConfidence.Add("Spanish", new double[] { 0.5 });
+            supportedTextandWords.Add("Dutch", new string[]
+                {
+                    @"Nog enkele dagen en het veelbesproken boerkaverbod gaat in. Nikabdraagsters roepen om het hardst dat de overheid hun vrijheid aantast. De Rotterdamse Jamila (37) maakte echter kennis met de onvrijwillige kant van de sluier. In Pakistan dwong haar schoonfamilie haar om een boerka te dragen. Terug in Nederland wierp ze het ding af. Het stuk stof is niet het grootste probleem, vindt ze. ",
+                    @"aantast",
+                    @"aantast",
+                    @"aantast",
+                    @"antast"
+                });
+            supportedMatchIndices.Add("Dutch", new int[] { 126 });
+            supportedConfidence.Add("Dutch", new double[] { 1.0 });
+            supportedTextandWords.Add("German", new string[]
+                {
+                    @"üngstes Beispiel ist die Festsetzung eines russischen Tankers im Gebiet Odessa. Das Schiff war nach ukrainischen Angaben im November an Russlands Blockade der Meerenge von Kertsch beteiligt, bei der drei ukrainische Marineschiffe aufgebracht wurden. Die 24 Ukrainer auf den drei Schiffen sind, trotz einer Anordnung des Internationalen Seegerichtshofs von Ende Mai, weiter in russischer Untersuchungshaft; Selenskyj will ihre Freilassung erreichen.",
+                    @"Untersuchungshaft",
+                    @"Untersuchungshaft",
+                    @"Untersuchungshaft",
+                    @"Untersuchüngshaft"
+                });
+            supportedMatchIndices.Add("German", new int[] { 387 });
+            supportedConfidence.Add("German", new double[] { 0.5 });
+            supportedTextandWords.Add("Basic Overlap", new string[]
+                {
+                    @"a a a c a a c",
+                    @"a a",
+                    @"a a, a a, a a",
+                    @"a a"
+                });
+            supportedMatchIndices.Add("Basic Overlap", new int[] { 0, 2, 8 });
+        }
     }
 }

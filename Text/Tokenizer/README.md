@@ -14,6 +14,24 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 This custom skill extracts normalized non-stop words from a text using [the ML.NET library](https://docs.microsoft.com/en-us/dotnet/api/microsoft.ml?view=ml-dotnet).
 
+The language used for stop word removal can be optionally specified with the `languageCode` parameter using the ISO 639-1 code. Supported languages are:
+
+* Arabic(ar)
+* Czech (cs)
+* Danish (da)
+* Dutch (nl)
+* English (en), is the default language used if none is specified.
+* French (fr)
+* German (de)
+* Italian (it)
+* Japanese (ja)
+* Norwegian Bokmål (nb)
+* Polish (pl)
+* Portuguese (pt)
+* Spanish (es)
+* Swedish (sv)
+* Russian (ru)
+
 ## Requirements
 
 This skills have no additional requirements than the ones described in [the root `README.md` file](../../README.md).
@@ -21,10 +39,6 @@ This skills have no additional requirements than the ones described in [the root
 ## Deployment
 
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FTokenizer%2Fazuredeploy.json)
-
-## Settings
-
-The language used for stop word removal can be changed directly in the code.
 
 ## tokenizer
 
@@ -34,9 +48,10 @@ The language used for stop word removal can be changed directly in the code.
 {
     "values": [
         {
-            "recordId": "record1",
+* "recordId": "record1",
             "data": { 
-                "text": "ML.NET's RemoveDefaultStopWords API removes stop words from tHe text/string. It requires the text/string to be tokenized beforehand."
+                "text": "ML.NET's RemoveDefaultStopWords API removes stop words from tHe text/string. It requires the text/string to be tokenized beforehand.",
+                "languageCode": "en"
             }
         }
     ]
@@ -87,6 +102,10 @@ Here's a sample skill definition for this example (inputs and outputs should be 
         {
             "name": "text",
             "source": "/document/content"
+        },
+        {
+            "name": "languageCode",
+            "source": "document/language"
         }
     ],
     "outputs": [

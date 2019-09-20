@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using AzureCognitiveSearch.PowerSkills.Common;
 using System.Linq;
-using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -36,7 +35,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.AcronymLinker
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
                     string word = inRecord.Data["word"] as string;
-                    if (word.All(Char.IsUpper) && acronymLinker.Acronyms.TryGetValue(word, out string description))
+                    if (word.All(char.IsUpper) && acronymLinker.Acronyms.TryGetValue(word, out string description))
                     {
                         outRecord.Data["acronym"] = new { value = word, description };
                     }
@@ -64,15 +63,18 @@ namespace AzureCognitiveSearch.PowerSkills.Text.AcronymLinker
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
                     var words = JsonConvert.DeserializeObject<JArray>(JsonConvert.SerializeObject(inRecord.Data["words"]));
-                    var acronyms = words.Select(jword =>
-                    {
-                        var word = jword.Value<string>();
-                        if (word.All(Char.IsUpper) && acronymLinker.Acronyms.TryGetValue(word, out string description))
+                    var acronyms = words
+                        .Distinct()
+                        .Select(jword =>
                         {
-                            return new { value = word, description };
-                        }
-                        return null;
-                    });
+                            var word = jword.Value<string>();
+                            if (word.All(char.IsUpper) && acronymLinker.Acronyms.TryGetValue(word, out string description))
+                            {
+                                return new { value = word, description };
+                            }
+                            return null;
+                        })
+                        .Where(acronym => acronym != null);
 
                     outRecord.Data["acronyms"] = acronyms.ToArray();
                     return outRecord;
