@@ -35,7 +35,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
     public static class CustomEntitySearch
     {
         // Use this to load from "csv" or "json" file 
-        public static IList<string> preLoadedWords = WordLinker.WordLink(Environment.CurrentDirectory, "csv").Words;
+        public static IList<string> preLoadedWords = null;
 
         private static readonly int MaxRegexEvalTime = 1;
         private static bool substringMatch = false;
@@ -46,12 +46,17 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         /// 2. Words can contain special characters and numbers
         /// 3. The provided entities are not case sensitive
         /// </summary>
-
-        [FunctionName("custom-search")]
+        [FunctionName("custom-entity-search")]
         public static async Task<IActionResult> RunCustomEntitySearch(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log, ExecutionContext executionContext)
+            ILogger log,
+            ExecutionContext executionContext)
         {
+            if (preLoadedWords == null)
+            {
+                preLoadedWords = WordLinker.WordLink(executionContext.FunctionAppDirectory, "json").Words;
+            }
+
             log.LogInformation("Custom Entity Search function: C# HTTP trigger function processed a request.");
 
             string skillName = executionContext.FunctionName;
@@ -60,22 +65,24 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             {
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
-            
+
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                  (inRecord, outRecord) => {
-                    if (!inRecord.Data.ContainsKey("text") || inRecord.Data["text"] == null)
-                    {
-                        outRecord.Errors.Add(new WebApiErrorWarningContract { Message = "Cannot process record without the given key 'text' with a string value" });
-                        return outRecord;
-                    }
-                    if (!inRecord.Data.ContainsKey("words") && 
-                    (inRecord.Data.ContainsKey("synonyms") || inRecord.Data.ContainsKey("exactMatches") || inRecord.Data.ContainsKey("fuzzyMatchOffset")))
-                    {
-                        outRecord.Errors.Add(new WebApiErrorWarningContract {
-                            Message = "Cannot process record without the given key 'words' in the dictionary"});
-                        return outRecord;
-                    }
-                    string text = inRecord.Data["text"] as string;
+                     if (!inRecord.Data.ContainsKey("text") || inRecord.Data["text"] == null)
+                     {
+                         outRecord.Errors.Add(new WebApiErrorWarningContract { Message = "Cannot process record without the given key 'text' with a string value" });
+                         return outRecord;
+                     }
+                     if (!inRecord.Data.ContainsKey("words") &&
+                     (inRecord.Data.ContainsKey("synonyms") || inRecord.Data.ContainsKey("exactMatches") || inRecord.Data.ContainsKey("fuzzyMatchOffset")))
+                     {
+                         outRecord.Errors.Add(new WebApiErrorWarningContract
+                         {
+                             Message = "Cannot process record without the given key 'words' in the dictionary"
+                         });
+                         return outRecord;
+                     }
+                     string text = inRecord.Data["text"] as string;
                      IList<string> words;
                      if (inRecord.Data.ContainsKey("words") == true)
                      {
@@ -96,39 +103,39 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                      bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
                      if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
                      {
-                        try
-                        {
-                            WordLinker userInput = WordLinker.WordLink(executionContext.FunctionDirectory, "json");
-                            words = userInput.Words;
-                            synonyms = userInput.Synonyms;
-                            exactMatches = userInput.ExactMatch;
-                            offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
-                            caseSensitive = userInput.CaseSensitive;
-                            outRecord.Warnings.Add(new WebApiErrorWarningContract
-                            {
-                                Message = "Used predefined key words from customLookupSkill configuration file " +
-                            "since no 'words' parameter was supplied in web request"
-                            });
+                         try
+                         {
+                             WordLinker userInput = WordLinker.WordLink(executionContext.FunctionDirectory, "json");
+                             words = userInput.Words;
+                             synonyms = userInput.Synonyms;
+                             exactMatches = userInput.ExactMatch;
+                             offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
+                             caseSensitive = userInput.CaseSensitive;
+                             outRecord.Warnings.Add(new WebApiErrorWarningContract
+                             {
+                                 Message = "Used predefined key words from customLookupSkill configuration file " +
+                             "since no 'words' parameter was supplied in web request"
+                             });
                          }
-                        catch (Exception)
-                        {
-                            outRecord.Errors.Add(new WebApiErrorWarningContract
-                            {
-                                Message = "Could not parse predefined words.json"
-                            });
-                            return outRecord;
-                        }
-                    }
+                         catch (Exception)
+                         {
+                             outRecord.Errors.Add(new WebApiErrorWarningContract
+                             {
+                                 Message = "Could not parse predefined words.json"
+                             });
+                             return outRecord;
+                         }
+                     }
 
-                    var entities = new List<Entity>();
-                    var entitiesFound = new HashSet<string>();
-                    if (!string.IsNullOrWhiteSpace(text))
-                    {
-                        foreach (string word in words)
-                        {
-                            if (string.IsNullOrEmpty(word)) continue;
-                            int leniency = (exactMatches != null && exactMatches.Contains(word)) ? 0 : offset;
-                            string wordCharArray = (caseSensitive) ? CreateWordArray(word) : CreateWordArray(word.ToLower(CultureInfo.CurrentCulture));
+                     var entities = new List<Entity>();
+                     var entitiesFound = new HashSet<string>();
+                     if (!string.IsNullOrWhiteSpace(text))
+                     {
+                         foreach (string word in words)
+                         {
+                             if (string.IsNullOrEmpty(word)) continue;
+                             int leniency = (exactMatches != null && exactMatches.Contains(word)) ? 0 : offset;
+                             string wordCharArray = (caseSensitive) ? CreateWordArray(word) : CreateWordArray(word.ToLower(CultureInfo.CurrentCulture));
                              if (leniency >= wordCharArray.Length)
                              {
                                  outRecord.Warnings.Add(new WebApiErrorWarningContract
@@ -137,46 +144,44 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                  });
                                  leniency = Math.Max(0, wordCharArray.Length - 1);
                              }
-                             if (AddValues(word, text, wordCharArray, entities, leniency, caseSensitive))
-                                 entitiesFound.Add(word);
-                            if (synonyms.TryGetValue(word, out string[] wordSynonyms))
-                            {
-                                foreach (string synonym in wordSynonyms)
-                                {
-                                    leniency = (exactMatches != null && exactMatches.Contains(synonym)) ? 0 : offset;
-                                    string synonymCharArray = (caseSensitive) ? CreateWordArray(synonym) : CreateWordArray(synonym.ToLower(CultureInfo.CurrentCulture));
+                             AddValues(word, text, wordCharArray, entities, entitiesFound, leniency, caseSensitive);
+                             if (synonyms.TryGetValue(word, out string[] wordSynonyms))
+                             {
+                                 foreach (string synonym in wordSynonyms)
+                                 {
+                                     leniency = (exactMatches != null && exactMatches.Contains(synonym)) ? 0 : offset;
+                                     string synonymCharArray = (caseSensitive) ? CreateWordArray(synonym) : CreateWordArray(synonym.ToLower(CultureInfo.CurrentCulture));
                                      if (leniency >= synonym.Length)
                                      {
-                                        outRecord.Warnings.Add(new WebApiErrorWarningContract
-                                        {
-                                            Message = @"The provided fuzzy offset of " + leniency + @", is larger than the length of the provided synonym, """ + synonym + @"""."
-                                        });
-                                        leniency = Math.Max(0, synonymCharArray.Length - 1);
+                                         outRecord.Warnings.Add(new WebApiErrorWarningContract
+                                         {
+                                             Message = @"The provided fuzzy offset of " + leniency + @", is larger than the length of the provided synonym, """ + synonym + @"""."
+                                         });
+                                         leniency = Math.Max(0, synonymCharArray.Length - 1);
                                      }
-                                     if (AddValues(synonym, text, synonymCharArray, entities, leniency, caseSensitive))
-                                         entitiesFound.Add(synonym);
-                                }
-                            }
-                        }
-                    }
+                                     AddValues(synonym, text, synonymCharArray, entities, entitiesFound, leniency, caseSensitive);
+                                 }
+                             }
+                         }
+                     }
 
-                    outRecord.Data["Entities"] = entities;
-                    outRecord.Data["EntitiesFound"] = entitiesFound;
-                    return outRecord;
-                });
+                     outRecord.Data["Entities"] = entities;
+                     outRecord.Data["EntitiesFound"] = entitiesFound;
+                     return outRecord;
+                 });
 
             return new OkObjectResult(response);
         }
 
-        public static bool AddValues(
-            string checkMatch, 
-            string text, 
-            string word, 
-            List<Entity> entities, 
-            int leniency, 
+        public static void AddValues(
+            string checkMatch,
+            string text,
+            string word,
+            List<Entity> entities,
+            HashSet<string> entitiesFound,
+            int leniency,
             bool caseSensitive)
         {
-            bool addToEntitiesFound = false;
             if (leniency == 0)
             {
                 // Overlap checker now also included in Regex expression using delineating characters as overlap lookahead
@@ -198,7 +203,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     escapedWord.Append(@"\b");
                 escapedWord.Append("))");
                 string pattern = (caseSensitive) ? @"(?x)" + escapedWord : @"(?ix)" + escapedWord;
-                
+
                 MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.Compiled, TimeSpan.FromSeconds(MaxRegexEvalTime));
                 if (entityMatch.Count != 0)
                 {
@@ -213,7 +218,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 Confidence = 0
                             });
                     }
-                    addToEntitiesFound = true;
+                    entitiesFound.Add(checkMatch);
                 }
             }
             else
@@ -240,7 +245,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     minLevenshteinDistance[startPointerIndex] = leniency + 1;
                     for (int endPointerIndex = startPointerIndex; endPointerIndex < endPointersInText.Count; endPointerIndex++)
                     {
-                        if (endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1 > checkMatch.Length + leniency) break;
+                        if (endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1 > checkMatch.Length * 2) break;
                         double distance = DamerauLevenshteinCalculation(textCharArray.Substring(startPointersInText[startPointerIndex],
                             endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1), word);
                         if (distance > -1 && minLevenshteinDistance[startPointerIndex] > distance)
@@ -263,11 +268,12 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                     Offset = startPointersInText[i],
                                     Confidence = minLevenshteinDistance[i]
                                 });
-                        addToEntitiesFound = true;
+                        entitiesFound.Add(checkMatch);
                     }
                 }
+
+
             }
-            return addToEntitiesFound;
         }
 
         private static double DamerauLevenshteinCalculation(string text, string checkMatch)
@@ -298,7 +304,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         dynamicDistanceCalc[currTextIndex + 1, currWordIndex] + accentAddition), // insertion
                         dynamicDistanceCalc[currTextIndex, currWordIndex] + substitutionCost); // substitution
                     if (currTextIndex > 0 && currWordIndex > 0 && text[currTextIndex].Equals(checkMatch[currWordIndex - 1]) && checkMatch[currWordIndex].Equals(text[currTextIndex - 1]))
-                        dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1] = Math.Min(dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1], 
+                        dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1] = Math.Min(dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1],
                             dynamicDistanceCalc[currTextIndex - 1, currWordIndex - 1] + substitutionCost); // transposition
                 }
             }
@@ -319,7 +325,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 initCheckIndex++;
             while (endCheckIndex >= 0 && checkMatch[endCheckIndex].IsDelineating())
                 endCheckIndex--;
-            if (initCheckIndex <= endCheckIndex && (initCheckIndex != 0 || endCheckIndex != checkMatch.Length - 1))
+            if (initCheckIndex != 0 || endCheckIndex != checkMatch.Length - 1)
             {
                 return checkMatch.Substring(initCheckIndex, endCheckIndex - initCheckIndex + 1);
             }
@@ -335,8 +341,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
         {
             return Char.GetUnicodeCategory(checkSymbol) == UnicodeCategory.NonSpacingMark || Char.GetUnicodeCategory(checkSymbol) == UnicodeCategory.SpacingCombiningMark;
         }
-        public static T GetOrCreateList<T>(this WebApiRequestRecord record, string propertyName) 
-            where T : class, IEnumerable, new() => (record.Data.TryGetValue(propertyName, out object objectValue) ? 
+        public static T GetOrCreateList<T>(this WebApiRequestRecord record, string propertyName)
+            where T : class, IEnumerable, new() => (record.Data.TryGetValue(propertyName, out object objectValue) ?
             ((JArray)objectValue).ToObject<T>() : new T()) ?? new T();
         public static T GetOrCreateDictionary<T>(this WebApiRequestRecord record, string propertyName)
             where T : class, IEnumerable, new() => (record.Data.TryGetValue(propertyName, out object objectValue) ?
