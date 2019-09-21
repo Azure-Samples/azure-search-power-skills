@@ -137,7 +137,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                  });
                                  leniency = Math.Max(0, wordCharArray.Length - 1);
                              }
-                             AddValues(word, text, wordCharArray, entities, entitiesFound, leniency, caseSensitive);
+                             if (AddValues(word, text, wordCharArray, entities, leniency, caseSensitive))
+                                 entitiesFound.Add(word);
                             if (synonyms.TryGetValue(word, out string[] wordSynonyms))
                             {
                                 foreach (string synonym in wordSynonyms)
@@ -152,7 +153,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                         });
                                         leniency = Math.Max(0, synonymCharArray.Length - 1);
                                      }
-                                     AddValues(synonym, text, synonymCharArray, entities, entitiesFound, leniency, caseSensitive);
+                                     if (AddValues(synonym, text, synonymCharArray, entities, leniency, caseSensitive))
+                                         entitiesFound.Add(synonym);
                                 }
                             }
                         }
@@ -166,15 +168,15 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             return new OkObjectResult(response);
         }
 
-        public static void AddValues(
+        public static bool AddValues(
             string checkMatch, 
             string text, 
             string word, 
             List<Entity> entities, 
-            HashSet<string> entitiesFound, 
             int leniency, 
             bool caseSensitive)
         {
+            bool addToEntitiesFound = false;
             if (leniency == 0)
             {
                 // Overlap checker now also included in Regex expression using delineating characters as overlap lookahead
@@ -211,7 +213,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 Confidence = 0
                             });
                     }
-                    entitiesFound.Add(checkMatch);
+                    addToEntitiesFound = true;
                 }
             }
             else
@@ -238,7 +240,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                     minLevenshteinDistance[startPointerIndex] = leniency + 1;
                     for (int endPointerIndex = startPointerIndex; endPointerIndex < endPointersInText.Count; endPointerIndex++)
                     {
-                        if (endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1 > checkMatch.Length * 2) break;
+                        if (endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1 > checkMatch.Length + leniency) break;
                         double distance = DamerauLevenshteinCalculation(textCharArray.Substring(startPointersInText[startPointerIndex],
                             endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1), word);
                         if (distance > -1 && minLevenshteinDistance[startPointerIndex] > distance)
@@ -261,12 +263,11 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                     Offset = startPointersInText[i],
                                     Confidence = minLevenshteinDistance[i]
                                 });
-                        entitiesFound.Add(checkMatch);
+                        addToEntitiesFound = true;
                     }
                 }
-
-
             }
+            return addToEntitiesFound;
         }
 
         private static double DamerauLevenshteinCalculation(string text, string checkMatch)
@@ -318,7 +319,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 initCheckIndex++;
             while (endCheckIndex >= 0 && checkMatch[endCheckIndex].IsDelineating())
                 endCheckIndex--;
-            if (initCheckIndex != 0 || endCheckIndex != checkMatch.Length - 1)
+            if (initCheckIndex <= endCheckIndex && (initCheckIndex != 0 || endCheckIndex != checkMatch.Length - 1))
             {
                 return checkMatch.Substring(initCheckIndex, endCheckIndex - initCheckIndex + 1);
             }
