@@ -76,26 +76,26 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                         return outRecord;
                     }
                     string text = inRecord.Data["text"] as string;
-                     IList<string> words;
-                     if (inRecord.Data.ContainsKey("words") == true)
-                     {
-                         words = inRecord.GetOrCreateList<List<string>>("words");
-                     }
-                     else
-                     {
-                         outRecord.Warnings.Add(new WebApiErrorWarningContract
-                         {
-                             Message = "Used predefined key words from customLookupSkill configuration file " +
-                                "since no 'words' parameter was supplied in web request"
-                         });
-                         words = preLoadedWords;
-                     }
-                     Dictionary<string, string[]> synonyms = inRecord.GetOrCreateDictionary<Dictionary<string, string[]>>("synonyms");
-                     IList<string> exactMatches = inRecord.GetOrCreateList<List<string>>("exactMatches");
-                     int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset")) ? Math.Max(0, Convert.ToInt32(inRecord.Data["fuzzyMatchOffset"])) : 0;
-                     bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
-                     if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
-                     {
+                    IList<string> words;
+                    if (inRecord.Data.ContainsKey("words") == true)
+                    {
+                        words = inRecord.GetOrCreateList<List<string>>("words");
+                    }
+                    else
+                    {
+                        outRecord.Warnings.Add(new WebApiErrorWarningContract
+                        {
+                            Message = "Used predefined key words from customLookupSkill configuration file " +
+                            "since no 'words' parameter was supplied in web request"
+                        });
+                        words = preLoadedWords;
+                    }
+                    Dictionary<string, string[]> synonyms = inRecord.GetOrCreateDictionary<Dictionary<string, string[]>>("synonyms");
+                    IList<string> exactMatches = inRecord.GetOrCreateList<List<string>>("exactMatches");
+                    int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset")) ? Math.Max(0, Convert.ToInt32(inRecord.Data["fuzzyMatchOffset"])) : 0;
+                    bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
+                    if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
+                    {
                         try
                         {
                             WordLinker userInput = WordLinker.WordLink(executionContext.FunctionDirectory, "json");
@@ -109,7 +109,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                                 Message = "Used predefined key words from customLookupSkill configuration file " +
                             "since no 'words' parameter was supplied in web request"
                             });
-                         }
+                            }
                         catch (Exception)
                         {
                             outRecord.Errors.Add(new WebApiErrorWarningContract

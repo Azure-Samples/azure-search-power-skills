@@ -64,23 +64,35 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         public static async Task CallEntitySearchFunctionAndCheckResults(
             string[] expectedFoundEntities, string[] expectedMatches, int[] expectedMatchIndices, double[] confidence,
             string text, string[] words, Dictionary<string, string[]> synonyms, string[] exactMatches, int offset,
-            string warningMessage = "")
+            string warningMessage = "", string errorMessage = "")
         {
             string input = BuildInput(text, words, synonyms, exactMatches, offset);
             string expectedOutput = BuildOutput(expectedFoundEntities, expectedMatches, expectedMatchIndices, confidence);
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
             if (warningMessage != "")
                 expectedOutput = expectedOutput.Replace(@"""warnings"":[]", warningMessage);
+            if (errorMessage != "")
+            {
+                expectedOutput = expectedOutput.Replace(@"""errors"":[]", errorMessage);
+                expectedOutput = expectedOutput.Remove(35, 32);
+            }
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
         public static async Task CallEntitySearchFunctionAndCheckResults(
             string[] expectedFoundEntities, string[] expectedMatches, int[] expectedMatchIndices,
-            string text, string[] words)
+            string text, string[] words, string warningMessage = "", string errorMessage = "")
         {
             string input = BuildInput(text, words);
             string expectedOutput = BuildOutput(expectedFoundEntities, expectedMatches, expectedMatchIndices);
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
+            if (warningMessage != "")
+                expectedOutput = expectedOutput.Replace(@"""warnings"":[]", warningMessage);
+            if (errorMessage != "")
+            {
+                expectedOutput = expectedOutput.Replace(@"""errors"":[]", errorMessage);
+                expectedOutput = expectedOutput.Remove(35, 32);
+            }
             Assert.AreEqual(expectedOutput, actualOutput);
         }
 
