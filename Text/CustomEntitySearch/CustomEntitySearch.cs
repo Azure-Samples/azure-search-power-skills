@@ -204,7 +204,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 escapedWord.Append("))");
                 string pattern = (caseSensitive) ? @"(?x)" + escapedWord : @"(?ix)" + escapedWord;
 
-                MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.Compiled, TimeSpan.FromSeconds(MaxRegexEvalTime));
+                MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.None, TimeSpan.FromSeconds(MaxRegexEvalTime));
                 if (entityMatch.Count != 0)
                 {
                     foreach (Match match in entityMatch)
