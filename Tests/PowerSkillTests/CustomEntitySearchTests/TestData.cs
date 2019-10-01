@@ -120,6 +120,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 
         public static readonly string[] EmptyTextWordsNotFoundInput = new[] { "will you search?" };
         public static readonly string[] EmptyWordsEmptyEntitiesInput = new[] { "if you find when searching, i will be sad" };
+        public static readonly string EmptyWordsEmptyEntitiesErrorMessage = @"""errors"":[{""message"":""Could not parse predefined words.json""}]";
         public static readonly string[] LargeTextQuickResultInputWords = new[] { "random", "drefke", "customLookup", "eyisi" };
         public const string LargeWordsQuickResultInputText = @"Azure Storage is a Microsoft-managed service providing cloud storage that is highly available," + 
         "secure, durable, scalable, and redundant. Azure Storage includes Azure Blobs (objects), Azure Data Lake Storage Gen2, Azure Files, " +
@@ -383,6 +384,10 @@ Pihisic ufonisit ine eyisi emeku gelede hegu tago gojoces.Ces ca diec cin bisale
 
         public static void supportedTextandWordsTempInitializer()
         {
+            if (supportedTextandWords.ContainsKey("Greek"))
+            {
+                return;
+            }
             supportedTextandWords.Add("Greek", new string[]
                 {
                     @"Tου Αντώνη Ρέλλα - Θα πρέπει να γίνει κατανοητό ότι οι αποκλεισμοί των αναπήρων εκκινούν, έτσι κι αλλιώς, από τις θεσμοθετημένες πρακτικές του κράτους και τα εμπόδια στο δομημένο περιβάλλον. Πώς, λοιπόν, η κυβέρνηση θα κάνει πράξη την ανεξάρτητη διαβίωση",

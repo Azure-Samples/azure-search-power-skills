@@ -45,7 +45,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             //tests against empty string words
             await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
                 Array.Empty<string>(), Array.Empty<string>(), Array.Empty<int>(),
-                "", Array.Empty<string>());
+                "", Array.Empty<string>(), "", TestData.EmptyWordsEmptyEntitiesErrorMessage);
         }
 
         [TestMethod]
