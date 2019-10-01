@@ -13,15 +13,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 
     [TestClass]
     public class CustomEntitySearchTests
-    {        
-        [TestMethod]
-        public async Task MissingWordsBadRequest()
-        {
-            // tests against incorrect input (missing words)
-            WebApiSkillResponse outputContent = await CustomEntitySearchHelpers.QueryEntitySearchFunction(TestData.MissingWordsBadRequestInput);
-            Assert.IsTrue(outputContent.Values[0].Warnings[0].Message.Contains(TestData.MissingWordsExpectedResponse));
-        }
-
+    {
         [TestMethod]
         public async Task MissingTextBadRequest()
         {
@@ -37,15 +29,6 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
                 Array.Empty<string>(), Array.Empty<string>(), Array.Empty<int>(),
                 "", TestData.EmptyTextWordsNotFoundInput);
-        }
-
-        [TestMethod]
-        public async Task EmptyWordsEmptyEntities()
-        {
-            //tests against empty string words
-            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
-                Array.Empty<string>(), Array.Empty<string>(), Array.Empty<int>(),
-                "", Array.Empty<string>(), "", TestData.EmptyWordsEmptyEntitiesErrorMessage);
         }
 
         [TestMethod]
@@ -69,7 +52,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         [TestMethod]
         public async Task LargeDatasetQuickResult()
         {
-            //tests against a large number of documents inputted (loadtest)
+            //tests against a large input document
             await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
                 TestData.LargeTextOutputFound, TestData.LargeTextOutputNames, TestData.LargeTextOutputMatchIndex,
                 TestData.LargestText, TestData.LargeTextQuickResultInputWords);
@@ -81,8 +64,9 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         {
             // tests against a large number of patterns in words array
             await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
-                TestData.LargeNumWordsOutputFound, TestData.LargeNumWordsOutputNames, TestData.LargeNumWordsOutputMatchIndex,
-                TestData.LargestText, TestData.LargestWords);
+                TestData.LargestText,
+                TestData.LargestWords,
+                TestData.LargeNumWordsQuickResultExpectedResponse);
         }
 
         [TestMethod]
@@ -168,6 +152,8 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         [TestMethod]
         public async Task WordSmallerThanLeniency()
         {
+            CustomEntitySearchHelpers.ReplaceWordsJson(words: new string[] { "i" }, offset: 2);
+
             WebApiSkillResponse outputContent = await CustomEntitySearchHelpers.QueryEntitySearchFunction(TestData.WordSmallerThanLeniencyInput);
             Assert.IsTrue(outputContent.Values[0].Warnings[0].Message.Contains(TestData.WordSmallerThanLeniencyWarning));
         }
@@ -191,9 +177,11 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         [TestMethod]
         public async Task LargestLeniencyCheck()
         {
-            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(TestData.LargestLeniencyCheckMatchesFound, TestData.LargestLeniencyCheckMatches,
-                TestData.LargestLeniencyCheckIndices, TestData.LargestLeniencyCheckConfidence, TestData.LargestLeniencyCheckText,
-                TestData.LargestLeniencyCheckWords, new Dictionary<string, string[]>(), Array.Empty<string>(), 10, TestData.LargestLeniencyCheckWarning);
+            await CustomEntitySearchHelpers.CallEntitySearchFunctionAndCheckResults(
+                TestData.LargestLeniencyCheckText,
+                TestData.LargestLeniencyCheckWords,
+                TestData.LargestLeniencyCheckExpectedResponse,
+                offset: 10);
         }
 
         [TestMethod]

@@ -13,42 +13,60 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 {
     internal class WordLinker
     {
-        public static WordLinker WordLink(string executingPathDirectory, string fileType)
+        public static WordLinker WordLink(string fileName)
         {
-            if (fileType == "json")
+            var local_root = Environment.GetEnvironmentVariable("AzureWebJobsScriptRoot");
+            var azure_root = $"{Environment.GetEnvironmentVariable("HOME")}/site/wwwroot";
+            var actual_root = local_root ?? azure_root;
+
+            if (fileName.EndsWith(".json"))
             {
-                string json = File.ReadAllText($"{executingPathDirectory}\\words.json");
+                string json = File.ReadAllText(Path.Join(actual_root, fileName));
                 return JsonConvert.DeserializeObject<WordLinker>(json);
             }
-            else if (fileType == "csv")
+            else if (fileName.EndsWith(".csv"))
             {
                 return new WordLinker
                 {
-                    Words = File.ReadAllLines($"{executingPathDirectory}\\words.csv").ToList()
+                    Words = File.ReadAllLines(Path.Join(actual_root, fileName))
+                            .SelectMany(line => line.Split(","))
+                            .Where(line => !string.IsNullOrEmpty(line))
+                            .ToList()
                 };
             }
-            return new WordLinker();
+            else
+            {
+                throw new ArgumentException("Unsupported Entity Definition file type.");
+            }
         }
 
         public IList<string> Words
         {
-            get; private set;
+            get; set;
         }
+
         public IList<string> ExactMatch
         {
-            get;
+            get; set;
         }
-        public int FuzzyMatchOffset
+
+        /// <summary>
+        /// The amount of lenincy the mathcing algorithm will allow in a match.
+        /// This is based on Levenshtein distance. EG: cat - catt have a distance of 1
+        /// </summary>
+        public int FuzzyEditDistance
         {
-            get;
+            get; set;
         }
+
         public Dictionary<string, string[]> Synonyms
         {
-            get;
+            get; set;
         }
+
         public bool CaseSensitive
         {
-            get;
+            get; set;
         }
     }
 }

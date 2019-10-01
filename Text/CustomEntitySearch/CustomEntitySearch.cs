@@ -4,47 +4,40 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using AzureCognitiveSearch.PowerSkills.Common;
-using Newtonsoft.Json.Linq;
 using System.Linq;
-using System.Collections;
-using System.IO;
 using System.Globalization;
-using System.Text;
-
-// languages used for Azure Search with Text Analytics:
-// el, th, he, tr, cs, hu, ar, ja-jp, fi, da, no, ko, pl, ru, sv, ja, it, pt, fr, es, nl, de, en
-// greek, thai, hebrew, turkish, czech, hungarian, arabic, japanese, finnish, danish, norwegian, korean, polish, russian, swedish, japanese (again??), 
-// italian, portuguese, french, spanish, dutch, german, english
-// unicode blocks in order:
-// InThai, InHebrew
+using System.Threading.Tasks;
 
 namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
 {
     /// <summary>
-    /// Based on sample custom skill provided in Azure Search. Provided a user-defined list of entities
-    /// this function determines the Entity first occurrence within a given document. This list of entities
-    /// must repeatedly be provided by the user for each document.
+    /// Based on sample custom skill provided in Azure Search. Given a user-defined list of entities,
+    /// this function will find all occurences of that entity in some input text.
     /// </summary>
     public static class CustomEntitySearch
     {
-        // Use this to load from "csv" or "json" file 
-        public static IList<string> preLoadedWords = null;
+        // ** Some global variables used for configuration.**
+        // ** Change these values prior to deploying your function **
+        public static bool ExactMatchesShouldBeCaseSensitive = false;
+        public static string EntityDefinitionLocation = "words.csv"; // other option is "words.json"
+        public static readonly int MaxRegexEvalTimeInSeconds = 10;
 
-        private static readonly int MaxRegexEvalTime = 1;
-        private static bool substringMatch = false;
+
+        /// Entity definition is lazy loaded on first function call. This may result in the
+        /// first function call taking several seconds (since it needs to parse entity definitions).
+        /// subsequent function calls should be significantly faster
+        private static WordLinker _userDefinedEntities = null;
+        private static Regex _precompiledExactMatchRegex = null;
 
         /// <summary>
-        /// We assert the following assumptions:
-        /// 1. All text files contain characters with unicode encoding
-        /// 2. Words can contain special characters and numbers
-        /// 3. The provided entities are not case sensitive
+        /// Find instances of custom entities from either words.csv or words.json
+        /// in input text
         /// </summary>
         [FunctionName("custom-entity-search")]
         public static async Task<IActionResult> RunCustomEntitySearch(
@@ -52,114 +45,101 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             ILogger log,
             ExecutionContext executionContext)
         {
-            if (preLoadedWords == null)
-            {
-                preLoadedWords = WordLinker.WordLink(executionContext.FunctionAppDirectory, "csv").Words;
-            }
-
             log.LogInformation("Custom Entity Search function: C# HTTP trigger function processed a request.");
 
-            string skillName = executionContext.FunctionName;
+            if (_userDefinedEntities == null || _precompiledExactMatchRegex == null
+                || executionContext.FunctionName == "unitTestFunction") // always reload data for tests
+            {
+                _userDefinedEntities = WordLinker.WordLink(EntityDefinitionLocation);
+                _precompiledExactMatchRegex = new Regex($@"\b({string.Join("|", _userDefinedEntities.Words)})\b",
+                                                                ExactMatchesShouldBeCaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase,
+                                                                TimeSpan.FromSeconds(MaxRegexEvalTimeInSeconds));
+            }
+
             IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
             if (requestRecords == null)
             {
-                return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
+                return new BadRequestObjectResult($"{executionContext.FunctionName} - Invalid request record array.");
             }
 
-            WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
-                 (inRecord, outRecord) => {
+            WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(executionContext.FunctionName, requestRecords,
+                 (inRecord, outRecord) =>
+                 {
                      if (!inRecord.Data.ContainsKey("text") || inRecord.Data["text"] == null)
                      {
                          outRecord.Errors.Add(new WebApiErrorWarningContract { Message = "Cannot process record without the given key 'text' with a string value" });
                          return outRecord;
                      }
-                     if (!inRecord.Data.ContainsKey("words") &&
-                     (inRecord.Data.ContainsKey("synonyms") || inRecord.Data.ContainsKey("exactMatches") || inRecord.Data.ContainsKey("fuzzyMatchOffset")))
-                     {
-                         outRecord.Errors.Add(new WebApiErrorWarningContract
-                         {
-                             Message = "Cannot process record without the given key 'words' in the dictionary"
-                         });
-                         return outRecord;
-                     }
+
                      string text = inRecord.Data["text"] as string;
-                     IList<string> words;
-                     if (inRecord.Data.ContainsKey("words") == true)
-                     {
-                         words = inRecord.GetOrCreateList<List<string>>("words");
-                     }
-                     else
-                     {
-                         outRecord.Warnings.Add(new WebApiErrorWarningContract
-                         {
-                             Message = "Used predefined key words from customLookupSkill configuration file " +
-                                "since no 'words' parameter was supplied in web request"
-                         });
-                         words = preLoadedWords;
-                     }
-                     Dictionary<string, string[]> synonyms = inRecord.GetOrCreateDictionary<Dictionary<string, string[]>>("synonyms");
-                     IList<string> exactMatches = inRecord.GetOrCreateList<List<string>>("exactMatches");
-                     int offset = (inRecord.Data.ContainsKey("fuzzyMatchOffset")) ? Math.Max(0, Convert.ToInt32(inRecord.Data["fuzzyMatchOffset"])) : 0;
-                     bool caseSensitive = (inRecord.Data.ContainsKey("caseSensitive")) ? (bool)inRecord.Data.ContainsKey("caseSensitive") : false;
-                     if (words.Count == 0 || (words.Count(word => !String.IsNullOrEmpty(word)) == 0))
-                     {
-                         try
-                         {
-                             WordLinker userInput = WordLinker.WordLink(executionContext.FunctionDirectory, "json");
-                             words = userInput.Words;
-                             synonyms = userInput.Synonyms;
-                             exactMatches = userInput.ExactMatch;
-                             offset = (userInput.FuzzyMatchOffset >= 0) ? userInput.FuzzyMatchOffset : 0;
-                             caseSensitive = userInput.CaseSensitive;
-                             outRecord.Warnings.Add(new WebApiErrorWarningContract
-                             {
-                                 Message = "Used predefined key words from customLookupSkill configuration file " +
-                             "since no 'words' parameter was supplied in web request"
-                             });
-                         }
-                         catch (Exception)
-                         {
-                             outRecord.Errors.Add(new WebApiErrorWarningContract
-                             {
-                                 Message = "Could not parse predefined words.json"
-                             });
-                             return outRecord;
-                         }
-                     }
+                     IList<string> words = _userDefinedEntities.Words;
+                     Dictionary<string, string[]> synonyms = _userDefinedEntities.Synonyms;
+                     IList<string>  exactMatches = _userDefinedEntities.ExactMatch;
+                     int fuzzyEditDistance = Math.Max(0, _userDefinedEntities.FuzzyEditDistance);
+                     bool caseSensitive = _userDefinedEntities.CaseSensitive;
 
                      var entities = new List<Entity>();
                      var entitiesFound = new HashSet<string>();
+
                      if (!string.IsNullOrWhiteSpace(text))
                      {
-                         foreach (string word in words)
+                         // exact matches user regex
+                         if (fuzzyEditDistance == 0)
                          {
-                             if (string.IsNullOrEmpty(word)) continue;
-                             int leniency = (exactMatches != null && exactMatches.Contains(word)) ? 0 : offset;
-                             string wordCharArray = (caseSensitive) ? CreateWordArray(word) : CreateWordArray(word.ToLower(CultureInfo.CurrentCulture));
-                             if (leniency >= wordCharArray.Length)
+                             MatchCollection entityMatch = _precompiledExactMatchRegex.Matches(text);
+                             if (entityMatch.Count > 0)
                              {
-                                 outRecord.Warnings.Add(new WebApiErrorWarningContract
+                                 foreach (Match match in entityMatch)
                                  {
-                                     Message = @"The provided fuzzy offset of " + leniency + @", is larger than the length of the provided word, """ + word + @"""."
-                                 });
-                                 leniency = Math.Max(0, wordCharArray.Length - 1);
-                             }
-                             AddValues(word, text, wordCharArray, entities, entitiesFound, leniency, caseSensitive);
-                             if (synonyms.TryGetValue(word, out string[] wordSynonyms))
-                             {
-                                 foreach (string synonym in wordSynonyms)
-                                 {
-                                     leniency = (exactMatches != null && exactMatches.Contains(synonym)) ? 0 : offset;
-                                     string synonymCharArray = (caseSensitive) ? CreateWordArray(synonym) : CreateWordArray(synonym.ToLower(CultureInfo.CurrentCulture));
-                                     if (leniency >= synonym.Length)
-                                     {
-                                         outRecord.Warnings.Add(new WebApiErrorWarningContract
+                                     entities.Add(
+                                         new Entity
                                          {
-                                             Message = @"The provided fuzzy offset of " + leniency + @", is larger than the length of the provided synonym, """ + synonym + @"""."
+                                             Category = "customEntity",
+                                             Value = match.Groups[1].Value,
+                                             Offset = match.Index,
+                                             Confidence = 0
                                          });
-                                         leniency = Math.Max(0, synonymCharArray.Length - 1);
+
+                                     var userWordMatch = _userDefinedEntities.Words.FirstOrDefault(w => w.Equals(match.Groups[1].Value, StringComparison.InvariantCultureIgnoreCase));
+                                     entitiesFound.Add(userWordMatch);
+                                 }
+                             }
+                         }
+                         // Fuzzy match uses CalculateDamerauLevenshteinDistance
+                         else
+                         {
+                             foreach (string word in words)
+                             {
+                                 int wordFuzzyEditDistance = (exactMatches != null && exactMatches.Contains(word)) ? 0 : fuzzyEditDistance;
+                                 string normalizedWord = (caseSensitive) ? TrimDelineatingCharacters(word) : TrimDelineatingCharacters(word.ToLower(CultureInfo.CurrentCulture));
+                                 if (wordFuzzyEditDistance >= normalizedWord.Length)
+                                 {
+                                     outRecord.Warnings.Add(new WebApiErrorWarningContract
+                                     {
+                                         Message = @"The provided fuzzy offset of " + wordFuzzyEditDistance + @", is larger than the length of the provided word, """ + word + @"""."
+                                     });
+                                     wordFuzzyEditDistance = Math.Max(0, normalizedWord.Length - 1);
+                                 }
+
+                                 FindMatches(normalizedWord, word, text, entities, entitiesFound, wordFuzzyEditDistance, caseSensitive);
+
+                                 if (synonyms.TryGetValue(word, out string[] wordSynonyms))
+                                 {
+                                     foreach (string synonym in wordSynonyms)
+                                     {
+                                         wordFuzzyEditDistance = (exactMatches != null && exactMatches.Contains(synonym)) ? 0 : fuzzyEditDistance;
+                                         string normalizedSynonymWord = (caseSensitive) ? TrimDelineatingCharacters(synonym) : TrimDelineatingCharacters(synonym.ToLower(CultureInfo.CurrentCulture));
+                                         if (wordFuzzyEditDistance >= synonym.Length)
+                                         {
+                                             outRecord.Warnings.Add(new WebApiErrorWarningContract
+                                             {
+                                                 Message = @"The provided fuzzy offset of " + wordFuzzyEditDistance + @", is larger than the length of the provided synonym, """ + synonym + @"""."
+                                             });
+                                             wordFuzzyEditDistance = Math.Max(0, normalizedSynonymWord.Length - 1);
+                                         }
+
+                                         FindMatches(normalizedSynonymWord, word, text, entities, entitiesFound, wordFuzzyEditDistance, caseSensitive);
                                      }
-                                     AddValues(synonym, text, synonymCharArray, entities, entitiesFound, leniency, caseSensitive);
                                  }
                              }
                          }
@@ -173,180 +153,207 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             return new OkObjectResult(response);
         }
 
-        public static void AddValues(
-            string checkMatch,
+        public static void FindMatches(
+            string wordToFind,
+            string unNormalizedWord,
             string text,
-            string word,
             List<Entity> entities,
             HashSet<string> entitiesFound,
-            int leniency,
+            int wordFuzzyEditDistance,
             bool caseSensitive)
         {
-            if (leniency == 0)
+            // find all word start and end locations
+            List<int> wordStartLocations = new List<int> { 0 };
+            List<int> wordEndLocations = new List<int>();
+            string normalizedText = (caseSensitive) ? TrimDelineatingCharacters(text) : TrimDelineatingCharacters(text.ToLower(CultureInfo.CurrentCulture));
+            for (int currTextIndex = 0; currTextIndex < normalizedText.Length; currTextIndex++)
             {
-                // Overlap checker now also included in Regex expression using delineating characters as overlap lookahead
-                StringBuilder escapedWord = new StringBuilder(@"(?=(");
-                if (!word.First().IsDelineating() && !substringMatch)
-                    escapedWord.Append(@"\b");
-                for (int currWordCharIndex = 0; currWordCharIndex < word.Length; currWordCharIndex++)
+                if (normalizedText[currTextIndex].IsDelineating())
                 {
-                    if (word[currWordCharIndex].IsDelineating())
-                    {
-                        escapedWord.Append(".");
-                    }
-                    else
-                    {
-                        escapedWord.Append(word[currWordCharIndex]);
-                    }
-                }
-                if (!word.Last().IsDelineating() && !substringMatch)
-                    escapedWord.Append(@"\b");
-                escapedWord.Append("))");
-                string pattern = (caseSensitive) ? @"(?x)" + escapedWord : @"(?ix)" + escapedWord;
-
-                MatchCollection entityMatch = Regex.Matches(text, pattern, RegexOptions.None, TimeSpan.FromSeconds(MaxRegexEvalTime));
-                if (entityMatch.Count != 0)
-                {
-                    foreach (Match match in entityMatch)
-                    {
-                        entities.Add(
-                            new Entity
-                            {
-                                Category = "customEntity",
-                                Value = match.Groups[1].Value,
-                                Offset = match.Index,
-                                Confidence = 0
-                            });
-                    }
-                    entitiesFound.Add(checkMatch);
+                    if (currTextIndex + 1 < normalizedText.Length && !normalizedText[currTextIndex + 1].IsDelineating())
+                        wordStartLocations.Add(currTextIndex + 1);
+                    if (currTextIndex - 1 >= 0 && !normalizedText[currTextIndex - 1].IsDelineating())
+                        wordEndLocations.Add(currTextIndex - 1);
                 }
             }
-            else
+            wordEndLocations.Add(normalizedText.Length - 1);
+
+            // find any text substrings that are within fuzzy distance of this word
+            // for every potential start position...
+            for (int startPointerIndex = 0; startPointerIndex < wordStartLocations.Count; startPointerIndex++)
             {
-                List<int> startPointersInText = new List<int> { 0 };
-                List<int> endPointersInText = new List<int>();
-                string textCharArray = (caseSensitive) ? CreateWordArray(text) : CreateWordArray(text.ToLower(CultureInfo.CurrentCulture));
-                for (int currTextCharIndex = 0; currTextCharIndex < textCharArray.Length; currTextCharIndex++)
-                {
-                    if (textCharArray[currTextCharIndex].IsDelineating())
-                    {
-                        if (currTextCharIndex + 1 < textCharArray.Length && !textCharArray[currTextCharIndex + 1].IsDelineating())
-                            startPointersInText.Add(currTextCharIndex + 1);
-                        if (currTextCharIndex - 1 >= 0 && !textCharArray[currTextCharIndex - 1].IsDelineating())
-                            endPointersInText.Add(currTextCharIndex - 1);
-                    }
-                }
-                endPointersInText.Add(textCharArray.Length - 1);
+                double bestMatchDistance = wordFuzzyEditDistance + 1;
+                Entity bestMatchSoFar = null;
 
-                double[] minLevenshteinDistance = new double[startPointersInText.Count];
-                int[] endofMatchInTextPointer = new int[startPointersInText.Count];
-                for (int startPointerIndex = 0; startPointerIndex < startPointersInText.Count; startPointerIndex++)
+                // create a word for every subsequent end position
+                for (int endPointerIndex = startPointerIndex; endPointerIndex < wordEndLocations.Count; endPointerIndex++)
                 {
-                    minLevenshteinDistance[startPointerIndex] = leniency + 1;
-                    for (int endPointerIndex = startPointerIndex; endPointerIndex < endPointersInText.Count; endPointerIndex++)
+                    var potentialMatch = normalizedText.Substring(wordStartLocations[startPointerIndex], wordEndLocations[endPointerIndex] - wordStartLocations[startPointerIndex] + 1);
+
+                    if (potentialMatch.Length - wordToFind.Length > wordFuzzyEditDistance)
                     {
-                        if (endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1 > checkMatch.Length * 2) break;
-                        double distance = DamerauLevenshteinCalculation(textCharArray.Substring(startPointersInText[startPointerIndex],
-                            endPointersInText[endPointerIndex] - startPointersInText[startPointerIndex] + 1), word);
-                        if (distance > -1 && minLevenshteinDistance[startPointerIndex] > distance)
+                        // we're considering words that are too long and can never be matches
+                        // break to next start position
+                        break;
+                    }
+
+                    // check if this substring matches the input word
+                    double editDistance = CalculateDamerauLevenshteinDistance(potentialMatch, wordToFind);
+
+                    if (editDistance > -1
+                        && editDistance <= wordFuzzyEditDistance
+                        && editDistance < bestMatchDistance)
+                    {
+                        bestMatchSoFar = new Entity
                         {
-                            minLevenshteinDistance[startPointerIndex] = distance;
-                            endofMatchInTextPointer[startPointerIndex] = endPointerIndex;
-                        }
+                            Category = "customEntity",
+                            Value = potentialMatch,
+                            Offset = wordStartLocations[startPointerIndex],
+                            Confidence = editDistance
+                        };
                     }
                 }
 
-                for (int i = 0; i < minLevenshteinDistance.Length; i++)
+                // Done with this start index,
+                // Store best match if we have one,
+                // and then continue to next possible start location
+                if (bestMatchSoFar != null)
                 {
-                    if (minLevenshteinDistance[i] <= leniency)
-                    {
-                        entities.Add(
-                                new Entity
-                                {
-                                    Category = "customEntity",
-                                    Value = text.Substring(startPointersInText[i], endPointersInText[endofMatchInTextPointer[i]] - startPointersInText[i] + 1),
-                                    Offset = startPointersInText[i],
-                                    Confidence = minLevenshteinDistance[i]
-                                });
-                        entitiesFound.Add(checkMatch);
-                    }
+                    entities.Add(bestMatchSoFar);
+                    entitiesFound.Add(unNormalizedWord);
                 }
-
-
             }
         }
 
-        private static double DamerauLevenshteinCalculation(string text, string checkMatch)
+        /// <summary>
+        /// Calculate the Demerau Levenshtein Distance between two strings.
+        /// If invalid input is provided, this function returns -1
+        /// </summary>
+        /// <param name="potentialMatch">first string</param>
+        /// <param name="entityToFind">second string</param>
+        /// <returns>number of character edits needed to tranform the first string into the second</returns>
+        private static double CalculateDamerauLevenshteinDistance(string potentialMatch, string entityToFind)
         {
-            double[,] dynamicDistanceCalc = new double[text.Length + 1, checkMatch.Length + 1];
-            double substitutionCost = -1;
-            double accentAddition = 1;
-            for (int currTextIndex = 0; currTextIndex <= text.Length; currTextIndex++)
-                dynamicDistanceCalc[currTextIndex, 0] = currTextIndex;
-            for (int currWordIndex = 0; currWordIndex <= checkMatch.Length; currWordIndex++)
+            if (string.IsNullOrEmpty(potentialMatch))
+            {
+                return entityToFind?.Length ?? -1;
+            }
+
+            if (string.IsNullOrEmpty(entityToFind))
+            {
+                return potentialMatch?.Length ?? -1;
+            }
+
+            double[,] dynamicDistanceCalc = new double[potentialMatch.Length + 1, entityToFind.Length + 1];
+
+            for (int currpotentialEntityMatchIndex = 0; currpotentialEntityMatchIndex <= potentialMatch.Length; currpotentialEntityMatchIndex++)
+                dynamicDistanceCalc[currpotentialEntityMatchIndex, 0] = currpotentialEntityMatchIndex;
+            for (int currWordIndex = 0; currWordIndex <= entityToFind.Length; currWordIndex++)
                 dynamicDistanceCalc[0, currWordIndex] = currWordIndex;
 
-            for (int currTextIndex = 0; currTextIndex < text.Length; currTextIndex++)
+            for (int currpotentialEntityMatchIndex = 0; currpotentialEntityMatchIndex < potentialMatch.Length; currpotentialEntityMatchIndex++)
             {
-                for (int currWordIndex = 0; currWordIndex < checkMatch.Length; currWordIndex++)
+                for (int currWordIndex = 0; currWordIndex < entityToFind.Length; currWordIndex++)
                 {
-                    if (text[currTextIndex].Equals(checkMatch[currWordIndex]))
-                        substitutionCost = 0;
-                    else if (String.Compare(checkMatch[currWordIndex].ToString(), text[currTextIndex].ToString(),
-                                    CultureInfo.CurrentCulture, CompareOptions.IgnoreNonSpace) == 0)
-                        substitutionCost = .5;
+                    double cost = 0;
+                    double accentCost = 1;
+
+                    if (potentialMatch[currpotentialEntityMatchIndex].Equals(entityToFind[currWordIndex]))
+                    {
+                        cost = 0; // the characters match
+                    }
+                    else if (CharsAreEqualModuloDiacritics(entityToFind[currWordIndex], potentialMatch[currpotentialEntityMatchIndex]))
+                    {
+                        cost = .5; // the characters only differ by accent characters
+                    }
                     else
-                        substitutionCost = 1;
-                    if (checkMatch[currWordIndex].IsAccent() ^ text[currTextIndex].IsAccent())
-                        accentAddition = 0.5;
-                    dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1] = Math.Min(
-                        Math.Min(dynamicDistanceCalc[currTextIndex, currWordIndex + 1] + accentAddition, // deletion
-                        dynamicDistanceCalc[currTextIndex + 1, currWordIndex] + accentAddition), // insertion
-                        dynamicDistanceCalc[currTextIndex, currWordIndex] + substitutionCost); // substitution
-                    if (currTextIndex > 0 && currWordIndex > 0 && text[currTextIndex].Equals(checkMatch[currWordIndex - 1]) && checkMatch[currWordIndex].Equals(text[currTextIndex - 1]))
-                        dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1] = Math.Min(dynamicDistanceCalc[currTextIndex + 1, currWordIndex + 1],
-                            dynamicDistanceCalc[currTextIndex - 1, currWordIndex - 1] + substitutionCost); // transposition
+                    {
+                        cost = 1;
+                    }
+
+                    if (potentialMatch[currpotentialEntityMatchIndex].IsAccent() ^ entityToFind[currWordIndex].IsAccent())
+                    {
+                        accentCost = 0.5; // just adding or removing an accent
+                    }
+
+                    // Keep the cheapest 
+                    dynamicDistanceCalc[currpotentialEntityMatchIndex + 1, currWordIndex + 1] = 
+                        Math.Min(
+                            Math.Min(
+                                dynamicDistanceCalc[currpotentialEntityMatchIndex, currWordIndex + 1] + accentCost, // deletion
+                                dynamicDistanceCalc[currpotentialEntityMatchIndex + 1, currWordIndex] + accentCost), // insertion
+                                dynamicDistanceCalc[currpotentialEntityMatchIndex, currWordIndex] + cost); // substitution
+                   
+                    if (currpotentialEntityMatchIndex > 0 && currWordIndex > 0 && potentialMatch[currpotentialEntityMatchIndex].Equals(entityToFind[currWordIndex - 1]) && entityToFind[currWordIndex].Equals(potentialMatch[currpotentialEntityMatchIndex - 1]))
+                    {
+                        dynamicDistanceCalc[currpotentialEntityMatchIndex + 1, currWordIndex + 1] = 
+                            Math.Min(
+                                dynamicDistanceCalc[currpotentialEntityMatchIndex + 1, currWordIndex + 1],
+                                dynamicDistanceCalc[currpotentialEntityMatchIndex - 1, currWordIndex - 1] + cost); // transposition
+                    }
                 }
             }
 
-            return dynamicDistanceCalc[text.Length, checkMatch.Length];
+            return dynamicDistanceCalc[potentialMatch.Length, entityToFind.Length];
         }
 
-        /*
-        * Given an entity the user wants to find, this method removes delineating characters if they are found in the
-        * beginning or end of the entity definition. The method then returns the exact word that will be used for fuzzy matching
-        */
-        public static string CreateWordArray(string checkMatch)
+        /// <summary>
+        /// Trims delineating characters from the beginning and end of some text
+        /// </summary>
+        /// <param name="textToTrim">the text to trim</param>
+        /// <returns>a string with the delineating characters trimmed from the beginning and end</returns>
+        public static string TrimDelineatingCharacters(string textToTrim)
         {
-            int initCheckIndex = 0;
-            int endCheckIndex = checkMatch.Length - 1;
+            int startIndex = 0;
+            int endIndex = textToTrim.Length - 1;
 
-            while (initCheckIndex < checkMatch.Length && checkMatch[initCheckIndex].IsDelineating())
-                initCheckIndex++;
-            while (endCheckIndex >= 0 && checkMatch[endCheckIndex].IsDelineating())
-                endCheckIndex--;
-            if (initCheckIndex != 0 || endCheckIndex != checkMatch.Length - 1)
+            while (startIndex < textToTrim.Length && textToTrim[startIndex].IsDelineating())
+                startIndex++;
+            while (endIndex >= 0 && textToTrim[endIndex].IsDelineating())
+                endIndex--;
+
+            if (startIndex >= endIndex)
             {
-                return checkMatch.Substring(initCheckIndex, endCheckIndex - initCheckIndex + 1);
+                return string.Empty;
             }
 
-            return checkMatch;
+            return textToTrim.Substring(startIndex, endIndex - startIndex + 1);
         }
 
-        public static bool IsDelineating(this char checkSymbol)
+        /// <summary>
+        /// Determines if a given character should be considered a "delineating" character
+        /// </summary>
+        /// <param name="character">the character to evaluate</param>
+        /// <returns>true if the character is delineating</returns>
+        public static bool IsDelineating(this char character)
         {
-            return (Char.IsWhiteSpace(checkSymbol) || Char.IsSeparator(checkSymbol) || Char.IsPunctuation(checkSymbol));
+            return (Char.IsWhiteSpace(character)
+                    || Char.IsSeparator(character)
+                    || Char.IsPunctuation(character));
         }
-        public static bool IsAccent(this char checkSymbol)
+
+        /// <summary>
+        /// Determines if a given character should be considered an accent (diacritic) character
+        /// </summary>
+        /// <param name="character">the character to evaluate</param>
+        /// <returns>true if the character is diacritic</returns>
+        public static bool IsAccent(this char character)
         {
-            return Char.GetUnicodeCategory(checkSymbol) == UnicodeCategory.NonSpacingMark || Char.GetUnicodeCategory(checkSymbol) == UnicodeCategory.SpacingCombiningMark;
+            return Char.GetUnicodeCategory(character) == UnicodeCategory.NonSpacingMark
+                   || Char.GetUnicodeCategory(character) == UnicodeCategory.SpacingCombiningMark;
         }
-        public static T GetOrCreateList<T>(this WebApiRequestRecord record, string propertyName)
-            where T : class, IEnumerable, new() => (record.Data.TryGetValue(propertyName, out object objectValue) ?
-            ((JArray)objectValue).ToObject<T>() : new T()) ?? new T();
-        public static T GetOrCreateDictionary<T>(this WebApiRequestRecord record, string propertyName)
-            where T : class, IEnumerable, new() => (record.Data.TryGetValue(propertyName, out object objectValue) ?
-            ((JContainer)objectValue).ToObject<T>() : new T()) ?? new T();
+
+        /// <summary>
+        /// Determine if two characters are equal ignoring diacritics
+        /// </summary>
+        /// <param name="c1">first character</param>
+        /// <param name="c2">second character</param>
+        /// <returns>true if they're equal ignoring diacritics</returns>
+        public static bool CharsAreEqualModuloDiacritics(char c1, char c2)
+        {
+            return String.Compare(c1.ToString(), c2.ToString(),
+                                    CultureInfo.CurrentCulture, CompareOptions.IgnoreNonSpace) == 0;
+        }
     }
 
 }

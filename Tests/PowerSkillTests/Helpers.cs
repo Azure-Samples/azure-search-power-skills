@@ -7,11 +7,15 @@ using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace AzureCognitiveSearch.PowerSkills.Tests
@@ -96,9 +100,27 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
         }
 
         public static Func<HttpRequest, Task<IActionResult>> CurrySkillFunction(Func<HttpRequest, ILogger, Microsoft.Azure.WebJobs.ExecutionContext, Task<IActionResult>> skillFunction)
-            => request => skillFunction(request, new LoggerFactory().CreateLogger("local"), new Microsoft.Azure.WebJobs.ExecutionContext());
+        {
+            var executionContext = new Microsoft.Azure.WebJobs.ExecutionContext();
+            var executingLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            executionContext.FunctionName = "unitTestFunction";
+            executionContext.FunctionAppDirectory = executingLocation;
+            Environment.SetEnvironmentVariable("AzureWebJobsScriptRoot", executingLocation);
+            return request => skillFunction(request, new LoggerFactory().CreateLogger("local"), executionContext);
+        }
 
         public static T GetProperty<T>(this object obj, string propertyName) where T : class
             => obj.GetType().GetProperty(propertyName).GetValue(obj, null) as T;
+
+        public static void AssertJsonEquals(string expectedJson, string actualJson, string message = null) =>
+            AssertJsonEquals(JToken.Parse(expectedJson), JToken.Parse(actualJson), message);
+
+        public static void AssertJsonEquals(JToken expected, JToken actual, string message = null) =>
+            Assert.IsTrue(
+                JToken.DeepEquals(expected, actual),
+                "Expected JSON to match. Expected: <{0}>\nActual: <{1}> {2}",
+                expected,
+                actual,
+                message);
     }
 }
