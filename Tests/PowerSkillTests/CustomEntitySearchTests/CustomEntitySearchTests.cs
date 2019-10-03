@@ -152,7 +152,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
         [TestMethod]
         public async Task WordSmallerThanLeniency()
         {
-            CustomEntitySearchHelpers.ReplaceWordsJson(words: new string[] { "i" }, offset: 2);
+            CustomEntitySearchHelpers.ReplaceWordsJsonFile(words: new string[] { "i" }, offset: 2);
 
             WebApiSkillResponse outputContent = await CustomEntitySearchHelpers.QueryEntitySearchFunction(TestData.WordSmallerThanLeniencyInput);
             Assert.IsTrue(outputContent.Values[0].Warnings[0].Message.Contains(TestData.WordSmallerThanLeniencyWarning));
