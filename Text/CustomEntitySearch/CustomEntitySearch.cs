@@ -51,7 +51,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
                 || executionContext.FunctionName == "unitTestFunction") // always reload data for tests
             {
                 _userDefinedEntities = WordLinker.WordLink(EntityDefinitionLocation);
-                _precompiledExactMatchRegex = new Regex($@"\b({string.Join("|", _userDefinedEntities.Words)})\b",
+                _precompiledExactMatchRegex = new Regex($@"\b({string.Join("|", _userDefinedEntities.Words.Select(w => Regex.Escape(w)))})\b",
                                                                 ExactMatchesShouldBeCaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase,
                                                                 TimeSpan.FromSeconds(MaxRegexEvalTimeInSeconds));
             }
@@ -247,9 +247,13 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntitySearch
             double[,] dynamicDistanceCalc = new double[potentialMatch.Length + 1, entityToFind.Length + 1];
 
             for (int currpotentialEntityMatchIndex = 0; currpotentialEntityMatchIndex <= potentialMatch.Length; currpotentialEntityMatchIndex++)
+            {
                 dynamicDistanceCalc[currpotentialEntityMatchIndex, 0] = currpotentialEntityMatchIndex;
+            }
             for (int currWordIndex = 0; currWordIndex <= entityToFind.Length; currWordIndex++)
+            {
                 dynamicDistanceCalc[0, currWordIndex] = currWordIndex;
+            }
 
             for (int currpotentialEntityMatchIndex = 0; currpotentialEntityMatchIndex < potentialMatch.Length; currpotentialEntityMatchIndex++)
             {

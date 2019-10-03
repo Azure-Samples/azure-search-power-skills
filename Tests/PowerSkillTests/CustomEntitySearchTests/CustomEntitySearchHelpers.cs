@@ -18,6 +18,9 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
 {
     public static class CustomEntitySearchHelpers
     {
+        private const string TestJsonFileName = "testWords.json";
+        private const string TestCsvFileName = "testWords.csv";
+
         private static readonly Func<HttpRequest, Task<IActionResult>> _entitySearchFunction =
             Helpers.CurrySkillFunction(CustomEntitySearch.RunCustomEntitySearch);
 
@@ -75,7 +78,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             string errorMessage = "")
         {
             string input = BuildInput(text);
-            ReplaceWordsJson(words, synonyms, exactMatches, offset);
+            ReplaceWordsJsonFile(words, synonyms, exactMatches, offset);
             string expectedOutput = BuildOutput(expectedFoundEntities, expectedMatches, expectedMatchIndices, confidence);
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
             if (warningMessage != "")
@@ -98,13 +101,13 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             int offset = 0)
         {
             string input = BuildInput(text);
-            ReplaceWordsJson(words, synonyms, exactMatches, offset);
+            ReplaceWordsJsonFile(words, synonyms, exactMatches, offset);
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
 
             Helpers.AssertJsonEquals(expectedOutput, actualOutput);
         }
 
-        public static void ReplaceWordsJson(
+        public static void ReplaceWordsJsonFile(
             string[] words,
             Dictionary<string, string[]> synonyms = null,
             string[] exactMatches = null,
@@ -121,8 +124,8 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             config["caseSensitive"] = true;
 
             var executingLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var path = Path.Combine(executingLocation, "testWords.json");
-            CustomEntitySearch.EntityDefinitionLocation = "testWords.json";
+            var path = Path.Combine(executingLocation, TestJsonFileName);
+            CustomEntitySearch.EntityDefinitionLocation = TestJsonFileName;
 
             var serializedConfig = config.ToString();
             File.WriteAllText(path, serializedConfig);
@@ -138,7 +141,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             string errorMessage = "")
         {
             string input = BuildInput(text);
-            ReplaceWordsJson(words);
+            ReplaceWordsJsonFile(words);
             string expectedOutput = BuildOutput(expectedFoundEntities, expectedMatches, expectedMatchIndices);
             string actualOutput = await QueryEntitySearchFunctionAndSerialize(input);
             if (warningMessage != "")
@@ -152,11 +155,11 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntitySearchTests
             Helpers.AssertJsonEquals(expectedOutput, actualOutput);
         }
 
-        private static void ReplaceWordsCsv(string[] words)
+        private static void ReplaceWordsCsvFile(string[] words)
         {
             var executingLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var path = Path.Combine(executingLocation, "testWords.csv");
-            CustomEntitySearch.EntityDefinitionLocation = "testWords.csv";
+            var path = Path.Combine(executingLocation, TestCsvFileName);
+            CustomEntitySearch.EntityDefinitionLocation = TestCsvFileName;
 
             var serializedConfig = string.Join(Environment.NewLine, words);
             File.WriteAllText(path, serializedConfig);
