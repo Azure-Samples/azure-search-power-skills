@@ -4,6 +4,6 @@
     "foo1": [ "i" ]
   },
   "exactMatch": [ "foo2" ],
-  "fuzzyMatchOffset": 1,
+  "fuzzyEditDistance": 1,
   "caseSensitive": true
 }

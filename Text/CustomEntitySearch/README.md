@@ -23,7 +23,18 @@ These skills have no additional requirements than the ones described in [the roo
 
 This function by default performs exact matches with no synonym detection. Based on user input in the JSON file or in the posted values, this skill can perform fuzzy matching on some or all of the entities provided. The input field "words" is optional, where a user can add a "words.json" file instead.
 
-## Sample Config File
+## Sample CSV Config File (comma or new line delineated terms)
+```csv
+wordToFind1,wordToFind2,
+wordToFind3
+oscar
+rodger
+over
+lastWordToFind
+```
+
+
+## Sample JSON Config File (complex entity definitions)
 ```json
 {
     "words": [ "foo1", "foo2" ],
@@ -32,10 +43,11 @@ This function by default performs exact matches with no synonym detection. Based
         "foo1": [ "i" ]
     },
     "exactMatch": [ "foo2" ],
-    "fuzzyMatchOffset": 1,
+    "fuzzyEditDistance": 1,
 	"caseSensitive": true
 }
 ```
+
 
 ## Sample Input:
 
@@ -47,10 +59,6 @@ This function by default performs exact matches with no synonym detection. Based
             "data":
             {
                 "text":  "Learn how to leverage Azure Storage in your applications with our quickstarts and tutorials.",
-                "words": [
-                    "learn",
-                    "app"
-                ]
             }
         },
         {
@@ -58,9 +66,6 @@ This function by default performs exact matches with no synonym detection. Based
             "data":
             {
                 "text":  "Azure Storage includes Azure Blobs (objects), Azure Data Lake Storage Gen2, Azure Files, Azure Queues, and Azure Tables.",
-                "words": [
-                    "bing"
-                ]
             }
         }
     ]
