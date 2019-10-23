@@ -55,17 +55,20 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup.Models
 
         public CustomEntity ParentEntityReference { get; }
 
-        public string GetNormalizedText(Func<string, bool, bool, string> normalizeFunc)
+        public string NormalizedText
         {
-            if (_normalizedText != null)
+            get
             {
+                if (_normalizedText != null)
+                {
+                    return _normalizedText;
+                }
+
+                _normalizedText = CustomEntityLookupImplementation.NormalizeWord(Text, CaseSensitive, AccentSensitive);
                 return _normalizedText;
             }
-
-            _normalizedText = normalizeFunc(Text, CaseSensitive, AccentSensitive);
-            return _normalizedText;
         }
-        private string _normalizedText { get; set; }
+        private string _normalizedText;
 
         public override int GetHashCode()
         {

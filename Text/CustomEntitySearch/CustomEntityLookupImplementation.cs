@@ -96,7 +96,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup
                     foreach (var selection in fuzzySelections)
                     {
                         var normalizedSubstring = NormalizeWord(substring, selection.CaseSensitive, selection.AccentSensitive);
-                        var normalizedWord = selection.GetNormalizedText(NormalizeWord);
+                        var normalizedWord = selection.NormalizedText;
                         var editDistance = CustomEntityLookupEditDistanceHelper.CalculateDamerauLevenshteinDistance(normalizedSubstring, normalizedWord);
                         var fuzziness = selection.FuzzyEditDistance >= normalizedWord.Length ? normalizedWord.Length - 1 : selection.FuzzyEditDistance;
                         fuzziness = Math.Max(0, fuzziness);
@@ -148,14 +148,17 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup
                 }
             }
             if (!word.Last().IsDelineating())
+            {
                 escapedWord.Append(@"\b");
+            }
+
             escapedWord.Append("))");
             string pattern = (selection.CaseSensitive) ? @"(?x)" + escapedWord : @"(?ix)" + escapedWord;
 
             return pattern;
         }
 
-        private string NormalizeWord(
+        public static string NormalizeWord(
             string initialWord,
             bool caseSensitive,
             bool accentSensitive)
