@@ -1,9 +1,49 @@
-{
-  "words": [ "foo1", "foo2" ],
-  "synonyms": {
-    "foo1": [ "i" ]
-  },
-  "exactMatch": [ "foo2" ],
-  "fuzzyEditDistance": 1,
-  "caseSensitive": true
-}
+[ 
+    { 
+        "name" : "FindThisStringAsAnExactMatchOnly" 
+    }, 
+    { 
+        "name" : "Bill Gates", 
+        "description" : "This document references William Henry Gates III, founder of Microsoft. Not to be confused with a series of barriers made of invoices."  
+    }, 
+    { 
+        "name" : "Satya Nadella",
+        "type" : "Person",
+        "subtype" : "CEO",
+        "id" : "4e36bf9d-5550-4396-8647-8e43d7564a76",
+        "description" : "This document references Satya Narayana Nadella."
+    }, 
+    { 
+        "name" : "MSFT" , 
+        "description" : "This document refers to Microsoft the company. Likely in a financial capacity", 
+        "id" : "differentIdentifyingScheme123", 
+        "caseSensitive" : true,
+        "accentSensitive" : true, 
+        "fuzzyEditDistance" : 0 
+    }, 
+    { 
+        "name" : "Microsoft" , 
+        "description" : "This document refers to Microsoft the company.", 
+        "id" : "differentIdentifyingScheme987", 
+        "defaultCaseSensitive" : false, 
+        "defaultAccentSensitive" : false, 
+        "defaultFuzzyEditDistance" : 1, 
+        "aliases" : [
+            { 
+                "text" : "Macrosofty" 
+            }, 
+            { 
+                "text" : "MSFT", 
+                "caseSensitive" : true 
+            }, 
+            { 
+                "text" : "Windows 10", 
+                "fuzzyEditDistance" : 3 
+            }, 
+            { 
+                "text" : "Xbox", 
+                  "accentSensitive" : true 
+            } 
+        ]
+    } 
+]

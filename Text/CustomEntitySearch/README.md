@@ -6,14 +6,14 @@ products:
 - azure-cognitive-services
 name: Custom Entity Search sample skill for cognitive search
 description: This custom skill finds user defined entities in given texts.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/CustomEntitySearch/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/CustomEntityLookup/azuredeploy.json
 ---
 
-# CustomEntitySearch
+# CustomEntityLookup
 
 This custom skill finds finds user defined entities in given texts.
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FCustomEntitySearch%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FCustomEntityLookup%2Fazuredeploy.json)
 
 ## Requirements
 
@@ -36,16 +36,55 @@ lastWordToFind
 
 ## Sample JSON Config File (complex entity definitions)
 ```json
-{
-    "words": [ "foo1", "foo2" ],
-    "synonyms":
-    {
-        "foo1": [ "i" ]
-    },
-    "exactMatch": [ "foo2" ],
-    "fuzzyEditDistance": 1,
-	"caseSensitive": true
-}
+[ 
+    { 
+        "name" : "FindThisStringAsAnExactMatchOnly" 
+    }, 
+    { 
+        "name" : "Bill Gates", 
+        "description" : "This document references William Henry Gates III, founder of Microsoft. Not to be confused with a series of barriers made of invoices."  
+    }, 
+    { 
+        "name" : "Satya Nadella",
+        "type" : "Person",
+        "subtype" : "CEO",
+        "id" : "4e36bf9d-5550-4396-8647-8e43d7564a76",
+        "description" : "This document references Satya Narayana Nadella."
+    }, 
+    { 
+        "name" : "MSFT" , 
+        "description" : "This document refers to Microsoft the company. Likely in a financial capacity", 
+        "id" : "differentIdentifyingScheme123", 
+        "caseSensitive" : true,
+        "accentSensitive" : true, 
+        "fuzzyEditDistance" : 0 
+    }, 
+    { 
+        "name" : "Microsoft" , 
+        "description" : "This document refers to Microsoft the company.", 
+        "id" : "differentIdentifyingScheme987", 
+        "defaultCaseSensitive" : false, 
+        "defaultAccentSensitive" : false, 
+        "defaultFuzzyEditDistance" : 1, 
+        "aliases" : [
+            { 
+                "text" : "Macrosofty" 
+            }, 
+            { 
+                "text" : "MSFT", 
+                "caseSensitive" : true 
+            }, 
+            { 
+                "text" : "Windows 10", 
+                "fuzzyEditDistance" : 3 
+            }, 
+            { 
+                "text" : "Xbox", 
+                  "accentSensitive" : true 
+            } 
+        ]
+    } 
+]
 ```
 
 
@@ -80,30 +119,41 @@ lastWordToFind
         {
             "recordId": "1",
             "data": {
-                "EntitiesFound": ["learn", "app"],
                 "Entities": [
                     {
-                        "Category": "customEntity",
-                        "Value": "Learn",
-                        "Offset": 1,
-                        "Confidence": 1.0
+                        "name": "learn",
+                        "matches": [
+                            {
+                                "text": "Learn",
+                                "offset": 1,
+                                "length": 6,
+                                "matchDistance": 1.0
+                            }
+                        ]
                     },
                     {
-                        "Category": "customEntity",
-                        "Value": "app",
-                        "Offset": 45,
-                        "Confidence": 1.0
+                        "name": "app",
+                        "matches": [
+                            {
+                                "text": "app",
+                                "offset": 45,
+                                "length": 3,
+                                "matchDistance": 0.0
+                            }
+                        ]
                     }
                 ]
-            }
+            },
+            "errors": [],
+            "warnings": []
         },
         {
             "recordId": "foo1",
-            "data": 
-            {
-                "EntitiesFound": [],
+            "data": {
                 "Entities": []
-            }
+            },
+            "errors": [],
+            "warnings": []
         }
     ]
 }
@@ -117,9 +167,9 @@ Here's a sample skill definition for this example (inputs and outputs should be 
 ```json
 {
     "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
-    "description": "Our Custom Entity search custom skill",
+    "description": "Our Custom Entity Lookup custom skill",
     "context": "/document/merged_content/*",
-    "uri": "[AzureFunctionEndpointUrl]/api/custom-search?code=[AzureFunctionDefaultHostKey]",
+    "uri": "[AzureFunctionEndpointUrl]/api/custom-entity-lookup?code=[AzureFunctionDefaultHostKey]",
     "batchSize": 1,
     "inputs": [
         {

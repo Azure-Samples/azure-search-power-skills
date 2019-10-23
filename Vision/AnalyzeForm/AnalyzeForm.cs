@@ -71,7 +71,7 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
                             collectionPath: "pages",
                             method: HttpMethod.Post,
                             postBody: documentBytes,
-                            contentType))
+                            contentType: contentType))
                         .ToList();
 
                     foreach(KeyValuePair<string, string> kvp in fieldMappings)
