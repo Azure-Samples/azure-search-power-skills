@@ -70,7 +70,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup
 
                      var foundEntities = _impl.GetCustomLookupResult(text, System.Threading.CancellationToken.None);
 
-                     outRecord.Data["Entities"] = foundEntities;
+                     outRecord.Data["entities"] = foundEntities;
                      return outRecord;
                  });
 
