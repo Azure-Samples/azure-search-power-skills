@@ -45,7 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SampleData", "_SampleData"
 		SampleData\Invoice_5.pdf = SampleData\Invoice_5.pdf
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomEntitySearch", "Text\CustomEntitySearch\CustomEntitySearch.csproj", "{F0B21155-829F-4B26-853B-82ECAAB18D23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomEntityLookup", "Text\CustomEntitySearch\CustomEntityLookup.csproj", "{F0B21155-829F-4B26-853B-82ECAAB18D23}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tokenizer", "Text\Tokenizer\Tokenizer.csproj", "{54AFF776-801F-4328-9EEE-CFFCD20B5497}"
 EndProject
@@ -53,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerSkillTests", "Tests\Po
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{30F1ECE3-0B5D-4ACF-A375-B7C3721AF654}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distinct", "Text\Distinct\Distinct.csproj", "{63C364D1-FE52-45EC-B23E-20720201844A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distinct", "Text\Distinct\Distinct.csproj", "{63C364D1-FE52-45EC-B23E-20720201844A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
