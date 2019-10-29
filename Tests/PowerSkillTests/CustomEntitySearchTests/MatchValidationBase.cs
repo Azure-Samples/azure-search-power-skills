@@ -24,7 +24,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
         private const string TestJsonFileName = "testWords.json";
         private const string TestCsvFileName = "testWords.csv";
 
-        private static readonly Func<HttpRequest, Task<IActionResult>> _entitySearchFunction =
+        private static readonly Func<HttpRequest, Task<IActionResult>> _entityLookupFunction =
                 Helpers.CurrySkillFunction(CustomEntityLookup.RunCustomEntityLookup);
 
         public static CustomEntitiesDefinition GetEntitiesDefinition(
@@ -99,10 +99,10 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
         }
 
         public static async Task<WebApiSkillResponse> QueryEntityLookupFunction(string inputText)
-            => await Helpers.QueryFunction(inputText, _entitySearchFunction);
+            => await Helpers.QueryFunction(inputText, _entityLookupFunction);
 
         private static async Task<string> QueryEntityLookupFunctionAndSerialize(string inputText)
-            => await Helpers.QueryFunctionAndSerialize(inputText, _entitySearchFunction);
+            => await Helpers.QueryFunctionAndSerialize(inputText, _entityLookupFunction);
 
         public static string BuildInput(
             string text)
