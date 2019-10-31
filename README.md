@@ -1,6 +1,6 @@
 # Azure Search Power Skills
 
-A collection of useful functions to be deployed as custom skills for Azure Cognitive Search.
+Power Skills are a collection of useful functions to be deployed as custom skills for Azure Cognitive Search. The skills can be used as [templates](Template/HelloWorld/README.md) or starting points for your own custom skills, or they can be deployed and used as they are if they happen to meet your requirements. We also invite you to contribute your own work by submitting a [pull request](https://github.com/Azure-Samples/azure-search-power-skills/compare).
 
 ## Features
 
