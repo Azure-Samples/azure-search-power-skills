@@ -17,6 +17,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup
     {
         public const int MaxAllowableFuziness = 5;
         private const int MaxRegexEvalTimeInSeconds = 30;
+        private const int MaxNumberOfWordsInEntity = 5;
 
         public const string ErrorParsingDefinitionFormat = "Failed to either download or parse Custom Entity Definition file.";
         public const string ErrorCustomLookupSearchPerformance = "An error occurred while trying to find matches in your document: {0}";
@@ -140,7 +141,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup
             {
                 if (word[currWordCharIndex].IsDelineating())
                 {
-                    escapedWord.Append(@"\b");
+                    escapedWord.Append(@"[\s\p{P}]");
                 }
                 else
                 {
@@ -241,15 +242,26 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup
             while (startIndex < text.Length)
             {
                 endIndex = FindNextEndPointer(text, endIndex);
-                substring = text.Substring(startIndex, endIndex - startIndex);
 
-                if (string.IsNullOrWhiteSpace(substring))
+                var compoundEndIndex = endIndex;
+                for (int i = 0; i < MaxNumberOfWordsInEntity; i++)
                 {
-                    startIndex = FindNextStartPointer(text, startIndex);
-                    continue;
-                }
+                    substring = text.Substring(startIndex, compoundEndIndex - startIndex);
 
-                yield return (substring, startIndex);
+                    if (!string.IsNullOrWhiteSpace(substring))
+                    {
+                        yield return (substring, startIndex);
+                    }
+
+                    var previousEndIndex = compoundEndIndex;
+                    compoundEndIndex = FindNextEndPointer(text, compoundEndIndex);
+
+                    if (compoundEndIndex == previousEndIndex)
+                    {
+                        // don't return end words many times
+                        break;
+                    }
+                }
 
                 startIndex = FindNextStartPointer(text, startIndex);
             }
