@@ -263,16 +263,6 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup
                     }
                 }
 
-                //substring = text.Substring(startIndex, endIndex - startIndex);
-
-                //if (string.IsNullOrWhiteSpace(substring))
-                //{
-                //    startIndex = FindNextStartPointer(text, startIndex);
-                //    continue;
-                //}
-
-                //yield return (substring, startIndex);
-
                 startIndex = FindNextStartPointer(text, startIndex);
             }
         }
