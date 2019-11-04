@@ -13,7 +13,7 @@ This project provides the following custom skills:
 * [**ImageStore**](Vision/ImageStore/README.md): stores and fetches base64-encoded images to and from blob storage.
 * [**HocrGenerator**](Vision/HocrGenerator/README.md): transforms the result of OCR into the hOCR format.
 * [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
-* [**CustomEntityLookup**](/Text/CustomEntityLookup): finds custom entity names in text.
+* [**CustomEntityLookup**](/Text/CustomEntitySearch): finds custom entity names in text.
 * [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
 * [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
 
