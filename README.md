@@ -36,7 +36,7 @@ Some functions may require setting environment variables or configuration entrie
 
 ### Quickstart
 
-1. `git clone git@github.com:Azure-Samples/azure-search-power-skills.git`
+1. Clone the repository
 2. Open the PowerSkills solution in Visual Studio
 3. Set the project for the function to test as the startup project
 4. Hit F5
