@@ -14,8 +14,8 @@
         "description" : "This document references Satya Narayana Nadella."
     }, 
     { 
-        "name" : "MSFT" , 
-        "description" : "This document refers to Microsoft the company. Likely in a financial capacity", 
+        "name" : "LinkedIn" , 
+        "description" : "This document refers to LinkedIn the company.", 
         "id" : "differentIdentifyingScheme123", 
         "caseSensitive" : true,
         "accentSensitive" : true, 
@@ -30,14 +30,11 @@
         "defaultFuzzyEditDistance" : 1, 
         "aliases" : [
             { 
-                "text" : "Macrosofty" 
-            }, 
-            { 
                 "text" : "MSFT", 
                 "caseSensitive" : true 
             }, 
             { 
-                "text" : "Windows 10", 
+                "text" : "Azure", 
                 "fuzzyEditDistance" : 3 
             }, 
             { 
