@@ -5,7 +5,7 @@ languages:
 products:
 - azure
 - azure-search
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/SplitImage/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/SplitImage/azuredeploy.json
 name: "Split Image sample skill for Azure Cognitive Search"
 description: "This Split Image skill can be used on images that are too long to process in the vanilla pipeline. This skill will break a large image up into several images small enough to be processed by OCR."
 ---
@@ -24,7 +24,7 @@ This function doesn't require any application settings.
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FTemplate%2FHelloWorld%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FSplitImage%2Fazuredeploy.json)
 
 ## split-image
 
@@ -37,7 +37,7 @@ This function doesn't require any application settings.
             "recordId": "r1",
             "data":
             {
-            	"imageLocation": "http://blobStorage.com/mypicture",
+                "imageLocation": "http://blobStorage.com/mypicture",
                 "sasToken": "?sas=123&otherSasInfo=456"
             }
         }
@@ -135,22 +135,23 @@ How to OCR these images after they've been split, and then merge the data back i
                 "name": "layoutText",
                 "targetName": "layoutText"
             }
+        ]
+    },
+    {
+        "@odata.type": "#Microsoft.Skills.Custom.MergeSkill",
+        "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
+        "context": "/document",
+        "insertPreTag": " ",
+        "insertPostTag": " ",
+        "inputs": [
+            {
+                "name": "itemsToInsert", "source": "/document/splitImages/*/text"
+            }
         ],
-        {
-            "@odata.type": "#Microsoft.Skills.Custom.MergeSkill",
-            "description": "Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.",
-            "context": "/document",
-            "insertPreTag": " ",
-            "insertPostTag": " ",
-            "inputs": [
-                {
-                    "name": "itemsToInsert", "source": "/document/splitImages/*/text"
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "mergedText", "targetName" : "merged_text"
-                }
-            ]
-        }
+        "outputs": [
+            {
+                "name": "mergedText", "targetName" : "merged_text"
+            }
+        ]
+    }
 ```

@@ -17,8 +17,10 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.Primitives;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using System.Web;
+using System.Collections.Specialized;
 
-namespace AzureCognitiveSearch.PowerSkills.Text.SplitImage
+namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 {
     public static class SplitImage
     {
@@ -50,9 +52,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.SplitImage
                     var imageUrl = inRecord.Data["imageLocation"] as string; // no url parameters
                     var sasToken = inRecord.Data["sasToken"] as string; // includes ? to start query params
 
-                    string fullUri = imageUrl + sasToken;
+                    string fullUri = CombineSasTokenWithUri(imageUrl, sasToken);
                     JArray splitImages = new JArray();
-
 
                     using (WebClient client = new WebClient())
                     {
@@ -99,8 +100,28 @@ namespace AzureCognitiveSearch.PowerSkills.Text.SplitImage
             return new OkObjectResult(response);
         }
 
+        public static string CombineSasTokenWithUri(string uri, string sasToken)
+        {
+            // if this data is combing from blob indexer's metadata_storage_path and metadata_storage_sas_token
+            // then we can simply concat them. But lets use uri builder to be safe and support missing characters
 
-        static byte[] CropImage(
+            UriBuilder uriBuilder = new UriBuilder(uri);
+            NameValueCollection sasParameters = HttpUtility.ParseQueryString(sasToken);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+            foreach(var key in sasParameters.AllKeys)
+            {
+                // override this url parameter if it already exists
+                query[key] = sasParameters[key];
+            }
+
+            uriBuilder.Query = query.ToString();
+            var finalUrl = uriBuilder.ToString();
+
+            return finalUrl;
+        }
+
+        public static byte[] CropImage(
             Image originalImage,
             int startX,
             int endX,
