@@ -22,6 +22,10 @@ using System.Collections.Specialized;
 
 namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 {
+    /// <summary>
+    /// Splits a large image into smaller, overlapping chunks to allow their use in other vision skills such as OCR
+    /// Supported file types: .bmp, .gif, .jpg, .tif, .png
+    /// </summary>
     public static class SplitImage
     {
         private static int MaxImageDimension = 4000; // maximum size of image in cognitive service pipeline
@@ -49,15 +53,36 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
-                    var imageUrl = inRecord.Data["imageLocation"] as string; // no url parameters
-                    var sasToken = inRecord.Data["sasToken"] as string; // includes ? to start query params
+                    object imageUrlObject = null;
+                    object sasTokenObject = null;
+                    inRecord.Data.TryGetValue("imageLocation", out imageUrlObject);
+                    inRecord.Data.TryGetValue("sasToken", out sasTokenObject);
 
-                    string fullUri = CombineSasTokenWithUri(imageUrl, sasToken);
+                    string imageUrl = imageUrlObject as string;
+                    string sasToken = sasTokenObject as string;
+
+                    if (string.IsNullOrWhiteSpace(imageUrl))
+                    {
+                        outRecord.Errors.Add(new WebApiErrorWarningContract() { Message = "Parameter 'imageUrl' is required to be present and a valid uri." });
+                        return outRecord;
+                    }
+
                     JArray splitImages = new JArray();
 
                     using (WebClient client = new WebClient())
                     {
-                        var fileData = client.DownloadData(new Uri(fullUri));
+                        byte[] fileData = new byte[0];
+                        if (executionContext.FunctionName == "unitTestFunction")
+                        {
+                            // this is a unit test, find the file locally
+                            fileData = File.ReadAllBytes(imageUrl);
+                        }
+                        else
+                        {
+                            // download the file from remote server
+                            string fullUri = CombineSasTokenWithUri(imageUrl, sasToken);
+                            fileData = client.DownloadData(new Uri(fullUri));
+                        }
 
                         using (var stream = new MemoryStream(fileData))
                         {
@@ -67,18 +92,18 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
                             // overlap the chunks to reduce the chances of cutting words in half
                             // (and not being able to OCR that data)
                             // TODO: could probably be smarter about this
-                            for (int x = 0; x < originalImage.Width; x += MaxImageDimension)
+                            for (int x = 0; x < originalImage.Width; x += (MaxImageDimension - ImageOverlapInPixels))
                             {
-                                for (int y = 0; y < originalImage.Height; y += MaxImageDimension)
+                                for (int y = 0; y < originalImage.Height; y += (MaxImageDimension - ImageOverlapInPixels))
                                 {
                                     int startX = x;
                                     int endX = x + MaxImageDimension >= originalImage.Width
                                                 ? originalImage.Width
-                                                : x + MaxImageDimension - ImageOverlapInPixels;
+                                                : x + MaxImageDimension;
                                     int startY = y;
                                     int endY = y + MaxImageDimension >= originalImage.Height
                                                 ? originalImage.Height
-                                                : y + MaxImageDimension - ImageOverlapInPixels;
+                                                : y + MaxImageDimension;
 
                                     var newImageData = CropImage(originalImage, startX, endX, startY, endY);
 
@@ -100,13 +125,13 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
             return new OkObjectResult(response);
         }
 
-        public static string CombineSasTokenWithUri(string uri, string sasToken)
+        public static string CombineSasTokenWithUri(string imageUri, string sasToken)
         {
             // if this data is combing from blob indexer's metadata_storage_path and metadata_storage_sas_token
             // then we can simply concat them. But lets use uri builder to be safe and support missing characters
 
-            UriBuilder uriBuilder = new UriBuilder(uri);
-            NameValueCollection sasParameters = HttpUtility.ParseQueryString(sasToken);
+            UriBuilder uriBuilder = new UriBuilder(imageUri);
+            NameValueCollection sasParameters = HttpUtility.ParseQueryString(sasToken ?? string.Empty);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 
             foreach(var key in sasParameters.AllKeys)
@@ -128,6 +153,10 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
             int startY,
             int endY)
         {
+            // NOTE: we're not using System.Drawing because its not supported by that platform
+            //
+            // System.Drawing relies heavily on GDI/GDI+ to do its thing. Because of the somewhat risky nature of those APIs 
+            // (large attack surface) they are restricted in the App Service sandbox.
             try
             {
                 int newWidth = endX - startX;
