@@ -11,6 +11,7 @@ description: "This Split Image skill can be used on images that are too long to 
 ---
 
 # Split Image
+IMPORTANT: This skill uses external, unverified nuget packages!! Use with caution, and do not use with sensitive data!
 
 This Split Image skill can be used on images that are too long to process in the vanilla pipeline. This skill will break a large image up into several images small enough to be processed by OCR.
 

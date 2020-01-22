@@ -23,6 +23,8 @@ using System.Collections.Specialized;
 namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 {
     /// <summary>
+    /// IMPORTANT: This skill uses external, unverified nuget packages!! Use with caution, and do not use with sensitive data!
+    /// 
     /// Splits a large image into smaller, overlapping chunks to allow their use in other vision skills such as OCR
     /// Supported file types: .bmp, .gif, .jpg, .tif, .png
     /// </summary>
