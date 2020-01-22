@@ -98,7 +98,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.SplitImageTests
 
             foreach (var image in splitImages)
             {
-                Assert.AreEqual(2772, image["width"]);
+                Assert.AreEqual(1000, image["width"]);
 
                 if (image != splitImages.Last)
                 {
@@ -107,7 +107,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.SplitImageTests
                 else
                 {
                     // last "page" isn't max size
-                    Assert.AreEqual(3000, image["height"]);
+                    Assert.AreEqual(2000, image["height"]);
                 }
             }
         }
