@@ -8,6 +8,40 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SplitImageTests\Assets\bigImage.bmp" />
+    <None Remove="SplitImageTests\Assets\bigImage.gif" />
+    <None Remove="SplitImageTests\Assets\bigImage.jpg" />
+    <None Remove="SplitImageTests\Assets\bigImage.png" />
+    <None Remove="SplitImageTests\Assets\bigImage.tif" />
+    <None Remove="SplitImageTests\Assets\bigImage_deflate.tif" />
+    <None Remove="SplitImageTests\Assets\smallImage.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SplitImageTests\Assets\bigImage.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplitImageTests\Assets\bigImage.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplitImageTests\Assets\bigImage.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplitImageTests\Assets\bigImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplitImageTests\Assets\bigImage.tif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplitImageTests\Assets\bigImage_deflate.tif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplitImageTests\Assets\smallImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.WebApiCompatShim" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
@@ -28,5 +62,6 @@
     <ProjectReference Include="..\..\Vision\AnalyzeForm\AnalyzeForm.csproj" />
     <ProjectReference Include="..\..\Vision\HocrGenerator\HocrGenerator.csproj" />
     <ProjectReference Include="..\..\Vision\ImageStore\ImageStore.csproj" />
+    <ProjectReference Include="..\..\Vision\SplitImage\SplitImage.csproj" />
   </ItemGroup>
 </Project>
