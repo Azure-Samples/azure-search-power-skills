@@ -11,9 +11,20 @@ description: "This Split Image skill can be used on images that are too long to 
 ---
 
 # Split Image
-IMPORTANT: This skill uses external, unverified nuget packages!! Use with caution, and do not use with sensitive data!
+DISCLAIMER: This skill uses third third-party packages. Use at your own risk. 
 
-This Split Image skill can be used on images that are too long to process in the vanilla pipeline. This skill will break a large image up into several images small enough to be processed by OCR.
+TiffLibrary.ImageSharpAdapter
+    https://www.nuget.org/packages/SixLabors.ImageSharp/1.0.0-beta0007
+    https://github.com/SixLabors/ImageSharp/
+
+TiffLibrary.ImageSharpAdapter
+    https://www.nuget.org/packages/TiffLibrary.ImageSharpAdapter/0.5.134-beta
+    https://github.com/yigolden/TiffLibrary
+
+If you need to verify the source code of either package, you can find its source code at corresponding link and verify the contents of the package corresponds to the source in that repository using publicly available tools.
+
+
+This Split Image skill can be used on images that are too large to process in the vanilla pipeline. This skill will break a large image up into several images small enough to be processed by OCR.
 
 ## Requirements
 

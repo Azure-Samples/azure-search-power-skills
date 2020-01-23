@@ -74,6 +74,13 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.SplitImageTests
                 "http://www.myblob.net:7777/?sp=rl&st=2020-01-17T23%3a22%3a10Z&se=2020-01-31T23%3a22%3a00Z&sv=2019-02-02&sr=b&sig=wcXZOnZGjJssuJYHgjSeSXIrEs6FVckj6lgTtB1VpVc%3d"
                 , result);
 
+            imageUri = @"http://www.myblob.net:7777?otherUrlParam=value";
+
+            result = Vision.SplitImage.SplitImage.CombineSasTokenWithUri(imageUri, sasToken);
+            Assert.AreEqual(
+                "http://www.myblob.net:7777/?otherUrlParam=value&sp=rl&st=2020-01-17T23%3a22%3a10Z&se=2020-01-31T23%3a22%3a00Z&sv=2019-02-02&sr=b&sig=wcXZOnZGjJssuJYHgjSeSXIrEs6FVckj6lgTtB1VpVc%3d"
+                , result);
+
             imageUri = @"http://www.myblob.net";
             sasToken = null; // no sas needed
 

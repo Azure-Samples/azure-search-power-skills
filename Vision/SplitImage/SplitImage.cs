@@ -23,7 +23,17 @@ using System.Collections.Specialized;
 namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 {
     /// <summary>
-    /// IMPORTANT: This skill uses external, unverified nuget packages!! Use with caution, and do not use with sensitive data!
+    /// DISCLAIMER: This skill uses third third-party packages. Use at your own risk. 
+    /// 
+    //    TiffLibrary.ImageSharpAdapter
+    //        https://www.nuget.org/packages/SixLabors.ImageSharp/1.0.0-beta0007
+    //        https://github.com/SixLabors/ImageSharp/
+    ///
+    //    TiffLibrary.ImageSharpAdapter
+    //        https://www.nuget.org/packages/TiffLibrary.ImageSharpAdapter/0.5.134-beta
+    //        https://github.com/yigolden/TiffLibrary
+    ///
+    //    If you need to verify the source code of either package, you can find its source code at corresponding link and verify the contents of the package corresponds to the source in that repository using publicly available tools.
     /// 
     /// Splits a large image into smaller, overlapping chunks to allow their use in other vision skills such as OCR
     /// Supported file types: .bmp, .gif, .jpg, .tif, .png
@@ -55,13 +65,8 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) => {
-                    object imageUrlObject = null;
-                    object sasTokenObject = null;
-                    inRecord.Data.TryGetValue("imageLocation", out imageUrlObject);
-                    inRecord.Data.TryGetValue("sasToken", out sasTokenObject);
-
-                    string imageUrl = imageUrlObject as string;
-                    string sasToken = sasTokenObject as string;
+                    var imageUrl = (inRecord.Data.TryGetValue("imageLocation", out object imageUrlObject) ? imageUrlObject : null) as string;
+                    var sasToken = (inRecord.Data.TryGetValue("imageLocation", out object sasTokenObject) ? sasTokenObject : null) as string;
 
                     if (string.IsNullOrWhiteSpace(imageUrl))
                     {
@@ -73,18 +78,9 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 
                     using (WebClient client = new WebClient())
                     {
-                        byte[] fileData = new byte[0];
-                        if (executionContext.FunctionName == "unitTestFunction")
-                        {
-                            // this is a unit test, find the file locally
-                            fileData = File.ReadAllBytes(imageUrl);
-                        }
-                        else
-                        {
-                            // download the file from remote server
-                            string fullUri = CombineSasTokenWithUri(imageUrl, sasToken);
-                            fileData = client.DownloadData(new Uri(fullUri));
-                        }
+                        byte[] fileData = executionContext.FunctionName == "unitTestFunction" 
+                                            ? fileData = File.ReadAllBytes(imageUrl) // this is a unit test, find the file locally
+                                            : fileData = client.DownloadData(new Uri(CombineSasTokenWithUri(imageUrl, sasToken))); // download the file from remote server
 
                         using (var stream = new MemoryStream(fileData))
                         {
@@ -93,7 +89,6 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
                             // chunk the document up into pieces
                             // overlap the chunks to reduce the chances of cutting words in half
                             // (and not being able to OCR that data)
-                            // TODO: could probably be smarter about this
                             for (int x = 0; x < originalImage.Width; x += (MaxImageDimension - ImageOverlapInPixels))
                             {
                                 for (int y = 0; y < originalImage.Height; y += (MaxImageDimension - ImageOverlapInPixels))
@@ -129,7 +124,7 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 
         public static string CombineSasTokenWithUri(string imageUri, string sasToken)
         {
-            // if this data is combing from blob indexer's metadata_storage_path and metadata_storage_sas_token
+            // if this data is coming from blob indexer's metadata_storage_path and metadata_storage_sas_token
             // then we can simply concat them. But lets use uri builder to be safe and support missing characters
 
             UriBuilder uriBuilder = new UriBuilder(imageUri);
@@ -155,7 +150,7 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
             int startY,
             int endY)
         {
-            // NOTE: we're not using System.Drawing because its not supported by that platform
+            // NOTE: we're not using System.Drawing because its not supported by the Azure Functions platform
             //
             // System.Drawing relies heavily on GDI/GDI+ to do its thing. Because of the somewhat risky nature of those APIs 
             // (large attack surface) they are restricted in the App Service sandbox.

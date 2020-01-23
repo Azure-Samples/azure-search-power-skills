@@ -13,45 +13,16 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.SplitImageTests
     public class SplitImageTests
     {        
         [TestMethod]
-        public async Task SplitBitmap()
+        [DataRow(@"SplitImageTests\Assets\bigImage.bmp")]
+        [DataRow(@"SplitImageTests\Assets\bigImage.gif")]
+        [DataRow(@"SplitImageTests\Assets\bigImage.jpg")]
+        [DataRow(@"SplitImageTests\Assets\bigImage.png")]
+        [DataRow(@"SplitImageTests\Assets\bigImage.tif")]
+        [DataRow(@"SplitImageTests\Assets\bigImage_deflate.tif")]
+        public async Task CanSplitImages(string imageLocation)
         {
-            var imageLoc = Path.Combine(Directory.GetCurrentDirectory(), @"SplitImageTests\Assets\bigImage.bmp");
-            await TestVerticleSplit(imageLoc);
-        }
-
-        [TestMethod]
-        public async Task SplitSingleLayerGif()
-        {
-            var imageLoc = Path.Combine(Directory.GetCurrentDirectory(), @"SplitImageTests\Assets\bigImage.gif");
-            await TestVerticleSplit(imageLoc);
-        }
-
-        [TestMethod]
-        public async Task SplitJpeg()
-        {
-            var imageLoc = Path.Combine(Directory.GetCurrentDirectory(), @"SplitImageTests\Assets\bigImage.jpg");
-            await TestVerticleSplit(imageLoc);
-        }
-
-        [TestMethod]
-        public async Task SplitPng()
-        {
-            var imageLoc = Path.Combine(Directory.GetCurrentDirectory(), @"SplitImageTests\Assets\bigImage.png");
-            await TestVerticleSplit(imageLoc);
-        }
-
-        [TestMethod]
-        public async Task SplitTiff()
-        {
-            var imageLoc = Path.Combine(Directory.GetCurrentDirectory(), @"SplitImageTests\Assets\bigImage.tif");
-            await TestVerticleSplit(imageLoc);
-        }
-
-        [TestMethod]
-        public async Task SplitCompressedTiff()
-        {
-            var imageLoc = Path.Combine(Directory.GetCurrentDirectory(), @"SplitImageTests\Assets\bigImage_deflate.tif");
-            await TestVerticleSplit(imageLoc);
+            var imageLoc = Path.Combine(Directory.GetCurrentDirectory(), imageLocation);
+            await TestVerticalSplit(imageLoc);
         }
 
         [TestMethod]
@@ -82,7 +53,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.SplitImageTests
             Assert.AreEqual("Parameter 'imageUrl' is required to be present and a valid uri.", skillOutput.Values[0].Errors[0].Message);
         }
 
-        private static async Task TestVerticleSplit(string imageLoc)
+        private static async Task TestVerticalSplit(string imageLoc)
         {
             var splitImages = await Helpers.QuerySkill(
                 PowerSkills.Vision.SplitImage.SplitImage.RunSplitImageSkill,
