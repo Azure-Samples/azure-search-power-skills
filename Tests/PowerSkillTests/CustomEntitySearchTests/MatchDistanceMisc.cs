@@ -34,17 +34,6 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
         }
 
         [TestMethod]
-        public void HandlePunctuationInWord()
-        {
-            TestFindMatch(
-                text: "Once... Upon... A Time...",
-                words: ".......Upon.......",
-                expectedMatches: 1,
-                allowableFuziness: 0,
-                expectedFuziness: 0);
-        }
-
-        [TestMethod]
         public void ReplaceOverAddAndRemoves()
         {
             TestFindMatch(
@@ -156,22 +145,11 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
             TestFindMatch(
                 text: "The brown fox jumped over the river",
                 words: "brownfox",
-                expectedMatches: 0,
+                expectedMatches: 1,
                 allowableFuziness: 1,
                 expectedFuziness: 1);
         }
 
-
-        [TestMethod]
-        public void CanFindMultipleMatches()
-        {
-            TestFindMatch(
-                text: "!hello!hello!hello!",
-                words: "hello",
-                expectedMatches: 3,
-                allowableFuziness: 0,
-                expectedFuziness: 0);
-        }
 
         [TestMethod]
         public void LargeFuzinessBroadlyMatch()
@@ -179,7 +157,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
             TestFindMatch(
                 text: "Once upon a time in a land far away there lived a dragon that sang with fire!",
                 words: "aeiou", // vowels
-                expectedMatches: 9,
+                expectedMatches: 10,
                 allowableFuziness: 5,
                 expectedFuziness: 4,
                 caseSensitive: false);

@@ -130,7 +130,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup
 
         private string BuildRegexForExactMatch(CustomEntitySelection selection)
         {
-            string word = selection.Text;
+            string word = selection.Text.Trim();
             StringBuilder escapedWord = new StringBuilder(@"(?=(");
             if (!word.First().IsDelineating())
             {

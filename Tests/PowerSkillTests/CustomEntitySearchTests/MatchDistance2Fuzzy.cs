@@ -494,7 +494,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
             TestFindMatch(
                 text: " a bcz",
                 words: "abc",
-                expectedMatches: 2);
+                expectedMatches: 3);
 
             TestFindMatch(
                 text: "azbcz ",
@@ -621,7 +621,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
                 text: "   àbcz zàbc abcz axbc aàc aà àc aac ac aa abà baà baà aba baa aab àzc àbz zbc ",
                 words: new string[] { "abc", "aac", "aba" },
                 accentSensitive: false,
-                expectedMatches: 57);
+                expectedMatches: 58);
         }
 
         [TestMethod]
@@ -642,7 +642,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
                 words: new string[] { "abc", "aac", "aba" },
                 caseSensitive: false,
                 accentSensitive: false,
-                expectedMatches: 47);
+                expectedMatches: 50);
         }
 
         public void TestFindMatch(
