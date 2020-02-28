@@ -105,14 +105,6 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
                 words: "abcdefg");
         }
 
-        [TestMethod]
-        public void TestSpaceInWordDontMatch()
-        {
-            TestFindMatch(
-                text: "once upon a time",
-                words: "once upon");
-        }
-
         public void TestFindMatch(
             string text,
             string words)

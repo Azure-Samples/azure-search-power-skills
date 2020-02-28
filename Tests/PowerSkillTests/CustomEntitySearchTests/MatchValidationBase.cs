@@ -73,7 +73,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
                 accentSensitive: accentSensitive,
                 maximumFuziness: allowableFuziness);
 
-            ReplaceWordsJsonFile(JsonConvert.SerializeObject(entitiesDefinition));
+            ReplaceWordsJsonFile(JsonConvert.SerializeObject(entitiesDefinition.TargetCustomEntities));
 
             string input = BuildInput(text);
             var resultJson = QueryEntityLookupFunctionAndSerialize(input).GetAwaiter().GetResult();

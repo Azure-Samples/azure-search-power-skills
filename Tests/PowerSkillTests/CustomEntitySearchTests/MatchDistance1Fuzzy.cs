@@ -297,17 +297,17 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
             TestFindMatch(
                 text: "a b",
                 words: "ab",
-                expectedMatches: 2);
+                expectedMatches: 3);
 
             TestFindMatch(
                 text: " a b",
                 words: "ab",
-                expectedMatches: 2);
+                expectedMatches: 3);
 
             TestFindMatch(
                 text: "a b ",
                 words: "ab",
-                expectedMatches: 2);
+                expectedMatches: 3);
         }
 
         [TestMethod]
@@ -580,7 +580,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.CustomEntityLookupTests
             TestFindMatch(
                 text: "acbz acbd ac bd acb abd cbd c d e a d ac c bd d",
                 words: "acbd",
-                expectedMatches: 5);
+                expectedMatches: 6);
         }
 
         [TestMethod]
