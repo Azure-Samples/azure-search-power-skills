@@ -16,6 +16,7 @@ using AzureCognitiveSearch.PowerSkills.Common;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.IO;
 
 namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
 {
@@ -26,13 +27,6 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
         private static readonly string modelIdSetting = "FORMS_RECOGNIZER_MODEL_ID";
         private static readonly string retryDelaySetting = "FORMS_RECOGNIZER_RETRY_DELAY";
         private static readonly string maxAttemptsSetting = "FORMS_RECOGNIZER_MAX_ATTEMPTS";
-
-        // Modify this list of fields to extract according to your requirements.
-        // TODO: move this to a configuration file.
-        private static readonly Dictionary<string, string> fieldMappings = new Dictionary<string, string> {
-            { "Address:", "address" },
-            { "Invoice For:", "recipient" }
-        };
 
         [FunctionName("analyze-form")]
         public static async Task<IActionResult> RunAnalyzeForm(
@@ -54,6 +48,9 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
             string modelId = Environment.GetEnvironmentVariable(modelIdSetting, EnvironmentVariableTarget.Process);
             int retryDelay = int.TryParse(Environment.GetEnvironmentVariable(retryDelaySetting, EnvironmentVariableTarget.Process), out int parsedRetryDelay) ? parsedRetryDelay : 1000;
             int maxAttempts = int.TryParse(Environment.GetEnvironmentVariable(maxAttemptsSetting, EnvironmentVariableTarget.Process), out int parsedMaxAttempts) ? parsedMaxAttempts : 100;
+
+            Dictionary<string, string> fieldMappings = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                File.ReadAllText($"{executionContext.FunctionAppDirectory}\\field-mappings.json"));
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {

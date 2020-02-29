@@ -33,7 +33,7 @@ After training, you will need to set the `FORMS_RECOGNIZER_MODEL_ID` application
 By default, the skill will retry at most a hundred times getting form recognition results with a one second delay between attempts until it gets a result other than "running".
 This can be changed by setting the `FORMS_RECOGNIZER_MAX_ATTEMPTS` and `FORMS_RECOGNIZER_RETRY_DELAY` application settings.
 
-The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `fieldMappings` dictionary in the `AnalyzeForm.cs` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/AnalyzeForm.cs#L24).
+The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `field-mappings.json` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/field-mappings.json).
 
 ## Deployment
 
