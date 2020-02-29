@@ -24,15 +24,16 @@ You will need to [train a model with your forms](https://docs.microsoft.com/en-u
 
 ## Settings
 
-This function requires a `FORMS_RECOGNIZER_API_KEY` setting set to a valid Azure Forms Recognizer API key.
+This function requires a `FORMS_RECOGNIZER_API_KEY` and a `FORMS_RECOGNIZER_ENDPOINT_URL` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.0-preview endpoint.
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
 After training, you will need to set the `FORMS_RECOGNIZER_MODEL_ID` application setting to the model id corresponding to your trained model.
 
-The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `fieldMappings` dictionary in the `AnalyzeForm.cs` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/AnalyzeForm.cs#L24).
+By default, the skill will retry at most a hundred times getting form recognition results with a one second delay between attempts until it gets a result other than "running".
+This can be changed by setting the `FORMS_RECOGNIZER_MAX_ATTEMPTS` and `FORMS_RECOGNIZER_RETRY_DELAY` application settings.
 
-This example was written to deal with PDF files, but if you are working different file types, you may change the content-type sent to the forms recognizer [by modifying the `contentType` constant in the `AnalyzeForm.cs` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/AnalyzeForm.cs#L29).
+The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `field-mappings.json` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/field-mappings.json).
 
 ## Deployment
 

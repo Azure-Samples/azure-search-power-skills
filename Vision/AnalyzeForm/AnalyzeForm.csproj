@@ -5,6 +5,14 @@
     <RootNamespace>AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="field-mappings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="field-mappings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.28" />
   </ItemGroup>
   <ItemGroup>
