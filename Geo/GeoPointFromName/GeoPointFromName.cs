@@ -39,10 +39,12 @@ namespace AzureCognitiveSearch.PowerSkills.Geo.GeoPointFromName
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {
                     var address = inRecord.Data["address"] as string;
-                    string uri = azureMapsUri + "?api-version=1.0&query=" + Uri.EscapeDataString(address);
+                    string uri = azureMapsUri
+                        + "?api-version=1.0&query=" + Uri.EscapeDataString(address)
+                        + "&subscription-key=" + Uri.EscapeDataString(azureMapsKey);
 
                     IEnumerable<Geography> geographies =
-                        await WebApiSkillHelpers.FetchAsync<Geography>(uri, "X-ms-client-id", azureMapsKey, "results");
+                        await WebApiSkillHelpers.FetchAsync<Geography>(uri, "results");
 
                     if (geographies.FirstOrDefault() is Geography mainGeoPoint)
                     {
