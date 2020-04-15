@@ -16,7 +16,7 @@ This project provides the following custom skills:
 * [**CustomEntityLookup**](/Text/CustomEntitySearch): finds custom entity names in text.
 * [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
 * [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
-* [**GetFileExtension**](Utils/GetFileExtension/README.md): returns the filename and extension as seperate values allowing you to filter on document type.
+* [**GetFileExtension**](Utils/GetFileExtension/README.md): returns the filename and extension as separate values allowing you to filter on document type.
 
 ## Getting Started
 
