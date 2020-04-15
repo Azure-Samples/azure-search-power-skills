@@ -16,6 +16,8 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 This custom skill extracts specific fields from the results of a trained form recognition.
 
+A [full tutorial on this skill is available in the Azure Cognitive Seach documentation](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-form).
+
 ## Requirements
 
 In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Forms Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. At the time this template was written, Forms Recognizer was in a gated public preview. If you have not done so, you may need to [request access](https://aka.ms/FormRecognizerRequestAccess).
