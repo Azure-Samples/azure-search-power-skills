@@ -22,6 +22,10 @@ namespace AzureCognitiveSearch.PowerSkills.Common
         public static IEnumerable<WebApiRequestRecord> GetRequestRecords(HttpRequest req)
         {
             string jsonRequest = new StreamReader(req.Body).ReadToEnd();
+            if(String.IsNullOrEmpty(jsonRequest))
+            {
+                return null;
+            }
             WebApiSkillRequest docs = JsonConvert.DeserializeObject<WebApiSkillRequest>(jsonRequest);
             return docs.Values;
         }
