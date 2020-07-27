@@ -59,3 +59,4 @@ RUN cd /home/site/wwwroot && pip install -r requirements.txt
 
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot
 ENV AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+ENV PYTHONPATH "${PYTHONPATH}:/home/site/wwwroot/utilities"
