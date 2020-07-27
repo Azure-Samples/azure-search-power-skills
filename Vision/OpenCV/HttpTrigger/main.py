@@ -36,7 +36,23 @@ def transform_data(data):
     # Applying the canny filter
     edges_filtered = cv2.Canny(gray_filtered, 60, 120)
 
-    is_success, output = cv2.imencode(".png", edges_filtered)
+    def hconcat_resize_min(im_list, interpolation=cv2.INTER_CUBIC):
+        h_min = min(im.shape[0] for im in im_list)
+        im_list_resize = [cv2.resize(im, (int(im.shape[1] * h_min / im.shape[0]), h_min), interpolation=interpolation)
+                        for im in im_list]
+        return cv2.hconcat(im_list_resize)
+
+    def vconcat_resize_min(im_list, interpolation=cv2.INTER_CUBIC):
+        w_min = min(im.shape[1] for im in im_list)
+        im_list_resize = [cv2.resize(im, (w_min, int(im.shape[0] * w_min / im.shape[1])), interpolation=interpolation)
+                        for im in im_list]
+        return cv2.vconcat(im_list_resize)
+    
+    combined_images_top = hconcat_resize_min([image_cv, cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)])
+    combined_images_bottom = hconcat_resize_min([cv2.cvtColor(gray_filtered, cv2.COLOR_GRAY2BGR), cv2.cvtColor(edges_filtered, cv2.COLOR_GRAY2BGR)])
+    combined_images = vconcat_resize_min([combined_images_top, combined_images_bottom])
+
+    is_success, output = cv2.imencode(".png", combined_images)
     return {
         "image": {
             "$type": "file",
