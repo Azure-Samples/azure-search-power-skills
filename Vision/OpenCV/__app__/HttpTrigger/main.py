@@ -12,18 +12,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 ## Perform an operation on a record
 def transform_data(data):
     # Validate the inputs
-    try:
-        assert ('image' in data), "'image' field is required in 'data' object"
-        image = data['image']
-        assert ('$type' in image), "'$type' field is required in 'image' object."
-        assert (image['$type'] == 'file'), "'$type' field must be 'file' in 'image' object."
-        assert ('data' in image), "'data' field is required in 'image' object."
-    except AssertionError  as error:
-        return (
-            {
-            "recordId": recordId,
-            "errors": [ { "message": "Error:" + error.args[0] }   ]       
-        })
+    assert ('image' in data), "'image' field is required in 'data' object"
+    image = data['image']
+    assert ('$type' in image), "'$type' field is required in 'image' object."
+    assert (image['$type'] == 'file'), "'$type' field must be 'file' in 'image' object."
+    assert ('data' in image), "'data' field is required in 'image' object."
 
     image_bytes = webapiskill.decode_image_bytes(image['data'])
     image_np = np.frombuffer(image_bytes, dtype=np.uint8)
