@@ -3,6 +3,7 @@ import azure.functions as func
 import cv2
 import numpy as np
 import webapiskill
+from opencvskill import opencvskill
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -26,37 +27,16 @@ def transform_data(data):
 
     image_bytes = webapiskill.decode_image_bytes(image['data'])
     image_np = np.frombuffer(image_bytes, dtype=np.uint8)
-    image_cv = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
+    cv_skill = opencvskill(debug_override=True)
+    image_cv = cv_skill.imdecode(image_np, cv2.IMREAD_COLOR)
     # Converting the image to grayscale.
-    gray = cv2.cvtColor(image_cv, cv2.COLOR_BGR2GRAY)
-
+    gray = cv_skill.cvtColor(image_cv, cv2.COLOR_BGR2GRAY)
     # Smoothing without removing edges.
-    gray_filtered = cv2.bilateralFilter(gray, 7, 50, 50)
-
+    gray_filtered = cv_skill.bilateralFilter(gray, 7, 50, 50)
     # Applying the canny filter
-    edges_filtered = cv2.Canny(gray_filtered, 60, 120)
+    edges_filtered = cv_skill.Canny(gray_filtered, 60, 120)
 
-    def hconcat_resize_min(im_list, interpolation=cv2.INTER_CUBIC):
-        h_min = min(im.shape[0] for im in im_list)
-        im_list_resize = [cv2.resize(im, (int(im.shape[1] * h_min / im.shape[0]), h_min), interpolation=interpolation)
-                        for im in im_list]
-        return cv2.hconcat(im_list_resize)
-
-    def vconcat_resize_min(im_list, interpolation=cv2.INTER_CUBIC):
-        w_min = min(im.shape[1] for im in im_list)
-        im_list_resize = [cv2.resize(im, (w_min, int(im.shape[0] * w_min / im.shape[1])), interpolation=interpolation)
-                        for im in im_list]
-        return cv2.vconcat(im_list_resize)
-    
-    combined_images_top = hconcat_resize_min([image_cv, cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)])
-    combined_images_bottom = hconcat_resize_min([cv2.cvtColor(gray_filtered, cv2.COLOR_GRAY2BGR), cv2.cvtColor(edges_filtered, cv2.COLOR_GRAY2BGR)])
-    combined_images = vconcat_resize_min([combined_images_top, combined_images_bottom])
-
-    is_success, output = cv2.imencode(".png", combined_images)
+    output_debug_steps = cv_skill.get_output_debug_steps()
     return {
-        "image": {
-            "$type": "file",
-            "name": "output.png",
-            "data": webapiskill.encode_image_bytes(output)
-        }
+        "images": output_debug_steps
     }
