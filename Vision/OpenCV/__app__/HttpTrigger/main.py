@@ -2,8 +2,8 @@ import logging
 import azure.functions as func
 import cv2
 import numpy as np
-import webapiskill
-from opencvskill import opencvskill
+from ..utilities import webapiskill
+from ..utilities.opencvskill import opencvskill
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')

@@ -1,5 +1,5 @@
 import cv2
-import webapiskill
+from . import webapiskill
 import os
 
 class opencvskill:
