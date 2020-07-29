@@ -65,14 +65,22 @@
                         </div>
                     </div>
                     <div id="diff-onion-view" class="hidden">
-                        <input type="text"
-                               name="diff-onion-slider"
-                               data-provide="slider"
-                               data-slider-min="0"
-                               data-slider-max="100"
-                               data-slider-step="1"
-                               data-slider-value="100"
-                               data-slider-tooltip="hide">
+                        <div id="onion-left" class="d-flex justify-content-center">
+                            <img id="onion-left-img" src="" alt="" class="diff-left" />
+                        </div>
+                        <div id="onion-right" class="d-flex justify-content-center">
+                            <img id="onion-right-img" src="" alt="" class="diff-right" />
+                        </div>
+                        <div class="slider-container col-12 d-flex justify-content-center">
+                            <input type="text"
+                                   id="diff-onion-slider"
+                                   data-provide="slider"
+                                   data-slider-min="0"
+                                   data-slider-max="100"
+                                   data-slider-step="0.1"
+                                   data-slider-value="100"
+                                   data-slider-tooltip="hide">
+                        </div>
                     </div>
                     <div id="diff-diff-view" class="invisible">
                     </div>

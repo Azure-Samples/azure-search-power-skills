@@ -132,13 +132,13 @@ body {
     text-align: center;
 }
 
-#diff-swipe-view {
+#diff-swipe-view, #diff-onion-view {
     width: 100%;
     height: 100%;
     position: relative;
 }
 
-#swipe-left, #swipe-right {
+#swipe-left, #swipe-right, #onion-left, #onion-right {
     width: 100%;
     height: 100%;
     position: absolute;

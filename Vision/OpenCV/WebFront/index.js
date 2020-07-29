@@ -28,10 +28,12 @@ $(() => {
     const diffRightResolution = $("#diff-right-resolution");
     const diffRightImg = $("#diff-right-img");
     const swipeRightImg = $("#swipe-right-img");
+    const onionRightImg = $("#onion-right-img");
     const diffLeft = $("#diff-left");
     const diffLeftResolution = $("#diff-left-resolution");
     const diffLeftImg = $("#diff-left-img");
     const swipeLeftImg = $("#swipe-left-img");
+    const onionLeftImg = $("#onion-left-img");
     const sideBySideView = $("#diff-side-by-side-view");
     const swipeView = $("#diff-swipe-view");
     const onionView = $("#diff-onion-view");
@@ -85,16 +87,21 @@ $(() => {
         imgStrip.find("li").removeClass("active");
         const selectedImg = imgStrip.find(`li[data-index='${index}'] img`);
         selectedImg.parent().addClass("active");
-        diffRightImg.attr("src", selectedImg.attr("src"));
-        swipeRightImg.attr("src", selectedImg.attr("src"));
+        const rightSrc = selectedImg.attr("src");
+        diffRightImg.attr("src", rightSrc);
+        swipeRightImg.attr("src", rightSrc);
+        onionRightImg.attr("src", rightSrc);
         const rightWidth = selectedImg.prop('naturalWidth');
         const rightHeight = selectedImg.prop('naturalHeight');
         diffRightResolution.html(`${rightWidth} &times; ${rightHeight}`);
         const rightScale = getScale(rightWidth, rightHeight, maxImgSize);
         setScale(swipeRightImg, rightScale);
+        setScale(onionRightImg, rightScale);
 
         if (index <= 0) {
             diffLeftImg.attr("src", "");
+            swipeLeftImg.attr("src", "");
+            onionLeftImg.attr("src", "");
             diffLeftResolution.empty();
             diffLeft.addClass("hidden");
             setScale(diffRightImg, rightScale);
@@ -102,13 +109,16 @@ $(() => {
         else {
             diffLeft.removeClass("hidden");
             const previousImg = imgStrip.find(`li[data-index='${index - 1}'] img`);
-            diffLeftImg.attr("src", previousImg.attr("src"));
-            swipeLeftImg.attr("src", previousImg.attr("src"));
+            const leftSrc = previousImg.attr("src");
+            diffLeftImg.attr("src", leftSrc);
+            swipeLeftImg.attr("src", leftSrc);
+            onionLeftImg.attr("src", leftSrc);
             const leftWidth = previousImg.prop('naturalWidth');
             const leftHeight = previousImg.prop('naturalHeight');
             diffLeftResolution.html(`${leftWidth} &times; ${leftHeight}`);
             const leftScale = getScale(leftWidth, leftHeight, maxImgSize);
             setScale(swipeLeftImg, leftScale);
+            setScale(onionLeftImg, leftScale);
             const scale = Math.min(leftScale, rightScale);
             setScale(diffRightImg, scale);
             setScale(diffLeftImg, scale);
@@ -155,8 +165,13 @@ $(() => {
 
         $("#diff-swipe-slider").change(e => {
             const percentage = parseFloat($(e.delegateTarget).val());
-            const width = swipeRightImg.prop("width");
+            const width = swipeRightImg.prop("offsetWidth") + 1;
             swipeRightImg.css("clip", `rect(0, ${width * percentage / 100}px, auto, auto)`);
+        });
+
+        $("#diff-onion-slider").change(e => {
+            const percentage = parseFloat($(e.delegateTarget).val());
+            onionRightImg.css("opacity", (percentage / 100));
         });
     });
 });
