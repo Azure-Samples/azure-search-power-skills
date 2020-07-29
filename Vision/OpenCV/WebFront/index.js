@@ -1,23 +1,5 @@
 'use strict';
 
-const images = [
-    {
-        name: "First",
-        dataUrl: "https://raw.githubusercontent.com/bleroy/paynoattentiontothis/227cfdca6ffda032d7f8e6ad4526c6899806e9b3/img/wut.jpg",
-        mimetype: "image/jpeg"
-    },
-    {
-        name: "Second",
-        dataUrl: "https://raw.githubusercontent.com/bleroy/paynoattentiontothis/b528bcda3bb21181c269cc643cc22f5ff8e08f2f/img/wut.jpg",
-        mimetype: "image/jpeg"
-    },
-    {
-        name: "Third",
-        data: base64img,
-        mimetype: "image/jpeg"
-    }
-];
-
 $(() => {
     let currentIndex = images.length - 1;
 
