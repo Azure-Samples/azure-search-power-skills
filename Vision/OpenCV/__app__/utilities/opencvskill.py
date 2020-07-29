@@ -16,7 +16,7 @@ class opencvskill:
         result = []
         for debug_step in self.debug_state:
             is_success, result_image = cv2.imencode(".png", debug_step["image"])
-            result_debug_step = { "image": { "$type": "file", "name": "output.png", "data": webapiskill.encode_image_bytes(result_image) } }
+            result_debug_step = { "image": { "$type": "file", "name": "output.png", "contentType": "image/png", "data": webapiskill.encode_image_bytes(result_image) } }
             for key, value in debug_step.items():
                 if (key == "image"):
                     continue
