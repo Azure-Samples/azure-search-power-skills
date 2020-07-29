@@ -38,34 +38,36 @@ $(() => {
     const swipeView = $("#diff-swipe-view");
     const onionView = $("#diff-onion-view");
     const diffView = $("#diff-diff-view");
+    const rightImages = [diffRightImg, swipeRightImg, onionRightImg];
+    const leftImages = [diffLeftImg, swipeLeftImg, onionLeftImg];
 
     function imgSrc(imgData) {
         return imgData.data ? `data:${imgData.mimetype};base64,${imgData.data}` : imgData.dataUrl;
     }
 
-    function preLoad(images, callback) {
-        let i = images.length;
-        images.forEach(image => {
-            const img = new Image();
-            img.onload = () => {
-                i--;
-                if (i == 0) {
-                    callback();
-                }
-            };
-            img.src = imgSrc(image);
-        });
-    }
-
-    function initImageStrip(images) {
+    function initImageStrip(images, callback) {
+        let remaining = images.length;
         imgStrip.empty();
         images.forEach((imgData, i) => {
             const li = $(`<li data-index="${i}"></li>`);
             if (i === 0) {
                 li.addClass("active");
             }
-            const img = $('<img class="align-middle">').attr("alt", imgData.name);
-            img.attr("src", imgSrc(imgData));
+            const img = $('<img class="align-middle">');
+            const src = imgSrc(imgData);
+            img.attr("alt", imgData.name);
+            if (src.substr(0, 5) !== "data:") {
+                img.prop("crossOrigin", "anonymous");
+            }
+            img.prop("loading", "eager");
+            console.log(`Queueing image #${i}.`)
+            img.get(0).addEventListener("load", e => {
+                console.log(`Loaded image ${ e.target.alt } ... ${remaining} remaining.`)
+                if (--remaining === 0) {
+                    callback();
+                }
+            });
+            img.attr("src", src);
             li.append(img);
             imgStrip.append(li);
         });
@@ -75,11 +77,32 @@ $(() => {
         return max / (width > height ? width : height);
     }
 
-    function setScale(img, scale) {
-        const width = img.prop('naturalWidth');
-        const height = img.prop('naturalHeight');
-        img.css("width", scale * width + "px");
-        img.css("height", scale * height + "px");
+    function setScale(img, scale, naturalWidth, naturalHeight) {
+        img.css("width", scale * naturalWidth + "px");
+        img.css("height", scale * naturalHeight + "px");
+    }
+
+    function getPixelDiff(leftImg, rightImg, width, height) {
+        const leftCanvas = document.createElement("canvas");
+        const rightCanvas = document.createElement("canvas");
+        const diffCanvas = document.createElement("canvas");
+        diffCanvas.width = rightCanvas.width = leftCanvas.width = Math.round(width);
+        diffCanvas.height = rightCanvas.height = leftCanvas.height = Math.round(height);
+        const leftContext = leftCanvas.getContext('2d');
+        const rightContext = rightCanvas.getContext('2d');
+        const diffContext = diffCanvas.getContext('2d');
+        leftContext.drawImage(leftImg, 0, 0, width, height);
+        rightContext.drawImage(rightImg, 0, 0, width, height);
+        const diff = diffContext.createImageData(width, height);
+        pixelmatch(
+            leftContext.getImageData(0, 0, width, height).data,
+            rightContext.getImageData(0, 0, width, height).data,
+            diff.data,
+            width,
+            height,
+            { threshold: 0.1 });
+        diffContext.putImageData(diff, 0, 0);
+        return diffCanvas;
     }
 
     function selectImage(index) {
@@ -88,47 +111,47 @@ $(() => {
         const selectedImg = imgStrip.find(`li[data-index='${index}'] img`);
         selectedImg.parent().addClass("active");
         const rightSrc = selectedImg.attr("src");
-        diffRightImg.attr("src", rightSrc);
-        swipeRightImg.attr("src", rightSrc);
-        onionRightImg.attr("src", rightSrc);
+        rightImages.forEach(img => img.attr("src", rightSrc));
         const rightWidth = selectedImg.prop('naturalWidth');
         const rightHeight = selectedImg.prop('naturalHeight');
+        console.log(`Right image ${rightWidth} x ${rightHeight}`)
         diffRightResolution.html(`${rightWidth} &times; ${rightHeight}`);
         const rightScale = getScale(rightWidth, rightHeight, maxImgSize);
-        setScale(swipeRightImg, rightScale);
-        setScale(onionRightImg, rightScale);
+        setScale(swipeRightImg, rightScale, rightWidth, rightHeight);
+        setScale(onionRightImg, rightScale, rightWidth, rightHeight);
 
         if (index <= 0) {
-            diffLeftImg.attr("src", "");
-            swipeLeftImg.attr("src", "");
-            onionLeftImg.attr("src", "");
+            leftImages.forEach(img => img.attr("src", ""));
             diffLeftResolution.empty();
             diffLeft.addClass("hidden");
-            setScale(diffRightImg, rightScale);
+            setScale(diffRightImg, rightScale, rightWidth, rightHeight);
+            diffView.empty();
         }
         else {
             diffLeft.removeClass("hidden");
             const previousImg = imgStrip.find(`li[data-index='${index - 1}'] img`);
             const leftSrc = previousImg.attr("src");
-            diffLeftImg.attr("src", leftSrc);
-            swipeLeftImg.attr("src", leftSrc);
-            onionLeftImg.attr("src", leftSrc);
+            leftImages.forEach(img => img.attr("src", leftSrc));
             const leftWidth = previousImg.prop('naturalWidth');
             const leftHeight = previousImg.prop('naturalHeight');
+            console.log(`Left image ${leftWidth} x ${leftHeight}`)
             diffLeftResolution.html(`${leftWidth} &times; ${leftHeight}`);
             const leftScale = getScale(leftWidth, leftHeight, maxImgSize);
-            setScale(swipeLeftImg, leftScale);
-            setScale(onionLeftImg, leftScale);
+            setScale(swipeLeftImg, leftScale, leftWidth, leftHeight);
+            setScale(onionLeftImg, leftScale, leftWidth, leftHeight);
             const scale = Math.min(leftScale, rightScale);
-            setScale(diffRightImg, scale);
-            setScale(diffLeftImg, scale);
+            setScale(diffRightImg, scale, rightWidth, rightHeight);
+            setScale(diffLeftImg, scale, leftWidth, leftHeight);
+            const diffCanvas = getPixelDiff(previousImg.get(0), selectedImg.get(0), leftWidth * leftScale, leftHeight * leftScale);
+            diffView.empty();
+            diffView.append(diffCanvas);
         }
     }
 
-    preLoad(images, () => {
+    initImageStrip(images, () => {
+
         spinner.addClass("hidden");
 
-        initImageStrip(images);
         selectImage(currentIndex);
 
         carousel.removeClass("hidden");
