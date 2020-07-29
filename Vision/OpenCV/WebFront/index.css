@@ -1,0 +1,152 @@
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.hidden {
+    position: absolute !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    height: 1px !important;
+    width: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+@keyframes zoomin {
+    from {
+        max-height: 200px;
+        max-width: 200px;
+        height: 200px;
+        opacity: 1;
+    }
+
+    to {
+        max-height: 220px;
+        max-width: 220px;
+        height: 220px;
+        opacity: 0.75;
+    }
+}
+
+@keyframes zoomout {
+    from {
+        max-height: 220px;
+        max-width: 220px;
+        height: 220px;
+        opacity: 0.75;
+    }
+
+    to {
+        max-height: 200px;
+        max-width: 200px;
+        height: 200px;
+        opacity: 1;
+    }
+}
+
+body {
+    padding-top: 5rem;
+}
+
+.starter-template {
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+#carousel-custom {
+    margin: 20px auto;
+    width: 100%;
+}
+
+    #carousel-custom .carousel-inner > div {
+        height: 640px;
+    }
+
+    #carousel-custom .carousel-inner > div.active {
+    }
+
+    #carousel-custom .carousel-indicators {
+        margin: 10px 0 0;
+        position: static;
+        text-align: left;
+        white-space: nowrap;
+        width: 100%;
+        height: 260px;
+    }
+
+        #carousel-custom .carousel-indicators li {
+            background-color: transparent;
+            -webkit-border-radius: 0;
+            border-radius: 0;
+            display: inline-block;
+            height: auto;
+            margin: 0 !important;
+            width: auto;
+            opacity: 1;
+        }
+
+            #carousel-custom .carousel-indicators li img {
+                animation-name: zoomout;
+                animation-duration: 0.2s;
+                animation-timing-function: ease;
+                display: block;
+                max-height: 200px;
+                max-width: 200px;
+                height: 200px;
+            }
+
+                #carousel-custom .carousel-indicators li img:hover, #carousel-custom .carousel-indicators li.active img {
+                    animation-name: zoomin;
+                    animation-duration: 0.2s;
+                    animation-timing-function: ease;
+                    max-height: 220px;
+                    max-width: 220px;
+                    height: 220px;
+                    opacity: 0.75;
+                }
+
+    #carousel-custom .carousel-outer {
+        position: relative;
+    }
+
+#diff-slider {
+    width: 100%;
+}
+
+#diff-left, #diff-right {
+    width: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+#diff-swipe-view {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#swipe-left, #swipe-right {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.slider-container {
+    position: absolute;
+    bottom: 8px;
+}
