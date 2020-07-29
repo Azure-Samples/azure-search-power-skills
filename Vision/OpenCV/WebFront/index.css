@@ -146,7 +146,19 @@ body {
     left: 0;
 }
 
+#swipe-right-img {
+    position: absolute;
+}
+
 .slider-container {
     position: absolute;
     bottom: 8px;
+}
+
+.diff-left {
+    border: solid 1px red;
+}
+
+.diff-right {
+    border: solid 1px green;
 }

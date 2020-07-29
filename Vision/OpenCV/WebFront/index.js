@@ -155,7 +155,8 @@ $(() => {
 
         $("#diff-swipe-slider").change(e => {
             const percentage = parseFloat($(e.delegateTarget).val());
-            swipeRightImg.css("clip", `rect(0, ${100 - percentage}%, auto, auto`);
+            const width = swipeRightImg.prop("width");
+            swipeRightImg.css("clip", `rect(0, ${width * percentage / 100}px, auto, auto)`);
         });
     });
 });
