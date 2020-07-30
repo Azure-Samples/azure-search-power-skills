@@ -1,4 +1,17 @@
 
+---
+page_type: sample
+languages:
+- csharp
+products:
+- azure
+- azure-search
+- azure-cognitive-services
+name: Analyze form sample skill for cognitive search
+urlFragment: azure-analyzeform-sample
+description: This custom skill extracts specific fields from the results of a trained form recognition.
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/AnalyzeForm/azuredeploy.json
+---
 
 ---
 page_type: sample
