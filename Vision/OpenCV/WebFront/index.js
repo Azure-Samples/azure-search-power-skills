@@ -1,10 +1,9 @@
 'use strict';
 
 $(() => {
-    let currentIndex = images.length - 1;
-
     const maxImgSize = 600;
     const spinner = $("#spinner");
+    const imageSetMenu = $("#image-set-menu");
     const carousel = $("#carousel-custom");
     const imgStrip = $("#img-strip");
     const diffRightResolution = $("#diff-right-resolution");
@@ -22,6 +21,9 @@ $(() => {
     const diffView = $("#diff-diff-view");
     const rightImages = [diffRightImg, swipeRightImg, onionRightImg];
     const leftImages = [diffLeftImg, swipeLeftImg, onionLeftImg];
+
+    let imageSet = [];
+    let currentIndex = 0;
 
     function imgSrc(imgData) {
         return imgData.data ? `data:${imgData.mimetype};base64,${imgData.data}` : imgData.dataUrl;
@@ -65,6 +67,8 @@ $(() => {
     }
 
     function getPixelDiff(leftImg, rightImg, width, height) {
+        width = Math.round(width);
+        height = Math.round(height);
         const leftCanvas = document.createElement("canvas");
         const rightCanvas = document.createElement("canvas");
         const diffCanvas = document.createElement("canvas");
@@ -76,15 +80,19 @@ $(() => {
         leftContext.drawImage(leftImg, 0, 0, width, height);
         rightContext.drawImage(rightImg, 0, 0, width, height);
         const diff = diffContext.createImageData(width, height);
-        pixelmatch(
-            leftContext.getImageData(0, 0, width, height).data,
-            rightContext.getImageData(0, 0, width, height).data,
-            diff.data,
-            width,
-            height,
-            { threshold: 0.1 });
-        diffContext.putImageData(diff, 0, 0);
-        return diffCanvas;
+        try {
+            pixelmatch(
+                leftContext.getImageData(0, 0, width, height).data,
+                rightContext.getImageData(0, 0, width, height).data,
+                diff.data,
+                width,
+                height,
+                { threshold: 0.1 });
+            diffContext.putImageData(diff, 0, 0);
+        }
+        finally {
+            return diffCanvas;
+        }
     }
 
     function selectImage(index) {
@@ -130,53 +138,70 @@ $(() => {
         }
     }
 
-    initImageStrip(images, () => {
+    function loadImageSet(sample) {
+        imageSet = sample.data;
 
-        spinner.addClass("hidden");
+        carousel.addClass("hidden");
+        spinner.removeClass("hidden");
 
-        selectImage(currentIndex);
+        initImageStrip(imageSet, () => {
+            spinner.addClass("hidden");
 
-        carousel.removeClass("hidden");
+            selectImage(imageSet.length - 1);
 
-        $("#img-strip li").click(e => {
-            const selectedIndex = parseInt($(e.delegateTarget).data("index"), 10);
-            selectImage(selectedIndex);
+            carousel.removeClass("hidden");
         });
+    }
 
-        $(".carousel-control.left").click(e => {
-            if (currentIndex > 0) {
-                selectImage(currentIndex - 1);
-            }
-        });
-
-        $(".carousel-control.right").click(e => {
-            if (currentIndex < images.length - 1) {
-                selectImage(currentIndex + 1);
-            }
-        });
-
-        $("input[type=radio][name=diff-view]").change(e => {
-            const selection = $(e.delegateTarget).data("selects");
-            [sideBySideView, swipeView, onionView, diffView]
-                .forEach(view => {
-                    if (view.attr("id") == selection) {
-                        view.removeClass("hidden");
-                    }
-                    else {
-                        view.addClass("hidden");
-                    }
-                });
-        });
-
-        $("#diff-swipe-slider").change(e => {
-            const percentage = parseFloat($(e.delegateTarget).val());
-            const width = swipeRightImg.prop("offsetWidth") + 1;
-            swipeRightImg.css("clip", `rect(0, ${width * percentage / 100}px, auto, auto)`);
-        });
-
-        $("#diff-onion-slider").change(e => {
-            const percentage = parseFloat($(e.delegateTarget).val());
-            onionRightImg.css("opacity", (percentage / 100));
-        });
+    $("#img-strip").on("click", "li", e => {
+        const selectedIndex = parseInt($(e.currentTarget).data("index"), 10);
+        selectImage(selectedIndex);
     });
+
+    $(".carousel-control.left").click(e => {
+        if (currentIndex > 0) {
+            selectImage(currentIndex - 1);
+        }
+    });
+
+    $(".carousel-control.right").click(e => {
+        if (currentIndex < imageSet.length - 1) {
+            selectImage(currentIndex + 1);
+        }
+    });
+
+    $("input[type=radio][name=diff-view]").change(e => {
+        const selection = $(e.delegateTarget).data("selects");
+        [sideBySideView, swipeView, onionView, diffView]
+            .forEach(view => {
+                if (view.attr("id") == selection) {
+                    view.removeClass("hidden");
+                }
+                else {
+                    view.addClass("hidden");
+                }
+            });
+    });
+
+    $("#diff-swipe-slider").change(e => {
+        const percentage = parseFloat($(e.delegateTarget).val());
+        const width = swipeRightImg.prop("offsetWidth") + 1;
+        swipeRightImg.css("clip", `rect(0, ${width * percentage / 100}px, auto, auto)`);
+    });
+
+    $("#diff-onion-slider").change(e => {
+        const percentage = parseFloat($(e.delegateTarget).val());
+        onionRightImg.css("opacity", (percentage / 100));
+    });
+
+    imageSetMenu.on("click", "button", e => {
+        const sampleName = $(e.currentTarget).data("sample");
+        const sample = dataset.find(sample => sample.name === sampleName);
+        if (sample) loadImageSet(sample);
+    });
+
+    dataset.forEach(sample => {
+        imageSetMenu.append($(`<button class="dropdown-item" data-sample="${sample.name}">${sample.name}</a>`));
+    });
+
 });

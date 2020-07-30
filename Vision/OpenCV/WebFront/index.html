@@ -18,6 +18,16 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Image sets
+                    </a>
+                    <div id="image-set-menu" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"></div>
+                </li>
+            </ul>
+        </div>
     </nav>
 
     <main role="main" class="container">
@@ -27,7 +37,7 @@
             <p class="lead">OpenCV pipeline visualization</p>
         </div>
 
-        <div id="spinner" class="row justify-content-center">
+        <div id="spinner" class="row justify-content-center hidden">
             <div class="spinner-border text-secondary" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
