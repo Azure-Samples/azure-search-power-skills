@@ -30,7 +30,9 @@ Deploy: Manually [deploy the container image as a Azure function](#deployment)
 
 # PID Skill
 
-P&ID is a graphical representation of the actual process plant using various symbols that represent actual equipment. This skill is designed to extract equipment infomration  from specific instrument symbols in engineering diagrams. The skill uses the X, Y coordinates of text extracted by OCR to generate groupings of text based on proximity, vertical and horizontal seperation and alignment. 
+A [piping and instrumentation diagram (P&ID)](https://en.wikipedia.org/wiki/Piping_and_instrumentation_diagram) is a detailed diagram in the process industry which shows the piping and process equipment together with the instrumentation and control devices. Superordinate to the P&ID is the process flow diagram (PFD) which indicates the more general flow of plant processes and the relationship between major equipment of a plant facility. 
+
+This skill is designed to extract equipment infomration  from specific instrument symbols in engineering diagrams. The skill uses the X, Y coordinates of text extracted by OCR to generate groupings of text based on proximity, vertical and horizontal seperation and alignment. 
 
 For best results, set the normalized images to the higest resolution. You can also edit the parameters within the skill to change the sensitivity of how the tags are grouped. Additional logic is applied product tags to determine tag boundaries and hypheated text. The skill returns two json elements, a tag array and text array.
 
@@ -42,7 +44,7 @@ This skill requires Docker to build a container that will be deployed as an Azur
 
 ## Settings
 
-The default configuration of the skill identified tags or equipment and associated text blocks. Tuning the following parameters allos you to se the sensitivity of grouping of individual text spans into a block.
+The default configuration of the skill identifies tags or equipment and associated text blocks. Tuning the following parameters allows you to se the sensitivity of grouping of individual text spans into a block.
 
 1. ```maxSegment``` defines the max length of a valid text segment
 2. ```leftAlignSensitivity``` defines the sensitivity of the algorithm in matching text blocks that are left aligned
@@ -51,7 +53,7 @@ The default configuration of the skill identified tags or equipment and associat
 
 ## Deployment
 
-Follow these steps to buld the container and deploy the skill as an Azure Function.
+Follow these steps to build the container and deploy the skill as an Azure Function.
 
 
 1. Navigate to the diagramskill folder and build the docker container ```docker build -t pidskill .```
@@ -59,14 +61,14 @@ Follow these steps to buld the container and deploy the skill as an Azure Functi
 3. Save the image ```docker commit {container id from previous step} pidskill```
 4. Push the image to the container registry ```docker push {containerregistry}.azurecr.io/pidskill```
 
-Once the image is in the container registry, you can now create anAzure function to deploy that image to.
+Once the image is in the container registry, you can now create an Azure function to deploy that image to.
 
 1. In the portal, create a new Azure Function App
 2. Select the Docker Container option, provide a valid function name
 3. Once the deployment is complete, navigate to the resource, select ```Container settings```
 4. Select Azure Container Registry for the Image Source 
 5. Select the registry, image and tag
-6. Select continuous deployment to On to ensure that the skill is updated when a new image is uploaded
+6. Set continuous deployment to On to ensure that the skill is updated when a new image is uploaded
 7. Save your changes
 
 Your skill should now be configured and you can now navigate to the Functions menu, select the app and get the function URL.
