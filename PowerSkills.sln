@@ -61,6 +61,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{F8C9D606
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetFileExtension", "Utils\GetFileExtension\GetFileExtension.csproj", "{A6419D6B-C744-480E-A68C-1E3750DE73C5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomVision", "Vision\CustomVision\CustomVision.csproj", "{5A80C258-BD0F-44AC-AB79-5FD7AEC910F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{A6419D6B-C744-480E-A68C-1E3750DE73C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6419D6B-C744-480E-A68C-1E3750DE73C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6419D6B-C744-480E-A68C-1E3750DE73C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A80C258-BD0F-44AC-AB79-5FD7AEC910F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A80C258-BD0F-44AC-AB79-5FD7AEC910F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A80C258-BD0F-44AC-AB79-5FD7AEC910F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A80C258-BD0F-44AC-AB79-5FD7AEC910F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,6 +146,7 @@ Global
 		{63C364D1-FE52-45EC-B23E-20720201844A} = {F98E15F9-D6BB-41CE-8B5B-84E624B86203}
 		{C40F1FE9-6C37-4F6A-81B3-A4B189820361} = {10BE854F-F22A-4AE0-8283-688E10C76275}
 		{A6419D6B-C744-480E-A68C-1E3750DE73C5} = {F8C9D606-29CB-4CA0-88DF-3B82C34B7C0A}
+		{5A80C258-BD0F-44AC-AB79-5FD7AEC910F6} = {10BE854F-F22A-4AE0-8283-688E10C76275}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C22FE9E-7E11-429D-ADDE-0A220F285B90}
