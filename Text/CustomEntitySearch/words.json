@@ -1,1 +1,46 @@
-[ "foo1", "foo2" ]
+[ 
+    { 
+        "name" : "FindThisStringAsAnExactMatchOnly" 
+    }, 
+    { 
+        "name" : "Bill Gates", 
+        "description" : "This document references William Henry Gates III, founder of Microsoft. Not to be confused with a series of barriers made of invoices."  
+    }, 
+    { 
+        "name" : "Satya Nadella",
+        "type" : "Person",
+        "subtype" : "CEO",
+        "id" : "4e36bf9d-5550-4396-8647-8e43d7564a76",
+        "description" : "This document references Satya Narayana Nadella."
+    }, 
+    { 
+        "name" : "LinkedIn" , 
+        "description" : "This document refers to LinkedIn the company.", 
+        "id" : "differentIdentifyingScheme123", 
+        "caseSensitive" : true,
+        "accentSensitive" : true, 
+        "fuzzyEditDistance" : 0 
+    }, 
+    { 
+        "name" : "Microsoft" , 
+        "description" : "This document refers to Microsoft the company.", 
+        "id" : "differentIdentifyingScheme987", 
+        "defaultCaseSensitive" : false, 
+        "defaultAccentSensitive" : false, 
+        "defaultFuzzyEditDistance" : 1, 
+        "aliases" : [
+            { 
+                "text" : "MSFT", 
+                "caseSensitive" : true 
+            }, 
+            { 
+                "text" : "Azure", 
+                "fuzzyEditDistance" : 3 
+            }, 
+            { 
+                "text" : "Xbox", 
+                  "accentSensitive" : true 
+            } 
+        ]
+    } 
+]

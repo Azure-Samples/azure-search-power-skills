@@ -25,7 +25,7 @@ The language used for stop word removal can be optionally specified with the `la
 * German (de)
 * Italian (it)
 * Japanese (ja)
-* Norwegian Bokmål (nb)
+* Norwegian BokmÃ¥l (nb)
 * Polish (pl)
 * Portuguese (pt)
 * Spanish (es)
@@ -48,7 +48,7 @@ This skills have no additional requirements than the ones described in [the root
 {
     "values": [
         {
-* "recordId": "record1",
+ "recordId": "record1",
             "data": { 
                 "text": "ML.NET's RemoveDefaultStopWords API removes stop words from tHe text/string. It requires the text/string to be tokenized beforehand.",
                 "languageCode": "en"

@@ -41,7 +41,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.BingEntitySearch
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {
                     var entityName = inRecord.Data["name"] as string;
-                    string uri = bingApiEndpoint + "?q=" + Uri.EscapeDataString(entityName) + "&mkt=en-us&count=10&offset=0&safesearch=Moderate";
+                    string uri = bingApiEndpoint
+                        + "?q=" + Uri.EscapeDataString(entityName)
+                        + "&mkt=en-us&safeSearch=Moderate";
 
                     IEnumerable<BingEntity> entities =
                         await WebApiSkillHelpers.FetchAsync<BingEntity>(uri, "Ocp-Apim-Subscription-Key", bingApiKey, "entities.value");

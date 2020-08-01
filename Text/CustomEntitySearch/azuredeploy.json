@@ -25,7 +25,7 @@
   },
   "variables": {
     "repoURL": "https://github.com/Azure-Samples/azure-search-power-skills",
-    "functionProject": "Text\\CustomEntitySearch\\CustomEntitySearch.csproj",
+    "functionProject": "Text\\CustomEntitySearch\\CustomEntityLookup.csproj",
     "websiteName": "[toLower(concat(parameters('resourcePrefix'), '-site-', uniqueString(resourceGroup().id)))]",
     "storageAccount": "[toLower(concat(parameters('resourcePrefix'), uniqueString(resourceGroup().id)))]",
     "functionAppName": "[toLower(concat(parameters('resourcePrefix'), '-function-app-', uniqueString(resourceGroup().id)))]"

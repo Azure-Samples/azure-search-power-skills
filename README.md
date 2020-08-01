@@ -1,6 +1,6 @@
 # Azure Search Power Skills
 
-A collection of useful functions to be deployed as custom skills for Azure Cognitive Search.
+Power Skills are a collection of useful functions to be deployed as custom skills for Azure Cognitive Search. The skills can be used as [templates](Template/HelloWorld/README.md) or starting points for your own custom skills, or they can be deployed and used as they are if they happen to meet your requirements. We also invite you to contribute your own work by submitting a [pull request](https://github.com/Azure-Samples/azure-search-power-skills/compare).
 
 ## Features
 
@@ -13,11 +13,12 @@ This project provides the following custom skills:
 * [**ImageStore**](Vision/ImageStore/README.md): stores and fetches base64-encoded images to and from blob storage.
 * [**HocrGenerator**](Vision/HocrGenerator/README.md): transforms the result of OCR into the hOCR format.
 * [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
-* [**CustomEntitySearch**](/Text/CustomEntitySearch): finds custom entity names in text.
+* [**CustomVision**](Vision/CustomVision/README.md): classifies documents using [Custom Vision](https://customvision.ai) models.
+* [**CustomEntityLookup**](/Text/CustomEntitySearch): finds custom entity names in text.
 * [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
 * [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
 * [**P&ID Parser**](Vision/PID/README.md): Extracts equipment tags and text blocks from piping and instrumentation diagrams
-
+* [**GetFileExtension**](Utils/GetFileExtension/README.md): returns the filename and extension as separate values allowing you to filter on document type.
 
 ## Getting Started
 
@@ -26,7 +27,7 @@ This project provides the following custom skills:
 In order to use the functions in this project, you'll need an active Azure subscription. Most of the functions can be used on their own for quick evaluation and experimentation, but they are meant to be used as part of an [Azure Cognitive Search pipeline](https://docs.microsoft.com/azure/search/cognitive-search-quickstart-blob).
 Each function may also add its own specific requirements, such as API keys for services they leverage.
 
-[Visual Studio](https://visualstudio.microsoft.com/) is recommended, but not required. [Postman](https://www.getpostman.com/) is highly recommended as a way to experiment and test skills.
+[Visual Studio 2019](https://visualstudio.microsoft.com/) is recommended, but not required. You need a recent version of the C# compiler. [Postman](https://www.getpostman.com/) is highly recommended as a way to experiment and test skills.
 
 ### Installation and deployment
 
@@ -38,7 +39,7 @@ Some functions may require setting environment variables or configuration entrie
 
 ### Quickstart
 
-1. `git clone git@github.com:Azure-Samples/azure-search-power-skills.git`
+1. Clone the repository
 2. Open the PowerSkills solution in Visual Studio
 3. Set the project for the function to test as the startup project
 4. Hit F5
