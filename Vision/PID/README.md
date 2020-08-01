@@ -56,7 +56,7 @@ The default configuration of the skill identifies tags or equipment and associat
 Follow these steps to build the container and deploy the skill as an Azure Function.
 
 
-1. Navigate to the diagramskill folder and build the docker container ```docker build -t pidskill .```
+1. Navigate to the `diagramskill` folder and build the docker container ```docker build -t pidskill .```
 2. Run the container ```docker run -p 8080:80 -it pidskill:latest```
 3. Save the image ```docker commit {container id from previous step} pidskill```
 4. Push the image to the container registry ```docker push {containerregistry}.azurecr.io/pidskill```
