@@ -22,6 +22,10 @@ namespace AzureCognitiveSearch.PowerSkills.Common
         public static IEnumerable<WebApiRequestRecord> GetRequestRecords(HttpRequest req)
         {
             string jsonRequest = new StreamReader(req.Body).ReadToEnd();
+            if(String.IsNullOrEmpty(jsonRequest))
+            {
+                return null;
+            }
             WebApiSkillRequest docs = JsonConvert.DeserializeObject<WebApiSkillRequest>(jsonRequest);
             return docs.Values;
         }
@@ -70,10 +74,19 @@ namespace AzureCognitiveSearch.PowerSkills.Common
             return response;
         }
 
+        public static async Task<IEnumerable<T>> FetchAsync<T>(string uri, string collectionPath)
+            => await FetchAsync<T>(uri, null, null, collectionPath, HttpMethod.Get);
+
         public static async Task<IEnumerable<T>> FetchAsync<T>(string uri, string apiKeyHeader, string apiKey, string collectionPath)
-        {
-            return await FetchAsync<T>(uri, apiKeyHeader, apiKey, collectionPath, HttpMethod.Get);
-        }
+            => await FetchAsync<T>(uri, apiKeyHeader, apiKey, collectionPath, HttpMethod.Get);
+
+        public static async Task<IEnumerable<T>> FetchAsync<T>(
+            string uri,
+            string collectionPath,
+            HttpMethod method,
+            byte[] postBody = null,
+            string contentType = null)
+            => await FetchAsync<T>(uri, null, null, collectionPath, method, postBody, contentType);
 
         public static async Task<IEnumerable<T>> FetchAsync<T>(
             string uri,
@@ -97,7 +110,10 @@ namespace AzureCognitiveSearch.PowerSkills.Common
                 {
                     request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
                 }
-                request.Headers.Add(apiKeyHeader, apiKey);
+                if (apiKeyHeader != null)
+                {
+                    request.Headers.Add(apiKeyHeader, apiKey);
+                }
 
                 using (HttpResponseMessage response = TestMode ? TestWww(request) : await client.SendAsync(request))
                 {
@@ -120,6 +136,5 @@ namespace AzureCognitiveSearch.PowerSkills.Common
                 }
             }
         }
-
     }
 }

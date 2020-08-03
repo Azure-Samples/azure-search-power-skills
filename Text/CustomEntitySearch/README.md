@@ -3,18 +3,17 @@ topic: sample
 languages:
 - csharp
 products:
-- azure
-- azure-search
+- azure-cognitive-services
 name: Custom Entity Search sample skill for cognitive search
 description: This custom skill finds user defined entities in given texts.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/CustomEntitySearch/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/CustomEntityLookup/azuredeploy.json
 ---
 
-# CustomEntitySearch
+# CustomEntityLookup
 
 This custom skill finds finds user defined entities in given texts.
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FCustomEntitySearch%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FCustomEntityLookup%2Fazuredeploy.json)
 
 ## Requirements
 
@@ -22,21 +21,70 @@ These skills have no additional requirements than the ones described in [the roo
 
 ## Settings
 
-This function requires Latin-based text (as seen in the sample document provided). The input field "words" is optional, where a user can add a "words.json" or "words.csv" file instead.  To load a JSON file, change "csv" to "json" in the following line within CustomEntitySearch.cs 
+This function by default performs exact matches with no synonym detection. Based on user input in the JSON file or in the posted values, this skill can perform fuzzy matching on some or all of the entities provided. The input field "words" is optional, where a user can add a "words.json" file instead.
 
-```
-public static IList<string> preLoadedWords = new WordLinker("csv").Words;
+## Sample CSV Config File (comma or new line delineated terms)
+```csv
+wordToFind1,wordToFind2,
+wordToFind3
+oscar
+rodger
+over
+lastWordToFind
 ```
 
-## Sample Config File (JSON)
+
+## Sample JSON Config File (complex entity definitions)
 ```json
-    ["foo1", "foo2"]
-```
-
-## Sample Config File (CSV)
-```json
-    foo1
-    foo2
+[ 
+    { 
+        "name" : "FindThisStringAsAnExactMatchOnly" 
+    }, 
+    { 
+        "name" : "Bill Gates", 
+        "description" : "This document references William Henry Gates III, founder of Microsoft. Not to be confused with a series of barriers made of invoices."  
+    }, 
+    { 
+        "name" : "Satya Nadella",
+        "type" : "Person",
+        "subtype" : "CEO",
+        "id" : "4e36bf9d-5550-4396-8647-8e43d7564a76",
+        "description" : "This document references Satya Narayana Nadella."
+    }, 
+    { 
+        "name" : "MSFT" , 
+        "description" : "This document refers to Microsoft the company. Likely in a financial capacity", 
+        "id" : "differentIdentifyingScheme123", 
+        "caseSensitive" : true,
+        "accentSensitive" : true, 
+        "fuzzyEditDistance" : 0 
+    }, 
+    { 
+        "name" : "Microsoft" , 
+        "description" : "This document refers to Microsoft the company.", 
+        "id" : "differentIdentifyingScheme987", 
+        "defaultCaseSensitive" : false, 
+        "defaultAccentSensitive" : false, 
+        "defaultFuzzyEditDistance" : 1, 
+        "aliases" : [
+            { 
+                "text" : "Macrosofty" 
+            }, 
+            { 
+                "text" : "MSFT", 
+                "caseSensitive" : true 
+            }, 
+            { 
+                "text" : "Windows 10", 
+                "fuzzyEditDistance" : 3 
+            }, 
+            { 
+                "text" : "Xbox", 
+                  "accentSensitive" : true 
+            } 
+        ]
+    } 
+]
 ```
 
 
@@ -50,10 +98,6 @@ public static IList<string> preLoadedWords = new WordLinker("csv").Words;
             "data":
             {
                 "text":  "Learn how to leverage Azure Storage in your applications with our quickstarts and tutorials.",
-                "words": [
-                    "learn",
-                    "app"
-                ]
             }
         },
         {
@@ -61,9 +105,6 @@ public static IList<string> preLoadedWords = new WordLinker("csv").Words;
             "data":
             {
                 "text":  "Azure Storage includes Azure Blobs (objects), Azure Data Lake Storage Gen2, Azure Files, Azure Queues, and Azure Tables.",
-                "words": [
-                    "bing"
-                ]
             }
         }
     ]
@@ -78,26 +119,41 @@ public static IList<string> preLoadedWords = new WordLinker("csv").Words;
         {
             "recordId": "1",
             "data": {
-                "EntitiesFound": ["learn", "app"],
                 "Entities": [
                     {
-                        "Name": "Learn",
-                        "matchIndex": 1
+                        "name": "learn",
+                        "matches": [
+                            {
+                                "text": "Learn",
+                                "offset": 1,
+                                "length": 6,
+                                "matchDistance": 1.0
+                            }
+                        ]
                     },
                     {
-                        "Name": "app",
-                        "MatchIndex": 45
+                        "name": "app",
+                        "matches": [
+                            {
+                                "text": "app",
+                                "offset": 45,
+                                "length": 3,
+                                "matchDistance": 0.0
+                            }
+                        ]
                     }
                 ]
-            }
+            },
+            "errors": [],
+            "warnings": []
         },
         {
             "recordId": "foo1",
-            "data": 
-            {
-                "EntitiesFound": [],
+            "data": {
                 "Entities": []
-            }
+            },
+            "errors": [],
+            "warnings": []
         }
     ]
 }
@@ -111,9 +167,9 @@ Here's a sample skill definition for this example (inputs and outputs should be 
 ```json
 {
     "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
-    "description": "Our Custom Entity search custom skill",
+    "description": "Our Custom Entity Lookup custom skill",
     "context": "/document/merged_content/*",
-    "uri": "[AzureFunctionEndpointUrl]/api/custom-search?code=[AzureFunctionDefaultHostKey]",
+    "uri": "[AzureFunctionEndpointUrl]/api/custom-entity-lookup?code=[AzureFunctionDefaultHostKey]",
     "batchSize": 1,
     "inputs": [
         {

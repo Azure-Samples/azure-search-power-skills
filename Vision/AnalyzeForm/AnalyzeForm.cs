@@ -13,23 +13,20 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using AzureCognitiveSearch.PowerSkills.Common;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.IO;
 
 namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
 {
     public static class AnalyzeForm
     {
-        private static readonly string formsRecognizerApiEndpoint =
-            "https://westus2.api.cognitive.microsoft.com/formrecognizer/v1.0-preview/custom";
+        private static readonly string formsRecognizerApiEndpointSetting = "FORMS_RECOGNIZER_ENDPOINT_URL";
         private static readonly string formsRecognizerApiKeySetting = "FORMS_RECOGNIZER_API_KEY";
         private static readonly string modelIdSetting = "FORMS_RECOGNIZER_MODEL_ID";
-
-        // Modify this list of fields to extract according to your requirements:
-        private static readonly Dictionary<string, string> fieldMappings = new Dictionary<string, string> {
-            { "Address:", "address" },
-            { "Invoice For:", "recipient" }
-        };
-        // Modify this content type if you need to handle file types other than PDF
-        private static readonly string contentType = "application/pdf";
+        private static readonly string retryDelaySetting = "FORMS_RECOGNIZER_RETRY_DELAY";
+        private static readonly string maxAttemptsSetting = "FORMS_RECOGNIZER_MAX_ATTEMPTS";
 
         [FunctionName("analyze-form")]
         public static async Task<IActionResult> RunAnalyzeForm(
@@ -46,42 +43,55 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
 
+            string formsRecognizerEndpointUrl = Environment.GetEnvironmentVariable(formsRecognizerApiEndpointSetting, EnvironmentVariableTarget.Process).TrimEnd('/');
             string formsRecognizerApiKey = Environment.GetEnvironmentVariable(formsRecognizerApiKeySetting, EnvironmentVariableTarget.Process);
             string modelId = Environment.GetEnvironmentVariable(modelIdSetting, EnvironmentVariableTarget.Process);
+            int retryDelay = int.TryParse(Environment.GetEnvironmentVariable(retryDelaySetting, EnvironmentVariableTarget.Process), out int parsedRetryDelay) ? parsedRetryDelay : 1000;
+            int maxAttempts = int.TryParse(Environment.GetEnvironmentVariable(maxAttemptsSetting, EnvironmentVariableTarget.Process), out int parsedMaxAttempts) ? parsedMaxAttempts : 100;
+
+            Dictionary<string, string> fieldMappings = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                File.ReadAllText($"{executionContext.FunctionAppDirectory}\\field-mappings.json"));
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {
                     var formUrl = inRecord.Data["formUrl"] as string;
                     var formSasToken = inRecord.Data["formSasToken"] as string;
 
-                    // Fetch the document
-                    byte[] documentBytes;
-                    using (var webClient = new WebClient())
+                    // Create the job
+                    string jobId = await GetJobId(formsRecognizerEndpointUrl, formUrl + formSasToken, modelId, formsRecognizerApiKey);
+
+                    // Get the results
+                    for (int attempt = 0; attempt < maxAttempts; attempt++)
                     {
-                        documentBytes = await webClient.DownloadDataTaskAsync(new Uri(formUrl + formSasToken));
-                    }
-
-                    string uri = formsRecognizerApiEndpoint + "/models/" + Uri.EscapeDataString(modelId) + "/analyze";
-
-                    List<Page> pages =
-                        (await WebApiSkillHelpers.FetchAsync<Page>(
-                            uri,
-                            apiKeyHeader: "Ocp-Apim-Subscription-Key",
-                            apiKey: formsRecognizerApiKey,
-                            collectionPath: "pages",
-                            method: HttpMethod.Post,
-                            postBody: documentBytes,
-                            contentType))
-                        .ToList();
-
-                    foreach(KeyValuePair<string, string> kvp in fieldMappings)
-                    {
-                        var value = GetField(pages, kvp.Key);
-                        if (!string.IsNullOrWhiteSpace(value))
+                        (string status, JToken result) = await GetJobStatus(jobId, formsRecognizerApiKey);
+                        if (status == "failed")
                         {
-                            outRecord.Data[kvp.Value] = value;
+                            var errors = result.SelectToken("analyzeResult.errors") as JArray;
+                            outRecord.Errors.AddRange(errors.Children().Select(error => new WebApiErrorWarningContract
+                            {
+                                Message = error.SelectToken("message").ToObject<string>()
+                            }));
+                            return outRecord;
                         }
+                        if (status == "succeeded")
+                        {
+                            List<Page> pages = result.SelectToken("analyzeResult.pageResults").ToObject<List<Page>>();
+                            foreach (KeyValuePair<string, string> kvp in fieldMappings)
+                            {
+                                string value = GetField(pages, kvp.Key);
+                                if (!string.IsNullOrWhiteSpace(value))
+                                {
+                                    outRecord.Data[kvp.Value] = value;
+                                }
+                            }
+                            return outRecord;
+                        }
+                        await Task.Delay(retryDelay);
                     }
+                    outRecord.Errors.Add(new WebApiErrorWarningContract
+                    {
+                        Message = $"The forms recognizer did not finish the job after {maxAttempts} attempts."
+                    });
                     return outRecord;
                 });
 
@@ -96,14 +106,80 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
         /// <returns></returns>
         private static string GetField(IList<Page> pages, string fieldName)
         {
-            var value = pages
+            IEnumerable<string> value = pages
                 .SelectMany(p => p.KeyValuePairs)
-                .Where(kvp => kvp.Key
-                    .Select(key => key.Text.Trim())
-                    .Contains(fieldName, StringComparer.CurrentCultureIgnoreCase)
-                )
-                .SelectMany(kvp => kvp.Value.Select(v => v.Text));
+                .Where(kvp => string.Equals(kvp.Key.Text.Trim(), fieldName, StringComparison.CurrentCultureIgnoreCase))
+                .Select(kvp => kvp.Value.Text);
             return value == null ? null : string.Join(" ", value);
+        }
+
+        /// <summary>
+        /// Creates the analysis job and returns a job id
+        /// </summary>
+        /// <param name="documentBytes">The binary contents of the document to analyze.</param>
+        /// <param name="modelId">The id of the trained model to use.</param>
+        /// <returns>The job id that can be used in analyzeResults.</returns>
+        private static async Task<string> GetJobId(string endpointUrl, string formUrl, string modelId, string apiKey)
+        {
+            string uri = endpointUrl + "/formrecognizer/v2.0-preview/custom/models/" + Uri.EscapeDataString(modelId) + "/analyze";
+
+            using (var client = new HttpClient())
+            {
+                using (var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(uri),
+                    Content = new StringContent(JsonConvert.SerializeObject(new
+                    {
+                        source = formUrl
+                    })),
+                })
+                {
+                    request.Headers.Add("Ocp-Apim-Subscription-Key", apiKey);
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    using (HttpResponseMessage response = await client.SendAsync(request))
+                    {
+
+                        if (response.StatusCode != HttpStatusCode.Accepted)
+                        {
+                            throw new HttpRequestException($"The remote service {uri} responded with a {response.StatusCode} error code instead of the expected 202 Accepted.");
+                        }
+                        return response.Headers.GetValues("Operation-Location").FirstOrDefault();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Makes a request to get the job status, and the full response if the job's complete.
+        /// </summary>
+        /// <param name="modelId">The trained model id.</param>
+        /// <param name="jobId">The job id.</param>
+        /// <returns></returns>
+        private static async Task<(string status, JToken results)> GetJobStatus(string jobId, string apiKey)
+        {
+            using (var client = new HttpClient())
+            {
+                using (var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(jobId)
+                })
+                {
+                    request.Headers.Add("Ocp-Apim-Subscription-Key", apiKey);
+                    using (HttpResponseMessage response = await client.SendAsync(request))
+                    {
+
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            throw new HttpRequestException($"The remote service {jobId} responded with a {response.StatusCode} error code.");
+                        }
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        var responseObject = JObject.Parse(responseBody);
+                        return (responseObject.SelectToken("status").ToObject<string>(), responseObject);
+                    }
+                }
+            }
         }
     }
 }
