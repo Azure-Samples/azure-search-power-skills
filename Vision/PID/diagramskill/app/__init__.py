@@ -288,22 +288,21 @@ def match_boxes(textblocks):
         tb = textblocks[i].copy()
         count=0
         for j in range(len(textblocks)):
-            if i != j:
-                if i not in ids and (len(textblocks[j].text) < maxSegment and len(tb.text) < maxSegment) and (tb.dist_y(textblocks[j]) <= 18):
-                    if tb.dist_left_x(textblocks[j]) <= leftAlignSensitivity:  
+            if (i != j) and (i not in ids) and (len(textblocks[j].text) < maxSegment and len(tb.text) < maxSegment) and (tb.dist_y(textblocks[j]) <= 18):
+                if tb.dist_left_x(textblocks[j]) <= leftAlignSensitivity:  
+                    ids.append(j)
+                    tb = tb.merge(textblocks[j])
+                    count = count + 1  
+                else:
+                    if tb.dist_right_x(textblocks[j]) <= rightAlignSensitivity:
                         ids.append(j)
                         tb = tb.merge(textblocks[j])
-                        count = count + 1  
+                        count = count + 1
                     else:
-                        if tb.dist_right_x(textblocks[j]) <= rightAlignSensitivity:
+                        if tb.dist_mean_x(textblocks[j]) <= centerAlignSensitivty:
                             ids.append(j)
                             tb = tb.merge(textblocks[j])
                             count = count + 1
-                        else:
-                            if tb.dist_mean_x(textblocks[j]) <= centerAlignSensitivty:
-                                ids.append(j)
-                                tb = tb.merge(textblocks[j])
-                                count = count + 1
         if(count > 0):
             matches.update({i:tb})
         else:
