@@ -32,7 +32,7 @@ Deploy: Manually [deploy the container image as a Azure function](#deployment)
 
 A [piping and instrumentation diagram (P&ID)](https://en.wikipedia.org/wiki/Piping_and_instrumentation_diagram) is a detailed diagram in the process industry which shows the piping and process equipment together with the instrumentation and control devices. Superordinate to the P&ID is the process flow diagram (PFD) which indicates the more general flow of plant processes and the relationship between major equipment of a plant facility. 
 
-This skill is designed to extract equipment infomration  from specific instrument symbols in engineering diagrams. The skill uses the X, Y coordinates of text extracted by OCR to generate groupings of text based on proximity, vertical and horizontal seperation and alignment. 
+This skill is designed to extract equipment information  from specific instrument symbols in engineering diagrams. The skill uses the X, Y coordinates of text extracted by OCR to generate groupings of text based on proximity, vertical and horizontal separation and alignment. 
 
 For best results, set the normalized images to the higest resolution. You can also edit the parameters within the skill to change the sensitivity of how the tags are grouped. Additional logic is applied product tags to determine tag boundaries and hypheated text. The skill returns two json elements, a tag array and text array.
 
