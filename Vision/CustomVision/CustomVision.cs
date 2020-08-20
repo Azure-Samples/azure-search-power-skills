@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using AzureCognitiveSearch.PowerSkills.Common;
-using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Linq;

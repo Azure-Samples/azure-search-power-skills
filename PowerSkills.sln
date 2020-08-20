@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solutio
 		CONTRIBUTORS.md = CONTRIBUTORS.md
 		LICENSE.md = LICENSE.md
 		README.md = README.md
-		WebAPISkillContract.cs = WebAPISkillContract.cs
-		WebAPISkillHelper.cs = WebAPISkillHelper.cs
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoPointFromName", "Geo\GeoPointFromName\GeoPointFromName.csproj", "{B8166C8C-7C6D-4E29-A8A8-BBFF19FB0733}"

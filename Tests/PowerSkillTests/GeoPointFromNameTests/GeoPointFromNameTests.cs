@@ -47,6 +47,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.GeoPointFromNameTests
                 new { Address = JsonConvert.SerializeObject(new { X = 50, Y = 100 }) },
                 "mainGeoPoint");
             var coordinates = mainGeoPoint.GetProperty<double[]>("Coordinates");
+            Assert.IsNotNull(coordinates);
             Assert.AreEqual(100, coordinates[0]);
             Assert.AreEqual(50, coordinates[1]);
         }
