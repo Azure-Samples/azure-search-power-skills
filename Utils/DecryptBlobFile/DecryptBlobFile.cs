@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Auth;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -41,30 +39,29 @@ namespace AzureCognitiveSearch.PowerSkills.Utils.DecryptBlobFile
             var azureServiceTokenProvider1 = new AzureServiceTokenProvider();
             var kv = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider1.KeyVaultTokenCallback));
             KeyVaultKeyResolver cloudResolver = new KeyVaultKeyResolver(kv);
-
-            // Set up access to blob storage account where the file lives and is encrypted
-            // Requires that the Azure Function has application settings for storageAccountName and storageAccountKey
-            StorageCredentials creds = new StorageCredentials(
-                Environment.GetEnvironmentVariable("storageAccountName", EnvironmentVariableTarget.Process),
-                Environment.GetEnvironmentVariable("storageAccountKey", EnvironmentVariableTarget.Process)
-            );
-            CloudStorageAccount account = new CloudStorageAccount(creds, useHttps: true);
-            CloudBlobClient client = account.CreateCloudBlobClient();
             BlobEncryptionPolicy policy = new BlobEncryptionPolicy(null, cloudResolver);
             BlobRequestOptions options = new BlobRequestOptions() { EncryptionPolicy = policy };
 
             WebApiSkillResponse response = WebApiSkillHelpers.ProcessRequestRecords(skillName, requestRecords,
                 (inRecord, outRecord) =>
                 {
-                    string blobPath = (string)inRecord.Data["metadata_storage_path"];
-                    var blob = client.GetBlobReferenceFromServer(new Uri(blobPath));
+                    string blobUrl = (inRecord.Data.TryGetValue("blobUrl", out object blobUrlObject) ? blobUrlObject : null) as string;
+                    string sasToken = (inRecord.Data.TryGetValue("sasToken", out object sasTokenObject) ? sasTokenObject : null) as string;
+
+                    if (string.IsNullOrWhiteSpace(blobUrl))
+                    {
+                        outRecord.Errors.Add(new WebApiErrorWarningContract() { Message = "Parameter 'blobUrl' is required to be present and a valid uri." });
+                        return outRecord;
+                    }
+
+                    CloudBlockBlob blob = new CloudBlockBlob(new Uri(blobUrl + sasToken));
                     byte[] decryptedFileData;
                     using (var np = new MemoryStream())
                     {
                         blob.DownloadToStream(np, null, options, null);
                         decryptedFileData = np.ToArray();
                     }
-                    var decryptedFileReference = new FileReference()
+                    FileReference decryptedFileReference = new FileReference()
                     {
                         data = Convert.ToBase64String(decryptedFileData)
                     };
