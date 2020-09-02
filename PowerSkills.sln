@@ -63,7 +63,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetFileExtension", "Utils\G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomVision", "Vision\CustomVision\CustomVision.csproj", "{5A80C258-BD0F-44AC-AB79-5FD7AEC910F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnlockDocument", "Utils\UnlockDocument\UnlockDocument.csproj", "{628F60DB-703B-44EC-B924-502733BCD10F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DecryptBlobFile", "Utils\DecryptBlobFile\DecryptBlobFile.csproj", "{628F60DB-703B-44EC-B924-502733BCD10F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

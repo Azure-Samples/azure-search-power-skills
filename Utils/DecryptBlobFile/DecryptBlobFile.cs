@@ -17,17 +17,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace AzureCognitiveSearch.PowerSkills.Utils.UnlockDocument
+namespace AzureCognitiveSearch.PowerSkills.Utils.DecryptBlobFile
 {
-    public static class UnlockDocument
+    public static class DecryptBlobFile
     {
-        [FunctionName("unlock-document")]
-        public static IActionResult RunUnlockDocument(
+        [FunctionName("decrypt-blob-file")]
+        public static IActionResult RunDecryptBlobFile(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log,
             ExecutionContext executionContext)
         {
-            log.LogInformation("Unlock Document Custom Skill: C# HTTP trigger function processed a request.");
+            log.LogInformation("DecryptBlobFile Custom Skill: C# HTTP trigger function processed a request.");
 
             string skillName = executionContext.FunctionName;
             IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
@@ -45,8 +45,8 @@ namespace AzureCognitiveSearch.PowerSkills.Utils.UnlockDocument
             // Set up access to blob storage account where the file lives and is encrypted
             // Requires that the Azure Function has application settings for storageAccountName and storageAccountKey
             StorageCredentials creds = new StorageCredentials(
-                GetAppSetting("storageAccountName"),
-                GetAppSetting("storageAccountKey")
+                Environment.GetEnvironmentVariable("storageAccountName", EnvironmentVariableTarget.Process),
+                Environment.GetEnvironmentVariable("storageAccountKey", EnvironmentVariableTarget.Process)
             );
             CloudStorageAccount account = new CloudStorageAccount(creds, useHttps: true);
             CloudBlobClient client = account.CreateCloudBlobClient();
@@ -57,29 +57,23 @@ namespace AzureCognitiveSearch.PowerSkills.Utils.UnlockDocument
                 (inRecord, outRecord) =>
                 {
                     string blobPath = (string)inRecord.Data["metadata_storage_path"];
-                    log.LogInformation(blobPath);
                     var blob = client.GetBlobReferenceFromServer(new Uri(blobPath));
-                    byte[] unlockedFileData;
+                    byte[] decryptedFileData;
                     using (var np = new MemoryStream())
                     {
                         blob.DownloadToStream(np, null, options, null);
-                        unlockedFileData = np.ToArray();
+                        decryptedFileData = np.ToArray();
                     }
-                    var unlockedFileReference = new FileReference()
+                    var decryptedFileReference = new FileReference()
                     {
-                        data = Convert.ToBase64String(unlockedFileData)
+                        data = Convert.ToBase64String(decryptedFileData)
                     };
-                    JObject jObject = JObject.FromObject(unlockedFileReference);
+                    JObject jObject = JObject.FromObject(decryptedFileReference);
                     jObject["$type"] = "file";
-                    outRecord.Data["unlocked_file_data"] = jObject;
+                    outRecord.Data["decrypted_file_data"] = jObject;
                     return outRecord;
                 });
             return new OkObjectResult(response);
-        }
-
-        private static string GetAppSetting(string key)
-        {
-            return Environment.GetEnvironmentVariable(key, EnvironmentVariableTarget.Process);
         }
     }
 }
