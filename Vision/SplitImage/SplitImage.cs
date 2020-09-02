@@ -15,7 +15,6 @@ using System.Net;
 using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Web;
 using System.Collections.Specialized;

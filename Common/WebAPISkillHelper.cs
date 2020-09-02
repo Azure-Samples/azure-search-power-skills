@@ -129,10 +129,11 @@ namespace AzureCognitiveSearch.PowerSkills.Common
                     {
                         return Array.Empty<T>();
                     }
-                    return resultsToken
-                        .Children()
-                        .Select(token => token.ToObject<T>())
-                        .ToList();
+                    return resultsToken switch
+                    {
+                        JArray array => array.Children().Select(token => token.ToObject<T>()).ToList(),
+                        _ => new T[] { resultsToken.ToObject<T>() }
+                    };
                 }
             }
         }

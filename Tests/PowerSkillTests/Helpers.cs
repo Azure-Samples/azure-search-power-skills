@@ -110,7 +110,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests
         }
 
         public static T GetProperty<T>(this object obj, string propertyName) where T : class
-            => obj.GetType().GetProperty(propertyName).GetValue(obj, null) as T;
+            => obj?.GetType()?.GetProperty(propertyName)?.GetValue(obj, null) as T;
 
         public static void AssertJsonEquals(string expectedJson, string actualJson, string message = null) =>
             AssertJsonEquals(JToken.Parse(expectedJson), JToken.Parse(actualJson), message);
