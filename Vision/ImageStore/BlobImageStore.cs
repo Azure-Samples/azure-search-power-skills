@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.  
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.  
 
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 using System;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace AzureCognitiveSearch.PowerSkills.Vision.ImageStore

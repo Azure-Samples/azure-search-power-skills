@@ -16,7 +16,7 @@ namespace AzureCognitiveSearch.PowerSkills.Geo.GeoPointFromName
 {
     public static class GeoPointFromName
     {
-        private static readonly string azureMapsUri = "https://atlas.microsoft.com/search/fuzzy/json";
+        private static readonly string azureMapsUri = "http://dev.virtualearth.net/REST/v1/Locations";
         private static readonly string azureMapsKeySetting = "AZUREMAPS_APP_KEY";
 
         [FunctionName("geo-point-from-name")]
@@ -34,23 +34,23 @@ namespace AzureCognitiveSearch.PowerSkills.Geo.GeoPointFromName
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
 
-            string azureMapsKey = Environment.GetEnvironmentVariable(azureMapsKeySetting, EnvironmentVariableTarget.Process);
+            string azureMapsKey = Environment.GetEnvironmentVariable(azureMapsKeySetting, EnvironmentVariableTarget.Process) ?? "";
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {
                     var address = inRecord.Data["address"] as string;
                     string uri = azureMapsUri
-                        + "?api-version=1.0&query=" + Uri.EscapeDataString(address)
-                        + "&subscription-key=" + Uri.EscapeDataString(azureMapsKey);
+                        + "?q=" + Uri.EscapeDataString(address)
+                        + "&key=" + Uri.EscapeDataString(azureMapsKey);
 
                     IEnumerable<Geography> geographies =
-                        await WebApiSkillHelpers.FetchAsync<Geography>(uri, "results");
+                        await WebApiSkillHelpers.FetchAsync<Geography>(uri, "resourceSets..resources..point");
 
                     if (geographies.FirstOrDefault() is Geography mainGeoPoint)
                     {
                         outRecord.Data["mainGeoPoint"] = new {
                             Type = "Point",
-                            Coordinates = new double[] { mainGeoPoint.Position.Lon, mainGeoPoint.Position.Lat }
+                            Coordinates = new double[] { mainGeoPoint.Coordinates[0], mainGeoPoint.Coordinates[1] }
                         };
                     }
                     outRecord.Data["results"] = geographies;
