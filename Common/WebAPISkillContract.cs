@@ -33,4 +33,9 @@ namespace AzureCognitiveSearch.PowerSkills.Common
     {
         public string Message { get; set; }
     }
+
+    public class FileReference
+    {
+        public string data { get; set; }
+    }
 }

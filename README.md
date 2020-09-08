@@ -26,6 +26,7 @@ This project provides the following custom skills:
 * [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
 * [**P&ID Parser**](Vision/PID/README.md): Extracts equipment tags and text blocks from piping and instrumentation diagrams
 * [**GetFileExtension**](Utils/GetFileExtension/README.md): returns the filename and extension as separate values allowing you to filter on document type.
+* [**DecryptBlobFile**](Utils/DecryptBlobFile/README.md): downloads, decrypts and returns a file that was previously encrypted and stored in Azure Blob Storage.
 
 ## Getting Started
 
