@@ -47,6 +47,9 @@
       "type": "Microsoft.Web/sites",
       "kind": "functionapp",
       "location": "[resourceGroup().location]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount'))]"
       ],
