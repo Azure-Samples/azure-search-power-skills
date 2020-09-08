@@ -1,23 +1,21 @@
 // Copyright (c) Microsoft. All rights reserved.  
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.  
 
-using System.Threading.Tasks;
+using AzureCognitiveSearch.PowerSkills.Common;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using AzureCognitiveSearch.PowerSkills.Common;
-using System;
 using Newtonsoft.Json.Linq;
-using System.Net;
-using System.IO;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using System.Web;
-using System.Collections.Specialized;
+using SixLabors.ImageSharp.Processing;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 {
@@ -69,7 +67,7 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
 
                     if (string.IsNullOrWhiteSpace(imageUrl))
                     {
-                        outRecord.Errors.Add(new WebApiErrorWarningContract() { Message = "Parameter 'imageUrl' is required to be present and a valid uri." });
+                        outRecord.Errors.Add(new WebApiErrorWarningContract() { Message = $"Parameter '{nameof(imageUrl)}' is required to be present and a valid uri." });
                         return outRecord;
                     }
 
@@ -79,7 +77,7 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
                     {
                         byte[] fileData = executionContext.FunctionName == "unitTestFunction" 
                                             ? fileData = File.ReadAllBytes(imageUrl) // this is a unit test, find the file locally
-                                            : fileData = client.DownloadData(new Uri(CombineSasTokenWithUri(imageUrl, sasToken))); // download the file from remote server
+                                            : fileData = client.DownloadData(new Uri(WebApiSkillHelpers.CombineSasTokenWithUri(imageUrl, sasToken))); // download the file from remote server
 
                         using (var stream = new MemoryStream(fileData))
                         {
@@ -119,27 +117,6 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.SplitImage
                 });
 
             return new OkObjectResult(response);
-        }
-
-        public static string CombineSasTokenWithUri(string imageUri, string sasToken)
-        {
-            // if this data is coming from blob indexer's metadata_storage_path and metadata_storage_sas_token
-            // then we can simply concat them. But lets use uri builder to be safe and support missing characters
-
-            UriBuilder uriBuilder = new UriBuilder(imageUri);
-            NameValueCollection sasParameters = HttpUtility.ParseQueryString(sasToken ?? string.Empty);
-            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-
-            foreach(var key in sasParameters.AllKeys)
-            {
-                // override this url parameter if it already exists
-                query[key] = sasParameters[key];
-            }
-
-            uriBuilder.Query = query.ToString();
-            var finalUrl = uriBuilder.ToString();
-
-            return finalUrl;
         }
 
         public static byte[] CropImage(

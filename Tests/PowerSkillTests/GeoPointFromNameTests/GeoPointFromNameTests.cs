@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.  
 
 using AzureCognitiveSearch.PowerSkills.Common;
+using AzureCognitiveSearch.PowerSkills.Geo.GeoPointFromName;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -20,17 +21,22 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.GeoPointFromNameTests
             WebApiSkillHelpers.TestMode = true;
             WebApiSkillHelpers.TestWww = req =>
             {
-                string query = req.RequestUri.ParseQueryString()["query"];
+                string query = req.RequestUri.ParseQueryString()["q"];
                 JObject coordinates = JObject.Parse(query);
                 object responseBody = new
                 {
-                    results = new object[] {
+                    resourceSets = new object[] {
                         new
                         {
-                            position = new
+                            resources = new object[]
                             {
-                                lat = coordinates["X"],
-                                lon = coordinates["Y"]
+                                new 
+                                {
+                                    point = new Geography()
+                                    {
+                                        Coordinates = new double[] { (double)coordinates["Y"], (double)coordinates["X"] }
+                                    }
+                                }
                             }
                         }
                     }

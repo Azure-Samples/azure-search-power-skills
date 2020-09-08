@@ -50,11 +50,11 @@ namespace AzureCognitiveSearch.PowerSkills.Utils.DecryptBlobFile
 
                     if (string.IsNullOrWhiteSpace(blobUrl))
                     {
-                        outRecord.Errors.Add(new WebApiErrorWarningContract() { Message = "Parameter 'blobUrl' is required to be present and a valid uri." });
+                        outRecord.Errors.Add(new WebApiErrorWarningContract() { Message = $"Parameter '{nameof(blobUrl)}' is required to be present and a valid uri." });
                         return outRecord;
                     }
 
-                    CloudBlockBlob blob = new CloudBlockBlob(new Uri(blobUrl + sasToken));
+                    CloudBlockBlob blob = new CloudBlockBlob(new Uri(WebApiSkillHelpers.CombineSasTokenWithUri(blobUrl, sasToken)));
                     byte[] decryptedFileData;
                     using (var np = new MemoryStream())
                     {

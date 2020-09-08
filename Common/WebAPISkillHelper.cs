@@ -6,11 +6,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace AzureCognitiveSearch.PowerSkills.Common
 {
@@ -136,6 +138,27 @@ namespace AzureCognitiveSearch.PowerSkills.Common
                     };
                 }
             }
+        }
+
+        public static string CombineSasTokenWithUri(string uri, string sasToken)
+        {
+            // if this data is coming from blob indexer's metadata_storage_path and metadata_storage_sas_token
+            // then we can simply concat them. But lets use uri builder to be safe and support missing characters
+
+            UriBuilder uriBuilder = new UriBuilder(uri);
+            NameValueCollection sasParameters = HttpUtility.ParseQueryString(sasToken ?? string.Empty);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+            foreach (var key in sasParameters.AllKeys)
+            {
+                // override this url parameter if it already exists
+                query[key] = sasParameters[key];
+            }
+
+            uriBuilder.Query = query.ToString();
+            var finalUrl = uriBuilder.ToString();
+
+            return finalUrl;
         }
     }
 }

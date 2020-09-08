@@ -1,22 +1,22 @@
 // Copyright (c) Microsoft. All rights reserved.  
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.  
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net;
-using System.Threading.Tasks;
+using AzureCognitiveSearch.PowerSkills.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using AzureCognitiveSearch.PowerSkills.Common;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
 {
@@ -56,9 +56,10 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
                 async (inRecord, outRecord) => {
                     var formUrl = inRecord.Data["formUrl"] as string;
                     var formSasToken = inRecord.Data["formSasToken"] as string;
+                    string formUri = WebApiSkillHelpers.CombineSasTokenWithUri(formUrl, formSasToken);
 
                     // Create the job
-                    string jobId = await GetJobId(formsRecognizerEndpointUrl, formUrl + formSasToken, modelId, formsRecognizerApiKey);
+                    string jobId = await GetJobId(formsRecognizerEndpointUrl, formUri, modelId, formsRecognizerApiKey);
 
                     // Get the results
                     for (int attempt = 0; attempt < maxAttempts; attempt++)
