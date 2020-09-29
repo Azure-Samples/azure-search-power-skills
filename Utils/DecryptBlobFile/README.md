@@ -17,6 +17,8 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 This custom skill downloads and decrypts a file that was encrypted in Azure Blob Storage and returns it back to Azure Cognitive Search to be processed and indexed. It is meant to be used in combination with the built-in [DocumentExtractionSkill](https://docs.microsoft.com/azure/search/cognitive-search-skill-document-extraction) to allow you to index encrypted files without needing to worry about them being stored unecrypted at rest. For more details on how to encrypt files in blob storage, [see this tutorial](https://docs.microsoft.com/azure/storage/blobs/storage-encrypt-decrypt-blobs-key-vault).
 
+A [full example of this skill is available in the Azure Cognitive Seach documentation](https://docs.microsoft.com/azure/search/search-howto-index-encrypted-blobs).
+
 ## Requirements
 
 In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires key get access to the [Azure Key Vault](https://azure.microsoft.com/services/key-vault/) resource where the key that was used to encrypt the files stored in Azure Blob Storage lives. This access should be granted by [setting an access policy on the Key Vault](https://docs.microsoft.com/azure/key-vault/general/assign-access-policy-portal) with the principal being the Azure Function instance that the skill is deployed to.
