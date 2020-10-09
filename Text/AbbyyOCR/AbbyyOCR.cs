@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft. All rights reserved.  
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.  
+
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -25,16 +28,18 @@ namespace AbbyyOCR
 {
     public static class AbbyyOCR
     {
-        private const string ApplicationId = @"[Enter ABBYY Application ID]";
-        private const string Password = @"[Enter ABBYY OCR Password]";
-        private const string ServiceUrl = "[Enter ABBYY Service URL such as https://cloud-westus.ocrsdk.com]";
+		private static readonly string ApplicationId = @"[Enter ABBYY Application ID]";
+		private static readonly string Password = @"[Enter ABBYY OCR Password]";
+		private static readonly string ServiceUrl = "[Enter ABBYY Service URL such as https://cloud-westus.ocrsdk.com]";
 
         private static int _retryCount = 3;
         private static int _delayBetweenRetriesInSeconds = 3;
         private static string _httpClientName = "OCR_HTTP_CLIENT";
 
-		private static ConcurrentBag<WebApiResponseRecord> bag = new ConcurrentBag<WebApiResponseRecord>();
+		private static readonly string firstFilePath = "processImage.jpg";
+		private static readonly string secondFilePath = "processDocument.jpg";
 
+		private static ConcurrentBag<WebApiResponseRecord> bag = new ConcurrentBag<WebApiResponseRecord>();
 
 		private static readonly AuthInfo AuthInfo = new AuthInfo
         {
@@ -78,7 +83,9 @@ namespace AbbyyOCR
 
 				// Apply all the records from the concurrent bag
 				foreach (var record in bag)
+				{
 					response.Values.Add(record);
+				}
 			}
 
             return new OkObjectResult(response);
@@ -92,28 +99,35 @@ namespace AbbyyOCR
 			record.Data.TryGetValue("formUrl", out object imgFile);
 			record.Data.TryGetValue("formSasToken", out object sasToken);
 			string imgFileWithSaS = imgFile.ToString() + sasToken.ToString();
-			string fileType = imgFile.ToString().Substring(imgFile.ToString().LastIndexOf("."));
-			string localFile = Path.GetTempPath() + "\\" + "temp_" + idx.ToString() + fileType;
-			using (var client = new WebClient())
+			string fileType = Path.GetExtension(imgFile.ToString());
+			string localFile = Path.Combine(Path.GetTempPath(), "temp_" + idx.ToString() + fileType);
+
+			try
 			{
-				client.DownloadFile(imgFileWithSaS, localFile);
+				using (var client = new WebClient())
+				{
+					client.DownloadFile(imgFileWithSaS, localFile);
+				}
+
+				// Process image 
+				// You could also call ProcessDocumentAsync or any other processing method declared below
+				var resultUrls = await ProcessImageAsync(ocrClient, localFile);
+
+				//Get results - the first doc is a docx, second is a text file
+				using (var client = new WebClient())
+				{
+					if (resultUrls.Count >= 1)
+					{
+						waRecord.Data.Add("content", client.DownloadString(resultUrls[1].ToString()));
+					}
+				}
 			}
-
-			// Process image 
-			// You could also call ProcessDocumentAsync or any other processing method declared below
-			var resultUrls = await ProcessImageAsync(ocrClient, localFile);
-
-			//Get results - the first doc is a docx, second is a text file
-			using (var client = new WebClient())
+			finally
 			{
-				waRecord.Data.Add("content", client.DownloadString(resultUrls[1].ToString()));
+				File.Delete(localFile);
+				waRecord.RecordId = record.RecordId;
+				bag.Add(waRecord);
 			}
-
-			File.Delete(Path.GetTempPath() + "\\" + "temp_" + idx.ToString() + fileType);
-
-			waRecord.RecordId = record.RecordId;
-
-			bag.Add(waRecord);
 		}
 
 		private static IOcrClient GetOcrClient()
@@ -215,8 +229,6 @@ namespace AbbyyOCR
 		private static async Task<Guid> UploadFilesAsync(IOcrClient ocrClient)
 		{
 			ImageSubmittingParams submitParams;
-			var firstFilePath = "processImage.jpg";
-			var secondFilePath = "processDocument.jpg";
 
 			// First file
 			using (var fileStream = new FileStream(firstFilePath, FileMode.Open))
@@ -252,6 +264,5 @@ namespace AbbyyOCR
 		{
 			(_serviceProvider as IDisposable)?.Dispose();
 		}
-
 	}
 }
