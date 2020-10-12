@@ -6,7 +6,7 @@ products:
 - azure-cognitive-search
 - ABBYY OCR
 name: ABBYY OCR Custom Skill for Azure Cognitive Search
-description: This custom skill leverages [ABBYY Cloud OCR](https://www.ocrsdk.com/) to extract text from images finds user defined entities in given texts.
+description: This custom skill leverages [ABBYY Cloud OCR](https://www.ocrsdk.com/) to extract text from images  and finds user defined entities in given texts.
 ---
 
 # ABBYY OCR Custom Skill for Azure Cognitive Search
@@ -29,12 +29,13 @@ In the Solution Explorer, Right Click on Text and Choose Add -> Existing Project
 
 Locate and choose AbbyyOCR.csproj within the \Text\ABBYOCR directory and add it.  
 
-Open AbbyyOCR.cs and update the following lines:
+Open AbbyyOCR.cs and set the environment variables for the following lines:
 
-```code
-        private const string ApplicationId = @"[Enter ABBYY Application ID]";
-        private const string Password = @"[Enter ABBYY OCR Password]";
-        private const string ServiceUrl = "[Enter ABBYY Service URL such as https://cloud-westus.ocrsdk.com]";
+```csharp
+        private static readonly string ApplicationId = @"[Enter ABBYY Application ID]";
+		private static readonly string Password = @"[Enter ABBYY OCR Password]";
+		private static readonly string ServiceUrl = "[Enter ABBYY Service URL such as https://cloud-westus.ocrsdk.com]";
+
 ```
 
 This code assumes that the images will be coming in, in either English, Arabic or Hebrew.  If you wish to change this, update the below code in the ProcessImageAsync function. You can find the list of [supported languages here](https://www.ocrsdk.com/documentation/specifications/recognition-languages/).
@@ -46,7 +47,6 @@ var imageParams = new ImageProcessingParams
      Language = "English,Arabic,Hebrew",
 };
 ```
-
 
 # Test
 
@@ -94,7 +94,6 @@ The output will look similar to this:
             "warnings": []
         },
         {
-                ...
         }
     ]
 }
@@ -110,7 +109,7 @@ Test this once again in Postman before deploying to Azure Cognitive Search.
 
 # Example Skillset
 
-NOTE: You may wish to adjust the degree of parallelism (degreeOfParallelism) up to 10.
+NOTE: You may wish to adjust the degree of parallelism (degreeOfParallelism) up to 10 and will want to update [SET_CODE] with our ABBYY OCR code.
 
 ```json
 {
@@ -122,7 +121,7 @@ NOTE: You may wish to adjust the degree of parallelism (degreeOfParallelism) up 
             "name": "#1",
             "description": "Convert Image to Text",
             "context": "/document",
-            "uri": "https://my-abbyy-ocr.azurewebsites.net/api/AbbyyOCR?code=/gECNMreXdczJhGZKhziNiMnWO9hr123123123123==",
+            "uri": "https://my-abbyy-ocr.azurewebsites.net/api/AbbyyOCR?code=/[SET_CODE]",
             "httpMethod": "POST",
             "timeout": "PT30S",
             "batchSize": 4,
