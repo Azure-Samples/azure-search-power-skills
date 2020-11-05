@@ -20,7 +20,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup.Models
 
             if (fileName.EndsWith(".json"))
             {
-                string json = File.ReadAllText(Path.Join(actual_root, fileName));
+                string json = File.ReadAllText(Path.Combine(actual_root, fileName));
                 var entities = JsonConvert.DeserializeObject<List<CustomEntity>>(json);
                 return new CustomEntitiesDefinition(entities);
             }
@@ -28,7 +28,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.CustomEntityLookup.Models
             {
                 return new CustomEntitiesDefinition(
                     targetCustomEntities: 
-                        File.ReadAllLines(Path.Join(actual_root, fileName))
+                        File.ReadAllLines(Path.Combine(actual_root, fileName))
                             .SelectMany(line => line.Split(","))
                             .Where(line => !string.IsNullOrEmpty(line))
                             .Select(s => new CustomEntity(s, null, null, null, null, null, null, null, null, null, null, null))
