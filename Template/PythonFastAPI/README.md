@@ -2,20 +2,15 @@
 
 Sample PowerSkill API
 
-## Solution Flow
-
-
 ## Environment variables
 
 The following sample environment variables need to be set for the process to work:
 
-```bash
-       
-                "TR_REGION": "westeurope", # Translator region
-                "DEBUG": "True", # Enable process debugging
-                "FLASK_DEBUG": "false", # Flask native debugging keep False
-                "FLASK_ENV": "development", # Toggle between development and production
-
+```bash       
+"TR_REGION": "westeurope", # Translator region
+"DEBUG": "True", # Enable process debugging
+"FLASK_DEBUG": "false", # Flask native debugging keep False
+"FLASK_ENV": "development", # Toggle between development and production
 ```
 
 ## API Request/Response
@@ -42,26 +37,16 @@ The following sample environment variables need to be set for the process to wor
 
 ```json
 {
-    "values" :
-    [
-      {
-        "recordId": "100003490593495",
-        "correlationId": "123233434334334",
-        "batch": "4535346534654654",
-        "errors" : "",
-        "data" : {
-          "entities": [
-            {
-              "modelName" : "[modelname - e.g 1]",
-              "language": "AR",
-              "text" : [
-                 "ريك أستلي" ,"لورانس"
-                ]
-              }
-          ]
-       }
-    }
-  ]
+    "values": [
+        {
+            "recordId": "100003490593495",
+            "correlationId": "123233434334334",
+            "batch": "4535346534654654",
+            "errors": "",
+            "data": {},
+            "warnings": ""
+        }
+    ]
 }
 ```
 

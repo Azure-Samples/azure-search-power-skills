@@ -1,19 +1,21 @@
-from typing import Dict, FrozenSet, List, Optional, Sequence, Set, Tuple, Union
-
-from fastapi import FastAPI, Request, Security, Depends, HTTPException
-from fastapi.security.api_key import APIKeyHeader, APIKey
-from pydantic import BaseModel
-from dotenv import load_dotenv
-from powerskill import powerskill
 import os
-from starlette.status import HTTP_403_FORBIDDEN
+from typing import Dict, List
 
+import uvicorn
+from dotenv import load_dotenv
+from fastapi import FastAPI, Security, Depends, HTTPException
+from fastapi.security.api_key import APIKeyHeader, APIKey
+from powerskill import extractor
+from pydantic import BaseModel
+from starlette.status import HTTP_403_FORBIDDEN
 
 load_dotenv()
 app = FastAPI()
 
+
 class Values(BaseModel):
-    values:List = []
+    values: List = []
+
 
 class Value(Values):
     recordId: str
@@ -33,7 +35,7 @@ async def get_api_key(
         return api_key_header
     else:
         raise HTTPException(
-            status_code=HTTP_403_FORBIDDEN, detail="CogSvc Key not present"
+            status_code = HTTP_403_FORBIDDEN, detail = "CogSvc Key not present"
         )
 
 
@@ -43,4 +45,9 @@ def extract(values: Values, api_key: APIKey = Depends(get_api_key)):
     if not body:
         return 'Expected text within body of request. No text found.', status.HTTP_400_BAD_REQUEST
     else:
-        return powerskill.go_extract(body)
+        return extractor.go_extract(body)
+
+
+# Remove these two lines below for non-debug/production mode
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=5000)
