@@ -1,0 +1,43 @@
+parameters:
+  - name: pipelinePublishScript
+    type: string
+  - name: varList
+    type: object
+    default: []
+
+steps:
+
+
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.8'
+    addToPath: true
+    architecture: 'x64'
+  displayName: 'Use Python 3.8'
+
+
+- task: CmdLine@2
+  inputs:
+    workingDirectory: $(Build.SourcesDirectory)
+    script: |
+      pip install azureml-sdk[notebooks,explain,contrib]
+      pip install -r $(Build.SourcesDirectory)/.azure-pipelines/mlops_requirements.txt
+  displayName: 'Install dependencies for MLOps'
+
+
+- task: CmdLine@2
+  inputs:
+    workingDirectory: $(Build.SourcesDirectory)
+    script: ${{ parameters.pipelinePublishScript }}
+  env:
+    SCRIPT_FOLDER: '$(Build.SourcesDirectory)'
+    SP_APP_ID: '$(SP_APP_ID)'
+    SP_APP_SECRET: '$(SP_APP_SECRET)'
+    SUBSCRIPTION_ID: '$(SUBSCRIPTION_ID)'
+    TENANT_ID: '$(TENANT_ID)'
+    STORAGE_KEY: '$(STORAGE_KEY)'
+    STORAGE_NAME: '$(STORAGE_NAME)'
+    ${{ each var in parameters.varList }}:
+      ${{ var }}: '$(${{ var }})'
+  displayName: 'Execute Python Script'
+  enabled: 'true'

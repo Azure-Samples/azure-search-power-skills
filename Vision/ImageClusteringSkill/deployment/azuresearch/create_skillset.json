@@ -1,0 +1,33 @@
+{
+    "description": "Cluster images for labelling",
+    "skills": [
+        {
+            "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+            "description": "A custom skill that can cluster and auto label images",
+            "uri": "https://[yourwebapp]/api/extraction",
+            "timeout": "PT160S",
+            "batchSize": 1,
+            "context": "/document/normalized_images/*",
+            "httpHeaders": {
+                "Ocp-Apim-Subscription-Key": "OneWeek"
+            },
+            "httpMethod": "POST",
+            "inputs": [
+			    {
+			        "name": "images",
+			        "source": "/document/normalized_images/*"
+			    }
+            ],
+            "outputs": [
+                {
+                    "name": "label"
+                }
+            ]
+        }
+    ],
+    "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "cogsvc",
+        "key": ""
+    }
+}
