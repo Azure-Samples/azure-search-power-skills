@@ -14,6 +14,7 @@ Here are a few suggestions of simple contributions to get you started:
 This project provides the following custom skills:
 
 * [**HelloWorld**](Template/HelloWorld/README.md): a minimal skill that can be used as a starting point or template for your own skills.
+* [**PythonFastAPI**](Template/PythonFastAPI/README.md): a production web server and api scaffold for a python power skill 
 * [**GeoPointFromName**](Geo/GeoPointFromName/README.md): retrieves coordinates from place names and addresses.
 * [**BingEntitySearch**](Text/BingEntitySearch/README.md): finds rich and structured information about public figures, locations, or organizations.
 * [**AcronymLinker**](Text/AcronymLinker/README.md): provides definitions for known acronyms.
@@ -54,7 +55,8 @@ Some functions may require setting environment variables or configuration entrie
 4. Hit F5
 5. Experiment with calling the function using Postman
 
-You can also create your own skills using [our Hello World template skill](Template/HelloWorld/README.md) as a starting point.
+You can also create your own skills using [our Hello World template skill](Template/HelloWorld/README.md) as a starting point 
+or if you are using python [our FastAPI template skill](Template/PythonFastAPI/README.md).
 
 ## Resources
 
