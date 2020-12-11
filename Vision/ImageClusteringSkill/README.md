@@ -24,17 +24,12 @@ You will need to train a clustering model with your images before you can use th
 
 ![clustering process](images/imageclustering.png)
  
- 1) The first step in the process is to train the DBSCAN model on your images. See
- mlops/clustering_pipeline for an [Azure Machine Learning](https://azure.microsoft.com/en-us/services/machine-learning/)
- pipeline for training.
- 
- 2) As with any machine learning solution, inspecting the clusters generated, normalising and optimising the images
- for the clusters desired will be required. 
- 
- 3) When the clusters generated are satisfactory run the cell "Generate the label file for your clusters"
- to create a dictionary with the label(s) you would like to assign to the cluster. These labels are what will
- be indexed to retrieve the images.
- 
- 4) Deploy the skill and add the endpoint to your [skillset file](deployment/azuresearch/create_skillset.json)
- 
- 5) Run your indexer [deployment/azuresearch/create_indexer.json]
+1) The first step in the process is to extract [VGG16](https://www.tensorflow.org/api_docs/python/tf/keras/applications/VGG16) embeddings from the images and train the [DBSCAN](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html) model on the extracted features.  
+   * To better understand the algorithm itself, please use [explanatory notebook](notebooks/1-detect-similar-images.ipynb), it contains a local example of the process.
+   * To leverage the power of [Azure Machine Learning](https://azure.microsoft.com/en-us/services/machine-learning/), train a model on a cluster and save trained model into registry to make it available for your custom skill, you can either use [training notebook](notebooks/2-aml-training-pipeline.ipynb) or proceed with setting up the full [MLOps process](https://github.com/microsoft/MLOpsPython/tree/master) using [clustering pipeline](mlops/clustering_pipeline).
+2) As with any (especially, unsupervised) machine learning solution, inspecting the clusters generated and playing with the algorithm hyperparameters will be required.
+   * To explore generated clusters and generate labels dictionary required for the custom skill, you can use [labeling notebook](notebooks/3-label-clusters.ipynb). These labels are what will be indexed to retrieve the images.
+   * Clusters report is also available under the registered model on the Azure Machine Learning Portal.  
+3) Deploy the skill and add the endpoint to your [skillset file](deployment/azuresearch/create_skillset.json)
+4) Run your indexer [deployment/azuresearch/create_indexer.json]
+5) Investigate your indexed data and compare the effect of using Image Clustering Power Skill and Computer Vision Service using [Azure Search notebook](notebooks/4-compare-computer-vision-and-clustering.ipynb).  
