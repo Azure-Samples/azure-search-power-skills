@@ -14,6 +14,8 @@ endpoint = os.environ["fr_endpoint"]
 key = os.environ["fr_key"]
 model_id = os.environ["model_id"]
 
+form_recognizer_client = FormRecognizerClient(endpoint, AzureKeyCredential(key))
+
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
@@ -66,6 +68,22 @@ def transform_value(value, mappings):
         formUrl = data['formUrl']
         formSasToken = data ['formSasToken']
 
+        formUrl = formUrl + formSasToken
+
+        poller = form_recognizer_client.begin_recognize_custom_forms_from_url(
+        model_id=model_id, form_url=formUrl)
+        result = poller.result()
+        recognized = {}
+        for recognized_form in result:
+            print("Form type: {}".format(recognized_form.form_type))
+            for name, field in recognized_form.fields.items():
+                label = field.label_data.text if field.label_data else name
+                for (k, v) in mappings.items(): 
+                    if(label == k):
+                        recognized[label] =  field.value
+                
+
+
     except AssertionError  as error:
         return (
             {
@@ -78,26 +96,6 @@ def transform_value(value, mappings):
     return ({
             "recordId": recordId,   
             "data": {
-                "slices": mappings
+                "recognized": recognized
             }
             })
-def recognize_form(doc_url, doc_token):
-    model_id = "<your custom model id>"
-
-    poller = form_recognizer_client.begin_recognize_custom_forms_from_url(
-        model_id=model_id, form_url=formUrl)
-        result = poller.result()
-        output = {}
-        for recognized_form in result:
-            #print("Form type: {}".format(recognized_form.form_type))
-            for name, field in recognized_form.fields.items():
-                for (k, v) in mappings.items(): 
-                    if(name == k):
-                        output[v] = field.value
-                print("Field '{}' has label '{}' with value '{}' and a confidence score of {}".format(
-                    name,
-                    field.label_data.text if field.label_data else name,
-                    field.value,
-                    field.confidence
-                ))
-    
