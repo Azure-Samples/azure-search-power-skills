@@ -21,6 +21,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     try:
         body = json.dumps(req.get_json())
+        if endpoint is None or key is None or model_id is None:
+            return func.HttpResponse(
+             "Skill configuration error. Endpoint, key and model_id required.",
+             status_code=400
+        )
+
     except ValueError:
         return func.HttpResponse(
              "Invalid body",
@@ -60,7 +66,6 @@ def transform_value(value, mappings):
     except AssertionError  as error:
         return None
 
-    # Validate the inputs
     try:         
         assert ('data' in value), "'data' field is required."
         data = value['data']        
@@ -80,9 +85,7 @@ def transform_value(value, mappings):
                 label = field.label_data.text if field.label_data else name
                 for (k, v) in mappings.items(): 
                     if(label == k):
-                        recognized[label] =  field.value
-                
-
+                        recognized[label] =  field.value 
 
     except AssertionError  as error:
         return (
@@ -90,6 +93,13 @@ def transform_value(value, mappings):
             "recordId": recordId,
             "errors": [ { "message": "Error:" + error.args[0] }   ]       
             })
+    except Exception as error:
+        return (
+            {
+            "recordId": recordId,
+            "errors": [ { "message": "Error:" + str(error) }   ]       
+            })
+
 
     
 

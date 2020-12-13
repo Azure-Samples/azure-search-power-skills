@@ -28,6 +28,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     try:
         body = json.dumps(req.get_json())
+        if endpoint is None or key is None:
+            return func.HttpResponse(
+             "Skill configuration error. Endpoint and key required.",
+             status_code=400
+        )
     except ValueError:
         return func.HttpResponse(
              "Invalid body",
@@ -73,31 +78,55 @@ def transform_value(value):
         form_url = data["formUrl"]  + data["formSasToken"]   
         print(form_url)
         poller = form_recognizer_client.begin_recognize_content_from_url(form_url)
-        page = poller.result()
-        cells = []
-        table = page[0].tables[0] # page 1, table 1
-        print("Table found on page {}:".format(table.page_number))
-        for cell in table.cells:
-            cells.append(
-                {
-                    "text": cell.text,
-                    "rowIndex": cell.row_index,
-                    "colIndex": cell.column_index,
-                    "confidence": cell.confidence
-                }
-            )
+        pages = poller.result()
+        
+        tables = []
+        if not pages:
+            print("No pages found in doc")
+        else:
+            for page in pages:
+                if not page.tables:
+                    print("No tables on page")
+                else:
+                    for table in page.tables:
+                        cells = []
+        
+                        print("Table found on page {}:".format(table.page_number))
+                        for cell in table.cells:
+                            cells.append(
+                                {
+                                    "text": cell.text,
+                                    "rowIndex": cell.row_index,
+                                    "colIndex": cell.column_index,
+                                    "confidence": cell.confidence,
+                                    "is_header": cell.is_header
+                                }
+                            )
+                        tables.append(
+                            {
+                                "page_number": table.page_number,
+                                "row_count": table.row_count,
+                                "column_count": table.column_count,
+                                "cells": cells
+                            }
+                        )
     except AssertionError  as error:
         return (
             {
             "recordId": recordId,
             "errors": [ { "message": "Error:" + error.args[0] }   ]       
             })
-
+    except Exception as error:
+        return (
+            {
+            "recordId": recordId,
+            "errors": [ { "message": "Error:" + str(error) }   ]       
+            })
     
 
     return ({
             "recordId": recordId,   
             "data": {
-                "table": cells
+                "tables": tables
             }
             })

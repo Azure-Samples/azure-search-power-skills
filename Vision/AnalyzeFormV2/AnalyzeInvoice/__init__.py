@@ -28,6 +28,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     try:
         body = json.dumps(req.get_json())
+        if endpoint is None or key is None:
+            return func.HttpResponse(
+             "Skill configuration error. Endpoint and key required.",
+             status_code=400
+        )
     except ValueError:
         return func.HttpResponse(
              "Invalid body",
@@ -74,6 +79,7 @@ def transform_value(value):
         print(form_url)
         poller = form_recognizer_client.begin_recognize_receipts_from_url(form_url)
         result = poller.result()
+        receipts = []
         items_list = []
         invoice = []
         for receipt in result:
@@ -100,6 +106,12 @@ def transform_value(value):
                                     "confidence": field.confidence
                                 }
                             )
+            receipts.append(
+                {
+                    "invoice": invoice,
+                    "lines": items_list
+                }
+            )
 
     except AssertionError  as error:
         return (
@@ -107,13 +119,17 @@ def transform_value(value):
             "recordId": recordId,
             "errors": [ { "message": "Error:" + error.args[0] }   ]       
             })
-
+    except Exception as error:
+        return (
+            {
+            "recordId": recordId,
+            "errors": [ { "message": "Error:" + str(error) }   ]       
+            })
     
 
     return ({
             "recordId": recordId,   
             "data": {
-                "invoice": invoice,
-                "items": items_list
+                "receipts": receipts
             }
             })
