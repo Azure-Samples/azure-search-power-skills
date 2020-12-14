@@ -77,41 +77,42 @@ def transform_value(value):
         print(data)
         form_url = data["formUrl"]  + data["formSasToken"]   
         print(form_url)
-        poller = form_recognizer_client.begin_recognize_receipts_from_url(form_url)
-        result = poller.result()
-        receipts = []
-        items_list = []
-        invoice = []
-        for receipt in result:
-            for name, field in receipt.fields.items():
-                if name == "Items":
-                    print("Receipt Items:")
-                    for idx, items in enumerate(field.value):
-                        print("...Item #{}".format(idx + 1))
-                        for item_name, item in items.value.items():
-                            items_list.append(
-                                {
-                                    "name": item_name,
-                                    "value": item.value,
-                                    "confidence": item.confidence
-                                }
-                            )
-                            print("......{}: {} has confidence {}".format(item_name, item.value, item.confidence))
-                else:
-                    print("{}: {} has confidence {}".format(name, field.value, field.confidence))
-                    invoice.append(
-                                {
-                                    "name": name,
-                                    "value": field.value,
-                                    "confidence": field.confidence
-                                }
-                            )
-            receipts.append(
-                {
-                    "invoice": invoice,
-                    "lines": items_list
-                }
-            )
+        poller = form_recognizer_client.begin_recognize_invoices_from_url(form_url)
+        invoices = poller.result()
+        invoiceResults = []
+        
+        for idx, invoice in enumerate(invoices):
+            invoiceResult = {}
+            vendor_name = invoice.fields.get("VendorName")
+            if vendor_name:
+                invoiceResult["VendorName"] = vendor_name.value
+            vendor_address = invoice.fields.get("VendorAddress")
+            if vendor_address:
+                invoiceResult["VendorAddress"] = vendor_address.value
+            customer_name = invoice.fields.get("CustomerName")
+            if customer_name:
+                customer_name = invoice.fields.get("CustomerName")
+            customer_address = invoice.fields.get("CustomerAddress")
+            if customer_address:
+                invoiceResult["CustomerAddress"] = customer_address.value
+            customer_address_recipient = invoice.fields.get("CustomerAddressRecipient")
+            if customer_address_recipient:
+                invoiceResult["CustomerAddressRecipient"] = customer_address_recipient.value
+            invoice_id = invoice.fields.get("InvoiceId")
+            if invoice_id:
+                invoiceResult["InvoiceId"] = invoice_id.value
+            invoice_date = invoice.fields.get("InvoiceDate")
+            if invoice_date:
+                invoiceResult["InvoiceDate"] = invoice_date.value
+            invoice_total = invoice.fields.get("InvoiceTotal")
+            if invoice_total:
+                invoiceResult["InvoiceTotal"] = invoice_total.value
+            due_date = invoice.fields.get("DueDate")
+            if due_date:
+                invoiceResult["DueDate"] = due_date.value
+            invoiceResults.append(invoiceResult)
+
+        
 
     except AssertionError  as error:
         return (
@@ -130,6 +131,6 @@ def transform_value(value):
     return ({
             "recordId": recordId,   
             "data": {
-                "receipts": receipts
+                "receipts": invoiceResults
             }
             })

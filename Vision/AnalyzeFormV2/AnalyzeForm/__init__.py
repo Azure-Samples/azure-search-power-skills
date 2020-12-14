@@ -32,7 +32,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
              "Invalid body",
              status_code=400
         )
-    
+    except KeyError:
+        return func.HttpResponse(
+             "Skill configuration error. Endpoint, key and model_id required.",
+             status_code=400
+        )
     if body:
         logging.info(body)
         result = compose_response(body)
