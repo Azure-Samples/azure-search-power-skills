@@ -154,6 +154,6 @@ def transform_value(value):
     return ({
             "recordId": recordId,   
             "data": {
-                "receipts": invoiceResults
+                "invoices": invoiceResults
             }
             })
