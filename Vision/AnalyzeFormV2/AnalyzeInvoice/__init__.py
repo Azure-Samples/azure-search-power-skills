@@ -83,34 +83,57 @@ def transform_value(value):
         
         for idx, invoice in enumerate(invoices):
             invoiceResult = {}
-            vendor_name = invoice.fields.get("VendorName")
-            if vendor_name:
-                invoiceResult["VendorName"] = vendor_name.value
-            vendor_address = invoice.fields.get("VendorAddress")
-            if vendor_address:
-                invoiceResult["VendorAddress"] = vendor_address.value
-            customer_name = invoice.fields.get("CustomerName")
-            if customer_name:
-                customer_name = invoice.fields.get("CustomerName")
+            
+            amount_due = invoice.fields.get("AmountDue")
+            if amount_due:
+                 invoiceResult["AmountDue"] = amount_due.value
+            billing_address = invoice.fields.get("BillingAddress")
+            if billing_address:
+                 invoiceResult["BillingAddress"] = billing_address.value
+            billing_address_recipient = invoice.fields.get("BillingAddressRecipient")
+            if billing_address_recipient:
+                 invoiceResult["BillingAddressRecipient"] = billing_address_recipient.value
+                
+            
+
             customer_address = invoice.fields.get("CustomerAddress")
             if customer_address:
                 invoiceResult["CustomerAddress"] = customer_address.value
             customer_address_recipient = invoice.fields.get("CustomerAddressRecipient")
             if customer_address_recipient:
                 invoiceResult["CustomerAddressRecipient"] = customer_address_recipient.value
-            invoice_id = invoice.fields.get("InvoiceId")
-            if invoice_id:
-                invoiceResult["InvoiceId"] = invoice_id.value
-            invoice_date = invoice.fields.get("InvoiceDate")
-            if invoice_date:
-                invoiceResult["InvoiceDate"] = invoice_date.value
-            invoice_total = invoice.fields.get("InvoiceTotal")
-            if invoice_total:
-                invoiceResult["InvoiceTotal"] = invoice_total.value
             due_date = invoice.fields.get("DueDate")
             if due_date:
                 invoiceResult["DueDate"] = due_date.value
+            invoice_date = invoice.fields.get("InvoiceDate")
+            if invoice_date:
+                invoiceResult["InvoiceDate"] = invoice_date.value
+            invoice_id = invoice.fields.get("InvoiceId")
+            if invoice_id:
+                invoiceResult["InvoiceId"] = invoice_id.value
+            invoice_total = invoice.fields.get("InvoiceTotal")
+            if invoice_total:
+                invoiceResult["InvoiceTotal"] = invoice_total.value
+            vendor_address = invoice.fields.get("VendorAddress")
+            if vendor_address:
+                invoiceResult["VendorAddress"] = vendor_address.value
+            vendor_name = invoice.fields.get("VendorName")
+            if vendor_name:
+                invoiceResult["VendorName"] = vendor_name.value
+            sub_total = invoice.fields.get("SubTotal")
+            if sub_total:
+                invoiceResult["SubTotal"] = sub_total.value
+            total_tax = invoice.fields.get("TotalTax")
+            if sub_total:
+                invoiceResult["TotalTax"] = total_tax.value
+            
+            
+            
+            
+            
+            
             invoiceResults.append(invoiceResult)
+            #BillingAddress,BillingAddressRecipient,AmountDue,SubTotal,TotalTax,
 
         
 
