@@ -11,11 +11,6 @@ from azure.ai.formrecognizer import FormTrainingClient
 from azure.core.credentials import AzureKeyCredential
 
 
-endpoint = os.environ["fr_endpoint"]
-key = os.environ["fr_key"]
-
-form_recognizer_client = FormRecognizerClient(endpoint, AzureKeyCredential(key))
-
 class DateTimeEncoder(JSONEncoder):
         #Override the default method
         def default(self, obj):
@@ -28,26 +23,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     try:
         body = json.dumps(req.get_json())
-        if endpoint is None or key is None:
+        if body:
+            logging.info(body)
+            result = compose_response(body)
+            return func.HttpResponse(result, mimetype="application/json")
+        else:
             return func.HttpResponse(
-             "Skill configuration error. Endpoint and key required.",
-             status_code=400
-        )
+                "Invalid body",
+                status_code=400
+            )
     except ValueError:
         return func.HttpResponse(
              "Invalid body",
              status_code=400
         )
     
-    if body:
-        logging.info(body)
-        result = compose_response(body)
-        return func.HttpResponse(result, mimetype="application/json")
-    else:
-        return func.HttpResponse(
-             "Invalid body",
-             status_code=400
-        )
+    
 
 
 def compose_response(json_data):
@@ -56,15 +47,17 @@ def compose_response(json_data):
     # Prepare the Output before the loop
     results = {}
     results["values"] = []
-    
+    endpoint = os.environ["FORMS_RECOGNIZER_ENDPOINT"]
+    key = os.environ["FORMS_RECOGNIZER_KEY"]
+    form_recognizer_client = FormRecognizerClient(endpoint, AzureKeyCredential(key))
     for value in values:
-        output_record = transform_value(value)
+        output_record = transform_value(value, form_recognizer_client)
         if output_record != None:
             results["values"].append(output_record)
     return json.dumps(results, ensure_ascii=False, cls=DateTimeEncoder)
 
 ## Perform an operation on a record
-def transform_value(value):
+def transform_value(value, form_recognizer_client):
     try:
         recordId = value['recordId']
     except AssertionError  as error:

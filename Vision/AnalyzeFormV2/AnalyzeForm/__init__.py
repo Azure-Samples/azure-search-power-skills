@@ -10,23 +10,20 @@ from azure.core.credentials import AzureKeyCredential
 import azure.functions as func
 
 
-endpoint = os.environ["fr_endpoint"]
-key = os.environ["fr_key"]
-model_id = os.environ["model_id"]
-
-form_recognizer_client = FormRecognizerClient(endpoint, AzureKeyCredential(key))
-
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     try:
         body = json.dumps(req.get_json())
-        if endpoint is None or key is None or model_id is None:
+        if body:
+            logging.info(body)
+            result = compose_response(body)
+            return func.HttpResponse(result, mimetype="application/json")
+        else:
             return func.HttpResponse(
-             "Skill configuration error. Endpoint, key and model_id required.",
-             status_code=400
-        )
-
+                "Invalid body",
+                status_code=400
+            )
     except ValueError:
         return func.HttpResponse(
              "Invalid body",
@@ -37,16 +34,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
              "Skill configuration error. Endpoint, key and model_id required.",
              status_code=400
         )
-    if body:
-        logging.info(body)
-        result = compose_response(body)
-        return func.HttpResponse(result, mimetype="application/json")
-    else:
-        return func.HttpResponse(
-             "Invalid body",
-             status_code=400
-        )
-
+    
 
 def compose_response(json_data):
     values = json.loads(json_data)['values']
@@ -57,14 +45,18 @@ def compose_response(json_data):
     mappings = None
     with open(pathlib.Path(__file__).parent / 'fieldmappings.json') as file:
         mappings = json.loads(file.read())
+    endpoint = os.environ["FORMS_RECOGNIZER_ENDPOINT"]
+    key = os.environ["FORMS_RECOGNIZER_KEY"]
+    model_id = os.environ["FORMS_RECOGNIZER_MODEL_ID"]
+    form_recognizer_client = FormRecognizerClient(endpoint, AzureKeyCredential(key))
     for value in values:
-        output_record = transform_value(value, mappings)
+        output_record = transform_value(value, mappings, form_recognizer_client, model_id)
         if output_record != None:
             results["values"].append(output_record)
     return json.dumps(results, ensure_ascii=False)
 
 ## Perform an operation on a record
-def transform_value(value, mappings):
+def transform_value(value, mappings, form_recognizer_client,model_id):
     try:
         recordId = value['recordId']
     except AssertionError  as error:
@@ -78,7 +70,7 @@ def transform_value(value, mappings):
         formSasToken = data ['formSasToken']
 
         formUrl = formUrl + formSasToken
-
+        
         poller = form_recognizer_client.begin_recognize_custom_forms_from_url(
         model_id=model_id, form_url=formUrl)
         result = poller.result()

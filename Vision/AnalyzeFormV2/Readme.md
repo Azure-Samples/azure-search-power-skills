@@ -27,11 +27,11 @@ You will need to [train a model with your forms](https://docs.microsoft.com/en-u
 
 ## Settings
 
-This function requires a `fr_endpoint` and a `fr_key` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
+This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
-After training, you will need to set the `model_id` application setting to the model id corresponding to your trained model.
+After training, you will need to set the `FORMS_RECOGNIZER_MODEL_ID` application setting to the model id corresponding to your trained model.
 
 The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `field-mappings.json` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeFormV2/field-mappings.json).
 
@@ -124,7 +124,7 @@ In addition to the common requirements described in [the root `README.md` file](
 
 ## Settings
 
-This function requires a `fr_endpoint` and a `fr_key` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
+This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
@@ -223,7 +223,7 @@ In addition to the common requirements described in [the root `README.md` file](
 
 ## Settings
 
-This function requires a `fr_endpoint` and a `fr_key` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
+This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
