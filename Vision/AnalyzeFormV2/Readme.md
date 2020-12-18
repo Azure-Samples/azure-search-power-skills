@@ -11,7 +11,9 @@ urlFragment: azure-analyzeform-sample
 description: This custom skill extracts specific fields from the results of a trained form recognition.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/AnalyzeForm/azuredeploy.json
 ---
+# Deployment
 
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FAnalyzeForm%2Fazuredeploy.json)
 # AnalyzeForm
 
 This custom skill extracts specific fields from the results of a trained form recognition.
@@ -21,7 +23,7 @@ A [full tutorial on this skill is available in the Azure Cognitive Seach documen
 
 ## Requirements
 
-In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Forms Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. At the time this template was written, Forms Recognizer was in a gated public preview. If you have not done so, you may need to [request access](https://aka.ms/FormRecognizerRequestAccess).
+In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Forms Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. 
 
 You will need to [train a model with your forms](https://docs.microsoft.com/en-us/azure/cognitive-services/form-recognizer/quickstarts/curl-train-extract) before you can use this skill. The model that was used for this example was trained using sample data that can be downloaded from [the SampleData directory](https://github.com/Azure-Samples/azure-search-power-skills/tree/master/SampleData).
 
@@ -33,11 +35,9 @@ If running in an Azure function, this can be set in the application settings.
 
 After training, you will need to set the `FORMS_RECOGNIZER_MODEL_ID` application setting to the model id corresponding to your trained model.
 
-The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `field-mappings.json` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeFormV2/field-mappings.json).
+The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing the [`field-mappings.json`] file(https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeFormV2/AnalyzeForm/field-mappings.json).
 
-## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FAnalyzeForm%2Fazuredeploy.json)
 
 ## Sample Input:
 
@@ -128,9 +128,6 @@ This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
-## Deployment
-
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FAnalyzeForm%2Fazuredeploy.json)
 
 ## Sample Input:
 
@@ -227,9 +224,6 @@ This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY
 If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
-## Deployment
-
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FAnalyzeForm%2Fazuredeploy.json)
 
 ## Sample Input:
 
