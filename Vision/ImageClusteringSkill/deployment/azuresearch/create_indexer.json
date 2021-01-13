@@ -1,0 +1,23 @@
+{
+    "name": "clustering-indexer",
+    "dataSourceName": "clustering-datasource",
+    "targetIndexName": "clustering-index",
+    "skillsetName": "clustering-skillset",
+    "parameters": {
+    "batchSize": null,
+    "maxFailedItems": null,
+    "maxFailedItemsPerBatch": null,
+    "base64EncodeKeys": null,
+    "configuration": {
+      "allowSkillsetToReadFileData": true,
+      "imageAction": "generateNormalizedImages"
+    }
+    },
+    "outputFieldMappings": [
+        {
+            "sourceFieldName": "/document/normalized_images/*/label",
+            "targetFieldName": "label"
+        }
+    ]
+
+}
