@@ -1,0 +1,9 @@
+Flask==1.1.2
+Flask-API==2.0
+requests==2.24.0
+ObjDict==0.4.4
+scikit-learn==0.23.2
+fastapi==0.61.1
+python-dotenv==0.14.0
+mlflow==1.11.0
+uvicorn==0.12.1
