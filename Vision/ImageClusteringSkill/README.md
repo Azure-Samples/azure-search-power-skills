@@ -1,6 +1,6 @@
 # Image Clustering Power Skill #
 
-This Power Skill will uses the [DBSCAN](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.dbscan.html)
+This Power Skill uses the [DBSCAN](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.dbscan.html)
 unsupervised clustering algorithm alongside [VGG16](https://keras.io/api/applications/vgg/) to extract
 visual features and cluster images. 
 
@@ -11,6 +11,8 @@ This skill is ideal for:
 you need a hierarchical classification structure.
 3) Auto-labelling your images based on the clusters identified and the labels you associated with the clusters. Note
 Azure Machine Learning has an auto-labelling feature already, this Power Skill should be used if this feature is not suitable
+
+See the data folder for sample images used for in the skill
 
 ## Requirements
 
