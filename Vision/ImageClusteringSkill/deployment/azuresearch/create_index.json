@@ -1,0 +1,12 @@
+  {
+        "name" : "clustering-index",
+        "fields": [
+          { "name": "id", "type": "Edm.String", "key": true, "searchable": false },
+          { "name": "url", "type": "Edm.String", "searchable": true },
+          { "name": "file_name", "type": "Edm.String", "searchable": false },
+          { "name": "size", "type": "Edm.Int64", "searchable": false },
+          { "name": "last_modified", "type": "Edm.DateTimeOffset", "searchable": false },
+          { "name": "content", "type": "Edm.String", "searchable": true, "filterable": false, "sortable": false, "facetable": false },
+          { "name": "label", "type": "Collection(Edm.String)", "searchable": true, "filterable": false, "sortable": false, "facetable": false }
+        ]
+  }
