@@ -6,7 +6,6 @@ sys.path.append("../")
 
 import joblib
 from PIL import Image
-from azureml.core.model import Model
 from dotenv import load_dotenv
 from extractor.timer import timefunc
 from numpy import asarray
@@ -15,7 +14,6 @@ import requests
 import io
 import base64
 
-from mlops.common.workspace import get_workspace
 from sklearn.utils.estimator_checks import check_estimator
 
 __vgg16_extractor__ = 'vgg16_extractor.py'
@@ -27,27 +25,6 @@ from ml.similarity.detector import ImageSimilarityDetector
 
 load_dotenv()
 sample_model = False
-
-
-def get_model():
-    success = False
-
-    aml_workspace = get_workspace(
-        os.environ.get("WORKSPACE_NAME"),
-        os.environ.get("RESOURCE_GROUP"),
-        os.environ.get("SUBSCRIPTION_ID"),
-        os.environ.get("TENANT_ID"),
-        os.environ.get("SP_APP_ID"),
-        os.environ.get("SP_APP_SECRET"),
-        os.environ.get("LOCATION"),
-        create_if_not_exist=False)
-
-    model = Model(aml_workspace, os.environ.get("DBSCAN_MODEL"))
-    model.download('models/')
-    success = True
-
-    return success
-
 
 def set_log_level(debug):
     """
@@ -63,12 +40,7 @@ set_log_level(bool(os.environ['DEBUG']))
 # Let's load all models upfront
 # Load DBSCAN model from registry
 try:
-    if os.environ['DOWNLOAD_AML_MODEL'].lower() == "true":
-        if get_model():
-            model = joblib.load(os.path.join("models/", os.environ['DBSCAN_MODEL']))
-    else:
-        model = joblib.load(os.path.join("models/", os.environ['DBSCAN_MODEL']))
-
+    model = joblib.load(os.path.join("models/", os.environ['DBSCAN_MODEL']))
     logging.info(f"Loaded model {os.environ['DBSCAN_MODEL']}")
 except Exception as NoModel:
     sample_model = True
@@ -139,14 +111,9 @@ def go_extract(inputs):
 
         img = base64.b64decode(str(encoded_image).strip())
 
-        logging.info(f"Cluster labels location {os.environ.get('CLUSTER_LABELS_LOCATION')}")
-
-        if len(os.environ.get("CLUSTER_LABELS_LOCATION")) > 0:
-            cluster_labels_response = requests.get(os.environ.get("CLUSTER_LABELS_LOCATION"),
-                                          stream=True)
-
-            cluster_labels = joblib.load(io.BytesIO(cluster_labels_response.content))
-            logging.info(f"Loaded cluster labels {cluster_labels}")
+        logging.info(f"Cluster labels file {os.environ.get('CLUSTER_LABELS')}")
+        cluster_labels = joblib.load(os.path.join("models/", os.environ.get("CLUSTER_LABELS")))
+        logging.info(f"Loaded cluster labels {cluster_labels}")
         # We will run on a small sample dataset
         if sample_model:
             # Download sample data

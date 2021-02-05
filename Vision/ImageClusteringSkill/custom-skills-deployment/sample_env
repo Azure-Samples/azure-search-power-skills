@@ -1,12 +1,4 @@
 KEY=[YourSecretKeyCanBeAnything]
 DEBUG=True
 DBSCAN_MODEL=books.pkl
-DOWNLOAD_AML_MODEL=False
-WORKSPACE_NAME=
-RESOURCE_GROUP=
-SUBSCRIPTION_ID=
-TENANT_ID=
-SP_APP_ID=
-SP_APP_SECRET=
-LOCATION=
-CLUSTER_LABELS_LOCATION=https://[storage].blob.core.windows.net/tester/labels.pkl?[SAS]
+CLUSTER_LABELS=

@@ -9,8 +9,8 @@ RUN apt-get install 'libsm6'\
     'libgl1-mesa-glx'\
     'libxext6'  -y
 
-RUN mkdir -p /usr/src/mlops
-RUN mkdir -p /usr/src/mlops/common
+#RUN mkdir -p /usr/src/mlops
+#RUN mkdir -p /usr/src/mlops/common
 RUN mkdir -p /usr/src/ml
 RUN mkdir -p /usr/src/ml/extractors
 RUN mkdir -p /usr/src/ml/similarity
