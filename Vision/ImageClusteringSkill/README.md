@@ -332,9 +332,3 @@ The indexer will automatically run and you should see requests coming in if you 
 
 Now we are in a position to search on our cluster labelled data, navigate to the [test search cell](notebooks/3-create-label-file-and-deploy.ipynb#Test-the-cluster-labels-in-Azure-Search-queries)
 to search on our clustered images.
-
-
-
-
-
-
