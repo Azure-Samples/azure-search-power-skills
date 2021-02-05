@@ -205,12 +205,12 @@ Run the following command:
 docker push [container_registry_name.azurecr.io/clusterextractor:[your_tag]
 ```
 
-In the [deployment folder](deployment/webapp) are two terraform
+In the [deployment folder](deployment/webapp) are two [terraform](https://www.terraform.io/)
 files to deploy the inference API to an App Service Web App for linux.
 
 The simplest is to open a cloud [cloud shell](https://shell.azure.com/) and upload
 the [main](deployment/webapp/main.tf) and [variables](deployment/webapp/variables.tf)
-to your cloud shell storage. 
+to your cloud shell storage as this avoids the need for any installation. 
 
 Set the following values in the [main](deployment/webapp/main.tf) file:
 ```hcl-terraform
