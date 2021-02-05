@@ -1,0 +1,47 @@
+FROM tensorflow/tensorflow
+
+COPY custom-skills-deployment/requirements.txt /tmp/pip-tmp/
+RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
+    && rm -rf /tmp/pip-tmp
+
+RUN apt-get update
+RUN apt-get install 'libsm6'\
+    'libgl1-mesa-glx'\
+    'libxext6'  -y
+
+#RUN mkdir -p /usr/src/mlops
+#RUN mkdir -p /usr/src/mlops/common
+RUN mkdir -p /usr/src/ml
+RUN mkdir -p /usr/src/ml/extractors
+RUN mkdir -p /usr/src/ml/similarity
+RUN mkdir -p /usr/src/ml/models
+RUN mkdir -p /usr/src/ml/utils
+RUN mkdir -p /usr/src/api
+RUN mkdir -p /usr/src/api/common
+RUN mkdir -p /usr/src/api/extractor
+RUN mkdir -p /usr/src/api/models
+
+COPY sshd_config /etc/ssh/
+
+WORKDIR /usr/src/api
+
+COPY mlops/__init__.py /usr/src/
+COPY mlops/__init__.py /usr/src/mlops/
+COPY mlops/common /usr/src/mlops/common
+COPY mlops/__init__.py /usr/src/mlops/common
+COPY ml/extractors /usr/src/ml/extractors
+COPY ml/models /usr/src/ml/models
+COPY ml/similarity /usr/src/ml/similarity
+COPY ml/utils /usr/src/ml/utils
+COPY custom-skills-deployment/models /usr/src/api/models/
+COPY custom-skills-deployment/extractor/ /usr/src/api/extractor/
+COPY custom-skills-deployment/app.py /usr/src/api/
+
+# https://docs.microsoft.com/en-gb/azure/app-service/configure-custom-container?pivots=container-linux#enable-ssh
+EXPOSE 80 2222
+EXPOSE 5000
+
+ADD startup.sh /
+RUN chmod +x /startup.sh
+
+CMD ["/startup.sh"]

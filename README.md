@@ -22,6 +22,7 @@ This project provides the following custom skills:
 * [**HocrGenerator**](Vision/HocrGenerator/README.md): transforms the result of OCR into the hOCR format.
 * [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
 * [**CustomVision**](Vision/CustomVision/README.md): classifies documents using [Custom Vision](https://customvision.ai) models.
+* [**CustomVision**](Vision/ImageClusteringSkill/README.md): Uses clustering to automatically group and label images
 * [**CustomEntityLookup**](/Text/CustomEntitySearch): finds custom entity names in text.
 * [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
 * [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
