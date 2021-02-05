@@ -154,7 +154,7 @@ We are now ready to send a request.
 
 The [deploy notebook](notebooks/3-create-label-file-and-deploy.ipynb) contains a cell 
 
-[Test the deployed inference API Web App](http://localhost:8891/]notebooks/3-create-label-file-and-deploy.ipynb#Test-the-deployed-inference-API-Web-App)
+[Test the deployed inference API Web App](notebooks/3-create-label-file-and-deploy.ipynb#Test-the-deployed-inference-API-Web-App)
 that will enable you to test the Web App.
 
 Alternatively you can also use Postman, see below:
@@ -315,22 +315,22 @@ model.
 You will need your [ACS API Key](https://docs.microsoft.com/en-us/azure/search/search-security-api-keys)
 and the URL for your ACS instance. 
 
-Navigate to and execute the [deploy PowerSkill to ACS](http://localhost:8891/notebooks/3-create-label-file-and-deploy.ipynb#Deploy-the-PowerSkill-to-Azure-Search)
+Navigate to and execute the [deploy PowerSkill to ACS](notebooks/3-create-label-file-and-deploy.ipynb#Deploy-the-PowerSkill-to-Azure-Search)
 cell to deploy our PowerSkill. Alternatively, populate the the values within the [deployment json files](deployment/azuresearch)
 files and use [Postman](https://postman.com).
 
 The first step is to upload the [data files](data/) to a container in Azure blob storage and
 get the connection values to create the ACS data source.
 
-* Next create the index by running the [create index cell](http://localhost:8891/notebooks/3-create-label-file-and-deploy.ipynb#Now-we-create-the-index)
-* Next create the skillset by running the [create the skillset](http://localhost:8891/notebooks/3-create-label-file-and-deploy.ipynb#Now-we-create-the-skill-set)
-* Next create the indexer by running the [create indexer cell](http://localhost:8891/notebooks/3-create-label-file-and-deploy.ipynb#Now-we-create-the-indexer)
+* Next create the index by running the [create index cell](notebooks/3-create-label-file-and-deploy.ipynb#Now-we-create-the-index)
+* Next create the skillset by running the [create the skillset](notebooks/3-create-label-file-and-deploy.ipynb#Now-we-create-the-skill-set)
+* Next create the indexer by running the [create indexer cell](notebooks/3-create-label-file-and-deploy.ipynb#Now-we-create-the-indexer)
 
 The indexer will automatically run and you should see requests coming in if you look at the Web App logs.
 
 ### Testing the search labels in ACS
 
-Now we are in a position to search on our cluster labelled data, navigate to the [test search cell](http://localhost:8891/notebooks/3-create-label-file-and-deploy.ipynb#Test-the-cluster-labels-in-Azure-Search-queries)
+Now we are in a position to search on our cluster labelled data, navigate to the [test search cell](notebooks/3-create-label-file-and-deploy.ipynb#Test-the-cluster-labels-in-Azure-Search-queries)
 to search on our clustered images.
 
 
