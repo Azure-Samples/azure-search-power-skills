@@ -3,10 +3,11 @@
 
 namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
 {
-    public class KeyValuePair
+    public class Table
     {
-        public BoundedElement Key { get; set; }
-        public BoundedElement Value { get; set; }
-        public double Confidence { get; set; }
+        public double[] boundingBox { get; set; }
+        public int columns { get; set; }
+        public int rows { get; set; }
+        public Cell[] cells { get; set; }
     }
 }

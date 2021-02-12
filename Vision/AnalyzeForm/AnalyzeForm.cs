@@ -107,10 +107,23 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
         /// <returns></returns>
         private static string GetField(IList<Page> pages, string fieldName)
         {
-            IEnumerable<string> value = pages
-                .SelectMany(p => p.KeyValuePairs)
-                .Where(kvp => string.Equals(kvp.Key.Text.Trim(), fieldName, StringComparison.CurrentCultureIgnoreCase))
-                .Select(kvp => kvp.Value.Text);
+            List<string> textValues = (from p in pages from t in p.tables from c in t.cells select c.Text).ToList();
+            int idx = textValues.FindIndex(i => string.Equals( i.Trim(), fieldName, StringComparison.CurrentCultureIgnoreCase));
+
+            string value;
+            if (idx + 1 > textValues.Count || idx == -1)
+                value = null;
+            else
+                value = textValues[idx + 1];
+
+            //textValues.Select((v, i) => new { value = v, index = i }).Where( string.Equals( item, fieldName, StringComparison.CurrentCultureIgnoreCase))
+            //string.Equals(item, "sdasdsad", StringComparison.CurrentCultureIgnoreCase)
+            //string value = textValues.SkipWhile(item => string.Equals(item, fieldName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+
+            /*IEnumerable<string> value1 = pages
+                .SelectMany(p => p.tables)
+                .Where(t => string.Equals(t.cells[0].Text.Trim(), fieldName, StringComparison.CurrentCultureIgnoreCase))
+                .Select(t => t.cells[0].Text);*/
             return value == null ? null : string.Join(" ", value);
         }
 
@@ -122,7 +135,7 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
         /// <returns>The job id that can be used in analyzeResults.</returns>
         private static async Task<string> GetJobId(string endpointUrl, string formUrl, string modelId, string apiKey)
         {
-            string uri = endpointUrl + "/formrecognizer/v2.0-preview/custom/models/" + Uri.EscapeDataString(modelId) + "/analyze";
+            string uri = endpointUrl + "/formrecognizer/v2.1-preview.2/custom/models/" + Uri.EscapeDataString(modelId) + "/analyze";
 
             using (var client = new HttpClient())
             {

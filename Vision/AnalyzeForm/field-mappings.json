@@ -1,4 +1,11 @@
 {
-  "Address:": "address",
-  "Invoice For:": "recipient"
+  "Name:": "Name",
+  "Address:": "Address",
+  "City:": "City",
+  "Postal Code:": "PostalCode",
+  "Country:": "Country",
+  "Date of Birth:": "DOB",
+  "Destination:": "DestinationCity",
+  "Departure Date:": "DepartureDate",
+  "Return Date:": "ReturnDate"
 }

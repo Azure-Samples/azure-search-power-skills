@@ -3,10 +3,12 @@
 
 namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
 {
-    public class BoundedElement
+    public class Cell
     {
         public string Text { get; set; }
         public double[] BoundingBox { get; set; }
-        public string[] Elements { get; set; }
+        public int columnIndex { get; set; }
+        public int rowIndex { get; set; }
+        public int rowSpan { get; set; }
     }
 }

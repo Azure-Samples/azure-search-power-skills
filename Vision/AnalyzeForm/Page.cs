@@ -8,9 +8,9 @@ namespace AzureCognitiveSearch.PowerSkills.Vision.AnalyzeForm
     public class Page
     {
         [JsonProperty(PropertyName ="page")]
-        public int Number { get; set; }
-        public int? ClusterId { get; set; }
+        public int page { get; set; }
+        //public int? ClusterId { get; set; }
 
-        public KeyValuePair[] KeyValuePairs { get; set; }
+        public Table[] tables { get; set; }
     }
 }
