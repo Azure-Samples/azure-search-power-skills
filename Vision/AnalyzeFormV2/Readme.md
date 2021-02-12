@@ -16,13 +16,13 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 The analyze form skill requires you to train a custom model to identify and extract key value pairs. Analyze invoice and extract table skills invoke pre trained models. All skills require the `FORMS_RECOGNIZER_ENDPOINT` and `FORMS_RECOGNIZER_KEY` property set in the appsettings, while the analyze form skill additionally requires a `FORMS_RECOGNIZER_MODEL_ID`.
 
-Follow the following steps to deploy the skills:
+To deploy the skills:
 1. In the Azure portal, create a Forms Recognizer resource.
 2. Copy the form recognizer URL and key for use in the training and appsettings.
-3. Clone the repository
+3. Clone this repository
 4. Upload the training data and test data to an Azure storage account and generate a SAS token
 4. Use the training notebook to train a model (using either the provided training data or your fomrs)
-5. Open the AnalyzeFormv2 folder in VS Code and deploy the function.
+5. Open the AnalyzeFormV2 folder in VS Code and deploy the function.
 6. Once the function is deployed, set the required appsettings (`FORMS_RECOGNIZER_ENDPOINT`, `FORMS_RECOGNIZER_KEY` and `FORMS_RECOGNIZER_MODEL_ID`)
 
 # AnalyzeForm
@@ -225,7 +225,7 @@ This custom skill extracts tables using a pre trained forms recognizer model.
 
 ## Requirements
 
-In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Forms Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. The [prebuilt invoice model](https://docs.microsoft.com/azure/cognitive-services/form-recognizer/concept-invoices) is available in the 2.1 preview API.
+In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Forms Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. The [layout service](https://docs.microsoft.com/azure/cognitive-services/form-recognizer/concept-layout) is available in the 2.1 preview API.
 
 ## Settings
 
