@@ -14,9 +14,16 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 ---
 # Deployment    
 
-Clone the repository, open the AnalyzeFormv2 folder in VS Code and deploy the function. Once the function is deployed set the Form Recognizer URL and key in the appsettings.
-
 The analyze form skill requires you to train a custom model to identify and extract key value pairs. Analyze invoice and extract table skills invoke pre trained models. All skills require the `FORMS_RECOGNIZER_ENDPOINT` and `FORMS_RECOGNIZER_KEY` property set in the appsettings, while the analyze form skill additionally requires a `FORMS_RECOGNIZER_MODEL_ID`.
+
+Follow the following steps to deploy the skills:
+1. In the Azure portal, create a Forms Recognizer resource.
+2. Copy the form recognizer URL and key for use in the training and appsettings.
+3. Clone the repository
+4. Upload the training data and test data to an Azure storage account and generate a SAS token
+4. Use the training notebook to train a model (using either the provided training data or your fomrs)
+5. Open the AnalyzeFormv2 folder in VS Code and deploy the function.
+6. Once the function is deployed, set the required appsettings (`FORMS_RECOGNIZER_ENDPOINT`, `FORMS_RECOGNIZER_KEY` and `FORMS_RECOGNIZER_MODEL_ID`)
 
 # AnalyzeForm
 
@@ -29,19 +36,17 @@ A [full tutorial on this skill is available in the Azure Cognitive Seach documen
 
 In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Form Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. 
 
-[Train a model with your forms](https://docs.microsoft.com/azure/cognitive-services/form-recognizer/quickstarts/client-library) before you can use this skill. As a sample to get started, use the included [sample training forms](Test) and [sample test form](Train) with the [training notebook](FormRecognizerTrainModel.ipynb) to create a model in just a few minutes.
+[Train a model with your forms](https://docs.microsoft.com/azure/cognitive-services/form-recognizer/quickstarts/client-library) before you can use this skill. As a sample to get started, use the included [sample training forms](Train) and [sample test form](Test) with the [training notebook](FormRecognizerTrainModel.ipynb) to create a model in just a few minutes.
 
 ## Settings
 
 This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
-If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
+If running locally, this can be set in your project's local environment variables. This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
 After training, you will need to set the `FORMS_RECOGNIZER_MODEL_ID` application setting to the model id corresponding to your trained model.
 
 The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing the [`field-mappings.json`] file(https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeFormV2/AnalyzeForm/field-mappings.json).
-
-
 
 ## Sample Input:
 
@@ -129,7 +134,7 @@ In addition to the common requirements described in [the root `README.md` file](
 ## Settings
 
 This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
-If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
+If running locally, this can be set in your project's local environment variables. This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
 
@@ -225,7 +230,7 @@ In addition to the common requirements described in [the root `README.md` file](
 ## Settings
 
 This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
-If running locally, this can be set in your project's debug environment variables (go to project properties, in the debug tab). This ensures your key won't be accidentally checked in with your code.
+If running locally, this can be set in your project's local environment variables. This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
 
