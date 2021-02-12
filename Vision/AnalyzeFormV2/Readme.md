@@ -4,16 +4,19 @@ languages:
 - python
 products:
 - azure
-- azure-search
+- azure-cognitive-search
 - azure-cognitive-services
+- azure-form-recognizer
 name: Analyze form sample skill for cognitive search
 urlFragment: azure-analyzeform-sample
 description: This custom skill extracts specific fields from the results of a trained form recognition.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/AnalyzeFormV2/azuredeploy.json
 ---
-# Deployment
+# Deployment    
 
 Clone the repository, open the AnalyzeFormv2 folder in VS Code and deploy the function. Once the function is deployed set the Form Recognizer URL and key in the appsettings.
+
+The analyze form skill requires you to train a custom model to identify and extract key value pairs. Analyze invoice and extract table skills invoke pre trained models. All skills require the `FORMS_RECOGNIZER_ENDPOINT` and `FORMS_RECOGNIZER_KEY` property set in the appsettings, while the analyze form skill additionally requires a `FORMS_RECOGNIZER_MODEL_ID`.
 
 # AnalyzeForm
 
@@ -26,7 +29,7 @@ A [full tutorial on this skill is available in the Azure Cognitive Seach documen
 
 In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Form Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. 
 
-You will need to [train a model with your forms](https://docs.microsoft.com/en-us/azure/cognitive-services/form-recognizer/quickstarts/curl-train-extract) before you can use this skill. The model that was used for this example was trained using sample data that can be downloaded from [the SampleData directory](https://github.com/Azure-Samples/azure-search-power-skills/tree/master/SampleData).
+[Train a model with your forms](https://docs.microsoft.com/azure/cognitive-services/form-recognizer/quickstarts/client-library) before you can use this skill. As a sample to get started, use the included [sample training forms](Test) and [sample test form](Train) with the [training notebook](FormRecognizerTrainModel.ipynb) to create a model in just a few minutes.
 
 ## Settings
 
