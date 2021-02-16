@@ -1,3 +1,7 @@
+![python](https://img.shields.io/badge/language-python-orange)
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+
+
 # Azure Search Power Skills
 
 Power Skills are a collection of useful functions to be deployed as custom skills for Azure Cognitive Search. The skills can be used as [templates](Template/HelloWorld/README.md) or starting points for your own custom skills, or they can be deployed and used as they are if they happen to meet your requirements. We also invite you to contribute your own work by submitting a [pull request](https://github.com/Azure-Samples/azure-search-power-skills/compare).
@@ -9,27 +13,78 @@ Here are a few suggestions of simple contributions to get you started:
 * Configuration: some skills can be configured through [application settings and environment variables](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/AnalyzeForm.cs#L46-L50). Some others still have [hard-coded configuration in the code](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Text/CustomEntitySearch/CustomEntityLookup.cs#L28-L31), that could be moved to be easier to configure.
 * For skills that rely on an external Azure resource (such as [Bing Entity Search](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Text/BingEntitySearch/BingEntitySearch.cs#L20)), improve the [deployment file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Text/BingEntitySearch/azuredeploy.json) so it gives the user the option to create and configure that service automatically.
 
-## Features
+## Skills
 
 This project provides the following custom skills:
 
+| Skill | Description | Language | Deployment |
+| --- | ----------- | ----------- | ----------- |
+| [**HelloWorld**](Template/HelloWorld/README.md) | A minimal skill that can be used as a starting point or template for your own skills. | ![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue) |
+| [**PythonFastAPI**](Template/PythonFastAPI/README.md) | A production web server and api scaffold for a python power skill | ![python](https://img.shields.io/badge/language-python-orange) | ![docker](https://img.shields.io/badge/deployment-Docker-blueviolet) |
+| [**PythonFastAPI**](Template/PythonFastAPI/README.md) | A production web server and api scaffold for a python power skill | ![python](https://img.shields.io/badge/language-python-orange) | ![docker](https://img.shields.io/badge/deployment-Docker-blueviolet) |
+
+
+
+
+
 * [**HelloWorld**](Template/HelloWorld/README.md): a minimal skill that can be used as a starting point or template for your own skills.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**PythonFastAPI**](Template/PythonFastAPI/README.md): a production web server and api scaffold for a python power skill 
+![python](https://img.shields.io/badge/language-python-orange)
+![docker](https://img.shields.io/badge/deployment-Docker-blueviolet)
 * [**GeoPointFromName**](Geo/GeoPointFromName/README.md): retrieves coordinates from place names and addresses.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**BingEntitySearch**](Text/BingEntitySearch/README.md): finds rich and structured information about public figures, locations, or organizations.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**AcronymLinker**](Text/AcronymLinker/README.md): provides definitions for known acronyms.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**ImageStore**](Vision/ImageStore/README.md): stores and fetches base64-encoded images to and from blob storage.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**HocrGenerator**](Vision/HocrGenerator/README.md): transforms the result of OCR into the hOCR format.
-* [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
+* [**AnalyzeForm**](Vision/AnalyzeFormV2/README.md): recognizes form fields in a document. 
+![python](https://img.shields.io/badge/language-python-orange)
+![docker](https://img.shields.io/badge/deployment-Docker-blueviolet)
+[**ExtractTables**](Vision/AnalyzeFormV2/README.md): extract tables from a document with a pre trained model.
+![python](https://img.shields.io/badge/language-python-orange)
+![docker](https://img.shields.io/badge/deployment-Docker-blueviolet)
+[**AnalyzeInvoice**](Vision/AnalyzeFormV2/README.md): Extract invoice fields from a document using the pretrained model.![python](https://img.shields.io/badge/language-python-orange)
+![docker](https://img.shields.io/badge/deployment-Docker-blueviolet)
+
 * [**CustomVision**](Vision/CustomVision/README.md): classifies documents using [Custom Vision](https://customvision.ai) models.
-* [**CustomVision**](Vision/ImageClusteringSkill/README.md): Uses clustering to automatically group and label images
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
+* [**ImageClustering**](Vision/ImageClusteringSkill/README.md): Uses clustering to automatically group and label images
+![python](https://img.shields.io/badge/language-python-orange)
+![docker](https://img.shields.io/badge/deployment-Docker-blueviolet)
 * [**CustomEntityLookup**](/Text/CustomEntitySearch): finds custom entity names in text.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
-* [**AbbyyOCR**](Text/AbbyyOCR/README.md): OCR to extract text from images using  [ABBYY Cloud OCR](https://www.ocrsdk.com/).
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
+* [**AbbyyOCR**](Text/AbbyyOCR/README.md): OCR to extract text from images using 
+[ABBYY Cloud OCR](https://www.ocrsdk.com/).
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**P&ID Parser**](Vision/PID/README.md): Extracts equipment tags and text blocks from piping and instrumentation diagrams
+![python](https://img.shields.io/badge/language-python-orange)
+![docker](https://img.shields.io/badge/deployment-Docker-blueviolet)
 * [**GetFileExtension**](Utils/GetFileExtension/README.md): returns the filename and extension as separate values allowing you to filter on document type.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 * [**DecryptBlobFile**](Utils/DecryptBlobFile/README.md): downloads, decrypts and returns a file that was previously encrypted and stored in Azure Blob Storage.
+![C#](https://img.shields.io/badge/language-C%23-brightgreen)
+![functions](https://img.shields.io/badge/deployment-AzureFunctions-blue)
 
 ## Getting Started
 
