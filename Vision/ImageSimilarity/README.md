@@ -42,10 +42,10 @@ and how it can be amended for your data.
 2) ###Feature Extraction
    Next run the cell [Extract features and generate pkl file](notebooks/Similarity%20Search%20dogs.ipynb#Extract-features-and-generate-pkl-file)
    This will extract the image features and create a pkl file that can be mounted in the API PowerSkill
-   **Important**, this process will extract the images from your dataset and store them in a single pkl
-   feature file for simplicity, if this is to be done at scale accross many images, partitioning the images into multiple
+   **Important, this process will extract the images from your dataset and store them in a single pkl
+   feature file for simplicity, if this is to be done at scale across many images, partitioning the images into multiple
    pkl feature files or using a data store such as [CosmosDB](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction)
-   would be the recommended approach. 
+   would be the recommended approach.** 
 3) ###Run the API
    The next step is to run the API locally and test the model against a test record. Run the cell 
    [Test our dogs on our local running API](Similarity%20Search%20dogs.ipynb#Test-our-dogs-on-our-local-running-API). Make
