@@ -12,11 +12,11 @@ description: This custom skill extracts specific fields from the results of a tr
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/AnalyzeForm/azuredeploy.json
 ---
 
-> 
-> This version of the Analyze Form skill is deprecated. [AnalyzeFormV2](../AnalyzeFormV2) implements the current version of the Form Recognizer service.
->
-
 # AnalyzeForm
+
+>   
+> This version of the Analyze Form skill is***deprecated***. [AnalyzeFormV2](../AnalyzeFormV2) implements the current version of the Form Recognizer service.
+>
 
 This custom skill extracts specific fields from the results of a trained form recognition.
 
