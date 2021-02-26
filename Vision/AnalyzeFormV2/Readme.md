@@ -13,9 +13,9 @@ description: This custom skill extracts specific fields from the results of a tr
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/AnalyzeFormV2/azuredeploy.json
 ---
 Invoking a Form Recognizer capability within the Cognitive Search pipeline is broken out into three skills
-* Analyze Form, using a pre trained model
-* Analyze Invoice using a pretrained model
-* Extract Tables using a pretrained model
+* [Analyze Form](#AnalyzeForm), using a pre trained model
+* [Analyze Invoice](#AnalyzeInvoice) using a pretrained model
+* [Extract Tables](#ExtractTables) using a pretrained model
 
 # Deployment    
 
