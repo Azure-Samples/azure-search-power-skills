@@ -23,7 +23,7 @@ This project provides the following custom skills:
 * [**AnalyzeForm**](Vision/AnalyzeForm/README.md): recognizes form fields in a document.
 * [**CustomVision**](Vision/CustomVision/README.md): classifies documents using [Custom Vision](https://customvision.ai) models.
 * [**CustomVision**](Vision/ImageClusteringSkill/README.md): Uses clustering to automatically group and label images
-* [**CustomVision**](Vision/ImageSimilarity/README.md): Uses ResNet to find the topn most similar images
+* [**CustomVision**](Vision/ImageSimilarity/README.md): Uses ResNet to find the top-n most similar images
 * [**CustomEntityLookup**](/Text/CustomEntitySearch): finds custom entity names in text.
 * [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
 * [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
