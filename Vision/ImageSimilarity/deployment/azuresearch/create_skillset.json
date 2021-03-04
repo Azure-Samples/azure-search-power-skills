@@ -64,5 +64,21 @@
         "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
         "description": "cogsvc",
         "key": ""
+    },
+     "knowledgeStore": {
+      "storageConnectionString": "an Azure storage connection string",
+      "projections" : [
+        {
+          "tables": [
+            { "tableName": "MainTable", "generatedKeyName": "SomeId", "source": "/document/normalized_images/*/most_similar" }
+          ]
+        },
+        {
+          "objects": [ ]
+        },
+        {
+            "files": [ ]
+        }
+      ]
     }
 }
