@@ -37,20 +37,20 @@ Below is a full working example that you can get working end to end on sample da
 This section describes how to get this working on sample data
 and how it can be amended for your data.
  
-1) ###Data
+### Data
    The first step is to extract the sample data files here [train data](data/dogs.zip) into the existing data folder. 
-2) ###Feature Extraction
+### Feature Extraction
    Next run the cell [Extract features and generate pkl file](notebooks/Similarity%20Search%20dogs.ipynb#Extract-features-and-generate-pkl-file)
    This will extract the image features and create a pkl file that can be mounted in the API PowerSkill
    **Important, this process will extract the images from your dataset and store them in a single pkl
    feature file for simplicity, if this is to be done at scale across many images, partitioning the images into multiple
    pkl feature files or using a data store such as [CosmosDB](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction)
    would be the recommended approach.** 
-3) ###Run the API
+### Run the API
    The next step is to run the API locally and test the model against a test record. Run the cell 
    [Test our dogs on our local running API](Similarity%20Search%20dogs.ipynb#Test-our-dogs-on-our-local-running-API). Make
    sure you rename the file [sample_env file to .env](sample_env) and populate it with the relevant values.
-4) ###Build the docker image 
+### Build the docker image 
    Now build the [docker image](Dockerfile) and upload the image to your container registry  
    For this step you will need docker running so that we can build and test our inference API locally.
    You will also need a container registry for the build.
@@ -115,10 +115,10 @@ and how it can be amended for your data.
     }
     ```
 
-5) ###Upload the data
+### Upload the data
    Upload the data in the data folder to a container in Azure blob storage and get the connection values to create 
    the ACS data source. 
-6) ###Deploy the container to an Azure Web App.
+### Deploy the container to an Azure Web App.
 
     We will deploy this as an [Azure App Service Web App](https://docs.microsoft.com/en-us/azure/app-service/configure-custom-container?pivots=container-linux).
     running a container.
@@ -226,7 +226,7 @@ and how it can be amended for your data.
     Once deployed, copy the Azure Web App URL which may be found in the overview section of the portal as we will need 
     it to plug into Azure Search.
     
-7) ###Deploy the skill
+### Deploy the skill
    Add the endpoint to your [skillset file](deployment/azuresearch/create_skillset.json) using the 
    [deploy cell notebook](notebooks/Similarity%20Search%20dogs.ipynb#Now-we-create-the-skill-set)
       
@@ -237,12 +237,12 @@ and how it can be amended for your data.
     You will need your [ACS API Key](https://docs.microsoft.com/en-us/azure/search/search-security-api-keys)
     and the URL for your ACS instance. 
    
-8) ###Run the ACS indexer 
+### Run the ACS indexer 
     [Create/Run your indexer](notebooks/Similarity%20Search%20dogs.ipynb#Now-we-create-the-indexer)
 
     The indexer will automatically run and you should see requests coming in if you look at the Web App logs.
 
-9)  ###Test the index 
+### Test the index 
     Investigate your indexed data, check the most similar images
 
     Now we are in a position to search on our most similar data, navigate to the [Text the index](notebooks/Similarity%20Search%20dogs.ipynb#Let's-go-and-test-the-ACS-index)
