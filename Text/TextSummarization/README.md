@@ -1,7 +1,7 @@
 # Text Summarization Power Skill #
 
 This Power Skill uses the pre-trained [HuggingFace/Facebook BART model](https://huggingface.co/facebook/bart-large-cnn)
-deep learning model to generate a summary for an input text.
+deep learning model to generate a summary for an input text - English only.
 
 This skill is ideal for:
 
