@@ -1,0 +1,33 @@
+{
+    "name": "text-summarization-indexer",
+    "dataSourceName": "text-summarization-datasource",
+    "targetIndexName": "text-summarization-index",
+    "skillsetName": "text-summarization-skillset",
+    "parameters": {
+        "configuration": {
+            "allowSkillsetToReadFileData": true
+        }
+    },
+    "outputFieldMappings": [
+      {
+        "sourceFieldName" : "/document/organizations",
+        "targetFieldName" : "organization"
+      },
+      {
+        "sourceFieldName" : "/document/persons",
+        "targetFieldName" : "person"
+      },
+      {
+        "sourceFieldName" : "/document/locations",
+        "targetFieldName" : "location"
+      },
+      {
+        "sourceFieldName" : "/document/urls",
+        "targetFieldName" : "url"
+      },
+      {
+        "sourceFieldName": "/document/content/summary",
+        "targetFieldName": "summary"
+      }
+    ]
+}
