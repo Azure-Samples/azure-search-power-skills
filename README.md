@@ -27,6 +27,7 @@ This project provides the following custom skills:
 * [**Tokenizer**](Text/Tokenizer/README.md): extracts non-stop words from a text.
 * [**Distinct**](Text/Distinct/README.md): de-duplicates a list of terms.
 * [**AbbyyOCR**](Text/AbbyyOCR/README.md): OCR to extract text from images using  [ABBYY Cloud OCR](https://www.ocrsdk.com/).
+* [**Summarizer**](Text/TextSummarization/README.md): Uses a HuggingFace/FaceBook BART model to summarize text [BART-Large-CNN](https://huggingface.co/facebook/bart-large-cnn).
 * [**P&ID Parser**](Vision/PID/README.md): Extracts equipment tags and text blocks from piping and instrumentation diagrams
 * [**GetFileExtension**](Utils/GetFileExtension/README.md): returns the filename and extension as separate values allowing you to filter on document type.
 * [**DecryptBlobFile**](Utils/DecryptBlobFile/README.md): downloads, decrypts and returns a file that was previously encrypted and stored in Azure Blob Storage.
