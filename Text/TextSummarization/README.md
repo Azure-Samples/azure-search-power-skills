@@ -5,7 +5,7 @@ deep learning model to generate a summary for an input text - English only.
 
 This skill is ideal for:
 
-1) Exploring your data to summarize and categorise your documents your data exploration phase
+1) Exploring your data to summarize and categorise your documents in the data exploration phase
 2) Using in conjunction with Azure Text Analytics or a Named Entity Recognition (NER) model and Latent Dirichlet 
 Allocation (LDA) topic modelling to further identify areas of interest
 
@@ -52,7 +52,7 @@ This section describes how to get this working on sample data and how it can be 
    [Test summarization on our local running API](notebooks/Text%20Summarisation.ipynb#Test-our-text-on-our-local-running-API). 
    Make sure you rename the file [sample_env file to .env](sample_env) and populate it with the relevant values. Use the
    variable ```bash URL_LOCAL``` as the URL.
-4) ###Build the docker image 
+3) ###Build the docker image 
    Now build the [docker image](Dockerfile) and upload the image to your container registry  
    For this step you will need docker running so that we can build and test our inference API locally.
    You will also need a container registry for the build.
@@ -100,7 +100,7 @@ This section describes how to get this working on sample data and how it can be 
     
     After issuing the above request you should get a response showing the full and summarized text. 
     
-5) ###Deploy the container to an Azure Web App.
+4) ###Deploy the container to an Azure Web App.
 
     We will deploy this as an [Azure App Service Web App](https://docs.microsoft.com/en-us/azure/app-service/configure-custom-container?pivots=container-linux).
     running a container.
@@ -208,7 +208,7 @@ This section describes how to get this working on sample data and how it can be 
     Once deployed, copy the Azure Web App URL which may be found in the overview section of the portal as we will need 
     it to plug into Azure Search.
     
-7) ###Deploy the datasource, index, skillset and indexer
+5) ###Deploy the datasource, index, skillset and indexer
 
    #### Data source
    
@@ -231,14 +231,14 @@ This section describes how to get this working on sample data and how it can be 
     You will need your [ACS API Key](https://docs.microsoft.com/en-us/azure/search/search-security-api-keys)
     and the URL for your ACS instance. 
    
-8) ###Run the ACS indexer 
+6) ###Run the ACS indexer 
 
     Populate the values in the [indexer file](deployment/azuresearch/create_indexer.json) or 
     [Create/Run your indexer](notebooks/Text%20Summarisation.ipynb#Now-we-create-the-indexer)
 
     The indexer will automatically run and you should see requests coming in if you look at the Web App logs.
 
-9)  ###Test the index 
+7)  ###Test the index 
     Investigate your indexed data, check the most similar images
 
     Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/Text%20Summarisation.ipynb#Let's-go-and-test-the-ACS-index)
