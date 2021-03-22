@@ -29,30 +29,30 @@ Below is a full working example that you can get working end to end on sample da
 
 ## High level Process
 
-![text summarization process](images/text_summarization_flow.png)
+![Alt](images/text_summarization_flow.png "Text Summarization Process")
 
 ## How to implement
 
 This section describes how to get this working on sample data and how it can be amended for your data.
  
-1) ###Data
+1) ### Data
    The first step is to view the sample data files here [train data](data/). 
-2) ###Run the API
+1) ### Run the API
    The next step is to run the API locally and test the model against a test record. Create a local python environment
    and install the requirements:
-   ```pythonn
-      python -m pip install -r requirements.txt
+   
+   ```python
+   python -m pip install -r requirements.txt
    ```
    Activate your environment and run the API locally, execute the following:
    ```python 
-
    python app.py
    ``` 
    Run the cell 
    [Test summarization on our local running API](notebooks/Text%20Summarisation.ipynb#Test-our-text-on-our-local-running-API). 
    Make sure you rename the file [sample_env file to .env](sample_env) and populate it with the relevant values. Use the
    variable ```bash URL_LOCAL``` as the URL.
-3) ###Build the docker image 
+1) ### Build the docker image 
    Now build the [docker image](Dockerfile) and upload the image to your container registry  
    For this step you will need docker running so that we can build and test our inference API locally.
    You will also need a container registry for the build.
@@ -87,7 +87,7 @@ This section describes how to get this working on sample data and how it can be 
     
     ```bash
     DEBUG:urllib3.connectionpool:https://cdn-lfs.huggingface.co:443 "GET /facebook/bart-large-cnn/2ac2745c02ac987d82c78a14b426de58d5e4178ae8039ba1c6881eccff3e82f1 HTTP/1.1" 200 1625270765
-    Downloading:   1%|███▉                      
+    Downloading:   1%                      
     ```
     You should also see the following:
     
@@ -100,7 +100,7 @@ This section describes how to get this working on sample data and how it can be 
     
     After issuing the above request you should get a response showing the full and summarized text. 
     
-4) ###Deploy the container to an Azure Web App.
+1) ### Deploy the container to an Azure Web App.
 
     We will deploy this as an [Azure App Service Web App](https://docs.microsoft.com/en-us/azure/app-service/configure-custom-container?pivots=container-linux).
     running a container.
@@ -208,7 +208,7 @@ This section describes how to get this working on sample data and how it can be 
     Once deployed, copy the Azure Web App URL which may be found in the overview section of the portal as we will need 
     it to plug into Azure Search.
     
-5) ###Deploy the datasource, index, skillset and indexer
+1) ### Deploy the datasource, index, skillset and indexer
 
    #### Data source
    
@@ -231,14 +231,14 @@ This section describes how to get this working on sample data and how it can be 
     You will need your [ACS API Key](https://docs.microsoft.com/en-us/azure/search/search-security-api-keys)
     and the URL for your ACS instance. 
    
-6) ###Run the ACS indexer 
+1) ### Run the ACS indexer 
 
     Populate the values in the [indexer file](deployment/azuresearch/create_indexer.json) or 
     [Create/Run your indexer](notebooks/Text%20Summarisation.ipynb#Now-we-create-the-indexer)
 
     The indexer will automatically run and you should see requests coming in if you look at the Web App logs.
 
-7)  ###Test the index 
+1)  ### Test the index 
     Investigate your indexed data, check the most similar images
 
     Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/Text%20Summarisation.ipynb#Let's-go-and-test-the-ACS-index)
