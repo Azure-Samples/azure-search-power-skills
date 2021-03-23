@@ -14,6 +14,10 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 # AnalyzeForm
 
+>   
+> This version of the Analyze Form skill is***deprecated***. [AnalyzeFormV2](../AnalyzeFormV2) implements the current version of the Form Recognizer service.
+>
+
 This custom skill extracts specific fields from the results of a trained form recognition.
 
 A [full tutorial on this skill is available in the Azure Cognitive Seach documentation](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-form).
