@@ -1,0 +1,42 @@
+{
+    "name": "image-similarity-indexer",
+    "dataSourceName": "image-similarity-data-source",
+    "targetIndexName": "image-similarity-index",
+    "skillsetName": "image-similarity-skillset",
+    "parameters": {
+        "batchSize": null,
+        "maxFailedItems": null,
+        "maxFailedItemsPerBatch": null,
+        "base64EncodeKeys": null,
+        "configuration": {
+            "allowSkillsetToReadFileData": true,
+            "imageAction": "generateNormalizedImagePerPage"
+        }
+    },
+    "outputFieldMappings": [
+        {
+            "sourceFieldName": "/document/normalized_images/*/most_similar",
+            "targetFieldName": "most_similar"
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/categories/*",
+            "targetFieldName": "categories",
+            "mappingFunction": null
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/tags/*",
+            "targetFieldName": "tags",
+            "mappingFunction": null
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/description",
+            "targetFieldName": "description",
+            "mappingFunction": null
+        },
+        {
+            "sourceFieldName": "/document/normalized_images/*/faces/*",
+            "targetFieldName": "faces",
+            "mappingFunction": null
+        }
+    ]
+}
