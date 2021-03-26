@@ -1,0 +1,84 @@
+{
+    "description": "Crack documents.",
+    "skills": [
+        {
+            "@odata.type": "#Microsoft.Skills.Vision.ImageAnalysisSkill",
+            "context": "/document/normalized_images/*",
+            "defaultLanguageCode": "en",
+            "visualFeatures": [
+                "tags",
+                "categories",
+                "description",
+                "faces",
+                "brands"
+            ],
+			"inputs": [
+                {
+                    "name": "image",
+                    "source": "/document/normalized_images/*"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "categories"
+                },
+                {
+                    "name": "tags"
+                },
+                {
+                    "name": "description"
+                },
+                {
+                    "name": "faces"
+                },
+                {
+                    "name": "brands"
+                }
+            ]
+        },
+        {
+            "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+            "description": "A custom skill that finds the topn most similar images",
+            "uri": "https://[your site].azurewebsites.net/api/extraction",
+            "timeout": "PT160S",
+            "batchSize": 1,
+            "context": "/document/normalized_images/*",
+            "httpHeaders": {
+                "Ocp-Apim-Subscription-Key": "yoursecretkey"
+            },
+            "httpMethod": "POST",
+            "inputs": [
+			    {
+			        "name": "images",
+			        "source": "/document/normalized_images/*"
+			    }
+            ],
+            "outputs": [
+                {
+                    "name": "most_similar"
+                }
+            ]
+        }
+    ],
+    "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "cogsvc",
+        "key": ""
+    },
+     "knowledgeStore": {
+      "storageConnectionString": "an Azure storage connection string",
+      "projections" : [
+        {
+          "tables": [
+            { "tableName": "MainTable", "generatedKeyName": "SomeId", "source": "/document/normalized_images/*/most_similar" }
+          ]
+        },
+        {
+          "objects": [ ]
+        },
+        {
+            "files": [ ]
+        }
+      ]
+    }
+}

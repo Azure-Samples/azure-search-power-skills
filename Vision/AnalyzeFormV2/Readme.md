@@ -12,6 +12,11 @@ urlFragment: azure-analyzeform-sample
 description: This custom skill extracts specific fields from the results of a trained form recognition.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/AnalyzeFormV2/azuredeploy.json
 ---
+Invoking a Form Recognizer capability within the Cognitive Search pipeline is broken out into three skills
+* [Analyze Form](#AnalyzeForm), using a pre trained model
+* [Analyze Invoice](#AnalyzeInvoice) using a pretrained model
+* [Extract Tables](#ExtractTables) using a pretrained model
+
 # Deployment    
 
 The analyze form skill requires you to train a custom model to identify and extract key value pairs. Analyze invoice and extract table skills invoke pre trained models. All skills require the `FORMS_RECOGNIZER_ENDPOINT` and `FORMS_RECOGNIZER_KEY` property set in the appsettings, while the analyze form skill additionally requires a `FORMS_RECOGNIZER_MODEL_ID`.
