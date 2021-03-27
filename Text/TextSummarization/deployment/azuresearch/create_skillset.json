@@ -1,0 +1,57 @@
+{
+    "description": "Summarize documents.",
+    "skills": [
+        {
+          "@odata.type": "#Microsoft.Skills.Text.EntityRecognitionSkill",
+          "categories": [ "Organization", "Location", "Person", "Url" ],
+          "defaultLanguageCode": "en",
+          "inputs": [
+            {
+              "name": "text", "source": "/document/content"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "organizations", "targetName": "organizations"
+            },
+            {
+              "name": "persons", "targetName": "persons"
+            },
+            {
+              "name": "locations", "targetName": "locations"
+            },
+            {
+              "name": "urls", "targetName": "urls"
+            }
+          ]
+        },
+        {
+            "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+            "description": "A custom skill that summarizes the text",
+            "uri": "https://YOUR_WEB_APP/api/extraction",
+            "timeout": "PT160S",
+            "batchSize": 1,
+            "context": "/document/content",
+            "httpHeaders": {
+                "Ocp-Apim-Subscription-Key": ""
+            },
+            "httpMethod": "POST",
+            "inputs": [
+            {
+                "name": "text",
+                    "source": "/document/content"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "summary"
+                }
+            ]
+        }
+    ],
+    "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "cogsvc",
+        "key": ""
+    }
+}

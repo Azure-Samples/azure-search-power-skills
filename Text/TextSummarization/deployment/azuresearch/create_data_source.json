@@ -1,0 +1,6 @@
+{
+    "name" : "text-summarization-datasource",
+    "type" : "azureblob",
+    "credentials" : { "connectionString" : ""},
+    "container" : { "name" : "" }
+}

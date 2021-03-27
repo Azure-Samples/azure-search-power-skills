@@ -1,0 +1,62 @@
+{
+      "name" : "text-summarization-index",
+      "fields": [
+        { "name": "id", "type": "Edm.String", "key": true, "searchable": false },
+        { "name": "file_name", "type": "Edm.String", "searchable": false },
+        { "name": "size", "type": "Edm.Int64", "searchable": false },
+        { "name": "last_modified", "type": "Edm.DateTimeOffset", "searchable": false },
+        { "name": "content", "type": "Edm.String", "searchable": true, "filterable": false, "sortable": false, "facetable": false },
+        { "name": "summary", "type": "Edm.String", "searchable": true, "filterable": false, "sortable": false, "facetable": false },
+        { "analyzer": "standard.lucene", "facetable": false, "filterable": false, "indexAnalyzer": null, "key": false,
+            "name": "organization",
+            "retrievable": true,
+            "searchAnalyzer": null,
+            "searchable": true,
+            "sortable": false,
+            "synonymMaps": [],
+            "type": "Collection(Edm.String)"
+        },
+        {
+            "analyzer": "standard.lucene",
+            "facetable": false,
+            "filterable": false,
+            "indexAnalyzer": null,
+            "key": false,
+            "name": "person",
+            "retrievable": true,
+            "searchAnalyzer": null,
+            "searchable": true,
+            "sortable": false,
+            "synonymMaps": [],
+            "type": "Collection(Edm.String)"
+        },
+        {
+            "analyzer": "standard.lucene",
+            "facetable": false,
+            "filterable": false,
+            "indexAnalyzer": null,
+            "key": false,
+            "name": "location",
+            "retrievable": true,
+            "searchAnalyzer": null,
+            "searchable": true,
+            "sortable": false,
+            "synonymMaps": [],
+            "type": "Collection(Edm.String)"
+        },
+        {
+            "analyzer": "standard.lucene",
+            "facetable": false,
+            "filterable": false,
+            "indexAnalyzer": null,
+            "key": false,
+            "name": "url",
+            "retrievable": true,
+            "searchAnalyzer": null,
+            "searchable": true,
+            "sortable": false,
+            "synonymMaps": [],
+            "type": "Collection(Edm.String)"
+        }
+      ]
+}
