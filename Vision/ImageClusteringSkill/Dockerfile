@@ -10,8 +10,6 @@ RUN apt-get install 'libsm6'\
     'libgl1-mesa-glx'\
     'libxext6'  -y
 
-#RUN mkdir -p /usr/src/mlops TOBDELETED
-#RUN mkdir -p /usr/src/mlops/common TOBDELETED
 RUN mkdir -p /usr/src/ml
 RUN mkdir -p /usr/src/ml/extractors
 RUN mkdir -p /usr/src/ml/similarity
@@ -24,10 +22,6 @@ RUN mkdir -p /usr/src/api/models
 
 WORKDIR /usr/src/api
 
-#COPY mlops/__init__.py /usr/src/  TOBDELETED
-#COPY mlops/__init__.py /usr/src/mlops/  TOBDELETED
-#COPY mlops/common /usr/src/mlops/common  TOBDELETED
-#COPY mlops/__init__.py /usr/src/mlops/common  TOBDELETED
 COPY ml/extractors /usr/src/ml/extractors
 COPY ml/models /usr/src/ml/models
 COPY ml/similarity /usr/src/ml/similarity

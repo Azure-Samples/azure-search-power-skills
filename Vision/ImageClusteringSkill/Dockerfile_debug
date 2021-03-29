@@ -9,8 +9,6 @@ RUN apt-get install 'libsm6'\
     'libgl1-mesa-glx'\
     'libxext6'  -y
 
-#RUN mkdir -p /usr/src/mlops
-#RUN mkdir -p /usr/src/mlops/common
 RUN mkdir -p /usr/src/ml
 RUN mkdir -p /usr/src/ml/extractors
 RUN mkdir -p /usr/src/ml/similarity
@@ -25,10 +23,6 @@ COPY sshd_config /etc/ssh/
 
 WORKDIR /usr/src/api
 
-COPY mlops/__init__.py /usr/src/
-COPY mlops/__init__.py /usr/src/mlops/
-COPY mlops/common /usr/src/mlops/common
-COPY mlops/__init__.py /usr/src/mlops/common
 COPY ml/extractors /usr/src/ml/extractors
 COPY ml/models /usr/src/ml/models
 COPY ml/similarity /usr/src/ml/similarity

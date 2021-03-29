@@ -35,7 +35,7 @@ async def get_api_key(
         return api_key_header
     else:
         raise HTTPException(
-            status_code=HTTP_403_FORBIDDEN, detail="Translation CogSvc Key not present"
+            status_code=HTTP_403_FORBIDDEN, detail="Secret Key not present"
         )
 
 
