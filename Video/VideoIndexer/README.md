@@ -124,6 +124,18 @@ Here's a sample skill definition for this example (inputs and outputs should be 
 
 You will also need an indexer that points to the container where simplified insights are placed. Here's an example of that. Notice how in this example we map the ```originalVideoEncodedMetadataPath``` and ```originalVideoName``` which identify the original video index item. 
 
+| Blob Json Property | Description |
+| ---- | ---- |
+| originalVideoEncodedMetadataPath | Safe Base 64 encoded path of the original video. This is often used as the primary key in the search index |
+| originalVideoName | Name of the original video |
+| indexedVideoId | Id of the video in the video indexer. This is used to call REST Apis enabling playback / insight retrieval from the Video Indexer |
+| thumbnailId | Id of the summary thumbnail from the video indexer. This can be used to display a sample image on your search results screen |
+| content | Contains the full transcript of the video |
+| keyPhrases | Array of all keywords, labels, topics, sentiments and emotions from the video |
+| keyPhrases | Array of all keywords, labels, topics, sentiments and emotions from the video |
+| persons | Array of all identified people from the video |
+| locations | Array of all identified locations from the video |
+
 ```json
 {
   "name": "video-insights-indexer",
@@ -145,6 +157,16 @@ You will also need an indexer that points to the container where simplified insi
     {
       "sourceFieldName": "originalVideoName",
       "targetFieldName": "metadata_storage_name",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "indexedVideoId",
+      "targetFieldName": "indexed_video_id",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "thumbnailId",
+      "targetFieldName": "indexed_video_thumbnail_id",
       "mappingFunction": null
     }
   ],
