@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AzureCognitiveSearch.PowerSkills.Video.VideoIndexer;
+using AzureCognitiveSearch.PowerSkills.Video.VideoIndexer.VideoIndexerModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
@@ -60,6 +61,11 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
                 }
 
                 throw new InvalidOperationException("Unexpected blob Url");
+            }
+
+            public Task<VideoIndexerResult> GetIndexerInsights(string videoId)
+            {
+                throw new NotImplementedException();
             }
         }
     }

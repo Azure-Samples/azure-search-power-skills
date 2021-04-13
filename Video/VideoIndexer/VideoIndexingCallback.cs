@@ -4,7 +4,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using AzureCognitiveSearch.PowerSkills.Video.VideoIndexer.VideoIndexerModels;
 using Microsoft.AspNetCore.Http;
@@ -17,13 +16,20 @@ using Newtonsoft.Json;
 
 namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
 {
-    public static class EndVideoIndexing
+    public class VideoIndexingCallback
     {
+        private readonly IVideoIndexerClient _videoIndexerClient;
+
+        public VideoIndexingCallback(IVideoIndexerClient videoIndexerClient)
+        {
+            _videoIndexerClient = videoIndexerClient;
+        }
+        
         [FunctionName("video-indexer-callback")]
-        public static async Task<IActionResult> RunAsync(
+        public async Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]
             HttpRequest req,
-            Binder binder,
+            IBinder binder,
             ILogger log)
         {
             var encodedVideoPath = req.Query["encodedPath"];
@@ -36,8 +42,7 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
                 return new OkResult();
             }
 
-            var indexerInsights = await GetIndexerInsights(log, indexerId);
-            var videoIndexerResult = JsonConvert.DeserializeObject<VideoIndexerResult>(indexerInsights);
+            var videoIndexerResult = await _videoIndexerClient.GetIndexerInsights(indexerId);
             var searchIndexModel = TransformVideoIndexModelToSimplifiedStructure(videoIndexerResult, encodedVideoPath);
             var searchIndexJson = JsonConvert.SerializeObject(searchIndexModel);
 
@@ -46,7 +51,7 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
             return new OkResult();
         }
 
-        private static async Task WriteTransformedIndexerResultIntoBlob(Binder binder, StringValues indexerId, string indexerInsights)
+        private static async Task WriteTransformedIndexerResultIntoBlob(IBinder binder, StringValues indexerId, string indexerInsights)
         {
             var outputContainer = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerStorageContainerAppSetting);
             using (var writer = await binder.BindAsync<TextWriter>(new BlobAttribute($"{outputContainer}/{indexerId}.json")))
@@ -79,26 +84,5 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
                 ThumbnailId = indexerInsights.SummarizedInsights.ThumbnailId
             };
         }
-
-        private static async Task<string> GetIndexerInsights(ILogger logger, string videoId)
-        {
-            var endpoint = "https://api.videoindexer.ai";
-            var accountId = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerAccountIdAppSetting);
-            var location = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerLocationAppSetting);
-            var videoIndexerAccountKey  = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerAccountKeyAppSetting);
-
-            var httpClient = new HttpClient();
-            
-            httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", videoIndexerAccountKey);
-
-            var accessToken = JsonConvert.DeserializeObject<string>(await httpClient.GetStringAsync($"{endpoint}/auth/{location}/Accounts/{accountId}/AccessToken?allowEdit=true"));
-            logger.LogInformation("Retrieved access token {Token}", accessToken);
-
-            var response = await httpClient.GetStringAsync($"{endpoint}/{location}/Accounts/{accountId}/Videos/{videoId}/Index?includeStreamingUrls=True&accessToken={accessToken}");
-            logger.LogInformation("Retrieved insights for video Id:{Id}", videoId);
-
-            return response;
-        }
-
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AzureCognitiveSearch.PowerSkills.Video.VideoIndexer.VideoIndexerModels;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -48,6 +49,29 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStringAsync();
+        }
+        
+        
+        public async Task<VideoIndexerResult> GetIndexerInsights(string videoId)
+        {
+            var endpoint = "https://api.videoindexer.ai";
+            var accountId = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerAccountIdAppSetting);
+            var location = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerLocationAppSetting);
+            var videoIndexerAccountKey  = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerAccountKeyAppSetting);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{endpoint}/auth/{location}/Accounts/{accountId}/AccessToken?allowEdit=true");
+            request.Headers.Add("Ocp-Apim-Subscription-Key", videoIndexerAccountKey);
+
+            var accessTokenResponse = await _httpClient.SendAsync(request);
+            accessTokenResponse.EnsureSuccessStatusCode();
+            var accessToken = await accessTokenResponse.Content.ReadAsAsync<string>();
+            _logger.LogInformation("Retrieved access token {Token}", accessToken);
+
+            var response = await _httpClient.GetAsync($"{endpoint}/{location}/Accounts/{accountId}/Videos/{videoId}/Index?includeStreamingUrls=True&accessToken={accessToken}");
+            response.EnsureSuccessStatusCode();
+            _logger.LogInformation("Retrieved insights for video Id:{Id}", videoId);
+
+            return await response.Content.ReadAsAsync<VideoIndexerResult>();
         }
     }
 }
