@@ -67,8 +67,9 @@ namespace AzureCognitiveSearch.PowerSkills.Template.HelloWorld
             var videoIndexerAccountKey  = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerAccountKeyAppSetting);
             var functionCode = Environment.GetEnvironmentVariable(VideoIndexerAppSettings.MediaIndexerCallbackFunctionCodeAppSetting);
             var hostName = Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME");
-            
-            var callbackUrl = Uri.EscapeDataString($"https://{hostName}/api/video-indexer-callback?code={functionCode}&encodedPath={encodedVideoUrl}");
+
+            var callbackUrl = $"https://{hostName}/api/video-indexer-callback?code={functionCode}&encodedPath={encodedVideoUrl}";
+            logger.LogInformation("Passing callback to indexer at: {CallbackUrl}", callbackUrl.Replace(functionCode, functionCode.Substring(0, 5) + "XXX"));
             var privacy = "Private";
 
             var httpClient = new HttpClient();
@@ -81,7 +82,7 @@ namespace AzureCognitiveSearch.PowerSkills.Template.HelloWorld
             videoUrl = Uri.EscapeDataString(videoUrl);
 
             var response = await httpClient.PostAsync(
-                $"{endpoint}/{location}/Accounts/{accountId}/Videos?accessToken={accessToken}&name={Uri.EscapeDataString(videoName)}&videoUrl={videoUrl}&privacy={privacy}&callbackUrl={callbackUrl}",
+                $"{endpoint}/{location}/Accounts/{accountId}/Videos?accessToken={accessToken}&name={Uri.EscapeDataString(videoName)}&videoUrl={videoUrl}&privacy={privacy}&callbackUrl={Uri.EscapeDataString(callbackUrl)}",
                 new MultipartFormDataContent());
 
             logger.LogInformation("Submitted video {VideoName} for indexing", videoName);
