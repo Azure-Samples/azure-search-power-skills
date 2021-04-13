@@ -29,7 +29,7 @@ This function requires the following application settings.
 | MediaIndexer_AccountKey | Azure Video Indexer Account key |
 | MediaIndexer_StorageConnectionString | Azure Storage Connection string pointing to a blob store to store simplified Video Indexer results |
 | MediaIndexer_StorageContainer | Name of the container to place the simplified Video Indexer results |
-| MediaIndexerCallbackFunctionCodeAppSetting | Azure Function code enabling the Video Indexer to invoke the callback function |
+| MediaIndexer_CallbackFunctionCode | Azure Function code enabling the Video Indexer to invoke the callback function |
 
 
 ## Deployment
