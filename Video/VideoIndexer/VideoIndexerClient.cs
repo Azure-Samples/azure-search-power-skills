@@ -48,9 +48,8 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsStringAsync();
+            return (await response.Content.ReadAsAsync<VideoUploadResult>()).Id;
         }
-        
         
         public async Task<VideoIndexerResult> GetIndexerInsights(string videoId)
         {

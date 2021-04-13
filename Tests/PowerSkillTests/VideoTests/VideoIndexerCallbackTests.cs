@@ -22,7 +22,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
         private const string TestEncodedPath = "aHR0cHM6Ly9rbXZncmZzdHIuYmxvYi5jb3JlLndpbmRvd3MubmV0L2RvY3VtZW50cy9waXBlbGluZS5tcDQ1";
 
         [TestMethod]
-        public async Task VideoIndexer()
+        public async Task VideoIndexerCallbackUploadsBlob()
         {
             var indexer = new VideoIndexingCallback(new FakeVideoIndexerClient());
 

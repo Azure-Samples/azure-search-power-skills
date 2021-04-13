@@ -10,7 +10,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
     public class VideoIndexerTests
     {
         [TestMethod]
-        public async Task VideoIndexer()
+        public async Task VideoIndexerUploadsVideo()
         {
             var sasKey = Guid.NewGuid().ToString();
             var jobId = new Random(Environment.TickCount).Next(1000, 99999).ToString();
