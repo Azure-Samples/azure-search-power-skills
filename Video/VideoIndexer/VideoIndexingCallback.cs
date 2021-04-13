@@ -27,7 +27,7 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
         
         [FunctionName("video-indexer-callback")]
         public async Task<IActionResult> RunAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
             HttpRequest req,
             IBinder binder,
             ILogger log)

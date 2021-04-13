@@ -64,7 +64,7 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
             var accessTokenResponse = await _httpClient.SendAsync(request);
             accessTokenResponse.EnsureSuccessStatusCode();
             var accessToken = await accessTokenResponse.Content.ReadAsAsync<string>();
-            _logger.LogInformation("Retrieved access token {Token}", accessToken);
+            _logger.LogInformation("Retrieved access token for Video Indexer");
 
             var response = await _httpClient.GetAsync($"{endpoint}/{location}/Accounts/{accountId}/Videos/{videoId}/Index?includeStreamingUrls=True&accessToken={accessToken}");
             response.EnsureSuccessStatusCode();
