@@ -1,0 +1,154 @@
+---
+page_type: sample
+languages:
+- csharp
+products:
+- azure
+- azure-search
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Video/VideoIndexer/azuredeploy.json
+name: "Sample skill for enabling video indexing"
+description: "This custom skill will invoke the Azure Video Indexer, placing a simplified insights model back into Blob Storage. You can then trigger another indexer to merge the insights back into your main search index."
+---
+
+# Video Indexer
+
+This custom skill will invoke the [Azure Video Indexer](https://docs.microsoft.com/en-us/azure/media-services/video-indexer/), placing a simplified insights model back into Blob Storage. You can then trigger another indexer to merge the insights back into your main search index.
+
+## Requirements
+
+This skill requires a Video Indexer account, and key to function.
+
+## Settings
+
+This function requires the following application settings.
+
+| Setting Name | Description |
+| ---- | --- |
+| MediaIndexer_AccountId | Azure Video Indexer Account Id |
+| MediaIndexer_Location | Azure Video Indexer Account location, e.g. trial |
+| MediaIndexer_AccountKey | Azure Video Indexer Account key |
+| MediaIndexer_StorageConnectionString | Azure Storage Connection string pointing to a blob store to store simplified Video Indexer results |
+| MediaIndexer_StorageContainer | Name of the container to place the simplified Video Indexer results |
+| MediaIndexerCallbackFunctionCodeAppSetting | Azure Function code enabling the Video Indexer to invoke the callback function |
+
+
+## Deployment
+
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FTemplate%2FHelloWorld%2Fazuredeploy.json)
+
+## hello-world
+
+### Sample Input:
+
+```json
+{
+    "values": [
+        {
+            "recordId": "r1",
+            "data":
+            {
+              "metadata_storage_path": "<SAFE-BASE64-ENCODED-PATH-TO-VIDEO>",
+              "metadata_storage_name": "<VIDEO-NAME>"
+            }
+        }
+    ]
+}
+```
+
+### Sample Output:
+
+```json
+{
+    "values": [
+        {
+            "recordId": "r1",
+            "data": {
+            },
+            "errors": [],
+            "warnings": []
+        }
+    ]
+}
+```
+
+### Sample Insights Blob Output
+
+```json
+{
+    "content": "",
+    "keyPhrases": [
+        "outdoor",
+        "vehicle",
+        "land vehicle",
+        "car",
+        "wheel"
+    ],
+    "organizations": [],
+    "persons": [],
+    "locations": [],
+    "indexedVideoId": "e11cad2313",
+    "thumbnailId": "650d162b-e2bd-47d6-a11c-7b36a093fe2d",
+    "originalVideoEncodedMetadataPath": "<safe-base64-encoded-path>",
+    "originalVideoName": "<original-name>"
+}
+
+```
+
+## Sample Skillset Integration
+
+In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
+
+```json
+{
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "name": "videoIndexer",
+    "description": "Video Indexer",
+    "uri": "[AzureFunctionEndpointUrl]/api/video-indexer?code=[AzureFunctionDefaultHostKey]",
+    "batchSize": 1,
+    "context": "/document",
+    "inputs": [
+      {
+        "name": "metadata_storage_path",
+        "source": "/document/metadata_storage_path"
+      },
+      {
+        "name": "metadata_storage_name",
+        "source": "/document/metadata_storage_name"
+      }
+    ],
+    "outputs": [
+    ]
+}
+```
+
+You will also need an indexer that points to the container where simplified insights are placed. Here's an example of that. Notice how in this example we map the ```originalVideoEncodedMetadataPath``` and ```originalVideoName``` which identify the original video index item. 
+
+```json
+{
+  "name": "video-insights-indexer",
+  "description": null,
+  "dataSourceName": "<data-source-for-simplified-insights-container>",
+  "skillsetName": null,
+  "targetIndexName": "<original-index-you-want-to-merge-insights-into>",
+  "parameters": {
+    "configuration": {
+      "parsingMode": "json"
+    }
+  },
+  "fieldMappings": [
+    {
+      "sourceFieldName": "originalVideoEncodedMetadataPath",
+      "targetFieldName": "metadata_storage_path",
+      "mappingFunction": null
+    },
+    {
+      "sourceFieldName": "originalVideoName",
+      "targetFieldName": "metadata_storage_name",
+      "mappingFunction": null
+    }
+  ],
+  "outputFieldMappings": []
+}
+
+```
