@@ -19,7 +19,9 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
     {
         private const string TestVideoId = "12345";
         private const string TestVideoThumbnailId = "sdfklj23r";
-        private const string TestEncodedPath = "aHR0cHM6Ly9rbXZncmZzdHIuYmxvYi5jb3JlLndpbmRvd3MubmV0L2RvY3VtZW50cy9waXBlbGluZS5tcDQ1";
+
+        private const string TestEncodedPath =
+            "aHR0cHM6Ly9rbXZncmZzdHIuYmxvYi5jb3JlLndpbmRvd3MubmV0L2RvY3VtZW50cy9waXBlbGluZS5tcDQ1";
 
         [TestMethod]
         public async Task VideoIndexerCallbackUploadsBlob()
@@ -45,11 +47,11 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
 
             object expectedBlobContent = new
             {
-                content = "",
-                keyPhrases = Array.Empty<string>(),
+                content = "This is transcript one This is transcript two",
+                keyPhrases = new [] { "Keyword1","Keyword2","Label1","Label2","mining","content","optimistic","Happy" },
                 organizations = Array.Empty<string>(),
-                persons = Array.Empty<string>(),
-                locations = Array.Empty<string>(),
+                persons = new [] { "Graeme Foster" },
+                locations = new [] { "Perth" },
                 indexedVideoId = TestVideoId,
                 thumbnailId = TestVideoThumbnailId,
                 originalVideoEncodedMetadataPath = TestEncodedPath,
@@ -57,7 +59,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
             };
 
             Assert.AreEqual(
-                JsonConvert.SerializeObject(expectedBlobContent), 
+                JsonConvert.SerializeObject(expectedBlobContent),
                 outputBinder.BindingStringWriter.ToString());
         }
 
@@ -74,16 +76,53 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
                 {
                     Id = TestVideoId,
                     Name = "pipeline.mp4",
-                    Videos = Array.Empty<Video.VideoIndexer.VideoIndexerModels.Video>(),
+                    Videos = new[]
+                    {
+                        new Video.VideoIndexer.VideoIndexerModels.Video()
+                        {
+                            Insights = new Insight()
+                            {
+                                Transcript = new[]
+                                {
+                                    new Transcript() {Text = "This is transcript one"},
+                                    new Transcript() {Text = "This is transcript two"},
+                                }
+                            }
+                        }
+                    },
                     SummarizedInsights = new SummarizedInsights()
                     {
-                        Emotions = Array.Empty<Emotion>(),
-                        Faces = Array.Empty<Face>(),
-                        Keywords = Array.Empty<Keyword>(),
-                        Labels = Array.Empty<Label>(),
-                        Sentiments = Array.Empty<Sentiment>(),
-                        Topics = Array.Empty<Topic>(),
-                        NamedLocations = Array.Empty<NamedLocation>(),
+                        Emotions = new[]
+                        {
+                            new Emotion() {Type = "Happy"}
+                        },
+                        Faces = new[]
+                        {
+                            new Face() {Confidence = 0.9, Name = "Graeme Foster", Title = "Mr"}
+                        },
+                        Keywords = new[]
+                        {
+                            new Keyword {Name = "Keyword1"},
+                            new Keyword {Name = "Keyword2"},
+                        },
+                        Labels = new[]
+                        {
+                            new Label {Name = "Label1"},
+                            new Label {Name = "Label2"},
+                        },
+                        Sentiments = new[]
+                        {
+                            new Sentiment {SentimentKey = "content"},
+                            new Sentiment {SentimentKey = "optimistic"},
+                        },
+                        Topics = new[]
+                        {
+                            new Topic() {Name = "mining", Confidence = 0.75}
+                        },
+                        NamedLocations = new[]
+                        {
+                            new NamedLocation() {Confidence = 0.8, Name = "Perth"}
+                        },
                         ThumbnailId = TestVideoThumbnailId
                     }
                 });
@@ -92,14 +131,14 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.VideoTests
 
         internal class AttributeCapturingBinder : IBinder
         {
-            
-            public Task<T> BindAsync<T>(Attribute attribute,  CancellationToken cancellationToken = new CancellationToken())
+            public Task<T> BindAsync<T>(Attribute attribute,
+                CancellationToken cancellationToken = new CancellationToken())
             {
                 BindingAttribute = attribute;
                 if (typeof(T) == typeof(TextWriter))
                 {
                     BindingStringWriter = new StringWriter();
-                    return Task.FromResult((T)(object)BindingStringWriter);
+                    return Task.FromResult((T) (object) BindingStringWriter);
                 }
 
                 throw new NotSupportedException();
