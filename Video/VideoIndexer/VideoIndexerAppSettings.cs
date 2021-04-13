@@ -1,4 +1,4 @@
-﻿namespace AzureCognitiveSearch.PowerSkills.Template.HelloWorld
+﻿namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
 {
     public static class VideoIndexerAppSettings
     {

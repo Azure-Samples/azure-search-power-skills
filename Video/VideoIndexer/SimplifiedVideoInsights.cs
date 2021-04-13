@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json;
 
-namespace AzureCognitiveSearch.PowerSkills.Template.HelloWorld
+namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
 {
     public class SimplifiedVideoInsights
     {

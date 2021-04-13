@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using AzureCognitiveSearch.PowerSkills.Template.HelloWorld.VideoIndexerModels;
+using AzureCognitiveSearch.PowerSkills.Video.VideoIndexer.VideoIndexerModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
-namespace AzureCognitiveSearch.PowerSkills.Template.HelloWorld
+namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
 {
     public static class EndVideoIndexing
     {
