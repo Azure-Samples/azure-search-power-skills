@@ -81,7 +81,7 @@ When the Video Indexer processer completes it executes a callback function which
 
 ```json
 {
-    "content": "",
+    "content": "This is a transcript of the video",
     "keyPhrases": [
         "outdoor",
         "vehicle",
@@ -90,8 +90,13 @@ When the Video Indexer processer completes it executes a callback function which
         "wheel"
     ],
     "organizations": [],
-    "persons": [],
-    "locations": [],
+    "persons": [
+      "Fred Fibnar"
+    ],
+    "locations": [
+      "Perth",
+      "Australia"
+    ],
     "indexedVideoId": "e11cad2313",
     "thumbnailId": "650d162b-e2bd-47d6-a11c-7b36a093fe2d",
     "originalVideoEncodedMetadataPath": "<safe-base64-encoded-path>",
