@@ -34,7 +34,7 @@ This function requires the following application settings.
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVideoe%2FVideoIndexer%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fgraemefoster%2Fazure-search-power-skills%2Ffeature%2Fvideo-indexing-skill%2FVideo%2FVideoIndexer%2Fazuredeploy.json)
 
 ## hello-world
 
