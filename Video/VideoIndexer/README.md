@@ -36,7 +36,7 @@ This function requires the following application settings.
 
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fgraemefoster%2Fazure-search-power-skills%2Ffeature%2Fvideo-indexing-skill%2FVideo%2FVideoIndexer%2Fazuredeploy.json)
 
-## hello-world
+## Video Indexer
 
 ### Sample Input:
 
@@ -57,12 +57,16 @@ This function requires the following application settings.
 
 ### Sample Output:
 
+VIdeo Indexing is an asynchronous process. So when the skill runs, the results of the process are not available. This results in a skill output with a single property ```videoId``` which is the Id of the video inside Video Indexer.
+The additional metadta will be delivered into another blob container described in the next section.
+
 ```json
 {
     "values": [
         {
             "recordId": "r1",
             "data": {
+              "videoId": "A235234"
             },
             "errors": [],
             "warnings": []
@@ -72,6 +76,8 @@ This function requires the following application settings.
 ```
 
 ### Sample Insights Blob Output
+
+When the Video Indexer processer completes it executes a callback function which was supplied to it in the original skill. The callback function retrieves the Video Indexer insights (that describes the video as a time series), and flattens it into a simpler structure that can be easily merged into existing indexes. For more information on the Video Indexer insights see [here](https://api-portal.videoindexer.ai/api-details#api=Operations&operation=Get-Video-Index).
 
 ```json
 {
@@ -122,7 +128,9 @@ Here's a sample skill definition for this example (inputs and outputs should be 
 }
 ```
 
-You will also need an indexer that points to the container where simplified insights are placed. Here's an example of that. Notice how in this example we map the ```originalVideoEncodedMetadataPath``` and ```originalVideoName``` which identify the original video index item. 
+## Indexing the output of the Video Indexer Skill
+
+Finally, you will need an indexer that indexes the contents of the container where simplified insights are placed. Here's an example of that. Notice how in this example we map the ```originalVideoEncodedMetadataPath``` and ```originalVideoName``` which identify the original video index item. 
 
 | Blob Json Property | Description |
 | ---- | ---- |

@@ -47,9 +47,9 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
                     var videoUrl = UrlSafeBase64Decode(encodedVideoUrl);
                     var videoName = (string)inRecord.Data["metadata_storage_name"];
                     var sasKey = await _videoIndexerBlobClient.GetSasKey(videoUrl);
-                    var jobId = await _videoIndexerClient.SubmitVideoIndexingJob( videoUrl + sasKey,  encodedVideoUrl, videoName);
-                    log.LogInformation("Uploaded video {VideoName} - Video Id in indexer: {Id}", videoName, jobId);
-                    outRecord.Data["jobId"] = jobId;
+                    var videoId = await _videoIndexerClient.SubmitVideoIndexingJob( videoUrl + sasKey,  encodedVideoUrl, videoName);
+                    log.LogInformation("Uploaded video {VideoName} - Video Id in indexer: {Id}", videoName, videoId);
+                    outRecord.Data["videoId"] = videoId;
                     return outRecord;
                 });
 
