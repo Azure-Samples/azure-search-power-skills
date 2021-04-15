@@ -57,8 +57,8 @@ This function requires the following application settings.
 
 ### Sample Output:
 
-VIdeo Indexing is an asynchronous process. So when the skill runs, the results of the process are not available. This results in a skill output with a single property ```videoId``` which is the Id of the video inside Video Indexer.
-The additional metadta will be delivered into another blob container described in the next section.
+VIdeo Indexing is an asynchronous process. When the skill runs the results of the process are not available. This skill outputs a single property ```videoId``` which is the Id of the video inside Video Indexer.
+The insights from your video will be placed into another blob container when the Video Indexer has finished. This is described in the next section.
 
 ```json
 {
