@@ -133,7 +133,7 @@ Here's a sample skill definition for this example (inputs and outputs should be 
 }
 ```
 
-## Indexing the output of the Video Indexer Skill
+## Indexing the output of the Video Indexer
 
 Finally, you will need an indexer that indexes the contents of the container where simplified insights are placed. Here's an example of that. Notice how in this example we map the ```originalVideoEncodedMetadataPath``` and ```originalVideoName``` which identify the original video index item. 
 
