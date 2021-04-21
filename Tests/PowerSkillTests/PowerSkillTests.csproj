@@ -59,6 +59,7 @@
     <ProjectReference Include="..\..\Text\CustomEntitySearch\CustomEntityLookup.csproj" />
     <ProjectReference Include="..\..\Text\Distinct\Distinct.csproj" />
     <ProjectReference Include="..\..\Text\Tokenizer\Tokenizer.csproj" />
+    <ProjectReference Include="..\..\Video\VideoIndexer\VideoIndexer.csproj" />
     <ProjectReference Include="..\..\Vision\AnalyzeForm\AnalyzeForm.csproj" />
     <ProjectReference Include="..\..\Vision\HocrGenerator\HocrGenerator.csproj" />
     <ProjectReference Include="..\..\Vision\ImageStore\ImageStore.csproj" />

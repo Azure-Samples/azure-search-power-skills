@@ -1,0 +1,7 @@
+{
+    "version": "2.0",
+    "logging": {
+        "logLevel": {
+            "AzureCognitiveSearch.PowerSkills.Video.VideoIndexer.VideoIndexerClient": "Information"
+        }
+    }}
