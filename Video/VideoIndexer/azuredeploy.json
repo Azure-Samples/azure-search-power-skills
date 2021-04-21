@@ -24,7 +24,7 @@
       }
   },
   "variables": {
-    "repoURL": "https://github.com/graemefoster/azure-search-power-skills",
+    "repoURL": "https://github.com/azure-samples/azure-search-power-skills",
     "functionProject": "Video\\VideoIndexer\\VideoIndexer.csproj",
     "websiteName": "[toLower(concat(parameters('resourcePrefix'), '-site-', uniqueString(resourceGroup().id)))]",
     "storageAccount": "[toLower(concat(parameters('resourcePrefix'), uniqueString(resourceGroup().id)))]",
@@ -101,7 +101,7 @@
           ],
           "properties": {
             "RepoUrl": "[variables('repoURL')]",
-            "branch": "feature/video-indexing-skill",
+            "branch": "main",
             "project": "[variables('functionProject')]",
             "IsManualIntegration": true
           }
