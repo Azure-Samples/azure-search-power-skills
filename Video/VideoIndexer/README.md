@@ -35,7 +35,7 @@ To get started with video indexer and to get the necessary AccountId and Account
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fgraemefoster%2Fazure-search-power-skills%2Ffeature%2Fvideo-indexing-skill%2FVideo%2FVideoIndexer%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVideo%2FVideoIndexer%2Fazuredeploy.json)
 
 ## Video Indexer
 
