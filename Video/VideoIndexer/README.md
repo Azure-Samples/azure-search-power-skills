@@ -138,6 +138,8 @@ Here's a sample skill definition for this example (inputs and outputs should be 
 
 Finally, you will need an indexer that indexes the contents of the container where simplified insights are placed. Here's an example of that. Notice how in this example we map the ```originalVideoEncodedMetadataPath``` and ```originalVideoName``` which identify the original video index item. 
 
+> NOTE: By default, this skill will output the video contents to the storage account deployed as part of this ARM template so you may need to create a new data source as well.
+
 | Blob Json Property | Description |
 | ---- | ---- |
 | originalVideoEncodedMetadataPath | Safe Base 64 encoded path of the original video. This is often used as the primary key in the search index |
