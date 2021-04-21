@@ -31,6 +31,7 @@ This function requires the following application settings.
 | MediaIndexer_StorageContainer | Name of the container to place the simplified Video Indexer results |
 | MediaIndexer_CallbackFunctionCode | Azure Function code enabling the Video Indexer to invoke the callback function |
 
+To get started with video indexer and to get the necessary AccountId and AccountKey, you can follow this [tutorial](https://docs.microsoft.com/azure/media-services/video-indexer/video-indexer-use-apis).
 
 ## Deployment
 
