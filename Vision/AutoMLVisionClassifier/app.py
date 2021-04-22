@@ -57,6 +57,11 @@ async def get_api_key(
         )
 
 
+@app.get('/api/healthcheck', status_code=200)
+async def healthcheck():
+    return 'Ready'
+
+
 @app.post('/api/extraction')
 def extract(values: Values, api_key: APIKey = Depends(get_api_key)):
     body = values.dict()
