@@ -18,9 +18,6 @@ resource "azurerm_app_service" "dockerapp" {
     DOCKER_REGISTRY_SERVER_PASSWORD     = var.docker_registry_password
     DEBUG                               = var.debug
     RESOURCE_GROUP                      = var.resource_group
-    VI_API_KEY                          = var.vi_api_key
-    VI_LOCATION                         = var.vi_location
-    VI_ACCOUNT_ID                       = var.vi_account_id
     AZUREML_MODEL_DIR                   = var.azureml_model_dir
     GET_LATEST_MODEL                    = var.get_latest_model
     EXPERIMENT_NAME                     = var.experiment_name
