@@ -1,0 +1,32 @@
+FROM python:3.7
+
+RUN apt-get update -y && \
+    apt-get install -y \
+        python-pip \
+        wget \
+        && apt-get clean -y && \
+        rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /tmp/pip-tmp/
+COPY azureml_contrib_automl_dnn_vision-1.22.0-py3-none-any.whl /tmp/
+RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
+    && rm -rf /tmp/pip-tmp
+
+RUN pip install /tmp/azureml_contrib_automl_dnn_vision-1.22.0-py3-none-any.whl  #PyPi broken
+RUN pip install -U scikit-learn  #Fix ImportError: cannot import name '_NAN_METRICS' from 'sklearn.metrics.pairwise
+
+RUN mkdir -p /usr/src/api
+RUN mkdir -p /usr/src/api/powerskill
+RUN mkdir -p /usr/src/api/models
+RUN mkdir -p /usr/src/api/thumbnails
+
+WORKDIR /usr/src/api
+
+COPY models /usr/src/api/models/
+COPY powerskill /usr/src/api/powerskill/
+COPY app.py /usr/src/api/
+COPY config.json /usr/src/api/
+
+EXPOSE 5000
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]

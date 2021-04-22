@@ -1,0 +1,10 @@
+azure==4.0.0
+azure-core==1.13.0
+azure-search==1.0.0b2
+azure-search-documents==11.1.0
+azure-storage-blob==1.5.0
+azure-storage-common==1.4.2
+matplotlib==3.4.1
+Pillow==8.2.0
+requests==2.25.1
+opencv-python==4.5.1.48
