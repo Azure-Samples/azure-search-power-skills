@@ -44,7 +44,7 @@ This section describes how to get this working on sample data and how it can be 
    python app.py
    ``` 
    Run the cell 
-   [Test summarization on our local running API](notebooks/PII%20Anonymization.ipynb#Test-our-text-on-our-local-running-API). 
+   [Test PII anonymization on our local running API](notebooks/PII%20Anonymization.ipynb#Test-our-text-on-our-local-running-API). 
    Make sure you rename the file [sample_env file to .env](powerskill/sample_env) and populate it with the relevant values. Use the
    variable ```bash URL_LOCAL``` as the URL.
 1) ### Build the docker image 
@@ -219,5 +219,5 @@ This section describes how to get this working on sample data and how it can be 
 1)  ### Test the index 
     Investigate your indexed data, check the most similar images
 
-    Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/Text%20Summarisation.ipynb#Let's-go-and-test-the-ACS-index)
-    to summarise our text and also run NER.
+    Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/PII%20Anonymization.ipynb#Let's-go-and-test-the-ACS-index)
+    to anonymize our text.
