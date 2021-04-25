@@ -191,16 +191,16 @@ This section describes how to get this working on sample data and how it can be 
    #### Data source
    
     Populate your values in the [data source file](deployment/azuresearch/create_data_source.json) or use the 
-    [Create the data source](notebooks/Text%20Summarisation.ipynb#Create-the-data-source)
+    [Create the data source](notebooks/PII%20Anonymization.ipynb#Create-the-data-source)
 
     #### Index
     Populate your values in the [index file](deployment/azuresearch/create_index.json) or use the 
-    [Create the index](notebooks/Text%20Summarisation.ipynb#Now-we-create-the-index)
+    [Create the index](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-index)
     
     #### Skillset
     
     Populate the values in the [skillset file](deployment/azuresearch/create_skillset.json) or use the 
-    [Create the SkillSet](notebooks/Text%20Summarisation.ipynb#Now-we-create-the-skill-set)
+    [Create the SkillSet](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-skill-set)
       
     Note, you need an already deployed ACS instance in the same region as your cognitive services
     instance as we want to augment what we can extract using custom vision with our similarity
@@ -212,7 +212,7 @@ This section describes how to get this working on sample data and how it can be 
 1) ### Run the ACS indexer 
 
     Populate the values in the [indexer file](deployment/azuresearch/create_indexer.json) or 
-    [Create/Run your indexer](notebooks/Text%20Summarisation.ipynb#Now-we-create-the-indexer)
+    [Create/Run your indexer](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-indexer)
 
     The indexer will automatically run and you should see requests coming in if you look at the Web App logs.
 
