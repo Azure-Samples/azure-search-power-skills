@@ -63,15 +63,13 @@ This section describes how to get this working on sample data and how it can be 
     ```bash
     KEY=[YourSecretKeyCanBeAnything]    # This is a secret key - only requests with this key will be allowed
     DEBUG=True   # This enables verbose logging
-    NUM_BEAMS=4  # This is the number beams to use during the beam search
     ```
-    See the file [sample_env](deployment/sample_env) for the .env format
+    See the file [sample_env](sample_env) for the .env format
     
     Now we can test the container by running it locally with our variables:
     
     ```bash
     docker run -it --rm -p 5000:5000 -e DEBUG=true -e KEY=[YourSecretKeyCanBeAnything] 
-    -e NUM_BEAMS=4 
     [container_registry_name.azurecr.io]/pii_anonymization:[your_tag]
     ```
     Upon starting, you will see the server initializing:
@@ -156,12 +154,7 @@ This section describes how to get this working on sample data and how it can be 
       description = "API logging - set to True for verbose logging"
       default = false
     }
-    
-    variable "num_beams" {
-      description = "Set this to the number of beams to use for beam search"
-      default = 4
-    }
-    
+
     ```
     
     Navigate to the directory containing the files and enter:

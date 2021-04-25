@@ -38,7 +38,3 @@ variable "debug" {
   default = false
 }
 
-variable "num_beams" {
-  description = "Set this to the number of beams to use for beam search"
-  default = 4
-}

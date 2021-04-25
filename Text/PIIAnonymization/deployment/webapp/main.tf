@@ -59,7 +59,6 @@ resource "azurerm_app_service" "dockerapp" {
     DOCKER_REGISTRY_SERVER_PASSWORD     = var.docker_registry_password
     DEBUG                               = var.debug
     RESOURCE_GROUP                      = var.resource_group
-    NUM_BEAMS                           = var.num_beams
     KEY                                 = "[YourSecretKeyCanBeAnything]"
   }
 

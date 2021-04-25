@@ -3,4 +3,3 @@ TR_REGION = westeurope
 DEBUG = True
 FLASK_DEBUG = false
 FLASK_ENV = development
-NUM_BEAMS = 4
