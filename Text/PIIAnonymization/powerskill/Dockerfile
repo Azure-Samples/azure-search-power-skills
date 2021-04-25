@@ -12,8 +12,7 @@ RUN mkdir -p /usr/src/api/powerskill
 
 WORKDIR /usr/src/api
 
-COPY powerskill /usr/src/api/powerskill/
-COPY app.py /usr/src/api/
+COPY . /usr/src/api
 
 EXPOSE 5000
 

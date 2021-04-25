@@ -1,8 +1,8 @@
 terraform {
   backend "azurerm" {
-    storage_account_name = "[your storage account name"
+    storage_account_name = "[your storage account name]"
     container_name = "[your storage container name]"
-    key = "[your storage account key"
+    key = "[your storage account key]"
     resource_group_name = "[your storage account resource group name]"
   }
   required_version = ">= 0.13"
