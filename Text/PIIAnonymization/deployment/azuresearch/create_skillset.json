@@ -1,0 +1,47 @@
+{
+    "description": "Anonymize documents.",
+    "skills": [
+        {
+          "@odata.type": "#Microsoft.Skills.Text.PIIAnonymizationSkill",
+          "defaultLanguageCode": "en",
+          "inputs": [
+            {
+              "name": "text", "source": "/document/content"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+            "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+            "description": "A custom skill that anonymize the text",
+            "uri": "https://YOUR_WEB_APP/api/extraction",
+            "timeout": "PT160S",
+            "batchSize": 1,
+            "context": "/document/content",
+            "httpHeaders": {
+                "Ocp-Apim-Subscription-Key": ""
+            },
+            "httpMethod": "POST",
+            "inputs": [
+            {
+                "name": "text",
+                    "source": "/document/content"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "data"
+                }
+            ]
+        }
+    ],
+    "cognitiveServices": {
+        "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
+        "description": "cogsvc",
+        "key": ""
+    }
+}

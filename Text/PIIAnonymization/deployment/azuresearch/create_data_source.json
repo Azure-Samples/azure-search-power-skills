@@ -1,0 +1,6 @@
+{
+    "name" : "text-anonymization-datasource",
+    "type" : "azureblob",
+    "credentials" : { "connectionString" : ""},
+    "container" : { "name" : "" }
+}

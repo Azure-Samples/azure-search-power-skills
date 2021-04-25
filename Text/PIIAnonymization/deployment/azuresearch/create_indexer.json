@@ -1,0 +1,16 @@
+{
+    "name": "text-anonymization-indexer",
+    "dataSourceName": "text-anonymization-datasource",
+    "targetIndexName": "text-anonymization-index",
+    "skillsetName": "text-anonymization-skillset",
+    "parameters": {
+        "configuration": {
+            "allowSkillsetToReadFileData": true
+        }
+    },
+    "outputFieldMappings": [
+      {
+        "sourceFieldName": "/document/content"
+      }
+    ]
+}
