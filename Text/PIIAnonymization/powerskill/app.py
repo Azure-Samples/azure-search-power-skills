@@ -11,7 +11,7 @@ from powerskill import Presidio
 
 load_dotenv()
 app = FastAPI()
-anonymizer = Presidio()
+presidio = Presidio()
 
 
 class Values(BaseModel):
@@ -51,7 +51,7 @@ def anonymize(values: Values, api_key: APIKey = Depends(get_api_key)):
     if not body:
         return 'Expected text within body of request. No text found.', HTTP_400_BAD_REQUEST
     text = body['values'][0]['data']['text']
-    anonymized_text = anonymizer.anonymize(text)
+    anonymized_text = presidio.anonymize(text)
     return build_output_response(body, anonymized_text)
 
 
