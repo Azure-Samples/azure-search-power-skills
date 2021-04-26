@@ -7,11 +7,11 @@ from fastapi.security.api_key import APIKeyHeader, APIKey
 from objdict import ObjDict
 from pydantic import BaseModel
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
-from powerskill import Anonymize
+from powerskill import Presidio
 
 load_dotenv()
 app = FastAPI()
-anonymizer = Anonymize()
+anonymizer = Presidio()
 
 
 class Values(BaseModel):

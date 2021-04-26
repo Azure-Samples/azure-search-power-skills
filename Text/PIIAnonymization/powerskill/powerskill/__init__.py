@@ -1,4 +1,4 @@
-from .anonymize import Anonymize
+from .presidio import Presidio
 __all__ = [
-    "Anonymize"
+    "Presidio"
 ]

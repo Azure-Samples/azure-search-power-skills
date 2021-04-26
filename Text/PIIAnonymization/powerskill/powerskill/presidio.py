@@ -3,7 +3,7 @@ from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities.engine import OperatorConfig
 
 
-class Anonymize:
+class Presidio:
     def __init__(self):
         self.analyzer = AnalyzerEngine()
         self.anonymizer = AnonymizerEngine()

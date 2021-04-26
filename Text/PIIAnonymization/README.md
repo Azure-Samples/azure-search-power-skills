@@ -97,7 +97,7 @@ This section describes how to get this working on sample data and how it can be 
     In the [deployment folder](deployment/webapp) are two [terraform](https://www.terraform.io/)
     files to deploy the inference API to an App Service Web App for linux.
     
-    The simplest is to open a cloud [cloud shell](https://shell.azure.com/) and upload
+    The simplest is to open a [cloud shell in the portal](https://ms.portal.azure.com/#home) and upload
     the [main](deployment/webapp/main.tf) and [variables](deployment/webapp/variables.tf)
     to your cloud shell storage as this avoids the need for any installation. 
     
