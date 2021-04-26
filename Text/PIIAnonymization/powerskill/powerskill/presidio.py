@@ -8,7 +8,7 @@ class Presidio:
         self.analyzer = AnalyzerEngine()
         self.anonymizer = AnonymizerEngine()
 
-    def anonymize(self, text) -> str:
+    def analyze_and_anonymize(self, text) -> str:
         analyzer_results = self.analyzer.analyze(text=text, language='en')
         operators = {"DEFAULT": OperatorConfig("redact")}
         anonymizer_results = self.anonymizer.anonymize(text=text,

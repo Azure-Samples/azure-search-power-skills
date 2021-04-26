@@ -51,7 +51,7 @@ def anonymize(values: Values, api_key: APIKey = Depends(get_api_key)):
     if not body:
         return 'Expected text within body of request. No text found.', HTTP_400_BAD_REQUEST
     text = body['values'][0]['data']['text']
-    anonymized_text = presidio.anonymize(text)
+    anonymized_text = presidio.analyze_and_anonymize(text)
     return build_output_response(body, anonymized_text)
 
 
