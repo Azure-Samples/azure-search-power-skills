@@ -1,7 +1,7 @@
 {
-    "name": "text-anonymization-indexer",
+    "name": "presidio-analyze-and-anonymize-pii-indexer",
     "dataSourceName": "text-anonymization-datasource",
-    "targetIndexName": "text-anonymization-index",
+    "targetIndexName": "presidio-analyze-and-anonymize-pii-index",
     "skillsetName": "text-anonymization-skillset",
     "parameters": {
         "configuration": {
