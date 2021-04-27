@@ -68,7 +68,7 @@ def build_output_response(inputs, anonymized_text):
     errors = ''
     values.values.append({'recordId': inputs['values'][0]['recordId'],
                           "errors": errors,
-                          "data": anonymized_text,
+                          "data": [{"text": anonymized_text}],
                           "warnings": ""})
 
     return values
