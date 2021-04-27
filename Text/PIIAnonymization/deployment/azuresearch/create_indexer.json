@@ -1,8 +1,8 @@
 {
     "name": "presidio-analyze-and-anonymize-pii-indexer",
-    "dataSourceName": "text-anonymization-datasource",
+    "dataSourceName": "presidio-analyze-and-anonymize-pii-datasource",
     "targetIndexName": "presidio-analyze-and-anonymize-pii-index",
-    "skillsetName": "text-anonymization-skillset",
+    "skillsetName": "presidio-analyze-and-anonymize-pii-skillset",
     "parameters": {
         "configuration": {
             "allowSkillsetToReadFileData": true
