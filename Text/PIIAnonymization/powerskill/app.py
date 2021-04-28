@@ -67,7 +67,7 @@ def build_output_response(inputs, anonymized_text):
     values.values = []
 
     anonymized_text_dict = ObjDict()
-    anonymized_text_dict["text"] = [anonymized_text]
+    anonymized_text_dict["text"] = anonymized_text
 
     errors = ''
     values.values.append({'recordId': inputs['values'][0]['recordId'],
