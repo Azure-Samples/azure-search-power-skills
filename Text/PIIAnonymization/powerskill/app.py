@@ -65,10 +65,13 @@ def build_output_response(inputs, anonymized_text):
     values = ObjDict()
     values.values = []
 
+    anonymized_text_dict = ObjDict()
+    anonymized_text_dict["text"] = anonymized_text
+
     errors = ''
     values.values.append({'recordId': inputs['values'][0]['recordId'],
                           "errors": errors,
-                          "data": [{"text": anonymized_text}],
+                          "data": anonymized_text_dict,
                           "warnings": ""})
 
     return values
