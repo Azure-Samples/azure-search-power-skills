@@ -29,19 +29,21 @@ API_KEY_NAME = "Ocp-Apim-Subscription-Key"
 
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 class_model = models.Models(azureml_model_dir=None, classication_model=None)
-
+experiment_name = os.environ['EXPERIMENT_NAME']
+azureml_model_dir = os.environ['AZUREML_MODEL_DIR']
+get_latest_model = os.environ['GET_LATEST_MODEL']
 
 @app.on_event("startup")
 async def startup_event():
     try:
-        if os.environ['GET_LATEST_MODEL'].lower() == "true":
+        if get_latest_model.lower() == "true":
             logging.info(f"Download latest model")
-            if class_model.get_latest_model(os.environ['EXPERIMENT_NAME']):
-                class_model.load_classification_model('models/train_artifacts/')
+            if class_model.get_latest_model(experiment_name):
+                class_model.load_classification_model('models/train_artifacts/')   # The AML artifacts path
             else:
-                class_model.load_classification_model(os.environ['AZUREML_MODEL_DIR'])
+                class_model.load_classification_model(azureml_model_dir)
         else:
-            class_model.load_classification_model(os.environ['AZUREML_MODEL_DIR'])
+            class_model.load_classification_model(azureml_model_dir)
     except Exception as NOMODELFOUND:
         logging.error(f"No model could be loaded {NOMODELFOUND}")
 

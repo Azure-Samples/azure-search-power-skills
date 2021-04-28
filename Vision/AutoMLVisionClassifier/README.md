@@ -68,7 +68,8 @@ By default the Azure Web App will pull the pre-built image from:
 shanepeckham/amlclassifier_powerskill:v1
 ```
 
-*Note DockerHub rate limits so it is best to re-tag or rebuild this image and push it to your container registry*
+*Note DockerHub applies rate limits so the image needs to be re-tagged or rebuilt and pushed to your container
+registry. See the [following link for more detail](https://docs.docker.com/docker-hub/download-rate-limit/)*
 
 Run the following command to build the inference API container image:
 
@@ -79,7 +80,7 @@ docker build -t [container_registry_name.azurecr.io/vision_classifier:[your_tag]
 Note, the prebuilt model only exists in the docker image `shanepeckham/amlclassifier_powerskill:v1` so if you need
 the prebuilt model, first pull this image and then retag it.
 
-The container will require the following variables set at runtime, namely:
+The container will require the following variables set at runtime:
 
 ```bash
 KEY=[YourSecretKeyCanBeAnything]    # This is a secret key - only requests with this key will be allowed
@@ -118,14 +119,19 @@ docker run -it --rm -p 5000:5000 -e DEBUG=true -e KEY=YourSecretKeyCanBeAnything
 [container_registry_name.azurecr.io/vision_classifier:[your_tag]
 ```
 
-Upon starting you will see a few messages, these can be ignored at startup. See below:
+Upon container startup you will see a few messages, these can be ignored. See below:
 
 ```bash
 Failure while loading azureml_run_type_providers. Failed to load entrypoint automl = azureml.train.automl.run:AutoMLRun._from_run_dto with exception cannot import name 'RunType' from 'azureml.automl.core._run.types' (/usr/local/lib/python3.7/site-packages/azureml/automl/core/_run/types.py).
 /usr/local/lib/python3.7/site-packages/torch/cuda/__init__.py:52: UserWarning: CUDA initialization: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx (Triggered internally at  /pytorch/c10/cuda/CUDAFunctions.cpp:100.)
 ```
 
-You should also see the following:
+At the time of writing it is not clear why the entrypoint error occurs, once the model has fully loaded though inference
+works as expected and the error does not appear again. The CUDA error pertains GPU inference which is not required for
+this PowerSkill.
+
+You should also see the following, indicating that the server is up and running and ready to receive requests in port
+5000:
 
 ```bash
 INFO:uvicorn.error:Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
