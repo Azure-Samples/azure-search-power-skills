@@ -20,7 +20,8 @@
       ],
       "outputs": [
         {
-          "name": "text"
+          "name": "text",
+          "targetName": "text"
         }
       ]
     }
