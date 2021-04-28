@@ -10,7 +10,7 @@
     },
     "outputFieldMappings": [
       {
-        "sourceFieldName": "/document/content"
+        "sourceFieldName": "/document/text"
       }
     ]
 }
