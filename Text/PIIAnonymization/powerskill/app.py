@@ -7,6 +7,7 @@ from fastapi.security.api_key import APIKeyHeader, APIKey
 from objdict import ObjDict
 from pydantic import BaseModel
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
+
 from powerskill import Presidio
 
 load_dotenv()
@@ -66,7 +67,7 @@ def build_output_response(inputs, anonymized_text):
     values.values = []
 
     anonymized_text_dict = ObjDict()
-    anonymized_text_dict["text"] = anonymized_text
+    anonymized_text_dict["text"] = [anonymized_text]
 
     errors = ''
     values.values.append({'recordId': inputs['values'][0]['recordId'],
