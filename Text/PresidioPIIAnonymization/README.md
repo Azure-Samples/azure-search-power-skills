@@ -10,14 +10,6 @@ This skill is ideal for finding and removing PII entities from the search text.
 
 ⚠️ Presidio can help identify sensitive/PII data in un/structured text. However, because Presidio is using trained ML models, there is no guarantee that Presidio will find all sensitive information. Consequently, additional systems and protections should be employed.
 
-## Requirements
-
-### Run locally
-In addition to the common requirements described in the root [README.md](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/README.md) 
-file, this Power Skill requires spacy en_core_web_lg module being downloaded:
-```python
-python -m spacy download en_core_web_lg
-```
 
 ### Deploy with docker
 To run this PowerSkill you will need:
@@ -42,6 +34,13 @@ This section describes how to get this working on sample data and how it can be 
    ```python
    python -m pip install -r powerskill/requirements.txt
    ```
+   
+    In addition to the common requirements described in the root [README.md](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/README.md) 
+    file, this Power Skill requires spacy en_core_web_lg module being downloaded:
+    ```python
+    python -m spacy download en_core_web_lg
+    ```
+   
    Activate your environment and run the API locally, execute the following:
    ```python 
    python app.py
@@ -97,7 +96,7 @@ This section describes how to get this working on sample data and how it can be 
     docker push [container_registry_name].azurecr.io/pii_anonymization:[your_tag]
     ```
     
-    In the [deployment folder](deployment/webapp) are two [terraform](https://www.terraform.io/)
+    In the [deployment folder](deployment/webapp) there are two [terraform](https://www.terraform.io/)
     files to deploy the inference API to an App Service Web App for linux.
     
     The simplest is to open a [cloud shell in the portal](https://ms.portal.azure.com/#home) and upload
@@ -114,7 +113,7 @@ This section describes how to get this working on sample data and how it can be 
       }
     ```
     
-    Set the following values in the[variables](deployment/webapp/variables.tf)
+    Set the following values in the [variables](deployment/webapp/variables.tf)
     file:
     
     ```bash
