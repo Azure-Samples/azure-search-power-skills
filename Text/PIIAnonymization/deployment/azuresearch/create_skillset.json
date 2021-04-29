@@ -3,7 +3,7 @@
   "skills": [
     {
       "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
-      "description": "A custom skill that anonymize the text",
+      "description": "Presidio skill that analyze and anonymize PII entities in the text",
       "uri": "https://YOUR_WEB_APP/api/extraction",
       "timeout": "PT160S",
       "batchSize": 1,

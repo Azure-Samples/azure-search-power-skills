@@ -1,11 +1,10 @@
 # Text PII Anonymization Power Skill
 
+[Presidio](https://github.com/microsoft/presidio) is an open-source tool to recognize, analyze and anonymize personally identifiable information (PII). Using trained ML models, Presidio was built to ensure sensitive text is properly managed and governed.
+
 This Power Skill uses [Presidio](https://github.com/microsoft/presidio) Analyzer and Anonymizer
 to find and remove PII entities. Even though Presidio supports several anonymization methods (hash, encrypt, redact, replace, mask), 
 this Power Skill only uses redact and removes the PIIs completely from the text  .
-
-
-[Presidio](https://github.com/microsoft/presidio) is an open-source tool to recognize, analyze and anonymize personally identifiable information (PII). Using trained ML models, Presidio was built to ensure sensitive text is properly managed and governed.
 
 This skill is ideal for finding and removing PII entities from the search text.
 
