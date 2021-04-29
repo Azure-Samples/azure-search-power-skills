@@ -1,16 +1,18 @@
 {
-    "name": "presidio-analyze-and-anonymize-pii-indexer",
-    "dataSourceName": "presidio-analyze-and-anonymize-pii-datasource",
-    "targetIndexName": "presidio-analyze-and-anonymize-pii-index",
-    "skillsetName": "presidio-analyze-and-anonymize-pii-skillset",
-    "parameters": {
-        "configuration": {
-            "allowSkillsetToReadFileData": true
-        }
-    },
-    "outputFieldMappings": [
-      {
-        "sourceFieldName": "/document/text"
-      }
-    ]
+  "name": "presidio-analyze-and-anonymize-pii-indexer",
+  "dataSourceName": "presidio-analyze-and-anonymize-pii-datasource",
+  "targetIndexName": "presidio-analyze-and-anonymize-pii-index",
+  "skillsetName": "presidio-analyze-and-anonymize-pii-skillset",
+  "parameters": {
+    "configuration": {
+      "allowSkillsetToReadFileData": true,
+      "parsingMode": "text"
+    }
+  },
+  "outputFieldMappings": [
+    {
+      "sourceFieldName": "/document/content/text",
+      "targetFieldName": "content"
+    }
+  ]
 }
