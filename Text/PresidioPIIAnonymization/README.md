@@ -40,7 +40,7 @@ This section describes how to get this working on sample data and how it can be 
    and install the requirements:
    
    ```python
-   python -m pip install -r requirements.txt
+   python -m pip install -r powerskill/requirements.txt
    ```
    Activate your environment and run the API locally, execute the following:
    ```python 
