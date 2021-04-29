@@ -30,7 +30,7 @@ Below is a full working example that you can get working E2E on sample data.
 This section describes how to get this working on sample data and how it can be amended for your data.
  
 1) ### Data
-   The first step is to view the sample data files here [train data](data/). 
+   The first step is to view the sample data. [Link to sample data](data/). 
 1) ### Run the API
    The next step is to run the API locally and test the model against a test record. Create a local python environment
    and install the requirements:
