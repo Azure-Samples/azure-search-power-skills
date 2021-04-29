@@ -17,7 +17,7 @@ python -m spacy download en_core_web_lg
 ```
 
 To run this PowerSkill you will need:
-* docker
+* Docker
 * An Azure Blob storage container
 * A provisioned Azure Cognitive Search (ACS) instance 
 * A provisioned Azure Container Registry
