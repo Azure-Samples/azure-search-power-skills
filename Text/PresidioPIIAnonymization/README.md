@@ -8,14 +8,18 @@ this Power Skill only uses redact and removes the PIIs completely from the text 
 
 This skill is ideal for finding and removing PII entities from the search text.
 
+⚠️ Presidio can help identify sensitive/PII data in un/structured text. However, because Presidio is using trained ML models, there is no guarantee that Presidio will find all sensitive information. Consequently, additional systems and protections should be employed.
+
 ## Requirements
 
+### Run locally
 In addition to the common requirements described in the root [README.md](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/README.md) 
 file, this Power Skill requires spacy en_core_web_lg module being downloaded:
 ```python
 python -m spacy download en_core_web_lg
 ```
 
+### Deploy with docker
 To run this PowerSkill you will need:
 * docker
 * An Azure Blob storage container
@@ -31,7 +35,7 @@ This section describes how to get this working on sample data and how it can be 
  
 1) ### Data
    The first step is to view the sample data files here [train data](data/). 
-1) ### Run the API
+1) ### [Run the power skill API](powerskill/app.py)
    The next step is to run the API locally and test the model against a test record. Create a local python environment
    and install the requirements:
    
@@ -48,7 +52,7 @@ This section describes how to get this working on sample data and how it can be 
    variable ```bash URL_LOCAL``` as the URL.
 1) ### Build the docker image 
    Now build the [docker image](Dockerfile) and upload the image to your container registry  
-   For this step you will need docker running so that we can build and test our inference API locally.
+   For this step you will need docker running so that we can build and test our Presidio inference API locally.
    You will also need a container registry for the build.
 
    Run the following command to build the inference API container image:
