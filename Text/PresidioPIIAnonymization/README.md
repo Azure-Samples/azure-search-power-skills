@@ -199,7 +199,7 @@ This section describes how to get this working on sample data and how it can be 
     #### Skillset
     
     Populate the values in the [skillset file](deployment/azuresearch/create_skillset.json) or use the 
-    ['Create the SkillSet'](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-skill-set)
+    ['Create the SkillSet'](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-skill-set) script
       
     Note, you need an already deployed ACS instance in the same region as your cognitive services
     instance as we want to augment what we can extract using custom vision with our similarity
