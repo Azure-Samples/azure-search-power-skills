@@ -9,8 +9,7 @@ this Power Skill only uses redact and removes the PIIs completely from the text 
 This skill is ideal for finding and removing PII entities from the search text.
 
 Using the [PII detection custom skill](https://docs.microsoft.com/en-us/azure/search/cognitive-search-skill-pii-detection) can give you only some features Presidio offers.
-Presidio can be extended to lambdas, encrypt/decrypt, hash and [custom anonymization of PII entities](https://microsoft.github.io/presidio/anonymizer/adding_operators/). The size of the record is only limited by the machine mem. 
-Another important feature is the ability to [add PII recognizers](https://microsoft.github.io/presidio/analyzer/adding_recognizers/).
+Presidio could be customized for specific needs, either by [adding PII recognizers](https://microsoft.github.io/presidio/analyzer/adding_recognizers/) or [custom anonymizers](https://microsoft.github.io/presidio/anonymizer/adding_operators/).
 
 ⚠️ Presidio can help identify sensitive/PII data in un/structured text. However, because Presidio is using trained ML models, there is no guarantee that Presidio will find all sensitive information. Consequently, additional systems and protections should be employed.
 
