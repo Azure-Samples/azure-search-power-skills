@@ -8,6 +8,10 @@ this Power Skill only uses redact and removes the PIIs completely from the text 
 
 This skill is ideal for finding and removing PII entities from the search text.
 
+Using the [PII detection custom skill](https://docs.microsoft.com/en-us/azure/search/cognitive-search-skill-pii-detection) can give you only some features Presidio offers.
+Presidio can be extended to lambdas, encrypt/decrypt, hash and [custom anonymization of PII entities](https://microsoft.github.io/presidio/anonymizer/adding_operators/). The size of the record is only limited by the machine mem. 
+Another important feature is the ability to [add PII recognizers](https://microsoft.github.io/presidio/analyzer/adding_recognizers/).
+
 ⚠️ Presidio can help identify sensitive/PII data in un/structured text. However, because Presidio is using trained ML models, there is no guarantee that Presidio will find all sensitive information. Consequently, additional systems and protections should be employed.
 
 
@@ -176,7 +180,7 @@ This section describes how to get this working on sample data and how it can be 
       Only 'yes' will be accepted to approve.
     ```
     
-    Type ```bash yes```
+    Type `yes`
     
     Once deployed, copy the Azure Web App URL which may be found in the overview section of the portal as we will need 
     it to plug into Azure Search.
@@ -186,16 +190,16 @@ This section describes how to get this working on sample data and how it can be 
    #### Data source
    
     Populate your values in the [data source file](deployment/azuresearch/create_data_source.json) or use the 
-    [Create the data source](notebooks/PII%20Anonymization.ipynb#Create-the-data-source)
+    ['Create the data source'](notebooks/PII%20Anonymization.ipynb#Create-the-data-source) script
 
     #### Index
     Populate your values in the [index file](deployment/azuresearch/create_index.json) or use the 
-    [Create the index](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-index)
+    ['Create the index'](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-index) script
     
     #### Skillset
     
     Populate the values in the [skillset file](deployment/azuresearch/create_skillset.json) or use the 
-    [Create the SkillSet](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-skill-set)
+    ['Create the SkillSet'](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-skill-set)
       
     Note, you need an already deployed ACS instance in the same region as your cognitive services
     instance as we want to augment what we can extract using custom vision with our similarity
@@ -207,12 +211,12 @@ This section describes how to get this working on sample data and how it can be 
 1) ### Run the ACS indexer 
 
     Populate the values in the [indexer file](deployment/azuresearch/create_indexer.json) or 
-    [Create/Run your indexer](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-indexer)
+    use the ['Create/Run your indexer'](notebooks/PII%20Anonymization.ipynb#Now-we-create-the-indexer) script
 
-    The indexer will automatically run and you should see requests coming in if you look at the Web App logs.
+    The indexer will automatically run. You should see requests coming in if you look at the Web App logs.
 
 1)  ### Test the index 
-    Investigate your indexed data, check the most similar images
-
+    When looking at your data, you will now see the imported text data without PII entities in it.
+    
     Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/PII%20Anonymization.ipynb#Let's-go-and-test-the-ACS-index)
-    to anonymize our text.
+    to view the anonymized text.
