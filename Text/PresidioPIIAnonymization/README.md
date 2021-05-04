@@ -217,5 +217,5 @@ This section describes how to get this working on sample data and how it can be 
 1)  ### Test the index 
     When looking at your data, you will now see the imported text data without PII entities in it.
     
-    Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/PII%20Anonymization.ipynb#Let's-go-and-test-the-ACS-index)
+    Now we are in a position to search on our most similar data, navigate to the ['Let's go and test the ACS index'](notebooks/PII%20Anonymization.ipynb#Let's-go-and-test-the-ACS-index)
     to view the anonymized text.
