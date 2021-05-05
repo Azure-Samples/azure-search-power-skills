@@ -1,0 +1,6 @@
+{
+    "name" : "presidio-analyze-and-anonymize-pii-datasource",
+    "type" : "azureblob",
+    "credentials" : { "connectionString" : ""},
+    "container" : { "name" : "" }
+}
