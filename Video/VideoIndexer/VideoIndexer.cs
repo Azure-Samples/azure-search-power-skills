@@ -42,7 +42,7 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
             var response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName,
                 requestRecords,
                 async (inRecord, outRecord) =>
-                {
+                {   
                     var encodedVideoUrl = (string)inRecord.Data["metadata_storage_path"];
                     var videoUrl = UrlSafeBase64Decode(encodedVideoUrl);
                     var videoName = (string)inRecord.Data["metadata_storage_name"];
@@ -63,6 +63,7 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
                 .Replace("-", "+")
                 .Replace("_", "/");
 
+            if (encoded.EndsWith("0")) encoded = encoded.Substring(0, encoded.Length - 1) + "";
             if (encoded.EndsWith("1")) encoded = encoded.Substring(0, encoded.Length - 1) + "=";
             if (encoded.EndsWith("2")) encoded = encoded.Substring(0, encoded.Length - 1) + "==";
 
