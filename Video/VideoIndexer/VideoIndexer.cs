@@ -63,6 +63,7 @@ namespace AzureCognitiveSearch.PowerSkills.Video.VideoIndexer
                 .Replace("-", "+")
                 .Replace("_", "/");
 
+            if (encoded.EndsWith("0")) encoded = encoded.Substring(0, encoded.Length - 1);
             if (encoded.EndsWith("1")) encoded = encoded.Substring(0, encoded.Length - 1) + "=";
             if (encoded.EndsWith("2")) encoded = encoded.Substring(0, encoded.Length - 1) + "==";
 
