@@ -12,12 +12,14 @@ using AzureCognitiveSearch.PowerSkills.Common;
 using Azure.AI.TextAnalytics;
 using Azure;
 
-namespace HealthcareTA
+namespace AzureCognitiveSearch.PowerSkills.Text.HealthcareTA
 {
     public static class HealthcareTA
     {
         private static readonly string healthcareApiEnvEndpoint = "HEALTHCARE_API_ENDPOINT";
         private static readonly string healthcareApiEnvKey = "HEALTHCARE_API_KEY";
+        private static readonly int defaultTimeout = 230;
+        private static readonly int maxCharLength = 5000;
 
         [FunctionName("HealthcareTA")]
         public static async Task<IActionResult> Run(
@@ -25,8 +27,6 @@ namespace HealthcareTA
             ILogger log,
             ExecutionContext executionContext)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             string skillName = executionContext.FunctionName;
             IEnumerable<WebApiRequestRecord> requestRecords = WebApiSkillHelpers.GetRequestRecords(req);
             if (requestRecords == null)
@@ -34,35 +34,76 @@ namespace HealthcareTA
                 return new BadRequestObjectResult($"{skillName} - Invalid request record array.");
             }
 
+            // Get Endpoint and access key from App Settings
             string apiKey = Environment.GetEnvironmentVariable(healthcareApiEnvKey, EnvironmentVariableTarget.Process);
             string apiEndpoint = Environment.GetEnvironmentVariable(healthcareApiEnvEndpoint, EnvironmentVariableTarget.Process);
             if (apiKey == null || apiEndpoint == null)
             {
                 return new BadRequestObjectResult($"{skillName} - Healthcare Text Analytics API key or endpoint is missing. Make sure to set them in the Environment Variables.");
             }
-            // "abd52a281bc64a8db44c9e31d8f4aa39";
+
             var client = new TextAnalyticsClient(new Uri(apiEndpoint), new AzureKeyCredential(apiKey));
 
+            // Get a custom timeout from the header, if it exists. If not use the default timeout.
+            int timeout;
+            if (!int.TryParse(req.Headers["SkillTimeout"].ToString(), out timeout))
+            {
+                timeout = defaultTimeout;
+            }
+            var timeoutMiliseconds = timeout * 1000;
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {
+                    // Prepare analysis operation input
                     var document = inRecord.Data["document"] as string;
-
-                    // prepare analyze operation input
+                    var options = new AnalyzeHealthcareEntitiesOptions { };
+                    if (document.Length >= maxCharLength)
+                    {
+                        outRecord.Warnings.Add(new WebApiErrorWarningContract
+                        {
+                            Message = $"Healthcare Text Analytics Error: The submitted document was over {maxCharLength} characters. It has been truncated to fit this requirement."
+                        });
+                        document = document.Substring(0, maxCharLength);
+                    }
                     List<string> batchInput = new List<string>()
                     {
                         document
                     };
-                    var options = new AnalyzeHealthcareEntitiesOptions { };
 
                     // start analysis process
                     var timer = System.Diagnostics.Stopwatch.StartNew();
                     AnalyzeHealthcareEntitiesOperation healthOperation = await client.StartAnalyzeHealthcareEntitiesAsync(batchInput, "en", options);
-                    await healthOperation.WaitForCompletionAsync();
-                    await ExtractEntityData(healthOperation.Value, outRecord);
-                    timer.Stop();
+                    var healthOperationTask = healthOperation.WaitForCompletionAsync().AsTask();
 
-                    outRecord.Data["status"] = healthOperation.Status.ToString();
+                    if (await Task.WhenAny(healthOperationTask, Task.Delay(timeoutMiliseconds)) == healthOperationTask)
+                    {
+                        // Task Completed, now lets process the result.
+                        outRecord.Data["status"] = healthOperation.Status.ToString();
+                        if (healthOperation.Status != TextAnalyticsOperationStatus.Succeeded)
+                        {
+                            // The operation was not a success
+                            outRecord.Warnings.Add(new WebApiErrorWarningContract
+                            {
+                                Message = "Healthcare Text Analytics Error: Health Operation returned a non-succeeded status."
+                            });
+                        }
+                        else
+                        {
+                            // The operation was a success, so lets add the results to our output.
+                            await ExtractEntityData(healthOperation.Value, outRecord);
+                        }
+                    }
+                    else
+                    {
+                        // Timeout
+                        outRecord.Warnings.Add(new WebApiErrorWarningContract
+                        {
+                            Message = "Healthcare Text Analytics Error: The Text Analysis Operation took too long to complete."
+                        });
+                    }
+
+                    // Record how long this task took to complete.
+                    timer.Stop();
                     outRecord.Data["timeToComplete"] = timer.Elapsed.TotalSeconds.ToString();
 
                     return outRecord;
@@ -84,9 +125,9 @@ namespace HealthcareTA
                     }
                     else
                     {
-                        var newError = new WebApiErrorWarningContract();
-                        newError.Message = $"Healthcare Text Analytics Error: {entitiesInDoc.Error.ErrorCode}. Error Message: {entitiesInDoc.Error.Message}";
-                        outRecord.Errors.Add(newError);
+                        outRecord.Errors.Add(new WebApiErrorWarningContract{
+                            Message = $"Healthcare Text Analytics Error: {entitiesInDoc.Error.ErrorCode}. Error Message: {entitiesInDoc.Error.Message}"
+                        });
                     }
                 }
             }
