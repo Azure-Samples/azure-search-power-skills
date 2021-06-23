@@ -1,7 +1,7 @@
 import os
 
 import joblib
-from keras.applications.resnet50 import ResNet50
+from tensorflow.keras.applications.resnet50 import ResNet50
 
 
 class Models:

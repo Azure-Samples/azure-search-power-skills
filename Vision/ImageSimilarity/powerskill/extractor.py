@@ -7,9 +7,9 @@ from heapq import nsmallest
 import numpy as np
 from PIL import Image
 from dotenv import load_dotenv
-from keras.applications.resnet50 import preprocess_input
-from keras.models import Model
-from keras.preprocessing import image
+from tensorflow.keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.models import Model
+from tensorflow.keras.preprocessing import image
 from objdict import ObjDict
 from powerskill.timer import timefunc
 from scipy.spatial import distance
