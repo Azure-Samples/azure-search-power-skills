@@ -1,7 +1,7 @@
 @baseUrl=http://localhost:5000
 @apiKey=[YourSecretKeyCanBeAnything]
 
-GET @{{baseUrl}}
+GET {{baseUrl}}
 ###
 
 POST {{baseUrl}}/api/extraction
