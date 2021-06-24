@@ -12,6 +12,9 @@
 	"mounts": [
 		// Keep command history 
 		"source=ImageClusteringSkill-bashhistory,target=/home/vscode/commandhistory",
+		// Mount host docker socket
+		"type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock"
+	
 	],
 
 	// Set *default* container specific settings.json values on container create.
@@ -34,7 +37,9 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-python.python",
-		"ms-python.vscode-pylance"
+		"ms-python.vscode-pylance",
+		"irongeek.vscode-env",
+		"ms-azuretools.vscode-docker",
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

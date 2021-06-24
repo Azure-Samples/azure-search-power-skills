@@ -10,5 +10,4 @@ Pillow
 ipykernel
 matplotlib
 ipyplot
-python-dotenv
 # tensorflow

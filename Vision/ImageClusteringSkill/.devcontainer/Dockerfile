@@ -55,4 +55,11 @@ RUN sudo apt-get update \
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
+# docker-client
+COPY .devcontainer/scripts/docker-client.sh /tmp/
+RUN /tmp/docker-client.sh
+
+#Add user to docker group
+RUN sudo groupadd docker && sudo usermod -aG docker $USERNAME && newgrp docker
+
 # __DEVCONTAINER_SNIPPET_INSERT__ (control where snippets get inserted using the devcontainer CLI)
