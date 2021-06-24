@@ -49,3 +49,7 @@ def extract(values: Values, api_key: APIKey = Depends(get_api_key)):
     else:
         return extractor.go_extract(body)
 
+
+@app.get('/')
+def home():
+    return "image-cluster api is running"
