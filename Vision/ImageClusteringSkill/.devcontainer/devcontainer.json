@@ -8,6 +8,9 @@
 			"NODE_VERSION": "lts/*"
 		}
 	},
+	"runArgs": [
+		"--network", "host" // use host networking so that the dev container can access the API when running the container locally
+	],
 
 	"mounts": [
 		// Keep command history 
