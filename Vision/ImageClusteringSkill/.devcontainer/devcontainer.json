@@ -46,7 +46,8 @@
 		"irongeek.vscode-env",
 		"ms-azuretools.vscode-docker",
 		"ms-toolsai.jupyter",
-		"hashicorp.terraform"
+		"hashicorp.terraform",
+		"humao.rest-client"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
