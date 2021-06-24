@@ -1,18 +1,19 @@
-terraform {
-  backend "azurerm" {
-    storage_account_name = "[your storage account name"
-    container_name = "[your storage container name]"
-    key = "[your storage account key"
-    resource_group_name = "[your storage account resource group name]"
-  }
-  required_version = ">= 0.13"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 2.30"
-    }
-  }
-}
+## TODO: discuss whether we want to keep TF State in Azure Storage out-of-the-box
+# terraform {
+#   backend "azurerm" {
+#     storage_account_name = "[your storage account name"
+#     container_name = "[your storage container name]"
+#     key = "[your storage account key"
+#     resource_group_name = "[your storage account resource group name]"
+#   }
+#   required_version = ">= 0.13"
+#   required_providers {
+#     azurerm = {
+#       source  = "hashicorp/azurerm"
+#       version = "~> 2.30"
+#     }
+#   }
+# }
 
 provider "azurerm" {
   features {}
@@ -61,7 +62,7 @@ resource "azurerm_app_service" "dockerapp" {
     DEBUG                               = var.debug
     RESOURCE_GROUP                      = var.resource_group
     CLUSTER_LABELS                      = var.cluster_labels
-    KEY                                 = "[YourSecretKeyCanBeAnything]"
+    KEY                                 = var.api_key
   }
 
   site_config {

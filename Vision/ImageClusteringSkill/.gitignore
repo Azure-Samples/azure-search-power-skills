@@ -90,6 +90,8 @@ ENV/
 env.bak/
 venv.bak/
 .vscode
+notebook.env
+deploy.env
 
 # Spyder project settings
 .spyderproject
@@ -107,3 +109,9 @@ venv.bak/
 
 data/test/
 data/train/
+
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+
+deployment/outputs/

@@ -47,3 +47,8 @@ variable "cluster_labels" {
   description = "Set this to labels.pkl (if using demo value)"
   default = "labels.pkl"
 }
+
+variable "api_key" {
+  description = "The api key to assign to the skill API, i.e. the key value that callers must present when calling the API"
+  default = "[YourSecretKeyCanBeAnything]"
+}

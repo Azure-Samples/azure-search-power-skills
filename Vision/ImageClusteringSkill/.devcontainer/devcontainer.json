@@ -15,7 +15,9 @@
 		// Mount host docker socket
 		"type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock"
 	
-	],
+	,
+		// Mounts the .azure host folder into the dev container to pick up host az CLI login details
+		"type=bind,source=${env:HOME}${env:USERPROFILE}/.azure,target=/home/vscode/.azure",],
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
@@ -40,7 +42,8 @@
 		"ms-python.vscode-pylance",
 		"irongeek.vscode-env",
 		"ms-azuretools.vscode-docker",
-		"ms-toolsai.jupyter"
+		"ms-toolsai.jupyter",
+		"hashicorp.terraform"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
