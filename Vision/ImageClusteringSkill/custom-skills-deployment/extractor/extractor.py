@@ -34,8 +34,7 @@ def set_log_level(debug):
     if bool(debug):
         logging.basicConfig(level=logging.DEBUG)
 
-
-set_log_level(bool(os.environ['DEBUG']))
+set_log_level(os.getenv('DEBUG', 'False'))
 
 # Let's load all models upfront
 # Load DBSCAN model from registry
