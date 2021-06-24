@@ -12,16 +12,16 @@ using AzureCognitiveSearch.PowerSkills.Common;
 using Azure.AI.TextAnalytics;
 using Azure;
 
-namespace AzureCognitiveSearch.PowerSkills.Text.HealthcareTA
+namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
 {
-    public static class HealthcareTA
+    public static class TextAnalyticsForHealth
     {
-        private static readonly string healthcareApiEnvEndpoint = "HEALTHCARE_API_ENDPOINT";
-        private static readonly string healthcareApiEnvKey = "HEALTHCARE_API_KEY";
+        public static readonly string textAnalyticsApiEndpointSetting = "TEXT_ANALYTICS_API_ENDPOINT";
+        public static readonly string textAnalyticsApiKeySetting = "TEXT_ANALYTICS_API_KEY";
         private static readonly int defaultTimeout = 230;
         private static readonly int maxCharLength = 5000;
 
-        [FunctionName("HealthcareTA")]
+        [FunctionName("TextAnalyticsForHealth")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log,
@@ -35,8 +35,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.HealthcareTA
             }
 
             // Get Endpoint and access key from App Settings
-            string apiKey = Environment.GetEnvironmentVariable(healthcareApiEnvKey, EnvironmentVariableTarget.Process);
-            string apiEndpoint = Environment.GetEnvironmentVariable(healthcareApiEnvEndpoint, EnvironmentVariableTarget.Process);
+            string apiKey = Environment.GetEnvironmentVariable(textAnalyticsApiKeySetting, EnvironmentVariableTarget.Process);
+            string apiEndpoint = Environment.GetEnvironmentVariable(textAnalyticsApiEndpointSetting, EnvironmentVariableTarget.Process);
             if (apiKey == null || apiEndpoint == null)
             {
                 return new BadRequestObjectResult($"{skillName} - Healthcare Text Analytics API key or endpoint is missing. Make sure to set them in the Environment Variables.");
@@ -70,7 +70,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.HealthcareTA
                         document
                     };
 
-                    // start analysis process
+                    // start analysis process TODO error check
                     var timer = System.Diagnostics.Stopwatch.StartNew();
                     AnalyzeHealthcareEntitiesOperation healthOperation = await client.StartAnalyzeHealthcareEntitiesAsync(batchInput, "en", options);
                     var healthOperationTask = healthOperation.WaitForCompletionAsync().AsTask();

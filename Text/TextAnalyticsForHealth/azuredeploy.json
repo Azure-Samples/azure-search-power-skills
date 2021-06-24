@@ -26,7 +26,7 @@
   "variables": {
     "repoURL": "https://github.com/jonathanserbent/azure-search-power-skills",
     "repoBranch": "HealthcareTA",
-    "functionProject": "Text\\HealthcareTA\\HealthcareTA.csproj",
+    "functionProject": "Text\\TextAnalyticsForHealth\\TextAnalyticsForHealth.csproj",
     "websiteName": "[toLower(concat(parameters('resourcePrefix'), '-site-', uniqueString(resourceGroup().id)))]",
     "storageAccount": "[toLower(concat(parameters('resourcePrefix'), uniqueString(resourceGroup().id)))]",
     "functionAppName": "[toLower(concat(parameters('resourcePrefix'), '-function-app-', uniqueString(resourceGroup().id)))]",
@@ -106,11 +106,11 @@
               "value": "[variables('functionProject')]"
             },
             {
-              "name": "HEALTHCARE_API_KEY",
+              "name": "TEXT_ANALYTICS_API_KEY",
               "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('textAnalyticsName')), '2021-04-30').key1]"
             },
             {
-              "name": "HEALTHCARE_API_ENDPOINT",
+              "name": "TEXT_ANALYTICS_API_ENDPOINT",
               "value": "[concat('https://', variables('textAnalyticsName'), '.cognitiveservices.azure.com')]"
             }
           ]
