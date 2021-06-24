@@ -9,4 +9,11 @@ deploy-base: ## deploy base services
 build-skill: ## build docker image for custom skill
 	docker build -t clusterextractor .
 
+run-skill: build-skill
+	docker run \
+		-p 5000:5000 \
+		-e KEY="[YourSecretKeyCanBeAnything]" \
+		-e DBSCAN_MODEL=books.pkl \
+		-e CLUSTER_LABELS=labels.pkl \
+		clusterextractor
 	
