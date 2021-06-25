@@ -20,6 +20,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
         public static readonly string textAnalyticsApiEndpointSetting = "TEXT_ANALYTICS_API_ENDPOINT";
         public static readonly string textAnalyticsApiKeySetting = "TEXT_ANALYTICS_API_KEY";
         private static readonly int defaultTimeout = 230;
+        private static readonly int maxTimeout = 230;
         private static readonly int maxCharLength = 5000;
 
         [FunctionName("TextAnalyticsForHealth")]
@@ -51,6 +52,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
             {
                 timeout = defaultTimeout;
             }
+            timeout = Math.Clamp(timeout, 0, maxTimeout);
             var timeoutMiliseconds = timeout * 1000;
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
