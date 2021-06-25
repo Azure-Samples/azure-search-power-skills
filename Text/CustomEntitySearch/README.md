@@ -6,14 +6,14 @@ products:
 - azure-cognitive-services
 name: Custom Entity Search sample skill for cognitive search
 description: This custom skill finds user defined entities in given texts.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/CustomEntityLookup/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/CustomEntityLookup/azuredeploy.json
 ---
 
 # CustomEntityLookup
 
 This custom skill finds finds user defined entities in given texts.
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FCustomEntitySearch%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FText%2FCustomEntitySearch%2Fazuredeploy.json)
 
 ## Requirements
 

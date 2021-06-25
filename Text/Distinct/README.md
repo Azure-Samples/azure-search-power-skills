@@ -7,7 +7,7 @@ products:
 - azure-search
 name: Distinct sample skill for cognitive search
 description: This custom skill removes duplicates from a list of terms.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/Distinct/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/Distinct/azuredeploy.json
 ---
 
 # Distinct
@@ -16,7 +16,7 @@ This custom skill removes duplicates from a list of terms.
 
 Terms are considered the same if they only differ by casing, separators such as spaces, or punctuation, or if they have a common entry in the thesaurus.
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FDistinct%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FText%2FDistinct%2Fazuredeploy.json)
 
 ## Requirements
 

@@ -6,14 +6,14 @@ products:
 - azure-cognitive-services
 name: Get File Extension sample skill for cognitive search
 description: This custom skill returns the document's extension and file name without extension.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Utils/GetFileExtension/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Utils/GetFileExtension/azuredeploy.json
 ---
 
 # GetFileExtension
 
 This custom skill returns the document's file extension and the file name without extension to be indexed accordingly.
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FUtils%2FGetFileExtension%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FUtils%2FGetFileExtension%2Fazuredeploy.json)
 
 
 ## Requirements
