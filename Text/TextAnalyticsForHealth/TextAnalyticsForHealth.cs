@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using AzureCognitiveSearch.PowerSkills.Common;
 using Azure.AI.TextAnalytics;
 using Azure;
+using System.Globalization;
 
 namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
 {
@@ -56,15 +57,18 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                 async (inRecord, outRecord) => {
                     // Prepare analysis operation input
                     var document = inRecord.Data["document"] as string;
-                    var options = new AnalyzeHealthcareEntitiesOptions { };
-                    if (document.Length >= maxCharLength)
+
+                    var docInfo = new StringInfo(document);
+                    if (docInfo.LengthInTextElements >= maxCharLength)
                     {
                         outRecord.Warnings.Add(new WebApiErrorWarningContract
                         {
                             Message = $"Healthcare Text Analytics Error: The submitted document was over {maxCharLength} characters. It has been truncated to fit this requirement."
                         });
-                        document = document.Substring(0, maxCharLength);
+                        document = docInfo.SubstringByTextElements(0, maxCharLength);
                     }
+
+                    var options = new AnalyzeHealthcareEntitiesOptions { };
                     List<string> batchInput = new List<string>()
                     {
                         document
