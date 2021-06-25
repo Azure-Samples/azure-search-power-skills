@@ -108,7 +108,8 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
 
                     // Record how long this task took to complete.
                     timer.Stop();
-                    outRecord.Data["timeToComplete"] = timer.Elapsed.TotalSeconds.ToString();
+                    var timeToComplete =  timer.Elapsed.TotalSeconds;
+                    log.LogInformation($"Time to complete request for document with ID {inRecord.RecordId}: {timeToComplete}");
 
                     return outRecord;
                 });
