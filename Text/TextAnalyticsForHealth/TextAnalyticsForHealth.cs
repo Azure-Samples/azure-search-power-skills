@@ -22,6 +22,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
         public static readonly string textAnalyticsApiKeySetting = "TEXT_ANALYTICS_API_KEY";
         private static readonly int defaultTimeout = 230;
         private static readonly int maxTimeout = 230;
+        private static readonly int timeoutBuffer = 5;
         private static readonly int maxCharLength = 5000;
 
         [FunctionName("TextAnalyticsForHealth")]
@@ -56,13 +57,36 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
             {
                 timeout = defaultTimeout;
             }
-            timeout = Math.Clamp(timeout, 0, maxTimeout);
+            timeout = Math.Clamp(timeout - timeoutBuffer, 0, maxTimeout);
             var timeoutMiliseconds = timeout * 1000;
+            var timeoutTask = Task.Delay(timeoutMiliseconds);
+
+            // Get a custom default language, if none is provided, use english
+            string defaultLanguage = req.Headers.ContainsKey("DefaultLanguage")? req.Headers["DefaultLanguage"].ToString(): "en";
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {
+                    if (timeoutTask.IsCompleted)
+                    {
+                        // The time limit for all the skills has been met
+                        outRecord.Errors.Add(new WebApiErrorWarningContract
+                        {
+                            Message = "Healthcare Text Analytics Error: The Text Analysis Operation took too long to complete."
+                        });
+                        return outRecord;
+                    }
+
                     // Prepare analysis operation input
+                    if (!inRecord.Data.ContainsKey("document"))
+                    {
+                        outRecord.Errors.Add(new WebApiErrorWarningContract
+                        {
+                            Message = "Healthcare Text Analytics Error: The skill request did not contain \"document\" in the input."
+                        });
+                        return outRecord;
+                    }
                     var document = inRecord.Data["document"] as string;
+                    var language = inRecord.Data.ContainsKey("language") ? inRecord.Data["language"] as string : defaultLanguage;
 
                     var docInfo = new StringInfo(document);
                     if (docInfo.LengthInTextElements >= maxCharLength)
@@ -82,17 +106,17 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
 
                     // start analysis process TODO error check
                     var timer = System.Diagnostics.Stopwatch.StartNew();
-                    AnalyzeHealthcareEntitiesOperation healthOperation = await client.StartAnalyzeHealthcareEntitiesAsync(batchInput, "en", options);
+                    AnalyzeHealthcareEntitiesOperation healthOperation = await client.StartAnalyzeHealthcareEntitiesAsync(batchInput, language, options);
                     var healthOperationTask = healthOperation.WaitForCompletionAsync().AsTask();
 
-                    if (await Task.WhenAny(healthOperationTask, Task.Delay(timeoutMiliseconds)) == healthOperationTask)
+                    if (await Task.WhenAny(healthOperationTask, timeoutTask) == healthOperationTask)
                     {
                         // Task Completed, now lets process the result.
                         outRecord.Data["status"] = healthOperation.Status.ToString();
                         if (healthOperation.Status != TextAnalyticsOperationStatus.Succeeded)
                         {
                             // The operation was not a success
-                            outRecord.Warnings.Add(new WebApiErrorWarningContract
+                            outRecord.Errors.Add(new WebApiErrorWarningContract
                             {
                                 Message = "Healthcare Text Analytics Error: Health Operation returned a non-succeeded status."
                             });
@@ -106,7 +130,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                     else
                     {
                         // Timeout
-                        outRecord.Warnings.Add(new WebApiErrorWarningContract
+                        outRecord.Errors.Add(new WebApiErrorWarningContract
                         {
                             Message = "Healthcare Text Analytics Error: The Text Analysis Operation took too long to complete."
                         });
@@ -125,22 +149,27 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
 
         private static async Task ExtractEntityData(AsyncPageable<AnalyzeHealthcareEntitiesResultCollection> pages, WebApiResponseRecord outRecord)
         {
+            int docNum = 0;
+            int entitiesNum = 0;
             await foreach (AnalyzeHealthcareEntitiesResultCollection documentsInPage in pages)
             {
-                foreach (AnalyzeHealthcareEntitiesResult entitiesInDoc in documentsInPage)
+                outRecord.Data["docsInPage"] = documentsInPage;
+                foreach (AnalyzeHealthcareEntitiesResult result in documentsInPage)
                 {
-                    if (!entitiesInDoc.HasError)
+                    if (!result.HasError)
                     {
-                        outRecord.Data["entities"] = entitiesInDoc.Entities;
-                        outRecord.Data["relations"] = entitiesInDoc.EntityRelations;
+                        outRecord.Data[$"entities-d{docNum}-e{entitiesNum}"] = result.Entities;
+                        outRecord.Data[$"relations-d{docNum}-e{entitiesNum}"] = result.EntityRelations;
                     }
                     else
                     {
                         outRecord.Errors.Add(new WebApiErrorWarningContract{
-                            Message = $"Healthcare Text Analytics Error: {entitiesInDoc.Error.ErrorCode}. Error Message: {entitiesInDoc.Error.Message}"
+                            Message = $"Healthcare Text Analytics Error: {result.Error.ErrorCode}. Error Message: {result.Error.Message}"
                         });
                     }
+                    entitiesNum++;
                 }
+                docNum++;
             }
         }
     }
