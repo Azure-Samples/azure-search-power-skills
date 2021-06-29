@@ -81,7 +81,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                     {
                         outRecord.Errors.Add(new WebApiErrorWarningContract
                         {
-                            Message = "Healthcare Text Analytics Error: The skill request did not contain \"document\" in the input."
+                            Message = "Healthcare Text Analytics Error: The skill request did not contain 'document' in the input."
                         });
                         return outRecord;
                     }
@@ -93,7 +93,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                     {
                         outRecord.Warnings.Add(new WebApiErrorWarningContract
                         {
-                            Message = $"Healthcare Text Analytics Error: The submitted document was over {maxCharLength} characters. It has been truncated to fit this requirement."
+                            Message = $"Healthcare Text Analytics Warning: The submitted document was over {maxCharLength} elements. It has been truncated to fit this requirement."
                         });
                         document = docInfo.SubstringByTextElements(0, maxCharLength);
                     }
@@ -113,7 +113,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                     {
                         // Task Completed, now lets process the result.
                         outRecord.Data["status"] = healthOperation.Status.ToString();
-                        if (healthOperation.Status != TextAnalyticsOperationStatus.Succeeded)
+                        if (healthOperation.Status != TextAnalyticsOperationStatus.Succeeded || !healthOperation.HasValue)
                         {
                             // The operation was not a success
                             outRecord.Errors.Add(new WebApiErrorWarningContract
@@ -149,28 +149,41 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
 
         private static async Task ExtractEntityData(AsyncPageable<AnalyzeHealthcareEntitiesResultCollection> pages, WebApiResponseRecord outRecord)
         {
-            int docNum = 0;
-            int entitiesNum = 0;
-            await foreach (AnalyzeHealthcareEntitiesResultCollection documentsInPage in pages)
+            // Based on our input, there should only be one page per pages, and one document per page, but to guarantuee success we collect
+            // all output into these two collections.
+            var entities = new List<Object>();
+            var relations = new List<Object>();
+            await foreach (AnalyzeHealthcareEntitiesResultCollection page in pages)
             {
-                outRecord.Data["docsInPage"] = documentsInPage;
-                foreach (AnalyzeHealthcareEntitiesResult result in documentsInPage)
+                foreach (AnalyzeHealthcareEntitiesResult document in page)
                 {
-                    if (!result.HasError)
+                    if (!document.HasError)
                     {
-                        outRecord.Data[$"entities-d{docNum}-e{entitiesNum}"] = result.Entities;
-                        outRecord.Data[$"relations-d{docNum}-e{entitiesNum}"] = result.EntityRelations;
+                        
+                        entities.AddRange(document.Entities);
+                        relations.AddRange(document.EntityRelations);
                     }
                     else
                     {
                         outRecord.Errors.Add(new WebApiErrorWarningContract{
-                            Message = $"Healthcare Text Analytics Error: {result.Error.ErrorCode}. Error Message: {result.Error.Message}"
+                            Message = $"Healthcare Text Analytics Error: {document.Error.ErrorCode}. Error Message: {document.Error.Message}"
                         });
                     }
-                    entitiesNum++;
+
+                    if (document.Warnings.Count > 0)
+                    {
+                        foreach (TextAnalyticsWarning w in document.Warnings)
+                        {
+                            outRecord.Warnings.Add(new WebApiErrorWarningContract
+                            {
+                                Message = $"Healthcare Text Analytics Warning: {w.WarningCode}. Error Message: {w.Message}"
+                            });
+                        }
+                    }
                 }
-                docNum++;
             }
+            outRecord.Data[$"entities"] = entities;
+            outRecord.Data[$"relations"] = entities;
         }
     }
 }
