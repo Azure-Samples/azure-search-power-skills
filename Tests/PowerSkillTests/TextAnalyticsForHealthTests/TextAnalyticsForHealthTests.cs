@@ -18,7 +18,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.TextAnalyticsForHealthTests
      * helper functions, which we believe is because of how the Text Analytics SDK sends requests to their endpoint.
      */
     [TestClass]
-    public class TextAnalyticsTests
+    public class TextAnalyticsForHealthTests
     {
         [ClassInitialize]
         public static void Setup(TestContext context)
