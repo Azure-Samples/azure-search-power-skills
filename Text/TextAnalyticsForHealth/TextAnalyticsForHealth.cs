@@ -62,7 +62,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
             var timeoutTask = Task.Delay(timeoutMiliseconds);
 
             // Get a custom default language, if none is provided, use english
-            string defaultLanguage = req.Headers.ContainsKey("DefaultLanguage")? req.Headers["DefaultLanguage"].ToString(): "en";
+            string defaultLanguage = req.Headers.ContainsKey("defaultLanguage")? req.Headers["defaultLanguage"].ToString(): "en";
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {
@@ -183,7 +183,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                 }
             }
             outRecord.Data[$"entities"] = entities;
-            outRecord.Data[$"relations"] = entities;
+            outRecord.Data[$"relations"] = relations;
         }
     }
 }
