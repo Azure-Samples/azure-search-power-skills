@@ -36,6 +36,7 @@ This project provides the following custom skills:
 | [ImageStore](Vision/ImageStore/README.md) | Stores and fetches base64-encoded images to and from blob storage. The [knowledge store](https://docs.microsoft.com/azure/search/knowledge-store-concept-intro) is a cleaner implementation of the pattern to save images to storage. | Utility |![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |   
 | [HelloWorld](Template/HelloWorld/README.md) | A minimal skill that can be used as a starting point or template for your own skills. | Template | ![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 | [PythonFastAPI](Template/PythonFastAPI/README.md) | A production web server and api scaffold for a python power skill | Template | ![python](https://img.shields.io/badge/language-python-orange) | ![docker](https://img.shields.io/badge/deploy-Docker-blueviolet) | Terraform template |
+| [TextAnalyticsForHealth](Text/TextAnalyticsForHealth/README.md) | A wrapper for the Text Analytics for Health API | Template | ![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 
 
 
