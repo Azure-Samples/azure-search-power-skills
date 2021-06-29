@@ -70,4 +70,14 @@ RUN /tmp/terraform.sh
 COPY .devcontainer/scripts/azure-cli.sh /tmp/
 RUN /tmp/azure-cli.sh
 
+
+# Sync timezone (if TZ value not already present on host it defaults to Europe/London)
+# Note: if running on WSL (Windows) you can add the below to your $profile so your tz is automatically synced
+# $tz =  [Windows.Globalization.Calendar,Windows.Globalization,ContentType=WindowsRuntime]::New().GetTimeZone()
+# [Environment]::SetEnvironmentVariable("TZ",$tz, "User")
+RUN if [ -z "$TZ" ]; then TZ="Europe/London"; fi && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ | sudo tee /etc/timezone > /dev/null
+
+# install envsubst
+RUN sudo apt install gettext-base
+
 # __DEVCONTAINER_SNIPPET_INSERT__ (control where snippets get inserted using the devcontainer CLI)

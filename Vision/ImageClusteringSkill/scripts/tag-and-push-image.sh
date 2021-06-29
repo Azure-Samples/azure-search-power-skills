@@ -15,18 +15,18 @@ if [[ ! -f  "$script_dir/../base.env" ]]; then
 fi
 source "$script_dir/../base.env"
 
-if [[ -z $TFVAR_container_registry ]]; then
+if [[ -z $TF_VAR_container_registry ]]; then
     echo "container_registry not set - check base.env"
     exit 1
 fi
 
 # Sign in to container registry 
-az acr login --name $TFVAR_container_registry
+az acr login --name $TF_VAR_container_registry
 
 # Generate tag based on date
 tag=$(date -u +"%Y%m%d-%H%M%S")
 
-docker tag clusterextractor $TFVAR_container_registry/clusterextractor:$tag
-docker push $TFVAR_container_registry/clusterextractor:$tag
+docker tag clusterextractor $TF_VAR_container_registry/clusterextractor:$tag
+docker push $TF_VAR_container_registry/clusterextractor:$tag
 
 echo -n $tag > "$script_dir/../deployment/outputs/image_tag.txt"

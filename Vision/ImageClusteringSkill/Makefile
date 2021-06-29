@@ -16,6 +16,7 @@ push-skill: build-skill ## build docker image for custom skill
 run-skill: build-skill ## build and run the skill API locally
 	docker run \
 		-p 5000:5000 \
+		-e DEBUG=True \
 		-e KEY="[YourSecretKeyCanBeAnything]" \
 		-e DBSCAN_MODEL=books.pkl \
 		-e CLUSTER_LABELS=labels.pkl \
@@ -24,4 +25,4 @@ run-skill: build-skill ## build and run the skill API locally
 deploy-skill: ## deploy skill services
 	./scripts/deploy-skill.sh
 
-deploy: deploy-base push-skill
+deploy: deploy-base push-skill deploy-skill

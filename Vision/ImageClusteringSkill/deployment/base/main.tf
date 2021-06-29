@@ -27,6 +27,15 @@ resource "azurerm_container_registry" "acr" {
   tags          = var.tags
 }
 
+resource "azurerm_cognitive_account" "cognitive_services" {
+  name                = "cognitive-${random_string.name_suffix.result}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  kind                = "CognitiveServices"
+  sku_name            = "S0"
+  tags                = var.tags
+}
+
 resource "azurerm_search_service" "search" {
   name                = "search-${random_string.name_suffix.result}"
   resource_group_name = azurerm_resource_group.rg.name
@@ -34,4 +43,21 @@ resource "azurerm_search_service" "search" {
   sku                 = "standard"
   tags                = var.tags
   allowed_ips         = []
+}
+
+
+resource "azurerm_storage_account" "data" {
+  name                     = "data${random_string.name_suffix.result}"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+
+  tags = var.tags
+}
+
+resource "azurerm_storage_container" "images" {
+  name                  = "images"
+  storage_account_name  = azurerm_storage_account.data.name
+  container_access_type = "private"
 }

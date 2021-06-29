@@ -21,7 +21,11 @@ cd "$script_dir/../deployment/base"
 
 terraform init
 
-terraform apply
+if [[ -z "$AUTO_APPROVE" ]]; then
+    terraform apply
+else
+    terraform apply -auto-approve
+fi
 
 # Save output for use in later stages
 mkdir -p "$script_dir/../deployment/outputs"

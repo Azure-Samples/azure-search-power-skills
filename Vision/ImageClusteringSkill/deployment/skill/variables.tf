@@ -19,8 +19,8 @@ variable "dbscan_model" {
   default = "books.pkl"
 }
 variable "api_debug" {
-  default = "False"
+  default = "True"
 }
 variable "cluster_labels" {
-  default = ""
+  default = "labels.pkl"
 }
