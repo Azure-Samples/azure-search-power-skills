@@ -51,7 +51,7 @@ This section describes how to get this working on sample data and how it can be 
    Run the cell 
    [Test summarization on our local running API](notebooks/Text%20Summarisation.ipynb#Test-our-text-on-our-local-running-API). 
    Make sure you rename the file [sample_env file to .env](sample_env) and populate it with the relevant values. Use the
-   variable ```bash URL_LOCAL``` as the URL.
+   variable `URL_LOCAL` as the `WEB_APP_URL`.
 1) ### Build the docker image 
    Now build the [docker image](powerskill/Dockerfile) and upload the image to your container registry  
    For this step you will need docker running so that we can build and test our inference API locally.
