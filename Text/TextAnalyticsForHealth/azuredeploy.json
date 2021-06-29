@@ -135,9 +135,9 @@
     }
   ],
   "outputs": {
-    "Azure Function Site Name": {
+    "Text Analytics For Health Skill URI": {
       "type": "String",
-      "value": "[variables('functionAppName')]"
+      "value": "[concat('https://', variables('functionAppName'),'.azurewebsites.net/api/TextAnalyticsForHealth?code=', listKeys(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/host/default/'), '2019-08-01').functionKeys.default)]"
     }
   }
 }
