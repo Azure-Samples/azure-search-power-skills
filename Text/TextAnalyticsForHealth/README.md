@@ -39,15 +39,15 @@ If running in an Azure function, this can be set in the application settings.
             "recordId": "foobar2",
             "data":
             {
-                "document":  "100mg Ibuprofin"
+                "text":  "100mg Ibuprofin"
             }
         },
         {
             "recordId": "foo1",
             "data":
             {
-                "document":  "200mg Tylenol",
-                "language":  "en"
+                "text":  "200mg Tylenol",
+                "languageCode":  "en"
             }
         }
     ]

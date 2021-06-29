@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -47,17 +50,17 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
             }
             if (apiKey == null)
             {
-                return new BadRequestObjectResult($"{skillName} - Healthcare Text Analytics API key is missing. Make sure to set it in the Environment Variables.");
+                return new BadRequestObjectResult($"{skillName} - TextAnalyticsForHealth API key is missing. Make sure to set it in the Environment Variables.");
             }
             var client = new TextAnalyticsClient(new Uri(apiEndpoint), new AzureKeyCredential(apiKey));
 
             // Get a custom timeout from the header, if it exists. If not use the default timeout.
             int timeout;
-            if (!int.TryParse(req.Headers["SkillTimeout"].ToString(), out timeout))
+            if (!int.TryParse(req.Headers["timeout"].ToString(), out timeout))
             {
                 timeout = defaultTimeout;
             }
-            timeout = Math.Clamp(timeout - timeoutBuffer, 0, maxTimeout);
+            timeout = Math.Clamp(timeout - timeoutBuffer, 1, maxTimeout - timeoutBuffer);
             var timeoutMiliseconds = timeout * 1000;
             var timeoutTask = Task.Delay(timeoutMiliseconds);
 
@@ -71,29 +74,29 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                         // The time limit for all the skills has been met
                         outRecord.Errors.Add(new WebApiErrorWarningContract
                         {
-                            Message = "Healthcare Text Analytics Error: The Text Analysis Operation took too long to complete."
+                            Message = "TextAnalyticsForHealth Error: The Text Analysis Operation took too long to complete."
                         });
                         return outRecord;
                     }
 
                     // Prepare analysis operation input
-                    if (!inRecord.Data.ContainsKey("document"))
+                    if (!inRecord.Data.ContainsKey("text"))
                     {
                         outRecord.Errors.Add(new WebApiErrorWarningContract
                         {
-                            Message = "Healthcare Text Analytics Error: The skill request did not contain 'document' in the input."
+                            Message = "TextAnalyticsForHealth Error: The skill request did not contain 'text' in the input."
                         });
                         return outRecord;
                     }
-                    var document = inRecord.Data["document"] as string;
-                    var language = inRecord.Data.ContainsKey("language") ? inRecord.Data["language"] as string : defaultLanguage;
+                    var document = inRecord.Data["text"] as string;
+                    var language = inRecord.Data.ContainsKey("languageCode") ? inRecord.Data["languageCode"] as string : defaultLanguage;
 
                     var docInfo = new StringInfo(document);
                     if (docInfo.LengthInTextElements >= maxCharLength)
                     {
                         outRecord.Warnings.Add(new WebApiErrorWarningContract
                         {
-                            Message = $"Healthcare Text Analytics Warning: The submitted document was over {maxCharLength} elements. It has been truncated to fit this requirement."
+                            Message = $"TextAnalyticsForHealth Warning: The submitted document was over {maxCharLength} elements. It has been truncated to fit this requirement."
                         });
                         document = docInfo.SubstringByTextElements(0, maxCharLength);
                     }
@@ -104,7 +107,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                         document
                     };
 
-                    // start analysis process TODO error check
+                    // start analysis process
                     var timer = System.Diagnostics.Stopwatch.StartNew();
                     AnalyzeHealthcareEntitiesOperation healthOperation = await client.StartAnalyzeHealthcareEntitiesAsync(batchInput, language, options);
                     var healthOperationTask = healthOperation.WaitForCompletionAsync().AsTask();
@@ -118,7 +121,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                             // The operation was not a success
                             outRecord.Errors.Add(new WebApiErrorWarningContract
                             {
-                                Message = "Healthcare Text Analytics Error: Health Operation returned a non-succeeded status."
+                                Message = "TextAnalyticsForHealth Error: Health Operation returned a non-succeeded status."
                             });
                         }
                         else
@@ -132,7 +135,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                         // Timeout
                         outRecord.Errors.Add(new WebApiErrorWarningContract
                         {
-                            Message = "Healthcare Text Analytics Error: The Text Analysis Operation took too long to complete."
+                            Message = "TextAnalyticsForHealth Error: The Text Analysis Operation took too long to complete."
                         });
                     }
 
@@ -159,14 +162,13 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                 {
                     if (!document.HasError)
                     {
-                        
                         entities.AddRange(document.Entities);
                         relations.AddRange(document.EntityRelations);
                     }
                     else
                     {
                         outRecord.Errors.Add(new WebApiErrorWarningContract{
-                            Message = $"Healthcare Text Analytics Error: {document.Error.ErrorCode}. Error Message: {document.Error.Message}"
+                            Message = $"TextAnalyticsForHealth Error: {document.Error.ErrorCode}. Error Message: {document.Error.Message}"
                         });
                     }
 
@@ -176,7 +178,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
                         {
                             outRecord.Warnings.Add(new WebApiErrorWarningContract
                             {
-                                Message = $"Healthcare Text Analytics Warning: {w.WarningCode}. Error Message: {w.Message}"
+                                Message = $"TextAnalyticsForHealth Warning: {w.WarningCode}. Error Message: {w.Message}"
                             });
                         }
                     }
