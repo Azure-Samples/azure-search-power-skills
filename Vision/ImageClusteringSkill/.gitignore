@@ -92,6 +92,8 @@ venv.bak/
 .vscode
 notebook.env
 deploy.env
+base.env
+skill.env
 
 # Spyder project settings
 .spyderproject

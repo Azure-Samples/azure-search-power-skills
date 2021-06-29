@@ -6,14 +6,22 @@ help: ## show this help
 deploy-base: ## deploy base services
 	./scripts/deploy-base.sh
 
+
 build-skill: ## build docker image for custom skill
 	docker build -t clusterextractor .
 
-run-skill: build-skill
+push-skill: build-skill ## build docker image for custom skill
+	./scripts/tag-and-push-image.sh
+
+run-skill: build-skill ## build and run the skill API locally
 	docker run \
 		-p 5000:5000 \
 		-e KEY="[YourSecretKeyCanBeAnything]" \
 		-e DBSCAN_MODEL=books.pkl \
 		-e CLUSTER_LABELS=labels.pkl \
 		clusterextractor
-	
+
+deploy-skill: ## deploy skill services
+	./scripts/deploy-skill.sh
+
+deploy: deploy-base push-skill

@@ -1,13 +1,23 @@
-output "resource_group" {
-  value = azurerm_resource_group.rg.name
-}
-output "location" {
-  value = azurerm_resource_group.rg.location
-}
-
 output "azure_search_admin_key" {
-  value = azurerm_search_service.search.primary_key
+  value     = azurerm_search_service.search.primary_key
+  sensitive = true
 }
 output "azure_search_query_key" {
-  value = azurerm_search_service.search.query_keys[0].key
+  value     = azurerm_search_service.search.query_keys[0].key
+  sensitive = true
+}
+
+output "container_registry" {
+  value = azurerm_container_registry.acr.login_server
+}
+
+# For simplicity, this uses the admin user for authenticating
+# For production, consider other authentication options: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication
+output "container_registry_admin_username" {
+  value     = azurerm_container_registry.acr.admin_username
+  sensitive = true
+}
+output "container_registry_admin_password" {
+  value     = azurerm_container_registry.acr.admin_password
+  sensitive = true
 }

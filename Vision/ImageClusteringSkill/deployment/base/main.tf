@@ -21,8 +21,10 @@ resource "azurerm_container_registry" "acr" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sku                 = "Basic"
-  admin_enabled       = false
-  tags                = var.tags
+  # For simplicity, this uses the admin user for authenticating
+  # For production, consider other authentication options: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication
+  admin_enabled = true
+  tags          = var.tags
 }
 
 resource "azurerm_search_service" "search" {
