@@ -71,8 +71,8 @@ or if you are using python [our FastAPI template skill](Template/PythonFastAPI/R
 
 Here are a few suggestions of simple contributions to get you started:
 * Improve documentation: sample code, better documentation are great ways to improve your understanding of existing code and to help other do the same.
-* Configuration: some skills can be configured through [application settings and environment variables](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/AnalyzeForm.cs#L46-L50). Some others still have [hard-coded configuration in the code](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Text/CustomEntitySearch/CustomEntityLookup.cs#L28-L31), that could be moved to be easier to configure.
-* For skills that rely on an external Azure resource (such as [Bing Entity Search](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Text/BingEntitySearch/BingEntitySearch.cs#L20)), improve the [deployment file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Text/BingEntitySearch/azuredeploy.json) so it gives the user the option to create and configure that service automatically.
+* Configuration: some skills can be configured through [application settings and environment variables](https://github.com/Azure-Samples/azure-search-power-skills/blob/main/Vision/AnalyzeForm/AnalyzeForm.cs#L46-L50). Some others still have [hard-coded configuration in the code](https://github.com/Azure-Samples/azure-search-power-skills/blob/main/Text/CustomEntitySearch/CustomEntityLookup.cs#L28-L31), that could be moved to be easier to configure.
+* For skills that rely on an external Azure resource (such as [Bing Entity Search](https://github.com/Azure-Samples/azure-search-power-skills/blob/main/Text/BingEntitySearch/BingEntitySearch.cs#L20)), improve the [deployment file](https://github.com/Azure-Samples/azure-search-power-skills/blob/main/Text/BingEntitySearch/azuredeploy.json) so it gives the user the option to create and configure that service automatically.
 
 ## Resources
 

@@ -5,7 +5,7 @@ languages:
 products:
 - azure
 - azure-search
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Video/VideoIndexer/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Video/VideoIndexer/azuredeploy.json
 name: "Sample skill for enabling video indexing"
 description: "This custom skill will invoke the Azure Video Indexer, placing a simplified insights model back into Blob Storage. You can then trigger another indexer to merge the insights back into your main search index."
 ---
@@ -35,7 +35,7 @@ To get started with video indexer and to get the necessary AccountId and Account
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVideo%2FVideoIndexer%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FVideo%2FVideoIndexer%2Fazuredeploy.json)
 
 ## Video Indexer
 

@@ -10,7 +10,7 @@ products:
 name: Decrypt blob file sample skill for cognitive search
 urlFragment: azure-decryptblob-sample
 description: This custom skill downloads and decrypts a file that was encrypted in Azure Blob Storage and returns it back to Azure Cognitive Search to be indexed.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Utils/DecryptBlobFile/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Utils/DecryptBlobFile/azuredeploy.json
 ---
 
 # DecryptBlobFile
@@ -29,7 +29,7 @@ This function doesn't require any application settings.
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FUtils%2FDecryptBlobFile%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FUtils%2FDecryptBlobFile%2Fazuredeploy.json)
 
 ## Sample Input:
 

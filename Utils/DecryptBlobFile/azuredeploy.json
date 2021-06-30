@@ -104,7 +104,7 @@
           ],
           "properties": {
             "RepoUrl": "[variables('repoURL')]",
-            "branch": "master",
+            "branch": "main",
             "project": "[variables('functionProject')]",
             "IsManualIntegration": true
           }

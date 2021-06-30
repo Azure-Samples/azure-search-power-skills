@@ -9,7 +9,7 @@ products:
 name: Custom Vision integration sample skill for cognitive search
 urlFragment: azure-customvision-sample
 description: This custom skill extracts tags from a trained Custom Vision model (classification or object detection).
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/CustomVision/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/CustomVision/azuredeploy.json
 ---
 
 # Custom Vision
@@ -36,7 +36,7 @@ Also, you can set `MIN_PROBABILITY_THRESHOLD` which will only return tags with a
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FCustomVision%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FVision%2FCustomVision%2Fazuredeploy.json)
 
 ## Sample Input:
 
