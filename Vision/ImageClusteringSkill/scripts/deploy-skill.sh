@@ -80,3 +80,10 @@ indexer_json=$(cat azuresearch/create_indexer.json | envsubst)
 indexer_name=$(echo $indexer_json | jq -r .name )
 echo "Creating indexer $indexer_name ... "
 curl -s -X PUT --header "Content-Type: application/json" --header "api-key: $TF_VAR_azure_search_admin_key" --data "$indexer_json" $search_url/indexers/$indexer_name?api-version=2020-06-30 
+
+
+#
+# Copy the test images to blob storage
+#
+
+az storage blob upload-batch --account-name $TF_VAR_storage_account_name --destination $TF_VAR_storage_container_name --source "$script_dir/../data/test/"
