@@ -11,3 +11,4 @@ ipykernel
 matplotlib
 ipyplot
 azure-search-documents
+azure-storage-blob
