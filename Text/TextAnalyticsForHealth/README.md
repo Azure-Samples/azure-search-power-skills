@@ -39,7 +39,7 @@ If running in an Azure function, this can be set in the application settings.
             "recordId": "foobar2",
             "data":
             {
-                "text": "100mg Ibuprofin"
+                "text": "100mg Ibuprofen"
             }
         },
         {
@@ -76,7 +76,7 @@ If running in an Azure function, this can be set in the application settings.
                         "normalizedText": null
                     },
                     {
-                        "text": "Ibuprofin",
+                        "text": "Ibuprofen",
                         "category": "MedicationName",
                         "subCategory": null,
                         "confidenceScore": 1.0,
@@ -107,7 +107,7 @@ If running in an Azure function, this can be set in the application settings.
                             },
                             {
                                 "entity": {
-                                    "text": "Ibuprofin",
+                                    "text": "Ibuprofen",
                                     "category": "MedicationName",
                                     "subCategory": null,
                                     "confidenceScore": 1.0,
