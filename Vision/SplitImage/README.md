@@ -5,7 +5,7 @@ languages:
 products:
 - azure
 - azure-search
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/SplitImage/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/SplitImage/azuredeploy.json
 name: "Split Image sample skill for Azure Cognitive Search"
 description: "This Split Image skill can be used on images that are too long to process in the vanilla pipeline. This skill will break a large image up into several images small enough to be processed by OCR."
 ---
@@ -36,7 +36,7 @@ This function doesn't require any application settings.
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FSplitImage%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FVision%2FSplitImage%2Fazuredeploy.json)
 
 ## split-image
 

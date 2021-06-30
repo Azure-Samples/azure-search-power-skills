@@ -8,7 +8,7 @@ products:
 - azure-maps
 name: Get geo-point from name sample skill for cognitive search
 description: "This custom skill takes a string input that represents a location (city, country, address or point of interest) and returns a geo-point."
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Geo/GeoPointFromName/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Geo/GeoPointFromName/azuredeploy.json
 ---
 
 # GetGeoPointFromName
@@ -27,7 +27,7 @@ If running in an Azure function, this can be set in the application settings.
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FGeo%2FGeoPointFromName%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FGeo%2FGeoPointFromName%2Fazuredeploy.json)
 
 ## Sample Input:
 

@@ -9,7 +9,7 @@ products:
 name: Analyze form sample skill for cognitive search
 urlFragment: azure-analyzeform-sample
 description: This custom skill extracts specific fields from the results of a trained form recognition.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/AnalyzeForm/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/AnalyzeForm/azuredeploy.json
 ---
 
 # AnalyzeForm
@@ -26,7 +26,7 @@ A [full tutorial on this skill is available in the Azure Cognitive Seach documen
 
 In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Forms Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. At the time this template was written, Forms Recognizer was in a gated public preview. If you have not done so, you may need to [request access](https://aka.ms/FormRecognizerRequestAccess).
 
-You will need to [train a model with your forms](https://docs.microsoft.com/en-us/azure/cognitive-services/form-recognizer/quickstarts/curl-train-extract) before you can use this skill. The model that was used for this example was trained using sample data that can be downloaded from [the SampleData directory](https://github.com/Azure-Samples/azure-search-power-skills/tree/master/SampleData).
+You will need to [train a model with your forms](https://docs.microsoft.com/en-us/azure/cognitive-services/form-recognizer/quickstarts/curl-train-extract) before you can use this skill. The model that was used for this example was trained using sample data that can be downloaded from [the SampleData directory](https://github.com/Azure-Samples/azure-search-power-skills/tree/main/SampleData).
 
 ## Settings
 
@@ -39,11 +39,11 @@ After training, you will need to set the `FORMS_RECOGNIZER_MODEL_ID` application
 By default, the skill will retry at most a hundred times getting form recognition results with a one second delay between attempts until it gets a result other than "running".
 This can be changed by setting the `FORMS_RECOGNIZER_MAX_ATTEMPTS` and `FORMS_RECOGNIZER_RETRY_DELAY` application settings.
 
-The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `field-mappings.json` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/Vision/AnalyzeForm/field-mappings.json).
+The list of fields to extract and the fields they get mapped to in the response of the skill need to be configured to reflect your particular scenario. This can be done by editing [the `field-mappings.json` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/main/Vision/AnalyzeForm/field-mappings.json).
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FAnalyzeForm%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FVision%2FAnalyzeForm%2Fazuredeploy.json)
 
 ## Sample Input:
 
@@ -55,7 +55,7 @@ This sample data is pointing to a file stored in this repository, but when the s
         {
             "recordId": "record1",
             "data": { 
-                "formUrl": "https://github.com/Azure-Samples/azure-search-power-skills/raw/master/SampleData/Invoice_4.pdf",
+                "formUrl": "https://github.com/Azure-Samples/azure-search-power-skills/raw/main/SampleData/Invoice_4.pdf",
                 "formSasToken":  "?st=sasTokenThatWillBeGeneratedByCognitiveSearch"
             }
         }
