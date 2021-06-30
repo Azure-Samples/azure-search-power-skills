@@ -58,7 +58,7 @@ The skill also accepts options which can be sent as headers in the request.
 | Name | Description | Default |
 | ---- | ----------- | ------- |
 | `timeout` | Allows you to set a timeout (in seconds) which will cause the skill to return early, so it doesn't timeout in the Cognitive Search Pipeline. | `230` |
-| `defaultLanguage` | Allows you to set a default language across all documents in case a language is not provided in the input | `"en"` |
+| `defaultLanguageCode` | Allows you to set a default language across all documents in case a language is not provided in the input | `en` |
 
 ## Sample Output:
 

@@ -65,7 +65,7 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
             var timeoutTask = Task.Delay(timeoutMiliseconds);
 
             // Get a custom default language, if none is provided, use english
-            string defaultLanguage = req.Headers.ContainsKey("defaultLanguage")? req.Headers["defaultLanguage"].ToString(): "en";
+            string defaultLanguage = req.Headers.ContainsKey("defaultLanguageCode")? req.Headers["defaultLanguageCode"].ToString(): "en";
 
             WebApiSkillResponse response = await WebApiSkillHelpers.ProcessRequestRecordsAsync(skillName, requestRecords,
                 async (inRecord, outRecord) => {
