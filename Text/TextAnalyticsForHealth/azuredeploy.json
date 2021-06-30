@@ -24,8 +24,8 @@
     }
   },
   "variables": {
-    "repoURL": "https://github.com/jonathanserbent/azure-search-power-skills",
-    "repoBranch": "HealthcareTA",
+    "repoURL": "https://github.com/Azure-Samples/azure-search-power-skills",
+    "repoBranch": "main",
     "functionProject": "Text\\TextAnalyticsForHealth\\TextAnalyticsForHealth.csproj",
     "websiteName": "[toLower(concat(parameters('resourcePrefix'), '-site-', uniqueString(resourceGroup().id)))]",
     "storageAccount": "[toLower(concat(parameters('resourcePrefix'), uniqueString(resourceGroup().id)))]",
