@@ -18,7 +18,7 @@ output "storage_account_name" {
   value = azurerm_storage_account.data.name
 }
 output "storage_container_name" {
-  value = azurerm_storage_container.images.name
+  value = azurerm_storage_container.books.name
 }
 
 output "container_registry" {

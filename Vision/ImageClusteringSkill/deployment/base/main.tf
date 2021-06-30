@@ -56,8 +56,8 @@ resource "azurerm_storage_account" "data" {
   tags = var.tags
 }
 
-resource "azurerm_storage_container" "images" {
-  name                  = "images"
+resource "azurerm_storage_container" "books" {
+  name                  = "books"
   storage_account_name  = azurerm_storage_account.data.name
   container_access_type = "private"
 }

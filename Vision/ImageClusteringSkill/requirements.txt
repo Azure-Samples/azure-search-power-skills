@@ -10,4 +10,4 @@ Pillow
 ipykernel
 matplotlib
 ipyplot
-# tensorflow
+azure-search-documents
