@@ -6,14 +6,14 @@ products:
 - azure
 - azure-search
 - azure-cognitive-services
-name: Bing Entity Search sample skill for cognitive search
-description: This custom skill finds rich and structured information about public figures, locations, or organizations.
+name: Text Analytics for Health Custom Skill for Cognitive Search
+description: This custom skill utilizes the Text Analytics for Health API to identify healthcare entities and relations.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/TextAnalyticsForHealth/azuredeploy.json
 ---
 
 # TextAnalyticsForHealth
 
-This custom skill finds rich and structured information about public figures, locations, or organizations.
+This custom skill utilizes the Text Analytics for Health API to identify healthcare entities and relations. You can learn more about how the Text Analytics for Health API works by reading their [docs](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/).
 
 ## Requirements
 
@@ -39,26 +39,20 @@ If running in an Azure function, this can be set in the application settings.
             "recordId": "foobar2",
             "data":
             {
-                "text":  "100mg Ibuprofin"
+                "text": "100mg Ibuprofin"
             }
         },
         {
             "recordId": "foo1",
             "data":
             {
-                "text":  "200mg Tylenol",
-                "languageCode":  "en"
+                "text": "200mg Tylenol",
+                "languageCode": "en"
             }
         }
     ]
 }
 ```
-The skill also accepts options which can be sent as headers in the request.
-
-| Name | Description | Default |
-| ---- | ----------- | ------- |
-| `timeout` | Allows you to set a timeout (in seconds) which will cause the skill to return early, so it doesn't timeout in the Cognitive Search Pipeline. | `230` |
-| `defaultLanguageCode` | Allows you to set a default language across all documents in case a language is not provided in the input | `en` |
 
 ## Sample Output:
 
@@ -70,10 +64,63 @@ The skill also accepts options which can be sent as headers in the request.
             "data": {
                 "status": "succeeded",
                 "entities": [
-                    {...}
+                    {
+                        "text": "100mg",
+                        "category": "Dosage",
+                        "subCategory": null,
+                        "confidenceScore": 1.0,
+                        "offset": 0,
+                        "length": 5,
+                        "dataSources": [],
+                        "assertion": null,
+                        "normalizedText": null
+                    },
+                    {
+                        "text": "Ibuprofin",
+                        "category": "MedicationName",
+                        "subCategory": null,
+                        "confidenceScore": 1.0,
+                        "offset": 6,
+                        "length": 9,
+                        "dataSources": [],
+                        "assertion": null,
+                        "normalizedText": null
+                    }
                 ],
                 "relations": [
-                    {...}
+                    {
+                        "relationType": {},
+                        "roles": [
+                            {
+                                "entity": {
+                                    "text": "100mg",
+                                    "category": "Dosage",
+                                    "subCategory": null,
+                                    "confidenceScore": 1.0,
+                                    "offset": 0,
+                                    "length": 5,
+                                    "dataSources": [],
+                                    "assertion": null,
+                                    "normalizedText": null
+                                },
+                                "name": "Dosage"
+                            },
+                            {
+                                "entity": {
+                                    "text": "Ibuprofin",
+                                    "category": "MedicationName",
+                                    "subCategory": null,
+                                    "confidenceScore": 1.0,
+                                    "offset": 6,
+                                    "length": 9,
+                                    "dataSources": [],
+                                    "assertion": null,
+                                    "normalizedText": null
+                                },
+                                "name": "Medication"
+                            }
+                        ]
+                    }
                 ]
             },
             "warnings": [],
@@ -86,16 +133,26 @@ The skill also accepts options which can be sent as headers in the request.
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset. **If you deploy using the ARM template you can copy the URI from the output of the template.**
+In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset. **If you deploy using the ARM template you can copy the URI from the output of the template.**  
+The skill also accepts options which can be sent as headers in the request.
+
+| Header Name | Description | Default |
+| ----------- | ----------- | ------- |
+| `timeout` | Allows you to set a timeout (in seconds) which will cause the skill to return early, so it doesn't timeout in the Cognitive Search Pipeline. | `230` |
+| `defaultLanguageCode` | Allows you to set a default language across all documents in case a language is not provided in the input | `en` |
+
+**It is important to note** the difference between the timeout option in the header, and the timeout option/behavior when defining a skillset. If a request to a web skill takes longer than the timeout defined in the skillset, it will simply drop the request and move on. With the timeout header option, it allows users to define how long the function should wait before it returns the results it has so far, and returns errors for the documents it has not yet gotten to or not yet received results on.
+
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
 {
     "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
-    "description": "Our new Bing entity search custom skill",
+    "description": "Our new Text Analytics For Health Custom Skill",
     "context": "/document",
-    "uri": "[AzureFunctionEndpointUrl]/api/entity-search?code=[AzureFunctionDefaultHostKey]",
+    "uri": "[AzureFunctionEndpointUrl]/api/TextAnalyticsForHealth?code=[AzureFunctionDefaultHostKey]",
     "batchSize": 1,
+    "timeout" : "PT3M50S",
     "inputs": [
         {
             "name": "document",
@@ -113,6 +170,9 @@ Here's a sample skill definition for this example (inputs and outputs should be 
             "targetName": "relations"
         },
     ],
-    "httpHeaders": {}
+    "httpHeaders": {
+        "timeout" : "220",
+        "defaultLanguageCode" : "en"
+    }
 }
 ```
