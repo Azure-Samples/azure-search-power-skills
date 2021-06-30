@@ -73,7 +73,7 @@ namespace AzureCognitiveSearch.PowerSkills.Tests.TextAnalyticsForHealthTests
                 Method = "POST"
             };
             var response = await Helpers.CurrySkillFunction(TextAnalyticsForHealth.Run)(request) as ObjectResult;
-            var expectedResponse = "unitTestFunction - Healthcare Text Analytics API key is missing. Make sure to set it in the Environment Variables.";
+            var expectedResponse = "unitTestFunction - TextAnalyticsForHealth API key is missing. Make sure to set it in the Environment Variables.";
             Assert.AreEqual(expectedResponse, response.Value);
         }
     }
