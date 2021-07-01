@@ -58,6 +58,7 @@
     <ProjectReference Include="..\..\Text\BingEntitySearch\BingEntitySearch.csproj" />
     <ProjectReference Include="..\..\Text\CustomEntitySearch\CustomEntityLookup.csproj" />
     <ProjectReference Include="..\..\Text\Distinct\Distinct.csproj" />
+    <ProjectReference Include="..\..\Text\TextAnalyticsForHealth\TextAnalyticsForHealth.csproj" />
     <ProjectReference Include="..\..\Text\Tokenizer\Tokenizer.csproj" />
     <ProjectReference Include="..\..\Video\VideoIndexer\VideoIndexer.csproj" />
     <ProjectReference Include="..\..\Vision\AnalyzeForm\AnalyzeForm.csproj" />

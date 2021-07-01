@@ -1,0 +1,143 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourcePrefix": {
+      "defaultValue": "pshta",
+      "type": "String",
+      "metadata": {
+        "description": "Prefix for all resources created by this template"
+      }
+    },
+    "storageAccountType": {
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Premium_LRS"
+      ],
+      "type": "String",
+      "metadata": {
+        "description": "Storage Account type"
+      }
+    }
+  },
+  "variables": {
+    "repoURL": "https://github.com/Azure-Samples/azure-search-power-skills",
+    "repoBranch": "main",
+    "functionProject": "Text\\TextAnalyticsForHealth\\TextAnalyticsForHealth.csproj",
+    "websiteName": "[toLower(concat(parameters('resourcePrefix'), '-site-', uniqueString(resourceGroup().id)))]",
+    "storageAccount": "[toLower(concat(parameters('resourcePrefix'), uniqueString(resourceGroup().id)))]",
+    "functionAppName": "[toLower(concat(parameters('resourcePrefix'), '-function-app-', uniqueString(resourceGroup().id)))]",
+    "textAnalyticsName": "[toLower(concat(parameters('resourcePrefix'), '-text-analytics-', uniqueString(resourceGroup().id)))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2021-04-30",
+      "name": "[variables('textAnalyticsName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "S"
+      },
+      "kind": "TextAnalytics",
+      "properties": {
+        "customSubDomainName": "[variables('textAnalyticsName')]",
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2017-10-01",
+      "name": "[variables('storageAccount')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "kind": "Storage"
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2016-08-01",
+      "name": "[variables('functionAppName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', variables('textAnalyticsName'))]"
+      ],
+      "kind": "functionapp",
+      "properties": {
+        "name": "[variables('functionAppName')]",
+        "kind": "functionapp",
+        "httpsOnly": true,
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount')), '2021-04-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(variables('functionAppName'))]"
+            },
+            {
+              "name": "AzureWebJobsDashboard",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount')), '2021-04-01').keys[0].value)]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount')), '2021-04-01').keys[0].value)]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_RUNTIME",
+              "value": "dotnet"
+            },
+            {
+              "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+              "value": true
+            },
+            {
+              "name": "PROJECT",
+              "value": "[variables('functionProject')]"
+            },
+            {
+              "name": "TEXT_ANALYTICS_API_KEY",
+              "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('textAnalyticsName')), '2021-04-30').key1]"
+            },
+            {
+              "name": "TEXT_ANALYTICS_API_ENDPOINT",
+              "value": "[concat('https://', variables('textAnalyticsName'), '.cognitiveservices.azure.com')]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "sourcecontrols",
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
+          ],
+          "properties": {
+            "RepoUrl": "[variables('repoURL')]",
+            "branch": "[variables('repoBranch')]",
+            "project": "[variables('functionProject')]",
+            "IsManualIntegration": true
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "Text Analytics For Health Skill URI": {
+      "type": "String",
+      "value": "[concat('https://', variables('functionAppName'),'.azurewebsites.net/api/TextAnalyticsForHealth?code=', listKeys(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/host/default/'), '2019-08-01').functionKeys.default)]"
+    }
+  }
+}
