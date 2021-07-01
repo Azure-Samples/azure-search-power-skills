@@ -155,7 +155,7 @@ Here's a sample skill definition for this example (inputs and outputs should be 
     "timeout" : "PT3M50S",
     "inputs": [
         {
-            "name": "document",
+            "name": "text",
             "source": "/document/content",
             "sourceContext": null
         }
