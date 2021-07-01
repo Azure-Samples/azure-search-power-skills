@@ -21,7 +21,6 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
     public static class TextAnalyticsForHealth
     {
         public static readonly string textAnalyticsApiEndpointSetting = "TEXT_ANALYTICS_API_ENDPOINT";
-        public static readonly string defaultTextAnalyticsEndpoint = "https://centralus.api.cognitive.microsoft.com";
         public static readonly string textAnalyticsApiKeySetting = "TEXT_ANALYTICS_API_KEY";
         private static readonly int defaultTimeout = 230;
         private static readonly int maxTimeout = 230;
@@ -44,13 +43,9 @@ namespace AzureCognitiveSearch.PowerSkills.Text.TextAnalyticsForHealth
             // Get Endpoint and access key from App Settings
             string apiKey = Environment.GetEnvironmentVariable(textAnalyticsApiKeySetting, EnvironmentVariableTarget.Process);
             string apiEndpoint = Environment.GetEnvironmentVariable(textAnalyticsApiEndpointSetting, EnvironmentVariableTarget.Process);
-            if (apiEndpoint == null)
+            if (apiKey == null || apiEndpoint == null)
             {
-                apiEndpoint = defaultTextAnalyticsEndpoint;
-            }
-            if (apiKey == null)
-            {
-                return new BadRequestObjectResult($"{skillName} - TextAnalyticsForHealth API key is missing. Make sure to set it in the Environment Variables.");
+                return new BadRequestObjectResult($"{skillName} - TextAnalyticsForHealth API key or Endpoint is missing. Make sure to set it in the Environment Variables.");
             }
             var client = new TextAnalyticsClient(new Uri(apiEndpoint), new AzureKeyCredential(apiKey));
 
