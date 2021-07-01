@@ -1,11 +1,11 @@
-@baseUrl=http://localhost:5000
-@apiKey=[YourSecretKeyCanBeAnything]
+@baseUrl=http://0.0.0.0:5000
+@apiKey={{$dotenv KEY}}
 
-GET {{baseUrl}}
+GET {{baseUrl}}/api/healthcheck
 ###
 
 POST {{baseUrl}}/api/extraction
 Ocp-Apim-Subscription-Key: {{apiKey}}
 Content-Type: application/json
 
-< ../data/postman_request.json
+< rest_data.json

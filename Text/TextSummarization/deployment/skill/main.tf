@@ -48,6 +48,7 @@ resource "azurerm_app_service" "dockerapp" {
     NUM_BEAMS                           = var.num_beams
     MAX_LENGTH                          = var.max_length
     KEY                                 = random_password.api_key.result
+    SUMMARIZER_MODEL                    = "facebook/bart-large-cnn"
   }
 
   site_config {

@@ -3,6 +3,9 @@ help: ## show this help
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%s\033[0m|%s\n", $$1, $$2}' \
 	| column -t -s '|'
 
+local-API: ## deploy the app locally
+	./scripts/setup-local.sh
+
 deploy-base: ## deploy base services
 	./scripts/deploy-base.sh
 

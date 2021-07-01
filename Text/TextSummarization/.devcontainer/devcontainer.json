@@ -53,9 +53,11 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	"postCreateCommand": [
-	 	"python -m pip install -r powerskill/requirements.txt"
-	],
+	"postCreateCommand": "python -m pip install -r ${containerWorkspaceFolder}/powerskill/requirements.txt",
+	"containerEnv": {
+		// Set the cache up so that we don't download the 1.6Gb Model each time
+		"TRANSFORMERS_CACHE": "${containerWorkspaceFolder}/powerskill/models"
+	},
 
 	"remoteUser": "vscode"
 }

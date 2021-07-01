@@ -43,9 +43,6 @@ az storage blob upload-batch --account-name $TF_VAR_storage_account_name --desti
 skill_api_key=$(jq -r .skill_api_key.value < "$script_dir/../deployment/outputs/skill.json")
 skill_api_hostname=$(jq -r .skill_api_hostname.value < "$script_dir/../deployment/outputs/skill.json")
 
-echo "API_KEY=$skill_api_key" > "$script_dir/../docs/.env"
-echo "API_URL=http://$skill_api_hostname" >> "$script_dir/../docs/.env"
-
 #
 # Configure Azure Search Index etc
 # Currently this is not supported in the Terraform azurerm provider
@@ -76,4 +73,22 @@ curl -s -X PUT --header "Content-Type: application/json" --header "api-key: $TF_
 indexer_json=$(cat ../azuresearch/create_indexer.json | envsubst)
 indexer_name=$(echo $indexer_json | jq -r .name )
 echo "Creating indexer $indexer_name ... "
-curl -s -X PUT --header "Content-Type: application/json" --header "api-key: $TF_VAR_azure_search_admin_key" --data "$indexer_json" $search_url/indexers/$indexer_name?api-version=2020-06-30 
+curl -s -X PUT --header "Content-Type: application/json" --header "api-key: $TF_VAR_azure_search_admin_key" --data "$indexer_json" $search_url/indexers/$indexer_name?api-version=2020-06-30
+
+# Run the indexer...
+echo "Running indexer $indexer_name..."
+curl -s -X POST --header "Content-Type: application/json" --header "api-key: $TF_VAR_azure_search_admin_key" --data "" $search_url/indexers/$indexer_name/run?api-version=2020-06-30 
+
+echo "API_KEY=$skill_api_key" > "$script_dir/../docs/.env"
+echo "API_URL=http://$skill_api_hostname" >> "$script_dir/../docs/.env"
+
+echo "WEB_APP_KEY=$TF_VAR_skill_api_key" > "$script_dir/../notebooks/.env"
+echo "WEB_APP_URL=http://$TF_VAR_skill_api_hostname" >> "$script_dir/../notebooks/.env"
+echo "SEARCH_API_KEY=$TF_VAR_azure_search_query_key" >> "$script_dir/../notebooks/.env"
+echo "ACS_URL=$search_url" >> "$script_dir/../notebooks/.env"
+echo "DATA_SOURCE=$data_source_name" >> "$script_dir/../notebooks/.env"
+echo "SKILLSET_NAME=$skillset_name" >> "$script_dir/../notebooks/.env"
+echo "INDEX_NAME=$index_name" >> "$script_dir/../notebooks/.env"
+echo "COGSVC_KEY=$TF_VAR_cognitive_services_key" >> "$script_dir/../notebooks/.env"
+echo "STORAGE_CONNECTION_STRING=$TF_VAR_storage_connection_string" >> "$script_dir/../notebooks/.env"
+echo "STORAGE_CONTAINER_NAME=$TF_VAR_storage_container_name" >> "$script_dir/../notebooks/.env"

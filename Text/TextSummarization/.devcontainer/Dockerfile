@@ -56,7 +56,6 @@ RUN sudo apt-get update \
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
-# docker-client
 # terraform
 COPY .devcontainer/scripts/terraform.sh /tmp/
 RUN /tmp/terraform.sh
@@ -65,6 +64,7 @@ RUN /tmp/terraform.sh
 COPY .devcontainer/scripts/azure-cli.sh /tmp/
 RUN /tmp/azure-cli.sh
 
+# docker-client
 COPY .devcontainer/scripts/docker-client.sh /tmp/
 RUN /tmp/docker-client.sh
 
