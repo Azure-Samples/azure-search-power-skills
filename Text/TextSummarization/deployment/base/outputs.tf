@@ -29,6 +29,9 @@ output "storage_account_connection_string" {
   value = azurerm_storage_account.data.primary_connection_string
   sensitive = true
 }
+output "storage_account_name" {
+  value = azurerm_storage_account.data.name
+}
 output "storage_container_name" {
   value = azurerm_storage_container.data.name
 }

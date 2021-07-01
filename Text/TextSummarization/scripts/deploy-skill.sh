@@ -36,6 +36,9 @@ mkdir -p "$script_dir/../deployment/outputs"
 terraform output -json > "$script_dir/../deployment/outputs/skill.json"
 "$script_dir/convert-json-to-env.sh" < "$script_dir/../deployment/outputs/skill.json" > "$script_dir/../skill.env"
 
+# Copy the test documents to storage
+az storage blob upload-batch --account-name $TF_VAR_storage_account_name --destination $TF_VAR_storage_container_name --source "$script_dir/../data/"
+
 # save output to .env file in docs folder for testing API call
 skill_api_key=$(jq -r .skill_api_key.value < "$script_dir/../deployment/outputs/skill.json")
 skill_api_hostname=$(jq -r .skill_api_hostname.value < "$script_dir/../deployment/outputs/skill.json")

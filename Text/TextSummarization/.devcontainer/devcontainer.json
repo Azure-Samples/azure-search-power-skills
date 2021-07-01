@@ -9,18 +9,18 @@
 			"DOCKER_GROUP_ID": "${localEnv:DOCKER_GROUP_ID}"
 		}
 	},
+	"runArgs": [
+		"--network", "host" // use host networking so that the dev container can access the API when running the container locally
+	],
 
 	"mounts": [
 		// Keep command history 
 		"source=TextSummarization-bashhistory,target=/home/vscode/commandhistory",
 		// Mounts the login details from the host machine to azcli works in the container
 		"type=bind,source=${env:HOME}${env:USERPROFILE}/.azure,target=/home/vscode/.azure",
-		// Mounts Azure Powershell logic creds. NOTE: Poweshell uses ".Azure" not ".azure" to store creds
-		"type=volume,source=azureprocessingpowershellcreds,target=/home/vscode/.Azure",
 		// Mount docker socket for docker builds
 		"type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock"
 	],
-
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
@@ -53,14 +53,9 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	//"postCreateCommand": "python -m pip install -r requirements.txt",
-	// "postCreateCommand": "conda activate ipykernel_py3 && pip install -r requirements.txt",
-	// "postCreateCommand": [
-	// 	"sudo chown -R $(whoami) /home/vscode/.cache/",
-	// 	"pip install -r requirements.txt"
-	// ],
+	"postCreateCommand": [
+	 	"python -m pip install -r powerskill/requirements.txt"
+	],
 
-	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
 }

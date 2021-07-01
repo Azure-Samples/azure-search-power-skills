@@ -20,6 +20,9 @@ COPY models /usr/src/api/models/
 COPY powerskill /usr/src/api/powerskill/
 COPY app.py /usr/src/api/
 
+# Set the cache up so that we don't download the 1.6Gb Model each time
+ENV TRANSFORMERS_CACHE=/usr/src/api/models/
+
 EXPOSE 5000
 
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]

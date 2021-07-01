@@ -6,4 +6,4 @@ set -e
 # values are formatted as KEY=$'VALUE' with any single quotes escaped as \'
 # e.g. a value of (MY'VALUE) would result in: KEY=$'MY\'VALUE'
 
-jq -r "to_entries | .[] | select(.value.type == \"string\") | \"TF_VAR_\\(.key)=\$'\\(.value.value | gsub(\"(?<x>('))\"; \"\\\\'\"))'\"" 
+jq -r "to_entries | .[] | select(.value.type == \"string\") | \"TF_VAR_\\(.key)=\$'\\(.value.value | gsub(\"(?<x>('))\"; \"\\\\'\"))'\""
