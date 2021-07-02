@@ -9,18 +9,17 @@
 		}
 	},
 	"runArgs": [
-		"--network", "host" // use host networking so that the dev container can access the API when running the container locally
+		"--network", "host" // use host networking so that the dev container can access the API when running in a container locally
 	],
 
 	"mounts": [
 		// Keep command history 
 		"source=ImageClusteringSkill-bashhistory,target=/home/vscode/commandhistory",
 		// Mount host docker socket
-		"type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock"
-	
-	,
+		"type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock"	,
 		// Mounts the .azure host folder into the dev container to pick up host az CLI login details
-		"type=bind,source=${env:HOME}${env:USERPROFILE}/.azure,target=/home/vscode/.azure",],
+		"type=bind,source=${env:HOME}${env:USERPROFILE}/.azure,target=/home/vscode/.azure",
+	],
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
@@ -36,7 +35,9 @@
 		"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
 		"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
 		"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
-		"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint"
+		"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
+		"python.defaultInterpreterPath": "/opt/conda/bin/python"
+
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
@@ -55,11 +56,6 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "./scripts/setup.sh",
-	// "postCreateCommand": "conda activate ipykernel_py3 && pip install -r requirements.txt",
-	// "postCreateCommand": [
-	// 	"sudo chown -R $(whoami) /home/vscode/.cache/",
-	// 	"pip install -r requirements.txt"
-	// ],
 
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
