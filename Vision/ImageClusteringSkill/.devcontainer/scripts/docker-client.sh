@@ -18,3 +18,13 @@ rm -rf /tmp/docker.tgz
 
 echo -e "\n\e[34m»»» 💾 \e[32mInstalled to: \e[33m$(which $CMD)"
 echo -e "\e[34m»»» 💡 \e[32mVersion details: \e[39m$($CMD --version)"
+
+
+if [ -z "$DOCKER_GROUP_ID" ]; then
+    sudo groupadd docker
+else
+    sudo groupadd -g $DOCKER_GROUP_ID docker
+fi
+
+sudo usermod -aG docker $(whoami) && newgrp docker
+getent group docker

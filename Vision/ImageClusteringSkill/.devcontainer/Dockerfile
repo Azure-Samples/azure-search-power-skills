@@ -56,11 +56,9 @@ RUN sudo apt-get update \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
 # docker-client
+ARG DOCKER_GROUP_ID
 COPY .devcontainer/scripts/docker-client.sh /tmp/
 RUN /tmp/docker-client.sh
-
-#Add user to docker group
-RUN sudo groupadd docker && sudo usermod -aG docker $USERNAME && newgrp docker
 
 # terraform
 COPY .devcontainer/scripts/terraform.sh /tmp/

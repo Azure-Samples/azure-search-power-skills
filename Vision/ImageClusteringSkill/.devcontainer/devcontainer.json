@@ -5,7 +5,11 @@
 		"dockerfile": "Dockerfile",
 		"args": {
 			"INSTALL_NODE": "true",
-			"NODE_VERSION": "lts/*"
+			"NODE_VERSION": "lts/*",
+			// To ensure that the group ID for the docker group in the container
+			// matches the group ID on the host, add this to your .bash_profile on the host
+			// 		export DOCKER_GROUP_ID=$(getent group docker | awk -F ":" '{ print $3 }')
+			"DOCKER_GROUP_ID": "${localEnv:DOCKER_GROUP_ID}"
 		}
 	},
 	"runArgs": [
