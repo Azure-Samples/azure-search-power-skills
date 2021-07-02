@@ -1,5 +1,4 @@
 # Environment variables
-deploy.env
 base.env
 skill.env
 .env
