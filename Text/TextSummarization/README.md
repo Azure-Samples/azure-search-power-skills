@@ -12,6 +12,15 @@ Allocation (LDA) topic modelling to further identify areas of interest
 This example uses the
 [Meantime News dataset](http://www.newsreader-project.eu/results/data/wikinews/), and some sample texts have been placed in the [data](data/) folder.
 
+This Power Skill includes a [Visual Studio Code dev container](https://code.visualstudio.com/docs/remote/containers). If you use the dev container then your development environment will be set up with all the required dependencies:
+
+- python 3
+- jupyter notebooks
+- tensorflow
+- Terraform
+- Docker client
+- Azure CLI
+
 ## Requirements
 
 In addition to the common requirements described in the root [README.md](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/README.md) 
@@ -117,24 +126,4 @@ This section describes how to get the sample working in stages and how it can be
       yes
       ```
   1) ### Test the index
-      Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/Text%20Summarisation.ipynb#Let's-go-and-test-the-ACS-index) to summarise our text and also run NER.
-      
-Note, you need an already deployed ACS instance in the same region as your cognitive services
-instance as we want to augment what we can extract using custom vision with our similarity
-model.
-    
-You will need your [ACS API Key](https://docs.microsoft.com/en-us/azure/search/search-security-api-keys)
-and the URL for your ACS instance. 
-   
-1) ### Run the ACS indexer 
-
-    Populate the values in the [indexer file](deployment/azuresearch/create_indexer.json) or 
-    [Create/Run your indexer](notebooks/Text%20Summarisation.ipynb#Now-we-create-the-indexer)
-
-    The indexer will automatically run and you should see requests coming in if you look at the Web App logs.
-
-1)  ### Test the index 
-    Investigate your indexed data, check the most similar images
-
-    Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/Text%20Summarisation.ipynb#Let's-go-and-test-the-ACS-index)
-    to summarise our text and also run NER.
+      Now we are in a position to search on our most similar data, navigate to the [Let's go and test the ACS index](notebooks/2_Azure.ipynb) to summarise our text and also run NER.
