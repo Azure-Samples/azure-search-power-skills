@@ -53,7 +53,7 @@ This section describes how to get the sample working in stages and how it can be
 1) ### Data
    The first step is to view the sample data files [here](data/). 
 1) ### Run the API locally
-   The next step is to run the API locally and test the model against a test record. Make sure you rename the file [env.example file to .env](../powerskill/env.example) and populate it with the relevant values, particularly a unique key. Again use a bash terminal.
+   The next step is to run the API locally and test the model against a test record. Make sure you rename the file [.env.example file to .env](../powerskill/.env.example) and populate it with the relevant values, particularly a unique key. Again use a bash terminal.
    ```bash
    make local-API
    ```
