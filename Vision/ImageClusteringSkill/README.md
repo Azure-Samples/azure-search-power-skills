@@ -102,7 +102,7 @@ Now that we have identified the clusters in our data, we want to go and label th
 search terms that will help users easily find them. In our sample data, we have books that 
 are open and closed and we also have bookshelves. 
 
-Now open the notebook [label and deploy notebook](notebooks/3-create-label-file.ipynb),
+Now open the notebook [labelling notebook](notebooks/3-create-label-file.ipynb),
 here you will see we labelled the books with a dictionary that allows multiple labels per cluster:
 
 This cell will train a model on the data and show the clusters. All data with a cluster with value -1 could not be 
@@ -133,29 +133,11 @@ After the image has built, you should see the following:
 INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
 ```
 
-We are now ready to send a request.
+We are now ready to send a request. 
 
-The [3-create-label-file notebook](notebooks/3-create-label-file.ipynb) contains a cell [Test the deployed inference API Web App](notebooks/3-create-label-file.ipynb#Test-the-deployed-inference-API-Web-App)
-that will enable you to test the Web App.
+Open `docs/local-api.http` and click "Send Request" above the `POST` request.
 
-Alternatively you can also use Postman, see below:
-
-Use [Postman](https://www.postman.com/) to issue a test request to your local inference API.
-As we are emulating what Azure Cognitive Search will send to a PowerSkill, we need to base64
-encode an image as a string.
-
-Issue the request with the following include the contents of the file
-[postman_request.json](data/postman_request.json) as the body:
-
-```bash
-URI: http://0.0.0.0:5000/api/extraction
-Headers:
-    Ocp-Apim-Subscription-Key: [YourSecretKeyCanBeAnything]
-    Content-Type: application/json
-Body: Copy the contents of the file ../data/postman_request.json
-
-```
-After issuing the above request you should get the following response:
+After issuing the request you should get the following response:
 
 ```json
 {
@@ -175,6 +157,25 @@ After issuing the above request you should get the following response:
 }
 ```
 
+
+> Alternatively you can also use Postman, see below:
+>
+> Use [Postman](https://www.postman.com/) to issue a test request to your local inference API.
+> As we are emulating what Azure Cognitive Search will send to a PowerSkill, we need to base64
+> encode an image as a string.
+> 
+> Issue the request with the following include the contents of the file
+> [postman_request.json](data/postman_request.json) as the body:
+> 
+>```bash
+>URI: http://0.0.0.0:5000/api/extraction
+>Headers:
+>    Ocp-Apim-Subscription-Key: [YourSecretKeyCanBeAnything]
+>    Content-Type: application/json
+>Body: Copy the contents of the file ../data/postman_request.json
+>```
+
+
 ### Deploying the solution
 
 To deploy the solution, this folder contains [Terraform scripts](deployment) that will provision all the components needed.
@@ -185,5 +186,5 @@ To deploy the solution, this folder contains [Terraform scripts](deployment) tha
 
 ### Testing the search labels in Azure Cognitive Search
 
-Now we are in a position to search on our cluster labelled data, navigate to the [test search cell](notebooks/3-create-label-file.ipynb#Test-the-cluster-labels-in-Azure-Search-queries)
+Now we are in a position to search on our cluster labelled data, open the [5-test-search-index notebook](notebooks/5-test-search-index.ipynb)
 to search on our clustered images.
