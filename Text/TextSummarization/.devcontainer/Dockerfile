@@ -5,7 +5,6 @@ ARG INSTALL_NODE="true"
 ARG NODE_VERSION="lts/*"
 RUN if [ "${INSTALL_NODE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
 
-ARG DOCKER_GROUP_ID
 ARG USERNAME=vscode
 USER $USERNAME
 
@@ -56,6 +55,11 @@ RUN sudo apt-get update \
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
+# docker-client
+ARG DOCKER_GROUP_ID
+COPY .devcontainer/scripts/docker-client.sh /tmp/
+RUN /tmp/docker-client.sh
+
 # terraform
 COPY .devcontainer/scripts/terraform.sh /tmp/
 RUN /tmp/terraform.sh
@@ -64,13 +68,6 @@ RUN /tmp/terraform.sh
 COPY .devcontainer/scripts/azure-cli.sh /tmp/
 RUN /tmp/azure-cli.sh
 
-# docker-client
-COPY .devcontainer/scripts/docker-client.sh /tmp/
-RUN /tmp/docker-client.sh
-
-# Add user to docker group
-COPY .devcontainer/scripts/docker-group.sh /tmp/
-RUN /tmp/docker-group.sh $USERNAME $DOCKER_GROUP_ID
 
 # Sync timezone (if TZ value not already present on host it defaults to Europe/London)
 # Note: if running on WSL (Windows) you can add the below to your $profile so your tz is automatically synced
