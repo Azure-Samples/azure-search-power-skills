@@ -79,8 +79,8 @@ curl -s -X PUT --header "Content-Type: application/json" --header "api-key: $TF_
 echo "Running indexer $indexer_name..."
 curl -s -X POST --header "Content-Type: application/json" --header "api-key: $TF_VAR_azure_search_admin_key" --data "" $search_url/indexers/$indexer_name/run?api-version=2020-06-30 
 
-echo "API_KEY=$skill_api_key" > "$script_dir/../docs/.env"
-echo "API_URL=http://$skill_api_hostname" >> "$script_dir/../docs/.env"
+echo "API_KEY=$TF_VAR_skill_api_key" > "$script_dir/../docs/.env"
+echo "API_URL=http://$TF_VAR_skill_api_hostname" >> "$script_dir/../docs/.env"
 
 echo "WEB_APP_KEY=$TF_VAR_skill_api_key" > "$script_dir/../notebooks/.env"
 echo "WEB_APP_URL=http://$TF_VAR_skill_api_hostname" >> "$script_dir/../notebooks/.env"
