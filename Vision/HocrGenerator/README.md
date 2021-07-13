@@ -8,7 +8,7 @@ products:
 urlFragment: azure-hocr-generator-sample
 name: hOCR generator sample skill for cognitive search
 description: This custom skill generates an hOCR document from the output of the OCR skill.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/HocrGenerator/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/HocrGenerator/azuredeploy.json
 ---
 
 # hOCR Generator
@@ -17,7 +17,7 @@ This custom skill generates an [hOCR](https://en.wikipedia.org/wiki/HOCR) docume
 
 ## Requirements
 
-This skill has no additional requirements than the ones described in [the root `README.md` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/master/README.md).
+This skill has no additional requirements than the ones described in [the root `README.md` file](https://github.com/Azure-Samples/azure-search-power-skills/blob/main/README.md).
 
 ## Settings
 
@@ -25,7 +25,7 @@ This function doesn't require any application settings.
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FImageStore%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FVision%2FImageStore%2Fazuredeploy.json)
 
 ## Sample Input:
 

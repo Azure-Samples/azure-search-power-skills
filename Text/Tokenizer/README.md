@@ -7,7 +7,7 @@ products:
 - azure-search
 name: Tokenizer sample skill for cognitive search
 description: This custom skill extracts normalized non-stop words from a text using the ML.NET library.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/Tokenizer/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/Tokenizer/azuredeploy.json
 ---
 
 # Tokenizer
@@ -38,7 +38,7 @@ This skills have no additional requirements than the ones described in [the root
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FTokenizer%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FText%2FTokenizer%2Fazuredeploy.json)
 
 ## tokenizer
 

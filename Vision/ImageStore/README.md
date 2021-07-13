@@ -8,7 +8,7 @@ products:
 name: Image store sample skills for cognitive search
 urlFragment: azure-imagestore-sample
 description: These custom skills store or retrieve a base64-encoded image to or from blob storage.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/ImageStore/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/ImageStore/azuredeploy.json
 ---
 
 # ImageStore
@@ -27,7 +27,7 @@ If running in an Azure function, this can be set in the application settings.
 
 ## Deployment
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FVision%2FImageStore%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FVision%2FImageStore%2Fazuredeploy.json)
 
 ## `image-store` function
 

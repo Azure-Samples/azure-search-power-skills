@@ -53,7 +53,7 @@ This section describes how to get this working on sample data and how it can be 
    Make sure you rename the file [sample_env file to .env](sample_env) and populate it with the relevant values. Use the
    variable ```bash URL_LOCAL``` as the URL.
 1) ### Build the docker image 
-   Now build the [docker image](Dockerfile) and upload the image to your container registry  
+   Now build the [docker image](powerskill/Dockerfile) and upload the image to your container registry  
    For this step you will need docker running so that we can build and test our inference API locally.
    You will also need a container registry for the build.
    

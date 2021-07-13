@@ -7,14 +7,14 @@ products:
 - azure-search
 name: Acronym Linker sample skills for cognitive search
 description: These two custom skills (link-acronyms and link-acronyms-list) give definitions for known acronyms.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Text/AcronymLinker/azuredeploy.json
+azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/AcronymLinker/azuredeploy.json
 ---
 
 # Acronym Linker
 
 These two custom skills (`link-acronyms` and `link-acronyms-list`) give definitions for known acronyms.
 
-[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmaster%2FText%2FAcronymLinker%2Fazuredeploy.json)
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FText%2FAcronymLinker%2Fazuredeploy.json)
 
 ## Requirements
 
