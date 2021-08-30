@@ -90,6 +90,10 @@ ENV/
 env.bak/
 venv.bak/
 .vscode
+notebook.env
+deploy.env
+base.env
+skill.env
 
 # Spyder project settings
 .spyderproject
@@ -103,3 +107,13 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+
+data/test/
+data/train/
+
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+
+deployment/outputs/

@@ -1,15 +1,16 @@
 {
+    "name": "image-cluster",
     "description": "Cluster images for labelling",
     "skills": [
         {
             "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
             "description": "A custom skill that can cluster and auto label images",
-            "uri": "https://[yourwebapp]/api/extraction",
+            "uri": "https://$TF_VAR_skill_api_hostname/api/extraction",
             "timeout": "PT160S",
             "batchSize": 1,
             "context": "/document/normalized_images/*",
             "httpHeaders": {
-                "Ocp-Apim-Subscription-Key": "OneWeek"
+                "Ocp-Apim-Subscription-Key": "$TF_VAR_skill_api_key"
             },
             "httpMethod": "POST",
             "inputs": [
@@ -28,6 +29,6 @@
     "cognitiveServices": {
         "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
         "description": "cogsvc",
-        "key": ""
+        "key": "$TF_VAR_cognitive_services_key"
     }
 }

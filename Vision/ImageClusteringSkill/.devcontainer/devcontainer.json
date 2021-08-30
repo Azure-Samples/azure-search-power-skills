@@ -1,0 +1,66 @@
+{
+	"name": "ImageClusteringSkill",
+	"build": { 
+		"context": "..",
+		"dockerfile": "Dockerfile",
+		"args": {
+			"INSTALL_NODE": "true",
+			"NODE_VERSION": "lts/*",
+			// To ensure that the group ID for the docker group in the container
+			// matches the group ID on the host, add this to your .bash_profile on the host
+			// 		export DOCKER_GROUP_ID=$(getent group docker | awk -F ":" '{ print $3 }')
+			"DOCKER_GROUP_ID": "${localEnv:DOCKER_GROUP_ID}"
+		}
+	},
+	"runArgs": [
+		"--network", "host" // use host networking so that the dev container can access the API when running in a container locally
+	],
+
+	"mounts": [
+		// Keep command history 
+		"source=ImageClusteringSkill-bashhistory,target=/home/vscode/commandhistory",
+		// Mount host docker socket
+		"type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock"	,
+		// Mounts the .azure host folder into the dev container to pick up host az CLI login details
+		"type=bind,source=${env:HOME}${env:USERPROFILE}/.azure,target=/home/vscode/.azure",
+	],
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": { 
+		"python.pythonPath": "/opt/conda/bin/python",
+		"python.languageServer": "Pylance",
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
+		"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+		"python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
+		"python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
+		"python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
+		"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
+		"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
+		"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
+		"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
+		"python.defaultInterpreterPath": "/opt/conda/bin/python"
+
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-python.python",
+		"ms-python.vscode-pylance",
+		"irongeek.vscode-env",
+		"ms-azuretools.vscode-docker",
+		"ms-toolsai.jupyter",
+		"hashicorp.terraform",
+		"humao.rest-client"
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "./scripts/setup.sh",
+
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}

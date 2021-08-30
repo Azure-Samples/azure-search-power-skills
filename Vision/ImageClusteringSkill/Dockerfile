@@ -1,14 +1,17 @@
 FROM tensorflow/tensorflow
 
-# [Optional] If your pip requirements rarely change, uncomment this section to add them to the image.
-COPY requirements.txt /tmp/pip-tmp/
-RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
-    && rm -rf /tmp/pip-tmp
-
 RUN apt-get update
 RUN apt-get install 'libsm6'\
     'libgl1-mesa-glx'\
     'libxext6'  -y
+
+RUN mkdir -p /root/.keras/models \
+    && curl https://storage.googleapis.com/tensorflow/keras-applications/vgg16/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5 -o /root/.keras/models/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5
+
+COPY requirements.txt /tmp/pip-tmp/
+RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
+    && rm -rf /tmp/pip-tmp
+
 
 RUN mkdir -p /usr/src/ml
 RUN mkdir -p /usr/src/ml/extractors

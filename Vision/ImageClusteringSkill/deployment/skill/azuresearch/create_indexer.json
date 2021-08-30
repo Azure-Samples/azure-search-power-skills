@@ -2,7 +2,7 @@
     "name": "clustering-indexer",
     "dataSourceName": "clustering-datasource",
     "targetIndexName": "clustering-index",
-    "skillsetName": "clustering-skillset",
+    "skillsetName": "image-cluster",
     "parameters": {
     "batchSize": null,
     "maxFailedItems": null,

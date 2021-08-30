@@ -1,0 +1,11 @@
+@baseUrl=http://localhost:5000
+@apiKey=[YourSecretKeyCanBeAnything]
+
+GET {{baseUrl}}
+###
+
+POST {{baseUrl}}/api/extraction
+Ocp-Apim-Subscription-Key: {{apiKey}}
+Content-Type: application/json
+
+< ../data/postman_request.json

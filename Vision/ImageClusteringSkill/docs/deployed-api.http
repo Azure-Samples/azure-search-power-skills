@@ -1,0 +1,11 @@
+@baseUrl={{$dotenv API_URL}}
+@apiKey={{$dotenv API_KEY}}
+
+GET {{baseUrl}}
+###
+
+POST {{baseUrl}}/api/extraction
+Ocp-Apim-Subscription-Key: {{apiKey}}
+Content-Type: application/json
+
+< ../data/postman_request.json

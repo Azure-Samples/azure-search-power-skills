@@ -21,7 +21,10 @@ class Value(Values):
     data: Dict[str, str] = None
 
 
-API_KEY = os.environ['KEY']
+API_KEY = os.getenv('KEY', '')
+if API_KEY == '':
+    print("KEY not set - exiting")
+    exit(1)
 API_KEY_NAME = "Ocp-Apim-Subscription-Key"
 
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
@@ -46,3 +49,7 @@ def extract(values: Values, api_key: APIKey = Depends(get_api_key)):
     else:
         return extractor.go_extract(body)
 
+
+@app.get('/')
+def home():
+    return "image-cluster api is running"
