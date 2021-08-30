@@ -24,7 +24,7 @@ This function has no additional requirements outside the common requirements des
 ## Optional Model Customization
 
 Please note that the provided "watchdog_model.onnx" classifier was trained on a dataset of 18,000 documents, 50% of which were synthetically generated to correct for class imbalance.
-Additionally, labels were generated using an "out-of-vocabulary" metric, which means that a "text_quality_warning" value of 1 does not necessarily indicate corrupted/garbled text.
+Additionally, labels were generated using an "out-of-vocabulary" metric, which means that data that doesn't use common words often correlates with garbled text.
 
 If you wish to train a new model from a custom dataset, which may include labels assigned in a different way,
 please refer to this [sample notebook](./Model/TrainWatchdogModel.ipynb).
