@@ -1,0 +1,17 @@
+# Environment variables
+base.env
+skill.env
+.env
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+terraform.tfstate
+terraform.tfstate.*
+
+# Outputs from your Terraform build
+deployment/outputs/*
+
+# Cached models
+powerskill/models/

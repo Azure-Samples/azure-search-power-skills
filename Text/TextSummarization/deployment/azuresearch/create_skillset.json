@@ -1,4 +1,5 @@
 {
+    "name": "text-summarization-skillset",
     "description": "Summarize documents.",
     "skills": [
         {
@@ -28,12 +29,12 @@
         {
             "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
             "description": "A custom skill that summarizes the text",
-            "uri": "https://YOUR_WEB_APP/api/extraction",
+            "uri": "https://$TF_VAR_skill_api_hostname/api/extraction",
             "timeout": "PT160S",
             "batchSize": 1,
             "context": "/document/content",
             "httpHeaders": {
-                "Ocp-Apim-Subscription-Key": ""
+                "Ocp-Apim-Subscription-Key": "$TF_VAR_skill_api_key"
             },
             "httpMethod": "POST",
             "inputs": [
@@ -52,6 +53,6 @@
     "cognitiveServices": {
         "@odata.type": "#Microsoft.Azure.Search.CognitiveServicesByKey",
         "description": "cogsvc",
-        "key": ""
+        "key": "$TF_VAR_cognitive_services_key"
     }
 }
