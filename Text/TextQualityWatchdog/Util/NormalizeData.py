@@ -3,10 +3,13 @@
 # and save the cleaned text files in a destination directory as a tsv
 ###
 
+# Standard libraries
 import os
-import re
 import pickle
 import pandas as pd
+
+# Helper scripts
+from ..PreprocessData import normalize_text
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_ROOT_STR = APP_ROOT.__str__()
@@ -19,24 +22,6 @@ DEST_DIR = 'Data'
 
 # Metadata directory that we saved the tika-eval metrics to in a pickle file
 METADATA_DIR = 'Metadata'
-
-def _simplify_punctuation(text):
-    """
-    This function simplifies doubled or more complex punctuation. The exception is '...'.
-    """
-    corrected = str(text)
-    corrected = re.sub(r'([!?,;])\1+', r'\1', corrected)
-    corrected = re.sub(r'\.{2,}', r'...', corrected)
-    return corrected
-
-def _normalize_whitespace(text):
-    """
-    This function normalizes whitespaces, removing duplicates.
-    """
-    corrected = str(text)
-    corrected = re.sub('\s', ' ', corrected)
-    corrected = re.sub(r"( )\1+",r"\1", corrected)
-    return corrected.strip(" ")
 
 text_list = []  # list to hold the text extracted from each document
 score_list = []  # the scores for each text
@@ -77,9 +62,7 @@ for root, dirs, files in os.walk(APP_ROOT_STR + '\\' + SOURCE_DIR, topdown=False
         filepath = os.path.join(root, name)
         with open(filepath, 'r', encoding='utf-8') as f:
             lines = f.read()
-            normalized_lines = _simplify_punctuation(lines)
-            normalized_lines = _normalize_whitespace(normalized_lines)
-            normalized_lines = normalized_lines.lower()
+            normalized_lines = normalize_text(lines)
             text_list.append(normalized_lines)
 
         print()
