@@ -40,7 +40,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             for value in values:
                 text = value['data']['text']
 
-                # Apply puntuation and whitespace normalization, and conert to lowercase
+                # Apply puntuation and whitespace normalization, and convert to lowercase
                 text = normalize_text(text)
 
                 # Truncate the text to a maximum of 128 (default) whitespace separated tokens
@@ -52,9 +52,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 # Call the ONNX model to perform inference on the input
                 flat_prediction = predict(ort_session, input_ids, attention_masks)
 
-                payload = ({"recordId": value['recordId'],   
-                            "data": {"text_quality_warning": int(flat_prediction[0])}
-                            })
+                payload = (
+                              {
+                                  "recordId": value['recordId'],   
+                                  "data": {
+                                      "text_quality_warning": int(flat_prediction[0])
+                                  }
+                              }
+                          )
 
                 results["values"].append(payload)
 
