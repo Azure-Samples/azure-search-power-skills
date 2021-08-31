@@ -2,6 +2,10 @@
 # This script is used to crawl a source directory for unstructured files (PDFs, PPTs, etc.),
 # send requests to the Tika server, and save the extracted text files in a destination directory.
 # Currently, non-English files are filtered out.
+#
+# Please note that the original use case for this helper script was to extract text files from a
+# static dataset, which is why we use the "last read file" to keep track of progress. If files are
+# updated, this script should be re-run to re-process them.
 ###
 
 import os
@@ -14,6 +18,8 @@ from azure.storage import blob
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__
 
 print("Azure Blob Storage v" + __version__ + " - Tika extraction handler\n")
+
+VERBOSE = False
 
 # Root path of this script
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -66,18 +72,29 @@ else:
         "total" : 0 # Total count of the files
     }
 
+skipped_file_count = 0
+
 # Process each blob
 for cur_blob in blob_list:
     try:
         # Get the name of the current blob
         blobname = cur_blob.name
         filename = blobname.split('/')[1]
-        print(blobname)
 
         # Iterate until we hit the high water mark
         if last_read_file_name != None and filename < last_read_file_name:
-            print("skip!")
+            skipped_file_count += 1
+
+            if VERBOSE:
+                print(blobname)
+                print("skip!")
+
             continue
+
+        if last_read_file_name != None and filename == last_read_file_name:
+            print(f"Skipped {skipped_file_count} files.")
+
+        print(blobname)
 
         # Get the blob client for the current blob
         blob_client = cont_client.get_blob_client(blobname)
