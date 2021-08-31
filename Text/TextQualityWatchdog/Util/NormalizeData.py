@@ -27,12 +27,14 @@ text_list = []  # list to hold the text extracted from each document
 score_list = []  # the scores for each text
 filename_list = []  # the filename for each text
 
-for root, dirs, files in os.walk(APP_ROOT_STR + '\\' + SOURCE_DIR, topdown=False):
+source_path = os.path.join(APP_ROOT_STR, SOURCE_DIR)
+
+for root, dirs, files in os.walk(source_path, topdown=False):
     for name in files:
         print(name)
 
         # Get the full path to the metadata file
-        metadata_file_path = APP_ROOT_STR + "\\" + METADATA_DIR + "\\" + name + ".pkl"
+        metadata_file_path = os.path.join(APP_ROOT_STR, METADATA_DIR, name + ".pkl")
 
         # Get the tika-eval oov score from the metadata dictionary
         try:
@@ -77,7 +79,7 @@ dataset_dict = {
 tika_text_df = pd.DataFrame(data=dataset_dict)
 
 # Get the destination path to which the csv should be saved to
-dest_file_path = APP_ROOT_STR + "\\" + DEST_DIR + "\\" + "tika_text_dataset.tsv"
+dest_file_path = os.path.join(APP_ROOT_STR, DEST_DIR, "tika_text_dataset.tsv")
 
 # Save the dataset as a tsv file
 tika_text_df.to_csv(dest_file_path, sep = '\t', index = False)

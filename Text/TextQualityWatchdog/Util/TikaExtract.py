@@ -53,14 +53,14 @@ blob_list = cont_client.list_blobs()
 
 # Read the high water mark
 last_read_file_name = None
-last_read_file_path = APP_ROOT_STR + "\\" + METRICS_DIR + "\\lastread.txt"
+last_read_file_path = os.path.join(APP_ROOT_STR, METRICS_DIR, "lastread.txt")
 if os.path.exists(last_read_file_path):
     with open(last_read_file_path, "r") as last_read_file:
         last_read_file_name = last_read_file.readline()
 
 # Read the metrics dictionary, or create it if it does not exist
 metrics_dict = None
-metrics_dict_file_path = APP_ROOT_STR + "\\" + METRICS_DIR + "\\dataset_metrics.pkl"
+metrics_dict_file_path = os.path.join(APP_ROOT_STR, METRICS_DIR, "dataset_metrics.pkl")
 if os.path.exists(metrics_dict_file_path):
     with open(metrics_dict_file_path, "rb") as metrics_dict_file:
         metrics_dict = pickle.load(metrics_dict_file)
@@ -100,13 +100,13 @@ for cur_blob in blob_list:
         blob_client = cont_client.get_blob_client(blobname)
 
         # Get the path to save the unstructured file to
-        download_file_path = APP_ROOT_STR + "\\" + DOWNLOAD_DIR + "\\" + filename
+        download_file_path = os.path.join(APP_ROOT_STR, DOWNLOAD_DIR, filename)
 
         # Get the full path to the destination file
-        extracted_file_path = APP_ROOT_STR + "\\" + DEST_DIR + "\\" + filename
+        extracted_file_path = os.path.join(APP_ROOT_STR, DEST_DIR, filename)
 
         # Get the full path to the metadata file
-        metadata_file_path = APP_ROOT_STR + "\\" + METADATA_DIR + "\\" + filename
+        metadata_file_path = os.path.join(APP_ROOT_STR, METADATA_DIR, filename)
 
         # Download the blob to a local file
         with open(download_file_path, "wb") as download_file:
