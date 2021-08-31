@@ -20,6 +20,7 @@ from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, _
 print("Azure Blob Storage v" + __version__ + " - Tika extraction handler\n")
 
 VERBOSE = False
+PARSER_MAX_RETRIES = 3
 
 # Root path of this script
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -114,10 +115,18 @@ for cur_blob in blob_list:
         print("Downloaded blob to \n\t" + download_file_path)
 
         # Invoke tika server to perform extraction
-        parsedFile = parser.from_file(download_file_path)
+        parsedFile = None
+
+        for attempt_num in range(1, PARSER_MAX_RETRIES + 1):
+            try:
+                parsedFile = parser.from_file(download_file_path)
+            except Exception as e:
+                print(f"Exception on attempt {attempt_num} to parse file: ", e)
+            else:
+                break
 
         # Skip file if fail to extract text
-        if (parsedFile['content'] is None) or (type(parsedFile['content']) != str):
+        if (parsedFile is None) or (parsedFile['content'] is None) or (type(parsedFile['content']) != str):
             os.remove(download_file_path)
             print("No text extracted, file skipped.\n")
 
