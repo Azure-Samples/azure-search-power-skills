@@ -331,3 +331,6 @@ ASALocalRun/
 */*/Properties
 
 Vision/ImageClusteringSkill/.DS_Store
+
+# Visual Studio Code
+.vscode
