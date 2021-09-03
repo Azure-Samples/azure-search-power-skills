@@ -334,3 +334,9 @@ Vision/ImageClusteringSkill/.DS_Store
 
 # Visual Studio Code
 .vscode
+
+# Azure Functions artifacts
+local.settings.json
+
+# Environments
+.venv
