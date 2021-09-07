@@ -27,8 +27,8 @@ Please note that the provided "watchdog_model.onnx" classifier was trained on a 
 Additionally, labels were generated using an "out-of-vocabulary" metric, which means that data that doesn't use common words often correlates with garbled text.
 
 If you wish to train a new model from a custom dataset, which may include labels assigned in a different way,
-please refer to this [sample notebook](./Model/TrainWatchdogModel.ipynb).
-To facilitate the dataset building process, we have additionally provided several utility functions in the [Util folder](Util).
+please refer to this [sample notebook](./Watchdog/Model/TrainWatchdogModel.ipynb).
+To facilitate the dataset building process, we have additionally provided several utility functions in the [Util folder](./Watchdog/Util).
 
 ## Deployment
 
