@@ -18,13 +18,14 @@ Products:
 
 1. Create or reuse a Text Analytics resource. Creation can be done from the Azure portal or in [Language Studio](https://language.azure.com/home)
 2. Train your model with a dataset (a sample train and eval dataset can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER/loan%20agreements) in case you dont have docs to work with) and deploy it. In case you are not familiar with Custom NER, this is a simple [tutorial](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio#upload-sample-data-to-blob-container) to guide you
-3. Fill your appsettings with the custom details from your deployment ('TA_ENDPOINT', 'TA_KEY', 'DEPLOYMENT', 'PROJECT_NAME')
+3. Create a Python Function in Azure, for example this is a good [starting point](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python)
 4. Clone this repository
 5. Open the folder in VS Code and deploy the function, find here a [tutorial](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-python)
-6. Add a field in your index where you will dump the enriched entities, more info [here](#sample-index-field-definition)
-7. Add the skill to your skillset as [described below](#sample-skillset-integration)
-8. Add the output field mapping in your indexer as [seen in the sample](#sample-indexer-output-field-mapping)
-9. Run the process 
+6. Fill your Functions appsettings with the custom details from your deployment ('TA_ENDPOINT', 'TA_KEY', 'DEPLOYMENT', 'PROJECT_NAME' with the info you got in Language Studio after you deployed the model
+7. Add a field in your index where you will dump the enriched entities, more info [here](#sample-index-field-definition)
+8. Add the skill to your skillset as [described below](#sample-skillset-integration)
+9. Add the output field mapping in your indexer as [seen in the sample](#sample-indexer-output-field-mapping)
+10. Run the indexer 
 
 ## Sample Input:
 
@@ -105,12 +106,12 @@ Here's a sample skill definition for this example (inputs and outputs should be 
 
 ## Sample Index Field Definition
 
-The skill will output the entities that have been extracted for the corpus. In this example, I am just expecting one entity so I need to populate a field of Edm.ComplexType that will contain subfields for Category, Confidence, Offset and Length. If more than one Entity is expected, go for Collection.ComplexType instead of Edm.ComplexType.
+The skill will output the entities that have been extracted for the corpus. In this example, I am just expecting one entity but typically there will more than one, so we need a field of Collection.ComplexType that will contain subfields for Category, Confidence, Offset and Length.
 
 ```json
 {
       "name": "entity",
-      "type": "Edm.ComplexType",
+      "type": "Collection(Edm.ComplexType)",
       "analyzer": null,
       "synonymMaps": [],
       "fields": [
@@ -159,7 +160,7 @@ The skill will output the entities that have been extracted for the corpus. In t
         },
         {
           "name": "offset",
-          "type": "Edm.String",
+          "type": "Edm.Double",
           "facetable": false,
           "filterable": false,
           "key": false,
@@ -174,7 +175,7 @@ The skill will output the entities that have been extracted for the corpus. In t
         },
         {
           "name": "length",
-          "type": "Edm.String",
+          "type": "Edm.Double",
           "facetable": false,
           "filterable": false,
           "key": false,
