@@ -94,7 +94,7 @@ def get_entities (value):
         time.sleep(2)
         response = requests.get(endpoint+'/jobs/'+jobid, None, headers=header)
         dict=json.loads(response.text)    
-    entities=dict['tasks']['customEntityRecognitionTasks'][0]['results']['documents'][0]['entities'][0] 
+    entities=dict['tasks']['customEntityRecognitionTasks'][0]['results']['documents'][0]['entities']
     #for your reference, output of the TA Cognitive Service is like {"jobId":"eba___","lastUpdateDateTime":"2021-11-07T18:09:37Z","createdDateTime":"2021-11-07T18:09:37Z","expirationDateTime":"2021-11-08T18:09:37Z","status":"succeeded","errors":[],"displayName":"Extracting custom NERS","tasks":{"completed":1,"failed":0,"inProgress":0,"total":1,"customEntityRecognitionTasks":[{"lastUpdateDateTime":"2021-11-07T18:09:37.8390261Z","state":"succeeded","results":{"documents":[{"id":"1","entities":[{"text":"$192,989.00)","category":"Quantity","offset":508,"length":12,"confidenceScore":1.0}],"warnings":[]}],"errors":[],"projectName":"y","deploymentName":"z"}}]}}
     #after the filtering we just get {'text': '$192,989.00)', 'category': 'Quantity', 'offset': 508, 'length': 12, 'confidenceScore': 1.0}
     return entities
