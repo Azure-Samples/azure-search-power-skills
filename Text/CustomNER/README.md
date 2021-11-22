@@ -1,7 +1,7 @@
 # custom_ner_skill
 ---
 Description:
-- It is common to have custom entities along different texts that dont fit any of the predefined entities that can be extracted with Named Entity Extraction service. Custom Named Entity Recognition (in preview as of Nov2021) provides the capability to ingest your training texts, label your set of custom entities and train a model to identify them. You can easily deploy the model in a secured fashion to later on run your inference along your texts. As an outcome you will get the detected custom entities, their position (inside the text) and the confidence level
+- It is common to have custom entities along different texts that dont fit any of the predefined entities that can be extracted with the Named Entity Extraction service. Custom Named Entity Recognition (in preview as of Nov2021) provides the capability to ingest your training texts, label your set of custom entities and train a model to identify them. You can easily deploy the model in a secured fashion to later on run your inference along your texts. As an outcome you will get the detected custom entities, their position (inside the text) and the confidence level
 
 - custom_ner_skill is an Azure Cognitive Search skill to integrate Azure Text Analytics Custom Named Entity Recoginition within a Azure Cognitive Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom entities. For example, show me the loan documents signed with the credit institution X between May and June 2021 with higher purchase amount than one millon dollars. This filtering is possible because Text Analytics has identified all those fields along the skillset execution and exposes the ability to narrow the results within the ACS index.
 
@@ -17,10 +17,10 @@ Products:
 # Steps    
 
 1. Create or reuse a Text Analytics resource. Creation can be done from the Azure portal or in [Language Studio](https://language.azure.com/home)
-2. Train your model with a dataset (a sample train and eval dataset can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER/loan%20agreements) in case you dont have docs to work with) and deploy it. In case you are not familiar with Custom NER, this is a simple [tutorial](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio#upload-sample-data-to-blob-container) to guide you
-3. Create a Python Function in Azure, for example this is a good [starting point](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python)
+2. Train your model with a dataset (a sample train and eval dataset can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER/loan%20agreements) in case you dont have docs to work with) and deploy it. In case you are not familiar with Custom NER, this is a simple [tutorial](https://docs.microsoft.com/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio#upload-sample-data-to-blob-container) to guide you
+3. Create a Python Function in Azure, for example this is a good [starting point](https://docs.microsoft.com/azure/azure-functions/create-first-function-vs-code-python)
 4. Clone this repository
-5. Open the folder in VS Code and deploy the function, find here a [tutorial](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-python)
+5. Open the folder in VS Code and deploy the function, find here a [tutorial](https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-python)
 6. Fill your Functions appsettings with the custom details from your deployment ('TA_ENDPOINT', 'TA_KEY', 'DEPLOYMENT', 'PROJECT_NAME' with the info you got in Language Studio after you deployed the model
 7. Add a field in your index where you will dump the enriched entities, more info [here](#sample-index-field-definition)
 8. Add the skill to your skillset as [described below](#sample-skillset-integration)
