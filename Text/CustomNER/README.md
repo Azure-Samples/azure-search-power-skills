@@ -190,6 +190,7 @@ The skill will output the entities that have been extracted for the corpus. In t
         }
       ]
     }
+}
 ```
 
 ## Sample Indexer Output Field Mapping
