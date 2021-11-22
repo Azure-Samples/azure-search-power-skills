@@ -91,16 +91,17 @@ def get_classifications (value):
     key = os.environ["TA_KEY"]
     project_name = os.environ["PROJECT_NAME"]
     deployment =  os.environ["DEPLOYMENT"]
-    body = "{'displayName': 'Extracting custom text classification', 'analysisInput': {'documents': [{'id': '1', 'language': '" + language + "', 'text':'" + corpus + "'}]}, 'tasks': {'customMultiClassificationTasks': [{'parameters': {'project-name': '"+ project_name +"','deployment-name': '"+ deployment +"'}}]}}"
+    body = {'displayName': 'Extracting custom text classification', 'analysisInput': {'documents': [{'id': '1', 'language': language, 'text':corpus}]}, 'tasks': {'customMultiClassificationTasks': [{'parameters': {'project-name': project_name,'deployment-name': deployment}}]}}
+    body_json = json.dumps(body)
     header = {'Ocp-Apim-Subscription-Key': key}
     #TA Custom NER API works in two steps, first you post the job, afterwards you get the result
-    response_job = requests.post(endpoint, data = body, headers = header)
+    response_job = requests.post(endpoint, data = body_json, headers = header)
     #print ('response is: ', response_job.headers)
-    time.sleep(2)
+    time.sleep(2) # Let some time to process the job, you could do active polling 
     jobid = response_job.headers["operation-location"].partition('jobs/')[2]
     response = requests.get(endpoint+'/jobs/'+jobid, None, headers=header)
     dict=json.loads(response.text)
-    #sometimes the TA processing time will be longer, in that case we need to try again after a while
+    #sometimes the TA processing time will be longer, in that case we need to try again after a while. You can probably add a more sophisticated retry policy here
     if (dict['status']!='suceeded'):
         time.sleep(3)
         response = requests.get(endpoint+'/jobs/'+jobid, None, headers=header)
