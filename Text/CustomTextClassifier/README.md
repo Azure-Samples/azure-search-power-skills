@@ -3,7 +3,7 @@
 Description:
 - It is common to require a text classification along knowledge base scenarios, for example you might to want to classify a document as a RFI response, a contract, a letter of intent or just a BoM. Custom Text Classification (in preview as of Nov2021) provides the capability to ingest your training texts, label your set of custom labels (both single and multi class) and train a model to classify them. You can easily deploy the model in a secured fashion to later on run your inference along your texts. As an outcome you will get the detected custom classes and the confidence level
 
-- text_classification_skill is an Azure Cognitive Search skill to integrate [Azure Text Analytics Custom Text Classification](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-classification/overview) within a Azure Cognitive Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom classes. For example, show me the RFI responses by X employee between May and June 2021. This filtering is possible because Text Analytics has identified all those classes along the skillset execution and exposes the ability to narrow the results within the ACS index.
+- text_classification_skill is an Azure Cognitive Search skill to integrate [Azure Text Analytics Custom Text Classification](https://docs.microsoft.com/azure/cognitive-services/language-service/custom-classification/overview) within a Azure Cognitive Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom classes. For example, show me the RFI responses by X employee between May and June 2021. This filtering is possible because Text Analytics has identified all those classes along the skillset execution and exposes the ability to narrow the results within the ACS index.
 
 Languages:
 - ![python](https://img.shields.io/badge/language-python-orange)
@@ -17,10 +17,10 @@ Products:
 # Steps    
 
 1. Create or reuse a Text Analytics resource. Creation can be done from the Azure portal or in [Language Studio](https://language.azure.com/home)
-2. Train your model with a dataset (a sample train and eval dataset can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification/movies%20summaries) in case you dont have docs to work with) and deploy it. In case you are not familiar with Custom Text Classification, this is a simple [tutorial](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-classification/quickstart?pivots=language-studio) to guide you
-3. Create a Python Function in Azure, for example this is a good [starting point](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python)
+2. Train your model with a dataset (a sample train and eval dataset can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification/movies%20summaries) in case you dont have docs to work with) and deploy it. In case you are not familiar with Custom Text Classification, this is a simple [tutorial](https://docs.microsoft.com/azure/cognitive-services/language-service/custom-classification/quickstart?pivots=language-studio) to guide you
+3. Create a Python Function in Azure, for example this is a good [starting point](https://docs.microsoft.com/azure/azure-functions/create-first-function-vs-code-python)
 4. Clone this repository
-5. Open the folder in VS Code and deploy the function, find here a [tutorial](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-python)
+5. Open the folder in VS Code and deploy the function, find here a [tutorial](https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-python)
 6. Fill your Functions appsettings with the custom details from your deployment ('TA_ENDPOINT', 'TA_KEY', 'DEPLOYMENT', 'PROJECT_NAME' with the info you got in Language Studio after you deployed the model
 7. Add a field in your index where you will dump the enriched classes, more info [here](#sample-index-field-definition)
 8. Add the skill to your skillset as [described below](#sample-skillset-integration)
@@ -181,6 +181,7 @@ The skill will output the text classes that have been extracted for the corpus. 
         }
       ]
     }
+}
 ```
 
 ## Sample Indexer Output Field Mapping
