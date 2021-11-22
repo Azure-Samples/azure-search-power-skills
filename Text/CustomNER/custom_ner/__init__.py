@@ -1,6 +1,6 @@
 import logging
 import azure.functions as func
-import json, requests, time
+import json, requests, time, os, logging
 #from http.client import HTTPConnection
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
