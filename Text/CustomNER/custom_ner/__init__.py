@@ -1,6 +1,7 @@
 import logging
 import azure.functions as func
 import json, requests, time
+#from http.client import HTTPConnection
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -74,6 +75,16 @@ def transform_value(value):
 
 # Function to submit the analysis job towards the Text Analytics (TA) API
 def get_entities (value):
+    # # Debug logging, useful if you struggle with the body sent to the endpoint. Uncomment from http.client too 
+    # log = logging.getLogger('urllib3')
+    # log.setLevel(logging.DEBUG)
+    # # logging from urllib3 to console
+    # ch = logging.StreamHandler()
+    # ch.setLevel(logging.DEBUG)
+    # log.addHandler(ch)
+    # # print statements from `http.client.HTTPConnection` to console/stdout
+    # HTTPConnection.debuglevel = 1 
+    
     language = str(value['data']['lang'])
     corpus = str(value['data']['text'])
     #To be filled with your Text Analytics details: endpoint, key, deployment name and project name inside your appsettings (https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings)
@@ -81,15 +92,17 @@ def get_entities (value):
     key = os.environ["TA_KEY"]
     project_name = os.environ["PROJECT_NAME"]
     deployment =  os.environ["DEPLOYMENT"]
-    body = "{'displayName': 'Extracting custom NERS', 'analysisInput': {'documents': [{'id': '1', 'language': '" + language + "', 'text':'" + corpus + "'}]}, 'tasks': {'customEntityRecognitionTasks': [{'parameters': {'project-name': '"+ project_name +"','deployment-name': '"+ deployment +"'}}]}}"
+    body = {'displayName': 'Extracting custom NERS', 'analysisInput': {'documents': [{'id': '1', 'language': language , 'text': corpus }]}, 'tasks': {'customEntityRecognitionTasks': [{'parameters': {'project-name': project_name ,'deployment-name': deployment }}]}}
     header = {'Ocp-Apim-Subscription-Key': key}
+    body_json = json.dumps(body)
+
     #TA Custom NER API works in two steps, first you post the job, afterwards you get the result
-    response_job = requests.post(endpoint, data = body, headers = header)
-    time.sleep(2)
+    response_job = requests.post(endpoint, data = body_json, headers = header)
+    time.sleep(2) # Let some time to process the job, you could do active polling 
     jobid = response_job.headers["operation-location"].partition('jobs/')[2]
     response = requests.get(endpoint+'/jobs/'+jobid, None, headers=header)
     dict=json.loads(response.text)
-    #sometimes the TA processing time will be longer, in that case we need to try again after a while
+    #sometimes the TA processing time will be longer, in that case we need to try again after a while. You can probably add a more sophisticated retry policy here
     if (dict['status']!='suceeded'):
         time.sleep(2)
         response = requests.get(endpoint+'/jobs/'+jobid, None, headers=header)
