@@ -33,7 +33,7 @@ To deploy the skills:
 2. Copy the form recognizer URL and key for use in the training and appsettings.
 3. Clone this repository
 4. Open the FormRecognizer folder in VS Code and deploy the function.
-5. Once the function is deployed, set the required appsettings (`FORMS_RECOGNIZER_ENDPOINT`, `FORMS_RECOGNIZER_KEY`)
+5. Once the function is deployed, set the required appsettings (`FORMS_RECOGNIZER_ENDPOINT`, `FORMS_RECOGNIZER_KEY`).  On the Azure portal, these can be found in your Azure function in the "Configuration" page under the "Settings" section.  Add them as new Application settings.  See [here](https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings?tabs=portal#settings) for further description.  
 6. (Optional) To use a custom form, follow the [tutorial](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/quickstarts/try-v3-form-recognizer-studio) to train a custom model in the [Form Recognizer Studio](https://formrecognizer.appliedai.azure.com/studio)
 7. Add the skill to your skillset as [described below](#sample-skillset-integration)
 
