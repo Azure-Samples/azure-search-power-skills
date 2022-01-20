@@ -111,8 +111,13 @@ def compose_response(json_data):
     key = os.environ["FORMS_RECOGNIZER_KEY"]
     for value in values:
         output_record = analyze_document(endpoint=endpoint, key=key, data=value["data"])
-        
-        results["values"].append(output_record)
+        result = {
+            "recordId" : value["recordId"],
+            "data": output_record
+        }
+        results["recordId"] = value["recordId"]
+        results["values"].append(result)
+    
     return json.dumps(results, ensure_ascii=False, cls=DateTimeEncoder)
 
 def analyze_document(endpoint, key, data):
