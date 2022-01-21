@@ -131,7 +131,7 @@ def analyze_document(endpoint, key, recordId, data):
         poller = document_analysis_client.begin_analyze_document_from_url(
                 model, formUrl)
         result = poller.result()
-        logging.info("Result from Form Recognizer before formatting: " + result)
+        logging.info("Result from Form Recognizer before formatting: " + str(result))
         output_record = {}
         output_record_data = {}
         if  model == "prebuilt-layout":
@@ -179,10 +179,10 @@ def analyze_document(endpoint, key, recordId, data):
     except Exception as error:
         output_record = {
             "recordId": recordId,
-            "errors": [ { "message": "Error:" + str(error) }   ] 
+            "errors": [ { "message": "Error: " + str(error) }   ] 
         }
 
-    logging.info("Output record: " + output_record)
+    logging.info("Output record: " + json.dumps(output_record, ensure_ascii=False, cls=DateTimeEncoder))
     return output_record
 
         
