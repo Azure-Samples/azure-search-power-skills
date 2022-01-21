@@ -12,10 +12,11 @@ from azure.core.credentials import AzureKeyCredential
 import azure.functions as func
 
 class DateTimeEncoder(JSONEncoder):
-        #Override the default method    
-        def default(self, obj):
-            if isinstance(obj, (datetime.date, datetime.datetime)):
-                return obj.isoformat()
+    #Override the default method    
+    def default(self, obj):
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()
+
 def get_fields(result):
     fields = []
     for idx, doc in enumerate(result.documents):
@@ -34,10 +35,8 @@ def get_fields(result):
 
                 kvp[kv_pair[0]] = line_items
 
-                
         fields.append(kvp)
     return fields
-
 
 def get_tables(result):
     tables = []
@@ -56,6 +55,7 @@ def get_tables(result):
         }
         tables.append(tab)
         return tables
+
 def get_entities(result):
     entities = []
     for entity in result.entities:
@@ -74,6 +74,7 @@ def get_key_value_pairs(result):
             if kv_pair.value:
                 kvp[kv_pair.key.content] = kv_pair.value.content
     return kvp
+
 def get_pages(result):
     pages = []
     for page in result.pages:
@@ -82,6 +83,7 @@ def get_pages(result):
             lines.append(line.content)
         pages.append(lines)
     return pages
+
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Invoked FormRecognizer Skill.')
     try:
@@ -90,6 +92,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         if body:
             logging.info(body)
             result = compose_response(body)
+            logging.info("Result to return to custom skill: " + result)
             return func.HttpResponse(result, mimetype="application/json")
         else:
             return func.HttpResponse(
@@ -101,6 +104,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
              "Invalid body",
              status_code=400
         )
+
 def compose_response(json_data):
     values = json.loads(json_data)['values']
     
@@ -109,63 +113,76 @@ def compose_response(json_data):
     results["values"] = []
     endpoint = os.environ["FORMS_RECOGNIZER_ENDPOINT"]
     key = os.environ["FORMS_RECOGNIZER_KEY"]
-    for value in values:
-        output_record = analyze_document(endpoint=endpoint, key=key, data=value["data"])
-        result = {
-            "recordId" : value["recordId"],
-            "data": output_record
-        }
-        results["recordId"] = value["recordId"]
-        results["values"].append(result)
     
+    for value in values:
+        output_record = analyze_document(endpoint=endpoint, key=key, recordId=value["recordId"], data=value["data"])        
+        results["values"].append(output_record)
+
     return json.dumps(results, ensure_ascii=False, cls=DateTimeEncoder)
 
-def analyze_document(endpoint, key, data):
-    formUrl = data["formUrl"] + data["formSasToken"]
-    model = data["model"]
-    document_analysis_client = DocumentAnalysisClient(
-        endpoint=endpoint, credential=AzureKeyCredential(key)
-    )
-    poller = document_analysis_client.begin_analyze_document_from_url(
-            model, formUrl)
-    result = poller.result()
-    output_record = {}
-    if  model == "prebuilt-layout":
-        output_record = { 
-            "tables": get_tables(result),
-            "pages": get_pages(result)
-    }
-    elif model == "prebuilt-document":
-        output_record = { 
-            "kvp": get_key_value_pairs(result),
-            "entities" : get_entities(result),
-            "tables": get_tables(result),
-            "pages": get_pages(result)
+def analyze_document(endpoint, key, recordId, data):
+    try:
+        formUrl = data["formUrl"] + data["formSasToken"]
+        model = data["model"]
+        logging.info("Model: " + model)
+        document_analysis_client = DocumentAnalysisClient(
+            endpoint=endpoint, credential=AzureKeyCredential(key)
+        )
+        poller = document_analysis_client.begin_analyze_document_from_url(
+                model, formUrl)
+        result = poller.result()
+        logging.info("Result from Form Recognizer before formatting: " + result)
+        output_record = {}
+        output_record_data = {}
+        if  model == "prebuilt-layout":
+            output_record_data = { 
+                "tables": get_tables(result),
+                "pages": get_pages(result)
         }
-    elif model == "prebuilt-receipt":
-        output_record = { 
-            "fields": get_fields(result),
-            "tables": get_tables(result),
-            "pages": get_pages(result)
+        elif model == "prebuilt-document":
+            output_record_data = { 
+                "kvp": get_key_value_pairs(result),
+                "entities" : get_entities(result),
+                "tables": get_tables(result),
+                "pages": get_pages(result)
+            }
+        elif model == "prebuilt-receipt":
+            output_record_data = { 
+                "fields": get_fields(result),
+                "tables": get_tables(result),
+                "pages": get_pages(result)
+            }
+        elif model == "prebuilt-idDocument":
+            output_record_data = { 
+                "fields": get_fields(result),
+                "tables": get_tables(result),
+                "pages": get_pages(result)
+            }
+        elif model == "prebuilt-invoice":
+            output_record_data = { 
+                "fields": get_fields(result),
+                "tables": get_tables(result),
+                "pages": get_pages(result)
         }
-    elif model == "prebuilt-idDocument":
-        output_record = { 
-            "fields": get_fields(result),
-            "tables": get_tables(result),
-            "pages": get_pages(result)
+        else:
+            output_record_data = { 
+                "kvp": get_fields(result),
+                "tables": get_tables(result),
+                "pages": get_pages(result)
+            }
+
+        output_record = {
+            "recordId": recordId,
+            "data": output_record_data
         }
-    elif model == "prebuilt-invoice":
-        output_record = { 
-            "fields": get_fields(result),
-            "tables": get_tables(result),
-            "pages": get_pages(result)
-    }
-    else:
-        output_record = { 
-            "kvp": get_fields(result),
-            "tables": get_tables(result),
-            "pages": get_pages(result)
+
+    except Exception as error:
+        output_record = {
+            "recordId": recordId,
+            "errors": [ { "message": "Error:" + str(error) }   ] 
         }
+
+    logging.info("Output record: " + output_record)
     return output_record
 
         
