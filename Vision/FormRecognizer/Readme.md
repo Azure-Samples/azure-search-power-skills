@@ -52,7 +52,7 @@ This custom skill can invoke any of the following Form Recognizer APIs
 
 In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Form Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. 
 
-[Train a model with your forms](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/build-training-data-set) before you can use this skill. As a sample to get started, use the included [sample training forms](Train) and [sample test form](Test) with the [training notebook](FormRecognizerTrainModel.ipynb) to create a model in just a few minutes.
+[Train a model with your forms](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/build-training-data-set) if you plan to use the custom model. For any of the prebuilt models or general document model, no additional setup is required. 
 
 ## Settings
 
