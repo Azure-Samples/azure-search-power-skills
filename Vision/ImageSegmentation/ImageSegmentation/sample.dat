@@ -1,0 +1,25 @@
+{
+    "values": [
+        {
+            "recordId": "e1",
+            "data": {
+                "metadata_storage_name": "Introduction to Azure Cognitive Search - Azure Cognitive Search _ Microsoft Docs.pdf",
+                "images": [
+                    {
+                        "$type": "file",
+                        "url": "IMAGE-URL",
+                        "data": "BASE64-ENCODED-IMAGE",
+                        "width": 1224,
+                        "height": 1584,
+                        "originalWidth": 1224,
+                        "originalHeight": 1584,
+                        "rotationFromOriginal": 0,
+                        "contentOffset": 4132,
+                        "pageNumber": 2,
+                        "contentType": "image/jpeg"
+                    }
+                ]
+            }
+        }
+    ]
+}
