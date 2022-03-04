@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "blob_storage_connection_string": "DefaultEndpointsProtocol=https;AccountName=YOUR_BLOB_ACCOUNT_NAME;AccountKey=YOUR_BLOB_ACCOUNT_KEY;EndpointSuffix=core.windows.net",
+    "blob_storage_container": "image-segmentation-skillset-image-projection" // OR ANY OTHER CONTAINER NAME
+  }
+}
