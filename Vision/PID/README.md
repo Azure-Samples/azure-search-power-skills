@@ -21,7 +21,7 @@ This skill is designed to extract equipment information  from specific instrumen
 
 For best results, set the normalized images to the higest resolution. You can also edit the parameters within the skill to change the sensitivity of how the tags are grouped. Additional logic is applied product tags to determine tag boundaries and hypheated text. The skill returns two json elements, a tag array and text array.
 
-![diagram](/images/custom_skill_design.png).
+![diagram](./images/custom_skill_design.png).
 
 ## Requirements
 
