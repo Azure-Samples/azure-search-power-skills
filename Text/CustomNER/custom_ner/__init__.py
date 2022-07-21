@@ -84,13 +84,19 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             status_code=500
         )
     except HttpResponseError as e:
-        logging.debug(e)
-        return func.HttpResponse(
-            "Error occured while contacting the language services.",
-            status_code=500
-        )
+        logging.info(e)
+        if e.status_code == 400:
+            return func.HttpResponse(
+                "Received 400 response from Language services:\n{0}".format(e.message),
+                status_code=400
+            )
+        else:
+            return func.HttpResponse(
+                "Error occured while contacting the language services.",
+                status_code=500
+            )
     except Exception as e:
-        logging.debug(e)
+        logging.info(e)
         return func.HttpResponse(
             "Unknown error occurred.",
             status_code=500
@@ -105,34 +111,33 @@ requestSchema = {
         "values": {
             "type": "array",
             "minItems": 1,
-            "items": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "recordId": {
-                            "type": "string"
-                        },
-                        "data": {
-                            "type": "object",
-                            "properties": {
-                                "text": {
-                                    "type": "string"
-                                },
-                                "lang": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "text"
-                            ]
-                        }
+            "items": {
+                "type": "object",
+                "properties": {
+                    "recordId": {
+                        "type": "string"
                     },
-                    "required": [
-                        "recordId",
-                        "data"
-                    ]
-                }
-            ]
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "lang": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "text"
+                        ]
+                    }
+                },
+                "required": [
+                    "recordId",
+                    "data"
+                ]
+            }
         }
     },
     "required": [

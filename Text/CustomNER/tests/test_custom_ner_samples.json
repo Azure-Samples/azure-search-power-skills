@@ -1,0 +1,145 @@
+{
+    "tests": {
+        "test_normal": {
+            "description": "Tests the API in a normal case.",
+            "body": {
+                "values": [
+                  {
+                    "recordId": "0",
+                    "data":
+                       {
+                        "text":"Aanirudh Razdan\r\nTechnical Support Executive - Teleperformance\r\n\r\nJaipur, Rajasthan - Email me on Indeed: indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5\r\n\r\nTo seek an organisation where my skills find ample opportunities for up-gradation of my\r\nknowledge and growth of my career and where I can prove myself.\r\n\r\nWORK EXPERIENCE\r\n\r\nTechnical Support Executive\r\n\r\nTeleperformance -  Jaipur, Rajasthan -\r\n\r\nJune 2017 to Present\r\n\r\n* Handling query related to Norton products\r\n* Resolving query related to the Operating system (Windwos XP\/Vista\/7\/8\/8.1\/10)\r\n\r\nB2X Process\r\n\r\nNokia and Microsoft -\r\n\r\nSeptember 2016 to May 2017\r\n\r\nhandsets\r\n* Resolving problems related to Microsoft account\r\n* Awarded as best Nesting Executive of the month\r\n\r\nEDUCATION\r\n\r\nB. Tech\r\n\r\nJaipur Engineering College and Research Center -  Jaipur, Rajasthan\r\n\r\n2015\r\n\r\ncommunication and presentation skills\r\n\r\n(WAC) in inter Air Force School football championship\r\n\r\n2012\r\n\r\nAir Force School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nAir Foce School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nhttps:\/\/www.indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5?isid=rex-download&ikw=download-top&co=IN",
+                        "language":"en"
+                       }
+                  }
+                ]
+            },
+            "statusCode": 200,
+            "response": {
+                "values": [
+                    {
+                        "recordId": "0",
+                        "data": {
+                            "entities": [
+                                {
+                                    "text": "Aanirudh Razdan",
+                                    "category": "Name",
+                                    "subcategory": null,
+                                    "length": 15,
+                                    "offset": 0,
+                                    "confidence_score": 0.99
+                                },
+                                {
+                                    "text": "Technical Support Executive -",
+                                    "category": "Title",
+                                    "subcategory": null,
+                                    "length": 29,
+                                    "offset": 17,
+                                    "confidence_score": 0.88
+                                },
+                                {
+                                    "text": "June 2017 to Present",
+                                    "category": "date range",
+                                    "subcategory": null,
+                                    "length": 20,
+                                    "offset": 403,
+                                    "confidence_score": 0.99
+                                },
+                                {
+                                    "text": "September 2016 to May 2017",
+                                    "category": "date range",
+                                    "subcategory": null,
+                                    "length": 26,
+                                    "offset": 595,
+                                    "confidence_score": 0.96
+                                }
+                            ]
+                        },
+                        "warnings": []
+                    }
+                ]
+            }
+        },
+        "test_missing_id": {
+            "description": "Missing a recordId property. Expects a 400 response",
+            "body": {
+                "values": [
+                    {
+                    "data":
+                        {
+                        "text":"Aanirudh Razdan\r\nTechnical Support Executive - Teleperformance\r\n\r\nJaipur, Rajasthan - Email me on Indeed: indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5\r\n\r\nTo seek an organisation where my skills find ample opportunities for up-gradation of my\r\nknowledge and growth of my career and where I can prove myself.\r\n\r\nWORK EXPERIENCE\r\n\r\nTechnical Support Executive\r\n\r\nTeleperformance -  Jaipur, Rajasthan -\r\n\r\nJune 2017 to Present\r\n\r\n* Handling query related to Norton products\r\n* Resolving query related to the Operating system (Windwos XP\/Vista\/7\/8\/8.1\/10)\r\n\r\nB2X Process\r\n\r\nNokia and Microsoft -\r\n\r\nSeptember 2016 to May 2017\r\n\r\nhandsets\r\n* Resolving problems related to Microsoft account\r\n* Awarded as best Nesting Executive of the month\r\n\r\nEDUCATION\r\n\r\nB. Tech\r\n\r\nJaipur Engineering College and Research Center -  Jaipur, Rajasthan\r\n\r\n2015\r\n\r\ncommunication and presentation skills\r\n\r\n(WAC) in inter Air Force School football championship\r\n\r\n2012\r\n\r\nAir Force School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nAir Foce School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nhttps:\/\/www.indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5?isid=rex-download&ikw=download-top&co=IN",
+                        "language":"en"
+                        }
+                    }
+                ]
+            },
+            "statusCode": 400
+        },
+        "test_zero_inputs": {
+            "description": "An empty list of inputs. Expects a 400 response",
+            "body": {
+                "values": []
+            },
+            "statusCode": 400
+        },
+       "test_lang_optional": {
+            "description": "Language property is missing from body. Expects to default to English",
+            "body": {
+                "values": [
+                  {
+                    "recordId": "0",
+                    "data":
+                       {
+                        "text":"Aanirudh Razdan\r\nTechnical Support Executive - Teleperformance\r\n\r\nJaipur, Rajasthan - Email me on Indeed: indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5\r\n\r\nTo seek an organisation where my skills find ample opportunities for up-gradation of my\r\nknowledge and growth of my career and where I can prove myself.\r\n\r\nWORK EXPERIENCE\r\n\r\nTechnical Support Executive\r\n\r\nTeleperformance -  Jaipur, Rajasthan -\r\n\r\nJune 2017 to Present\r\n\r\n* Handling query related to Norton products\r\n* Resolving query related to the Operating system (Windwos XP\/Vista\/7\/8\/8.1\/10)\r\n\r\nB2X Process\r\n\r\nNokia and Microsoft -\r\n\r\nSeptember 2016 to May 2017\r\n\r\nhandsets\r\n* Resolving problems related to Microsoft account\r\n* Awarded as best Nesting Executive of the month\r\n\r\nEDUCATION\r\n\r\nB. Tech\r\n\r\nJaipur Engineering College and Research Center -  Jaipur, Rajasthan\r\n\r\n2015\r\n\r\ncommunication and presentation skills\r\n\r\n(WAC) in inter Air Force School football championship\r\n\r\n2012\r\n\r\nAir Force School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nAir Foce School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nhttps:\/\/www.indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5?isid=rex-download&ikw=download-top&co=IN"
+                       }
+                  }
+                ]
+            },
+            "statusCode": 200,
+            "response": {
+                "values": [
+                    {
+                        "recordId": "0",
+                        "data": {
+                            "entities": [
+                                {
+                                    "text": "Aanirudh Razdan",
+                                    "category": "Name",
+                                    "subcategory": null,
+                                    "length": 15,
+                                    "offset": 0,
+                                    "confidence_score": 0.99
+                                },
+                                {
+                                    "text": "Technical Support Executive -",
+                                    "category": "Title",
+                                    "subcategory": null,
+                                    "length": 29,
+                                    "offset": 17,
+                                    "confidence_score": 0.88
+                                },
+                                {
+                                    "text": "June 2017 to Present",
+                                    "category": "date range",
+                                    "subcategory": null,
+                                    "length": 20,
+                                    "offset": 403,
+                                    "confidence_score": 0.99
+                                },
+                                {
+                                    "text": "September 2016 to May 2017",
+                                    "category": "date range",
+                                    "subcategory": null,
+                                    "length": 26,
+                                    "offset": 595,
+                                    "confidence_score": 0.96
+                                }
+                            ]
+                        },
+                        "warnings": []
+                    }
+                ]
+            }
+        }
+    }
+}
