@@ -382,3 +382,7 @@ Finally, the indexer ties everything together. The indexer needs to be setup up 
   ]
 }
 ```
+
+## Automating deployment
+
+As an alternative to doing the previous steps, an ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. The ARM template requires that the Azure Functions project to be deployed is zipped and uploaded to an accessible location. The ARM template deploys the zip fle to the Function App resource it creates (see [Deploy the powerskill to Azure](#deploy-the-powerskill-to-Azure)). The zip can, for example, be uploaded to Azure Blob Storage, and its URL can be given to the ARM template. The ARM template also takes the app settings that the powerskill needs (`TA_ENDPOINT`, etc.).
