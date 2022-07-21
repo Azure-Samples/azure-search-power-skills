@@ -216,8 +216,6 @@ The function adhers to the input/output format specified by Azure Cognitive Sear
 
 #### Integrate with Azure Cognitive Search
 
-
-
 ###### Skillset
 
 An Azure Cognitive Search pipeline consists of an Index, an Indexer, a skillset and data source. This function can be used as a custom skill in a skillset (either as a singular custom skill in a skillset, or as a skill among many others in a skillset). To add this function as a custom skill, some parameters need to be specified, including the the endpoint URL of the Function App deployed in the previous steps, the `x-functions-key` header, what is needed as input, and what the output is named. An example is shown below. Here, the text of each document (`/document/content`) is sent to the api as a value for the key named `text` (as the function expects) and the output is the value of the key named `entities` in the response. An example of what a skillset may look like is shown below. For more information on skillsets, see [Skillset concepts - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-working-with-skillsets).
@@ -231,7 +229,7 @@ An Azure Cognitive Search pipeline consists of an Index, an Indexer, a skillset 
         "name": "customner-skill",
         "description": "",
         "context": "/document",
-        "uri": "https://<azure-function-name>.azurewebsites.net/api/custom-ner",
+        "uri": "https://<azure-function-name>.azurewebsites.net/api/custom_ner",
         "httpMethod": "POST",
         "timeout": "PT30S",
         "batchSize": 1,
