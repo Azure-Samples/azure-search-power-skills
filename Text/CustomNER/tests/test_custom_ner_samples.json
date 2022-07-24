@@ -8,7 +8,7 @@
                     "recordId": "0",
                     "data":
                        {
-                        "text":"Aanirudh Razdan\r\nTechnical Support Executive - Teleperformance\r\n\r\nJaipur, Rajasthan - Email me on Indeed: indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5\r\n\r\nTo seek an organisation where my skills find ample opportunities for up-gradation of my\r\nknowledge and growth of my career and where I can prove myself.\r\n\r\nWORK EXPERIENCE\r\n\r\nTechnical Support Executive\r\n\r\nTeleperformance -  Jaipur, Rajasthan -\r\n\r\nJune 2017 to Present\r\n\r\n* Handling query related to Norton products\r\n* Resolving query related to the Operating system (Windwos XP\/Vista\/7\/8\/8.1\/10)\r\n\r\nB2X Process\r\n\r\nNokia and Microsoft -\r\n\r\nSeptember 2016 to May 2017\r\n\r\nhandsets\r\n* Resolving problems related to Microsoft account\r\n* Awarded as best Nesting Executive of the month\r\n\r\nEDUCATION\r\n\r\nB. Tech\r\n\r\nJaipur Engineering College and Research Center -  Jaipur, Rajasthan\r\n\r\n2015\r\n\r\ncommunication and presentation skills\r\n\r\n(WAC) in inter Air Force School football championship\r\n\r\n2012\r\n\r\nAir Force School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nAir Foce School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nhttps:\/\/www.indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5?isid=rex-download&ikw=download-top&co=IN",
+                        "text": "Date 6/29/2018\n\nThis is a Loan agreement between the two individuals mentioned below in the parties section of the agreement.\n\nI. Parties of agreement\n\n- Parker McLean with a mailing address of 9876 Fusce Rd, City of Frederick, State of Nebraska, (the \"Borrower\")\n- Dylan Williams with a mailing address of 6789 May Street, City of Winchester, State of Kentucky (the \"Lender\")\n\nII. Amount\nThe loan amount given by lender to borrower is six hundred twenty-three thousand four hundred sixty-three Dollars ($623,463.00) (\"The Note\")\n\nIII. Interest\nThe Note shall bear interest five percent (5%) compounded annually.\n\nIV. Payment\nThe amount mentioned in this agreement (the \"Note\"), including the principal and any accrued interest, is\n\nV. Payment Terms\nAny delay in payment is subject to a fine with a flat amount of $50 for every week the payment is delayed.\nAll payments made by the Borrower shall be go into settling the the accrued interest  and any late fess and then into the payment of the principal amount.\n\nVI. Prepayment\nThe borrower is able to pay back the Note in full at any time, thus terminating this agreement.\nThe borrower also can make additional payments at any time and this will take of from the amount of the latest installments. \n\nVII. Acceleration.\nIn case of Borrower's failure to pay any part of the principal or interest as and when due under this Note; or Borrower's becoming insolvent or not paying its debts as they become due. The lender has the right to declare an \"Event of Acceleration\" in which case the Lender has the right to to declare this Note immediately due and payable \n\nIX. Succession\nThis Note shall outlive the borrower and/or the lender in the even of their death. This note shall be binging to any of their successors.",
                         "language":"en"
                        }
                   }
@@ -22,36 +22,100 @@
                         "data": {
                             "entities": [
                                 {
-                                    "text": "Aanirudh Razdan",
-                                    "category": "Name",
+                                    "text": "6/29/2018",
+                                    "category": "Date",
+                                    "subcategory": null,
+                                    "length": 9,
+                                    "offset": 5,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "Parker McLean",
+                                    "category": "BorrowerName",
+                                    "subcategory": null,
+                                    "length": 13,
+                                    "offset": 154,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "9876 Fusce Rd",
+                                    "category": "BorrowerAddress",
+                                    "subcategory": null,
+                                    "length": 13,
+                                    "offset": 194,
+                                    "confidence_score": 0.98
+                                },
+                                {
+                                    "text": "Frederick",
+                                    "category": "BorrowerCity",
+                                    "subcategory": null,
+                                    "length": 9,
+                                    "offset": 217,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "Nebraska",
+                                    "category": "BorrowerState",
+                                    "subcategory": null,
+                                    "length": 8,
+                                    "offset": 237,
+                                    "confidence_score": 0.96
+                                },
+                                {
+                                    "text": "Dylan Williams",
+                                    "category": "LenderName",
+                                    "subcategory": null,
+                                    "length": 14,
+                                    "offset": 266,
+                                    "confidence_score": 0.98
+                                },
+                                {
+                                    "text": "6789 May Street",
+                                    "category": "LenderAddress",
                                     "subcategory": null,
                                     "length": 15,
-                                    "offset": 0,
-                                    "confidence_score": 0.99
+                                    "offset": 307,
+                                    "confidence_score": 1.0
                                 },
                                 {
-                                    "text": "Technical Support Executive -",
-                                    "category": "Title",
+                                    "text": "Winchester",
+                                    "category": "LenderCity",
                                     "subcategory": null,
-                                    "length": 29,
-                                    "offset": 17,
-                                    "confidence_score": 0.88
+                                    "length": 10,
+                                    "offset": 332,
+                                    "confidence_score": 1.0
                                 },
                                 {
-                                    "text": "June 2017 to Present",
-                                    "category": "date range",
+                                    "text": "Kentucky",
+                                    "category": "LenderState",
                                     "subcategory": null,
-                                    "length": 20,
-                                    "offset": 403,
-                                    "confidence_score": 0.99
+                                    "length": 8,
+                                    "offset": 353,
+                                    "confidence_score": 1.0
                                 },
                                 {
-                                    "text": "September 2016 to May 2017",
-                                    "category": "date range",
+                                    "text": "six hundred twenty-three thousand four hundred sixty-three Dollars",
+                                    "category": "LoanAmountWords",
                                     "subcategory": null,
-                                    "length": 26,
-                                    "offset": 595,
-                                    "confidence_score": 0.96
+                                    "length": 66,
+                                    "offset": 436,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "$623,463.00",
+                                    "category": "LoanAmountNumbers",
+                                    "subcategory": null,
+                                    "length": 11,
+                                    "offset": 504,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "5%",
+                                    "category": "Interest",
+                                    "subcategory": null,
+                                    "length": 2,
+                                    "offset": 588,
+                                    "confidence_score": 1.0
                                 }
                             ]
                         },
@@ -67,7 +131,7 @@
                     {
                     "data":
                         {
-                        "text":"Aanirudh Razdan\r\nTechnical Support Executive - Teleperformance\r\n\r\nJaipur, Rajasthan - Email me on Indeed: indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5\r\n\r\nTo seek an organisation where my skills find ample opportunities for up-gradation of my\r\nknowledge and growth of my career and where I can prove myself.\r\n\r\nWORK EXPERIENCE\r\n\r\nTechnical Support Executive\r\n\r\nTeleperformance -  Jaipur, Rajasthan -\r\n\r\nJune 2017 to Present\r\n\r\n* Handling query related to Norton products\r\n* Resolving query related to the Operating system (Windwos XP\/Vista\/7\/8\/8.1\/10)\r\n\r\nB2X Process\r\n\r\nNokia and Microsoft -\r\n\r\nSeptember 2016 to May 2017\r\n\r\nhandsets\r\n* Resolving problems related to Microsoft account\r\n* Awarded as best Nesting Executive of the month\r\n\r\nEDUCATION\r\n\r\nB. Tech\r\n\r\nJaipur Engineering College and Research Center -  Jaipur, Rajasthan\r\n\r\n2015\r\n\r\ncommunication and presentation skills\r\n\r\n(WAC) in inter Air Force School football championship\r\n\r\n2012\r\n\r\nAir Force School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nAir Foce School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nhttps:\/\/www.indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5?isid=rex-download&ikw=download-top&co=IN",
+                        "text": "Date 6/29/2018\n\nThis is a Loan agreement between the two individuals mentioned below in the parties section of the agreement.\n\nI. Parties of agreement\n\n- Parker McLean with a mailing address of 9876 Fusce Rd, City of Frederick, State of Nebraska, (the \"Borrower\")\n- Dylan Williams with a mailing address of 6789 May Street, City of Winchester, State of Kentucky (the \"Lender\")\n\nII. Amount\nThe loan amount given by lender to borrower is six hundred twenty-three thousand four hundred sixty-three Dollars ($623,463.00) (\"The Note\")\n\nIII. Interest\nThe Note shall bear interest five percent (5%) compounded annually.\n\nIV. Payment\nThe amount mentioned in this agreement (the \"Note\"), including the principal and any accrued interest, is\n\nV. Payment Terms\nAny delay in payment is subject to a fine with a flat amount of $50 for every week the payment is delayed.\nAll payments made by the Borrower shall be go into settling the the accrued interest  and any late fess and then into the payment of the principal amount.\n\nVI. Prepayment\nThe borrower is able to pay back the Note in full at any time, thus terminating this agreement.\nThe borrower also can make additional payments at any time and this will take of from the amount of the latest installments. \n\nVII. Acceleration.\nIn case of Borrower's failure to pay any part of the principal or interest as and when due under this Note; or Borrower's becoming insolvent or not paying its debts as they become due. The lender has the right to declare an \"Event of Acceleration\" in which case the Lender has the right to to declare this Note immediately due and payable \n\nIX. Succession\nThis Note shall outlive the borrower and/or the lender in the even of their death. This note shall be binging to any of their successors.",
                         "language":"en"
                         }
                     }
@@ -90,7 +154,7 @@
                     "recordId": "0",
                     "data":
                        {
-                        "text":"Aanirudh Razdan\r\nTechnical Support Executive - Teleperformance\r\n\r\nJaipur, Rajasthan - Email me on Indeed: indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5\r\n\r\nTo seek an organisation where my skills find ample opportunities for up-gradation of my\r\nknowledge and growth of my career and where I can prove myself.\r\n\r\nWORK EXPERIENCE\r\n\r\nTechnical Support Executive\r\n\r\nTeleperformance -  Jaipur, Rajasthan -\r\n\r\nJune 2017 to Present\r\n\r\n* Handling query related to Norton products\r\n* Resolving query related to the Operating system (Windwos XP\/Vista\/7\/8\/8.1\/10)\r\n\r\nB2X Process\r\n\r\nNokia and Microsoft -\r\n\r\nSeptember 2016 to May 2017\r\n\r\nhandsets\r\n* Resolving problems related to Microsoft account\r\n* Awarded as best Nesting Executive of the month\r\n\r\nEDUCATION\r\n\r\nB. Tech\r\n\r\nJaipur Engineering College and Research Center -  Jaipur, Rajasthan\r\n\r\n2015\r\n\r\ncommunication and presentation skills\r\n\r\n(WAC) in inter Air Force School football championship\r\n\r\n2012\r\n\r\nAir Force School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nAir Foce School Jammu -  Jammu, Jammu and Kashmir\r\n\r\nhttps:\/\/www.indeed.com\/r\/Aanirudh-Razdan\/efbf36cc74cec0e5?isid=rex-download&ikw=download-top&co=IN"
+                        "text": "Date 6/29/2018\n\nThis is a Loan agreement between the two individuals mentioned below in the parties section of the agreement.\n\nI. Parties of agreement\n\n- Parker McLean with a mailing address of 9876 Fusce Rd, City of Frederick, State of Nebraska, (the \"Borrower\")\n- Dylan Williams with a mailing address of 6789 May Street, City of Winchester, State of Kentucky (the \"Lender\")\n\nII. Amount\nThe loan amount given by lender to borrower is six hundred twenty-three thousand four hundred sixty-three Dollars ($623,463.00) (\"The Note\")\n\nIII. Interest\nThe Note shall bear interest five percent (5%) compounded annually.\n\nIV. Payment\nThe amount mentioned in this agreement (the \"Note\"), including the principal and any accrued interest, is\n\nV. Payment Terms\nAny delay in payment is subject to a fine with a flat amount of $50 for every week the payment is delayed.\nAll payments made by the Borrower shall be go into settling the the accrued interest  and any late fess and then into the payment of the principal amount.\n\nVI. Prepayment\nThe borrower is able to pay back the Note in full at any time, thus terminating this agreement.\nThe borrower also can make additional payments at any time and this will take of from the amount of the latest installments. \n\nVII. Acceleration.\nIn case of Borrower's failure to pay any part of the principal or interest as and when due under this Note; or Borrower's becoming insolvent or not paying its debts as they become due. The lender has the right to declare an \"Event of Acceleration\" in which case the Lender has the right to to declare this Note immediately due and payable \n\nIX. Succession\nThis Note shall outlive the borrower and/or the lender in the even of their death. This note shall be binging to any of their successors."
                        }
                   }
                 ]
@@ -103,36 +167,100 @@
                         "data": {
                             "entities": [
                                 {
-                                    "text": "Aanirudh Razdan",
-                                    "category": "Name",
+                                    "text": "6/29/2018",
+                                    "category": "Date",
+                                    "subcategory": null,
+                                    "length": 9,
+                                    "offset": 5,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "Parker McLean",
+                                    "category": "BorrowerName",
+                                    "subcategory": null,
+                                    "length": 13,
+                                    "offset": 154,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "9876 Fusce Rd",
+                                    "category": "BorrowerAddress",
+                                    "subcategory": null,
+                                    "length": 13,
+                                    "offset": 194,
+                                    "confidence_score": 0.98
+                                },
+                                {
+                                    "text": "Frederick",
+                                    "category": "BorrowerCity",
+                                    "subcategory": null,
+                                    "length": 9,
+                                    "offset": 217,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "Nebraska",
+                                    "category": "BorrowerState",
+                                    "subcategory": null,
+                                    "length": 8,
+                                    "offset": 237,
+                                    "confidence_score": 0.96
+                                },
+                                {
+                                    "text": "Dylan Williams",
+                                    "category": "LenderName",
+                                    "subcategory": null,
+                                    "length": 14,
+                                    "offset": 266,
+                                    "confidence_score": 0.98
+                                },
+                                {
+                                    "text": "6789 May Street",
+                                    "category": "LenderAddress",
                                     "subcategory": null,
                                     "length": 15,
-                                    "offset": 0,
-                                    "confidence_score": 0.99
+                                    "offset": 307,
+                                    "confidence_score": 1.0
                                 },
                                 {
-                                    "text": "Technical Support Executive -",
-                                    "category": "Title",
+                                    "text": "Winchester",
+                                    "category": "LenderCity",
                                     "subcategory": null,
-                                    "length": 29,
-                                    "offset": 17,
-                                    "confidence_score": 0.88
+                                    "length": 10,
+                                    "offset": 332,
+                                    "confidence_score": 1.0
                                 },
                                 {
-                                    "text": "June 2017 to Present",
-                                    "category": "date range",
+                                    "text": "Kentucky",
+                                    "category": "LenderState",
                                     "subcategory": null,
-                                    "length": 20,
-                                    "offset": 403,
-                                    "confidence_score": 0.99
+                                    "length": 8,
+                                    "offset": 353,
+                                    "confidence_score": 1.0
                                 },
                                 {
-                                    "text": "September 2016 to May 2017",
-                                    "category": "date range",
+                                    "text": "six hundred twenty-three thousand four hundred sixty-three Dollars",
+                                    "category": "LoanAmountWords",
                                     "subcategory": null,
-                                    "length": 26,
-                                    "offset": 595,
-                                    "confidence_score": 0.96
+                                    "length": 66,
+                                    "offset": 436,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "$623,463.00",
+                                    "category": "LoanAmountNumbers",
+                                    "subcategory": null,
+                                    "length": 11,
+                                    "offset": 504,
+                                    "confidence_score": 1.0
+                                },
+                                {
+                                    "text": "5%",
+                                    "category": "Interest",
+                                    "subcategory": null,
+                                    "length": 2,
+                                    "offset": 588,
+                                    "confidence_score": 1.0
                                 }
                             ]
                         },

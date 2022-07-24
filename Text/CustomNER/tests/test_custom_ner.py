@@ -3,11 +3,12 @@ import os
 import unittest
 
 import azure.functions as func
-from custom_ner import main
+from custom_ner.main import main
 
 
 class TestFunction(unittest.TestCase):
     def setUp(self) -> None:
+        self.maxDiff = None
         env_path = ".env"
         with open(env_path, 'r') as f:
             env = dict(tuple(line.replace('\n', '').split('=')) for line in f.readlines() if not line.startswith('#'))
