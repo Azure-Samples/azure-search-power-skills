@@ -374,6 +374,8 @@ Finally, the indexer ties everything together. The indexer needs to be setup up 
 
 ## Automating deployment
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fcustom_ner_revamp%2FText%2FCustomNER%2Fazuredeploy.json)
+
 As an alternative to doing the previous steps, an ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. The ARM template requires that the Azure Functions project to be deployed is zipped and uploaded to an accessible location. The ARM template deploys the zip fle to the Function App resource it creates (see [Deploy the powerskill to Azure](#deploy-the-powerskill-to-Azure)). The zip can, for example, be uploaded to Azure Blob Storage, and its URL can be given to the ARM template. The ARM template also takes the app settings that the powerskill needs (`TA_ENDPOINT`, etc.).
 
 ## Testing
@@ -388,8 +390,6 @@ TA_ENDPOINT=https://<language-resource-name>.cognitiveservices.azure.com
 ```
 
 The test cases assume that the model is trained to recognise load agreements like the example in [Quickstart - Custom named entity recognition (NER) - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio). Training and test data can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER).
-
-
 
 To run the tests, `cd` into the root of the project and run `unittest`.
 
