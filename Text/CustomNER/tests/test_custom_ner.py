@@ -8,13 +8,13 @@ from custom_ner import main
 
 class TestFunction(unittest.TestCase):
     def setUp(self) -> None:
-        env_path = "../.env"
+        env_path = ".env"
         with open(env_path, 'r') as f:
             env = dict(tuple(line.replace('\n', '').split('=')) for line in f.readlines() if not line.startswith('#'))
             for item in env.items():
                 os.environ[item[0]] = item[1]
 
-        tests_path = "./test_custom_ner_samples.json"
+        tests_path = "tests/test_custom_ner_samples.json"
         with open(tests_path, 'r') as f:
             self.tests = json.load(f)
 

@@ -18,21 +18,27 @@ Products:
 - Azure Cognitive Services for Language (Text Analytics)
 - Azure Functions
 
+Table of Contents:
+
+* [Steps](#steps)
+  
+  * [Create or reuse a Custom NER project](#create-or-reuse-a-custom-ner-project)
+  - [Deploy the powerskill to Azure](#deploy-the-powerskill-to-azure)
+  
+  - [Integrate with Azure Cognitive Search](integrate-with-azure-cognitive-search)
+    
+    - [Skillset](#skillset)
+    
+    - [Index](#index)
+    
+    - [Indexer](#indexer)
+- [Automated Deployment](#automated-deployment)
+
+- [Testing](#testing)
+
 ---
 
 # Steps
-
-* [Create or reuse a Custom NER project](#create-or-reuse-a-custom-ner-project)
-
-* [Deploy the powerskill to Azure](#deploy-the-powerskill-to-azure)
-
-* [Integrate with Azure Cognitive Search](integrate-with-azure-cognitive-search)
-  
-  * [Skillset](#skillset)
-  
-  * [Index](#index)
-  
-  * [Indexer](#indexer)
 
 #### Create or reuse a Custom NER project
 
@@ -79,14 +85,6 @@ The function adhers to the input/output format specified by Azure Cognitive Sear
         "data":
            {
             "text":"Date 10/18/2019\n\nThis is a Loan agreement between the two individuals mentioned below in the parties section of the agreement.\n\nI. Parties of agreement\n\n- Casey Jensen with a mailing address of 2469 Pennsylvania Avenue, City of New Brunswick, State of New Jersey (the \"Borrower\")\n- Hollie Rees with a mailing address of 42 Gladwell Street, City of Memphis, State of Tennessee (the \"Lender\")\n\nII. Amount\nThe loan amount given by lender to borrower is one hundred ninety-two thousand nine hundred eighty-nine Dollars ($192,989.00) (\"The Note\")\n\nIII. Interest\nThe Note shall bear interest five percent (5%) compounded annually.\n\nIV. Payment\nThe amount mentioned in this agreement (the \"Note\"), including the principal and any accrued interest, is\n\nV. Payment Terms\nAny delay in payment is subject to a fine with a flat amount of $50 for every week the payment is delayed.\nAll payments made by the Borrower shall be go into settling the the accrued interest  and any late fess and then into the payment of the principal amount.\n\nVI. Prepayment\nThe borrower is able to pay back the Note in full at any time, thus terminating this agreement.\nThe borrower also can make additional payments at any time and this will take of from the amount of the latest installments. \n\nVII. Acceleration.\nIn case of Borrower's failure to pay any part of the principal or interest as and when due under this Note; or Borrower's becoming insolvent or not paying its debts as they become due. The lender has the right to declare an \"Event of Acceleration\" in which case the Lender has the right to to declare this Note immediately due and payable \n\nIX. Succession\nThis Note shall outlive the borrower and/or the lender in the even of their death. This note shall be binging to any of their successors.",
-            "language":"en"
-           }
-      },
-      {
-        "recordId": "1",
-        "data":
-           {
-            "text":"",
             "language":"en"
            }
       }
@@ -200,15 +198,6 @@ The function adhers to the input/output format specified by Azure Cognitive Sear
                 ]
             },
             "warnings": []
-        },
-        {
-            "recordId": "1",
-            "data": {},
-            "errors": [
-                {
-                    "message": "Document text is empty."
-                }
-            ]
         }
     ]
 }
@@ -376,7 +365,7 @@ Finally, the indexer ties everything together. The indexer needs to be setup up 
       "targetFieldName": "textBody"
     },
     {
-      "sourceFieldName": "/document/entities/*",
+      "sourceFieldName": "/document/entities",
       "targetFieldName": "entities"
     }
   ]
@@ -386,3 +375,25 @@ Finally, the indexer ties everything together. The indexer needs to be setup up 
 ## Automating deployment
 
 As an alternative to doing the previous steps, an ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. The ARM template requires that the Azure Functions project to be deployed is zipped and uploaded to an accessible location. The ARM template deploys the zip fle to the Function App resource it creates (see [Deploy the powerskill to Azure](#deploy-the-powerskill-to-Azure)). The zip can, for example, be uploaded to Azure Blob Storage, and its URL can be given to the ARM template. The ARM template also takes the app settings that the powerskill needs (`TA_ENDPOINT`, etc.).
+
+## Testing
+
+A small test suite is provided in the `tests` directory. The tests assume a `.env` file that contains the parameters that the powerskill needs to run. The file uses a simple `KEY=VAL` syntax separated by newlines.
+
+```
+PROJECT_NAME=<project-name>
+DEPLOYMENT_NAME=<deployment-name>
+TA_KEY=<language-resource-key>
+TA_ENDPOINT=https://<language-resource-name>.cognitiveservices.azure.com
+```
+
+The test cases assume that the model is trained to recognise load agreements like the example in [Quickstart - Custom named entity recognition (NER) - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio). Training and test data can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER).
+
+
+
+To run the tests, `cd` into the root of the project and run `unittest`.
+
+```bash
+cd CustomNER
+python -m unittest
+```
