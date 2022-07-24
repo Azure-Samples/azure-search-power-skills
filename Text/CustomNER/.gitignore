@@ -1,5 +1,5 @@
 .env
-.vscode
-.idea
 local.settings.json
 .venv
+.python_packages
+__pycache__
