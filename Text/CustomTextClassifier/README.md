@@ -1,53 +1,97 @@
 # text_classification_skill
+
 ---
+
 Description:
+
 - It is common to require a text classification along knowledge base scenarios, for example you might to want to classify a document as a RFI response, a contract, a letter of intent or just a BoM. Custom Text Classification (in preview as of Nov2021) provides the capability to ingest your training texts, label your set of custom labels (both single and multi class) and train a model to classify them. You can easily deploy the model in a secured fashion to later on run your inference along your texts. As an outcome you will get the detected custom classes and the confidence level
 
 - text_classification_skill is an Azure Cognitive Search skill to integrate [Azure Text Analytics Custom Text Classification](https://docs.microsoft.com/azure/cognitive-services/language-service/custom-classification/overview) within a Azure Cognitive Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom classes. For example, show me the RFI responses by X employee between May and June 2021. This filtering is possible because Text Analytics has identified all those classes along the skillset execution and exposes the ability to narrow the results within the ACS index.
 
 Languages:
+
 - ![python](https://img.shields.io/badge/language-python-orange)
 
 Products:
+
 - Azure Cognitive Search
-- Azure Cognitive Services (Text Analytics)
+- Azure Cognitive Services for Language (Text Analytics)
 - Azure Functions
+
+Table of Contents:
+
+* [Steps](#steps)
+  
+  * [Create or reuse a Custom Text Classification project](#create-or-reuse-a-custom-text-classification-project)
+  - [Deploy the powerskill to Azure](#deploy-the-powerskill-to-azure)
+  
+  - [Integrate with Azure Cognitive Search](integrate-with-azure-cognitive-search)
+    
+    - [Skillset](#skillset)
+    
+    - [Index](#index)
+    
+    - [Indexer](#indexer)
+- [Automating Deployment](#automating-deployment)
+
+- [Testing](#testing)
+
 ---
 
-# Steps    
+# Steps
 
-1. Create or reuse a Text Analytics resource. Creation can be done from the Azure portal or in [Language Studio](https://language.azure.com/home)
-2. Train your model with a dataset (a sample train and eval dataset can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification/movies%20summaries) in case you dont have docs to work with) and deploy it. In case you are not familiar with Custom Text Classification, this is a simple [tutorial](https://docs.microsoft.com/azure/cognitive-services/language-service/custom-classification/quickstart?pivots=language-studio) to guide you
-3. Create a Python Function in Azure, for example this is a good [starting point](https://docs.microsoft.com/azure/azure-functions/create-first-function-vs-code-python)
-4. Clone this repository
-5. Open the folder in VS Code and deploy the function, find here a [tutorial](https://docs.microsoft.com/azure/search/cognitive-search-custom-skill-python)
-6. Fill your Functions appsettings with the custom details from your deployment ('TA_ENDPOINT', 'TA_KEY', 'DEPLOYMENT', 'PROJECT_NAME' with the info you got in Language Studio after you deployed the model
-7. Add a field in your index where you will dump the enriched classes, more info [here](#sample-index-field-definition)
-8. Add the skill to your skillset as [described below](#sample-skillset-integration)
-9. Add the output field mapping in your indexer as [seen in the sample](#sample-indexer-output-field-mapping)
-10. Run the indexer 
+#### Create or reuse a Custom Text Classification project
 
-## Sample Input:
+In order to use Custom Text Classification, we need a language resource and a trained (and deployed) project to be used in custom classification. If they aren't previously created, now is the time to do that. A good place to start is [Quickstart: Custom text classification - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-text-classification/quickstart).
 
-You can find a sample input for the skill [here](../main/custom_ner/sample.dat)
+After this step you should have:
+
+- A Language resource.
+
+- A project
+
+- A deployment
+
+#### Deploy the powerskill to Azure
+
+A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure Cognitive Search pipeline. To deploy a function, an Azure App resource is needed. Notice the difference between an Azure Function and an Azure App. If one is not already available, now is the time to create one. A good article that goes through all the steps of creating a simple Azure Function in Python is [Create a Python function using Visual Studio Code - Azure Functions | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python).
+
+After creating the resource, some app settings (visible inside Azure Functions as environment variables) need to be added for the powerskill to run correctly.
+
+| App setting         | Description                                                               | Details                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| TA_ENDPOINT         | The Language resource endpoint.                                           | E.g. https://<language-resource-name>.cognitiveservices.azure.com/                                           |
+| TA_KEY              | The access key to be able to access the endpoint.                         | Can be found under `Resource Management -> Keys and Endpoint` in the Language resource page in Azure Portal. |
+| PROJECT_NAME        | The name of the created project in the previous step.                     |                                                                                                              |
+| DEPLOYMENT_NAME     | The name of the deployment of the project in the previous step.           |                                                                                                              |
+| CLASSIFICATION_TYPE | Whether the project is for multi-classification or single-classification. | `multi` or `single`                                                                                          |
+
+After creating an Azure App resource, the Custom Text Classification powerskill can be deployed to the Azure App. This is commonly done in two ways. One approach is to create a local project in Visual Studio Code and deploy it using the Azure Functions extension (more details can be found at the previously linked article). Another approach is to do a **Zip Deploy** i.e. upload a zipped file containing the function code and configuration (with a similar structure to [this](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python#folder-structure)). An app that is Zip-Deployed can be setup to either [run from a package file](https://docs.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package) or [do a remote build](https://docs.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package). Running from a package assumes that the project is ready to be run and skips doing any build steps (e.g. `npm install`, or in this case, `pip install`). Since this Python project needs to pull dependencies with pip, a remote build is the more appropriate choice. A simple command to zip the necessary files would be
+
+```bash
+ zip -r customtextcla-powerskill.zip customtextcla host.json requirements.txt
+```
+
+For more information on deployment methods, see [Deployment technologies in Azure Functions | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-deployment-technologies).
+
+At this point, you should have a working Azure Function. Depending on how you deployed the function, you may need to add a `x-functions-key` header to each request to the function endpoint. The value for the header can be found in `Functions -> App keys` in the Function App resource page in Azure Portal.
+
+The function adheres to the input/output format specified by Azure Cognitive Search for custom skills. More information about custom skills and format, see [Custom skill interface - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-interface). Sample inputs and outputs for this powerskill (with a multi-classification deployment) are shown below. Notice that specifying the language is optional, and defaults to English. In case of  a single-classification deployment, the response will look the same, except that the `class` array will always have one element.
 
 ```json
 {
     "values": [
       {
         "recordId": "0",
-        "data":
-           {
-            "text": "Set in todays Mumbai, Barah Aana revolves around three friends: Shukla, a driver, Yadav, a watchman, and Aman, a waiter. Shukla is an older man, stoic and steady. Yadav, in his 30s, is meek and something of a pushover at work, but exhibits an underlying mischievous nature. Aman, on the other hand, is young, dynamic, and ambitious. In typical Mumbai fashion, the three are roommates, and the clash of their personalities regularly results in humorous, tongue-in-cheek banter. Things take a turn when the watchman becomes prey to misfortune; a series of chance events results in him stumbling on to a crime. The discovery changes his perspective, boosting his self-confidence enough to make him think that he had a found a new, low-risk way to make money. He then tries to sell the idea to his roommates, to get them to join him in executing a series of such crimes. As they get more and more mired in the spiral of events that follow, the three characters go through several changes as they are pushed more and more against the wall",
-            "lang": "en"
-           }
+        "data": {
+            "id": "1",
+            "lang": "en",
+            "text": "The film deals with student strength. Shiva , a college student is leading a happy go lucky life, having a nice time with his friends, until two of his friends fall in love. Facing stiff opposition from the girl’s father, all the friends get together and get the couple married. But the married girl get gang raped in the college campus, by Madan, the son of a politician. Unable to get justice in court, Shiva along with his friends takes it upon himself to avenge his friend’s death, but pays a very heavy price. His mother will be killed by the politician and they lose at court. Now Shiva must get justice in his own way. He can kill Mahan and his father."
+        }
       }
-     
     ]
 }
 ```
-
-## Sample Output:
 
 ```json
 {
@@ -55,143 +99,155 @@ You can find a sample input for the skill [here](../main/custom_ner/sample.dat)
         {
             "recordId": "0",
             "data": {
-                "text": [
+                "class": [
                     {
                         "category": "Comedy",
-                        "confidenceScore": 1.0
+                        "confidence_score": 0.99
                     },
                     {
                         "category": "Drama",
-                        "confidenceScore": 1.0
+                        "confidence_score": 0.87
                     }
                 ]
-            }
+            },
+            "warnings": []
         }
     ]
 }
 ```
 
-## Sample Skillset Integration
+#### Integrate with Azure Cognitive Search
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
-Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
+###### Skillset
 
-```json
-    {
-      "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
-      "name": "Text Classification",
-      "description": "Classify your text",
-      "context": "/document",
-      "uri": "https://customtextclassifier.azurewebsites.net/api/customtextcla?code=xx==",
-      "httpMethod": "POST",
-      "timeout": "PT30S",
-      "batchSize": 1,
-      "degreeOfParallelism": null,
-      "inputs": [
-        {
-          "name": "lang",
-          "source": "/document/language"
-        },
-        {
-          "name": "text",
-          "source": "/document/corpus"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "text",
-          "targetName": "class"
-        }
-      ],
-      "httpHeaders": {}
-    }
-```
-
-## Sample Index Field Definition
-
-The skill will output the text classes that have been extracted for the corpus. In this example, I am expecting several classes so a Collection of ComplexType object is needed, including subfields for category and confidence.
+An Azure Cognitive Search pipeline consists of an Index, an Indexer, a skillset and data source. This function can be used as a custom skill in a skillset (either as a singular custom skill in a skillset, or as a skill among many others in a skillset). To add this function as a custom skill, some parameters need to be specified, including the the endpoint URL of the Function App deployed in the previous steps, the `x-functions-key` header, what is needed as input, and what the output is named. An example is shown below. Here, the text of each document (`/document/content`) is sent to the api as a value for the key named `text` (as the function expects) and the output is the value of the key named `class` in the response. An example of what a skillset may look like is shown below. For more information on skillsets, see [Skillset concepts - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-working-with-skillsets).
 
 ```json
 {
-  "name": "textclassindex",
-  "fields": [
-    {
-      "name": "id",
-      "type": "Edm.String",
-      "facetable": false,
-      "filterable": false,
-      "key": true,
-      "retrievable": true,
-      "searchable": false,
-      "sortable": false,
-      "analyzer": null,
-      "indexAnalyzer": null,
-      "searchAnalyzer": null,
-      "synonymMaps": [],
-      "fields": []
-    },
-    {
-      "name": "corpus",
-      "type": "Edm.String",
-      "facetable": false,
-      "filterable": false,
-      "key": false,
-      "retrievable": true,
-      "searchable": true,
-      "sortable": false,
-      "analyzer": "standard.lucene",
-      "indexAnalyzer": null,
-      "searchAnalyzer": null,
-      "synonymMaps": [],
-      "fields": []
-    },
-    {
-      "name": "textclass",
+    "skills": [
+      "[... your existing skills remain here]",  
+      {
+        "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+        "name": "customtextcla-skill",
+        "description": "",
+        "context": "/document",
+        "uri": "https://<azure-function-name>.azurewebsites.net/api/customtextcla",
+        "httpMethod": "POST",
+        "timeout": "PT30S",
+        "batchSize": 1,
+        "degreeOfParallelism": 1,
+        "inputs": [
+          {
+            "name": "text",
+            "source": "/document/content"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "class",
+            "targetName": "class"
+          }
+        ],
+        "httpHeaders": {
+          "x-functions-key": "<azure-function-key>"
+        }
+      }
+  ]
+}
+```
+
+###### Index
+
+Next, the output from the custom skill can be used as an input to yet another skill, or be part of the final output that is saved into the index. Assuming the latter, the index needs to have a field definition that matches the output it's given. An example for what the definition should look like is shown below. For more information on search indexes, see [Index overview - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-what-is-an-index).
+
+```json
+{
+      "name": "class",
       "type": "Collection(Edm.ComplexType)",
-      "analyzer": null,
-      "synonymMaps": [],
       "fields": [
         {
           "name": "category",
           "type": "Edm.String",
-          "facetable": true,
-          "filterable": true,
-          "key": false,
-          "retrievable": true,
           "searchable": true,
+          "filterable": true,
+          "retrievable": true,
           "sortable": false,
-          "analyzer": "standard.lucene",
+          "facetable": false,
+          "key": false,
           "indexAnalyzer": null,
           "searchAnalyzer": null,
-          "synonymMaps": [],
-          "fields": []
+          "analyzer": "standard.lucene",
+          "normalizer": null,
+          "synonymMaps": []
         },
         {
-          "name": "confidence",
+          "name": "confidence_score",
           "type": "Edm.Double",
-          "facetable": true,
+          "searchable": false,
           "filterable": true,
           "retrievable": true,
           "sortable": false,
-          "analyzer": null,
+          "facetable": false,
+          "key": false,
           "indexAnalyzer": null,
           "searchAnalyzer": null,
-          "synonymMaps": [],
-          "fields": []
+          "analyzer": null,
+          "normalizer": null,
+          "synonymMaps": []
         }
       ]
     }
+```
+
+###### Indexer
+
+Finally, the indexer ties everything together. The indexer needs to be setup up such that the outputs from the custom skill are mapped to the field that was just defined. Notice the `outputFieldMappings` key in the example shown below, the content of each document is mapped to the a field named `content`, and the output from the powerskill (that was named `class` in the skillset) is mapped to a field named `class` in the index. For more information on output mappings, see [Map skill output fields - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-output-field-mapping) in addition to the previously linked article about skillsets.
+
+```json
+{
+  "@odata.context": "...",
+  "@odata.etag": "...",
+  "name": "<indexer-name>",
+  "dataSourceName": "<datasource-name>",
+  "skillsetName": "<skillset-name>",
+  "targetIndexName": "<index-name>",
+  ...
+  "outputFieldMappings": [
+    {
+      "sourceFieldName": "/document/content",
+      "targetFieldName": "content"
+    },
+    {
+      "sourceFieldName": "/document/class",
+      "targetFieldName": "class"
+    }
+  ]
 }
 ```
 
-## Sample Indexer Output Field Mapping
+## Automating deployment
 
-The output enrichment of your skill can be directly mapped to one of your fields described above. This can be done with the indexer setting:
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FText%2FCustomTextClassifier%2Fazuredeploy.json)
+
+As an alternative to doing the previous steps, an ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. The ARM template requires that the Azure Functions project to be deployed is zipped and uploaded to an accessible location. The ARM template deploys the zip fle to the Function App resource it creates (see [Deploy the powerskill to Azure](#deploy-the-powerskill-to-Azure)). The zip can, for example, be uploaded to Azure Blob Storage, and its URL can be given to the ARM template. The ARM template also takes the app settings that the powerskill needs (`TA_ENDPOINT`, etc.).
+
+## Testing
+
+A small test suite is provided in the `tests` directory. There are tests for single and multi classifications The tests assume `multi.env` and `single.env` files that contains the parameters that the powerskill needs to run. The files use a simple `KEY=VAL` syntax separated by newlines.
+
 ```
-  "outputFieldMappings": [
-    {
-      "sourceFieldName": "/document/class",
-      "targetFieldName": "textclass"
-    }
-  ],
+PROJECT_NAME=<project-name>
+DEPLOYMENT_NAME=<deployment-name>
+TA_KEY=<language-resource-key>
+TA_ENDPOINT=https://<language-resource-name>.cognitiveservices.azure.com
+CLASSIFICATION_TYPE=<multi-or-single>
+```
+
+The test cases assume that the model (in both single and multi classification) is trained to recognise data like the example in [Quickstart: Custom text classification - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-text-classification/quickstart). Training and test data for  can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification).
+
+To run the tests, `cd` into the root of the project and run `unittest`.
+
+```bash
+cd CustomTextClassifier
+python -m unittest
 ```

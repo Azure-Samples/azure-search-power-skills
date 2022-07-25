@@ -2,12 +2,10 @@
     "values": [
       {
         "recordId": "0",
-        "data":
-           {
-            "text": "This film takes place during the events of Get Smart. Bruce and Lloyd have been testing out an invisibility cloak, but during a party, Maraguayan agent Isabelle steals it for El Presidente. Now, Bruce and Lloyd must find the cloak on their own because the only non-compromised agents, Agent 99 and Agent 86  are in Russia",
-            "lang": "en"
-           }
+        "data": {
+            "language": "en",
+            "text": "The film deals with student strength. Shiva , a college student is leading a happy go lucky life, having a nice time with his friends, until two of his friends fall in love. Facing stiff opposition from the girl’s father, all the friends get together and get the couple married. But the married girl get gang raped in the college campus, by Madan, the son of a politician. Unable to get justice in court, Shiva along with his friends takes it upon himself to avenge his friend’s death, but pays a very heavy price. His mother will be killed by the politician and they lose at court. Now Shiva must get justice in his own way. He can kill Mahan and his father."
+        }
       }
-     
     ]
 }
