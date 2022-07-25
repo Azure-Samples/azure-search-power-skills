@@ -4,9 +4,9 @@
 
 Description:
 
-- It is common to have custom entities along different texts that dont fit any of the predefined entities that can be extracted with the Named Entity Extraction service. Custom Named Entity Recognition provides the capability to ingest your training texts, label your set of custom entities and train a model to identify them. You can easily deploy the model in a secured fashion to later on run your inference along your texts. As an outcome you will get the detected custom entities, their position (inside the text) and the confidence level
+- It is common to have custom entities along different texts that don't fit any of the predefined entities that can be extracted with the Named Entity Extraction service. Custom Named Entity Recognition provides the capability to ingest your training texts, label your set of custom entities and train a model to identify them. You can easily deploy the model in a secured fashion to later on run your inference along your texts. As an outcome you will get the detected custom entities, their position (inside the text) and the confidence level
 
-- custom_ner_skill is an Azure Cognitive Search skill to integrate Azure Text Analytics Custom Named Entity Recoginition within a Azure Cognitive Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom entities. For example, show me the loan documents signed with the credit institution X between May and June 2021 with higher purchase amount than one millon dollars. This filtering is possible because Text Analytics has identified all those fields along the skillset execution and exposes the ability to narrow the results within the ACS index.
+- custom_ner_skill is an Azure Cognitive Search skill to integrate Azure Text Analytics Custom Named Entity Recognition within a Azure Cognitive Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom entities. For example, show me the loan documents signed with the credit institution X between May and June 2021 with higher purchase amount than one million dollars. This filtering is possible because Text Analytics has identified all those fields along the skillset execution and exposes the ability to narrow the results within the ACS index.
 
 Languages:
 
@@ -54,7 +54,7 @@ After this step you should have:
 
 #### Deploy the powerskill to Azure
 
-A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure Cognitive Search pipeline. To deploy a function, an Azure App resource is needed. Notice the differnce between an Azure Function and an Azure App. If one is not already available, now is the time to create one. A good article that goes through all the steps of creating a simple Azure Function in Python is [Create a Python function using Visual Studio Code - Azure Functions | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python).
+A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure Cognitive Search pipeline. To deploy a function, an Azure App resource is needed. Notice the difference between an Azure Function and an Azure App. If one is not already available, now is the time to create one. A good article that goes through all the steps of creating a simple Azure Function in Python is [Create a Python function using Visual Studio Code - Azure Functions | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python).
 
 After creating the resource, some app settings (visible inside Azure Functions as environment variables) need to be added for the powerskill to run correctly.
 
@@ -65,7 +65,7 @@ After creating the resource, some app settings (visible inside Azure Functions a
 | PROJECT_NAME    | The name of the created project in the previous step.           |                                                                                                              |
 | DEPLOYMENT_NAME | The name of the deployment of the project in the previous step. |                                                                                                              |
 
-After creating an Azure App resource, the Custom NER powerskill can be deployed to the Azure App. This is commonly done in two ways. One approach is to create a local project in Visual Studio Code and deploy it using the Azure Functions extension (more details can be found at the previously linked article). Another approach is to do a ___Zip Deploy__ i.e. upload a zipped file containing the function code and configuration (with a similar structure to [this](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python#folder-structure)). An app that is Zip-Deployed can be setup to either [run from a package file](https://docs.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package) or [do a remote build](https://docs.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package). Running from a package assumes that the project is ready to be run and skips doing any build steps (e.g. `npm install`, or in this case, `pip install`). Since this Python project needs to pull dependencies with pip, a remote build is the more appropriate choice. A simple command to zip the necessary files would be
+After creating an Azure App resource, the Custom NER powerskill can be deployed to the Azure App. This is commonly done in two ways. One approach is to create a local project in Visual Studio Code and deploy it using the Azure Functions extension (more details can be found at the previously linked article). Another approach is to do a __Zip Deploy__ i.e. upload a zipped file containing the function code and configuration (with a similar structure to [this](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python#folder-structure)). An app that is Zip-Deployed can be setup to either [run from a package file](https://docs.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package) or [do a remote build](https://docs.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package). Running from a package assumes that the project is ready to be run and skips doing any build steps (e.g. `npm install`, or in this case, `pip install`). Since this Python project needs to pull dependencies with pip, a remote build is the more appropriate choice. A simple command to zip the necessary files would be
 
 ```bash
  zip -r customner-powerskill.zip custom_ner host.json requirements.txt
@@ -75,7 +75,7 @@ For more information on deployment methods, see [Deployment technologies in Azur
 
 At this point, you should have a working Azure Function. Depending on how you deployed the function, you may need to add a `x-functions-key` header to each request to the function endpoint. The value for the header can be found in `Functions -> App keys` in the Function App resource page in Azure Portal.
 
-The function adhers to the input/output format specified by Azure Cognitive Search for custom skills. More information about custom skills and format, see [Custom skill interface - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-interface). Sample inputs and outputs for this powerskill are shown below. Notice that specifying the language is optional, and defaults to English.
+The function adheres to the input/output format specified by Azure Cognitive Search for custom skills. More information about custom skills and format, see [Custom skill interface - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-interface). Sample inputs and outputs for this powerskill are shown below. Notice that specifying the language is optional, and defaults to English.
 
 ```json
 {
@@ -389,7 +389,7 @@ TA_KEY=<language-resource-key>
 TA_ENDPOINT=https://<language-resource-name>.cognitiveservices.azure.com
 ```
 
-The test cases assume that the model is trained to recognise load agreements like the example in [Quickstart - Custom named entity recognition (NER) - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio). Training and test data can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER).
+The test cases assume that the model is trained to recognize load agreements like the example in [Quickstart - Custom named entity recognition (NER) - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio). Training and test data can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER).
 
 To run the tests, `cd` into the root of the project and run `unittest`.
 
