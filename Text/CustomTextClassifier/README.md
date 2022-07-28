@@ -32,6 +32,8 @@ Table of Contents:
     - [Index](#index)
     
     - [Indexer](#indexer)
+    
+    - [Query the index](#query-the-index)
 - [Automating Deployment](#automating-deployment)
 
 - [Testing](#testing)
@@ -224,6 +226,137 @@ Finally, the indexer ties everything together. The indexer needs to be setup up 
   ]
 }
 ```
+
+#### Query the index
+
+Now that we have a packed index, we can use the capabilities of the index to make useful queries. For example, using the sample data for scientific papers from the custom text classification documentation (found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification)), we can query the index to find all load agreements on a specific date. For example,
+
+```
+$queryType=full&$searchMode=all&$count=true&$filter=class/any(c: c/category eq 'Computer_science')
+```
+
+will get all `Computer_science` research papers. The response should look like the following.
+
+```json
+{
+  "@odata.context": "...",
+  "@odata.count": 10,
+  "value": [
+    {
+      "@search.score": 1,
+      "id": "MDE2LnR4dA",
+      "content": "A set of algorithms for simultaneous localization and mapping in industrial television systems is discussed. A probabilistic model of this problem is described with the FastSLAM algorithm as an example. The possibility of using a sigma-point Kalman filter for estimating the movement of spatial landmarks, a key feature of images characterized by stable detection and recognition within the video stream, is considered. A general model of the camera motion and a method for evaluating its spatial position using a particle filter are presented.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDA5LnR4dA",
+      "content": "An accurate algorithm for three-dimensional (3-D) pose recognition of a rigid object is presented. The algorithm is based on adaptive template matched filtering and local search optimization. When a scene image is captured, a bank of correlation filters is constructed to find the best correspondence between the current view of the target in the scene and a target image synthesized by means of computer graphics. The synthetic image is created using a known 3-D model of the target and an iterative procedure based on local search. Computer simulation results obtained with the proposed algorithm in synthetic and real-life scenes are presented and discussed in terms of accuracy of pose recognition in the presence of noise, cluttered background, and occlusion. Experimental results show that our proposal presents high accuracy for 3-D pose estimation using monocular images. (C) 2016 Society of Photo-Optical Instrumentation Engineers (SPIE)\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDI0LnR4dA",
+      "content": "A correspondence is a set of mappings that establishes a relation between the elements of two data structures (i.e. sets of points, strings, trees or graphs). If we consider several correspondences between the same two structures, one option to define a representative of them is through the generalised median correspondence. In general, the computation of the generalised median is an NP-complete task. In this paper, we present two methods to calculate the generalised median correspondence of multiple correspondences. The first one obtains the optimal solution in cubic time, but it is restricted to the Hamming distance. The second one obtains a sub-optimal solution through an iterative approach, but does not have any restrictions with respect to the used distance. We compare both proposals in terms of the distance to the true generalised median and runtime.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDEzLnR4dA",
+      "content": "A number of computer vision problems such as facial age estimation, crowd counting and pose estimation can be solved by learning regression mapping on low-level imagery features. We show that visual regression can be substantially improved by two-stage regression where imagery features are first mapped to an attribute space which explicitly models latent correlations across continuously-changing output. We propose an approach to automatically discover \"spectral attributes\" which avoids manual work required for defining hand-crafted attribute representations. Visual attribute regression outperforms direct visual regression and our spectral attribute visual regression achieves state-of-the-art accuracy in multiple applications.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDIyLnR4dA",
+      "content": "A basic question in computational geometry is how to find the relationship between a set of points and a line in a real plane. In this paper, we present multidimensional data structures for N points that allow answering the following queries for any given input line: (1) estimate in O (log N) time the number of points below the line; (2) return in O (log N + k) time the k <= N points that are below the line; and (3) return in O (log N) time the point that is closest to the line. We illustrate the utility of this computational question with GIS applications in air defense and traffic control.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDAyLnR4dA",
+      "content": "3D digital visualization technology is a new research field along with the rapid development of computer technology. It is a multi-scale technology which consists of computer graphics, image information processing, computer aided design. This paper is about the research and development of products innovation design method, thereby realize the innovation of product design rapidly. At the same time to verify the feasibility and practicality and broad application prospect of applying 3D scan technology to the rapid development, design and manufacture of products.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDIwLnR4dA",
+      "content": "Video tracking is a main field of computer vision, and TLD algorithm plays a key role in long-term tracking. However, the original TLD ignores the color features of patch in detection, and tracks the common points from grid, then, the tracking accuracy is limited to both of them. This paper presents a novel TLD algorithm with Harris corner and color moment to overcome this drawback. Instead of tracking common points, we screen more important points utilizing Harris corner to reject a half patches, these points are better able to show the object's textural features. In addition, the color moment classifier replaces patch variance to reduce the errors of detection. The classifier compares mine-dimensional color moment vectors so that it can keep the TLD's stable speed. Experiment has proved that our TLD tracks a more reliable position and higher ability without affecting the speed.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDA2LnR4dA",
+      "content": "A phase-only computer-generated holography (CGH) calculation method for stereoscopic holography is proposed in this paper. The two-dimensional (2D) perspective projection views of the three-dimensional (3D) object are generated by the computer graphics rendering techniques. Based on these views, a phase-only hologram is calculated by using the Gerchberg-Saxton (GS) iterative algorithm. Comparing with the non-iterative algorithm in the conventional stereoscopic holography, the proposed method improves the holographic image quality, especially for the phase-only hologram encoded from the complex distribution. Both simulation and optical experiment results demonstrate that our proposed method can give higher quality reconstruction comparing with the traditional method.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDI1LnR4dA",
+      "content": "A gradient-statistic-based diagnostic measure is developed in the context of the generalized linear mixed models. Its performance is assessed by some real examples and simulation studies, in terms of ability in detecting influential data structures and of concordance with the most used influence measures.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "id": "MDA3LnR4dA",
+      "content": "Accurately and reliably tracking the undulatory motion of deformable fish body is of great significance for not only scientific researches but also practical applications such as robot design and computer graphics. However, it remains a challenging task due to severe body deformation, erratic motion and frequent occlusions. This paper proposes a tracking method which is capable of tracking the midlines of multiple fish based on midline evolution and head motion pattern modeling with Long Short-Term Memory (LSTM) networks. The midline and head motion state are predicted using two LSTM networks respectively and the predicted state is associated with detections to estimate the state of each target at each moment. Experiment results show that the system can accurately track midline dynamics of multiple zebrafish even when mutual occlusions occur frequently.\n",
+      "class": [
+        {
+          "category": "Computer_science",
+          "confidence_score": 1
+        }
+      ]
+    }
+  ]
+}
+```
+
+For more details and example, see [Use full Lucene query syntax - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
 
 ## Automating deployment
 

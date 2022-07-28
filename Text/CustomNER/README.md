@@ -32,6 +32,8 @@ Table of Contents:
     - [Index](#index)
     
     - [Indexer](#indexer)
+    
+    - [Query the index](#query-the-index)
 - [Automating Deployment](#automating-deployment)
 
 - [Testing](#testing)
@@ -371,6 +373,189 @@ Finally, the indexer ties everything together. The indexer needs to be setup up 
   ]
 }
 ```
+
+#### Query the index
+
+Now that we have a packed index, we can use the capabilities of the index to make useful queries. For example, using the sample data for loan agreements from the custom NER documentation (found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER)), we can query the index to find all load agreements on a specific date. For example,
+
+```
+$queryType=full&$searchMode=all&$count=true&$filter=entities/any(e: e/text eq '6/28/2019')&$select=content,entities/text,entities/category
+```
+
+will get all load agreements on `6/28/2019` and only returns specific fields so as not to clutter the output. The response should look like the following.
+
+```json
+{
+  "@odata.context": "...",
+  "@odata.count": 3,
+  "value": [
+    {
+      "@search.score": 1,
+      "content": "Date 6/28/2019\r\n\r\nThis is a Loan agreement between the two individuals mentioned below in the parties section of the agreement.\r\n\r\nI. Parties of agreement\r\n\r\n- Jennifer Wilkins with a mailing address of 4759 Reel Avenue, City of Las Cruces, State of New Mexico (the \"Borrower\")\r\n- Libby Harrison with a mailing address of 3093 Keyser Ridge Road, City of Greensboro, State of North Carolina (the \"Lender\")\r\n\r\nII. Amount\r\nThe loan amount given by lender to borrower is two hundred thirty-eight thousand eight hundred sixty-nine Dollars ($238,869.00) (\"The Note\")\r\n\r\nIII. Interest\r\nThe Note shall bear interest five percent (3%) compounded annually.\r\n\r\nIV. Payment\r\nThe amount mentioned in this agreement (the \"Note\"), including the principal and any accrued interest, is\r\n\r\nV. Payment Terms\r\nAny delay in payment is subject to a fine with a flat amount of $50 for every week the payment is delayed.\r\nAll payments made by the Borrower shall be go into settling the the accrued interest  and any late fess and then into the payment of the principal amount.\r\n\r\nVI. Prepayment\r\nThe borrower is able to pay back the Note in full at any time, thus terminating this agreement.\r\nThe borrower also can make additional payments at any time and this will take of from the amount of the latest installments. \r\n\r\nVII. Acceleration.\r\nIn case of Borrower's failure to pay any part of the principal or interest as and when due under this Note; or Borrower's becoming insolvent or not paying its debts as they become due. The lender has the right to declare an \"Event of Acceleration\" in which case the Lender has the right to to declare this Note immediately due and payable \r\n\r\nIX. Succession\r\nThis Note shall outlive the borrower and/or the lender in the even of their death. This note shall be binging to any of their successors.\n",
+      "entities": [
+        {
+          "text": "6/28/2019",
+          "category": "Date"
+        },
+        {
+          "text": "Jennifer Wilkins",
+          "category": "BorrowerName"
+        },
+        {
+          "text": "4759 Reel Avenue",
+          "category": "BorrowerAddress"
+        },
+        {
+          "text": "Las Cruces",
+          "category": "BorrowerCity"
+        },
+        {
+          "text": "New Mexico",
+          "category": "BorrowerState"
+        },
+        {
+          "text": "Libby Harrison",
+          "category": "LenderName"
+        },
+        {
+          "text": "3093 Keyser Ridge Road",
+          "category": "LenderAddress"
+        },
+        {
+          "text": "Greensboro",
+          "category": "LenderCity"
+        },
+        {
+          "text": "North Carolina",
+          "category": "LenderState"
+        },
+        {
+          "text": "two hundred thirty-eight thousand eight hundred sixty-nine Dollars",
+          "category": "LoanAmountWords"
+        },
+        {
+          "text": "$238,869.00",
+          "category": "LoanAmountNumbers"
+        },
+        {
+          "text": "(3%)",
+          "category": "Interest"
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "content": "Date 6/28/2019\r\n\r\nThis is a Loan agreement between the two individuals mentioned below in the parties section of the agreement.\r\n\r\nI. Parties of agreement\r\n\r\n- William Kirby with a mailing address of 4433 Oakmound Road, City of Burr Ridge, State of Illinois (the \"Borrower\")\r\n- Quinn Anderson with a mailing address of 458 Frank Avenue, City of Crafton, State of Pennsylvania (the \"Lender\")\r\n\r\nII. Amount\r\nThe loan amount given by lender to borrower is seven hundred twenty thousand sixty-seven Dollars ($720,067.00) (\"The Note\")\r\n\r\nIII. Interest\r\nThe Note shall bear interest five percent (4%) compounded annually.\r\n\r\nIV. Payment\r\nThe amount mentioned in this agreement (the \"Note\"), including the principal and any accrued interest, is\r\n\r\nV. Payment Terms\r\nAny delay in payment is subject to a fine with a flat amount of $50 for every week the payment is delayed.\r\nAll payments made by the Borrower shall be go into settling the the accrued interest  and any late fess and then into the payment of the principal amount.\r\n\r\nVI. Prepayment\r\nThe borrower is able to pay back the Note in full at any time, thus terminating this agreement.\r\nThe borrower also can make additional payments at any time and this will take of from the amount of the latest installments. \r\n\r\nVII. Acceleration.\r\nIn case of Borrower's failure to pay any part of the principal or interest as and when due under this Note; or Borrower's becoming insolvent or not paying its debts as they become due. The lender has the right to declare an \"Event of Acceleration\" in which case the Lender has the right to to declare this Note immediately due and payable \r\n\r\nIX. Succession\r\nThis Note shall outlive the borrower and/or the lender in the even of their death. This note shall be binging to any of their successors.\n",
+      "entities": [
+        {
+          "text": "6/28/2019",
+          "category": "Date"
+        },
+        {
+          "text": "William Kirby",
+          "category": "BorrowerName"
+        },
+        {
+          "text": "4433 Oakmound Road",
+          "category": "BorrowerAddress"
+        },
+        {
+          "text": "Burr Ridge",
+          "category": "BorrowerCity"
+        },
+        {
+          "text": "Illinois",
+          "category": "BorrowerState"
+        },
+        {
+          "text": "Quinn Anderson",
+          "category": "LenderName"
+        },
+        {
+          "text": "458 Frank Avenue",
+          "category": "LenderAddress"
+        },
+        {
+          "text": "Crafton",
+          "category": "LenderCity"
+        },
+        {
+          "text": "Pennsylvania",
+          "category": "LenderState"
+        },
+        {
+          "text": "seven hundred twenty thousand sixty-seven Dollars",
+          "category": "LoanAmountWords"
+        },
+        {
+          "text": "$720,067.00",
+          "category": "LoanAmountNumbers"
+        },
+        {
+          "text": "4%",
+          "category": "Interest"
+        }
+      ]
+    },
+    {
+      "@search.score": 1,
+      "content": "Date 6/28/2019\r\n\r\nThis is a Loan agreement between the two individuals mentioned below in the parties section of the agreement.\r\n\r\nI. Parties of agreement\r\n\r\n- Andre Lawson with a mailing address of 4759 Reel Avenue, City of Las Cruces, State of New Mexico (the \"Borrower\")\r\n- Malik Barden with a mailing address of 3093 Keyser Ridge Road, City of Greensboro, State of North Carolina (the \"Lender\")\r\n\r\nII. Amount\r\nThe loan amount given by lender to borrower is eight two hundred thirty-eight thousand eight hundred sixty-nine Dollars ($238,869.00) (\"The Note\")\r\n\r\nIII. Interest\r\nThe Note shall bear interest five percent (7%) compounded annually.\r\n\r\nIV. Payment\r\nThe amount mentioned in this agreement (the \"Note\"), including the principal and any accrued interest, is\r\n\r\nV. Payment Terms\r\nAny delay in payment is subject to a fine with a flat amount of $50 for every week the payment is delayed.\r\nAll payments made by the Borrower shall be go into settling the the accrued interest  and any late fess and then into the payment of the principal amount.\r\n\r\nVI. Prepayment\r\nThe borrower is able to pay back the Note in full at any time, thus terminating this agreement.\r\nThe borrower also can make additional payments at any time and this will take of from the amount of the latest installments. \r\n\r\nVII. Acceleration.\r\nIn case of Borrower's failure to pay any part of the principal or interest as and when due under this Note; or Borrower's becoming insolvent or not paying its debts as they become due. The lender has the right to declare an \"Event of Acceleration\" in which case the Lender has the right to to declare this Note immediately due and payable \r\n\r\nIX. Succession\r\nThis Note shall outlive the borrower and/or the lender in the even of their death. This note shall be binging to any of their successors.\n",
+      "entities": [
+        {
+          "text": "6/28/2019",
+          "category": "Date"
+        },
+        {
+          "text": "Andre Lawson",
+          "category": "BorrowerName"
+        },
+        {
+          "text": "4759 Reel Avenue",
+          "category": "BorrowerAddress"
+        },
+        {
+          "text": "Las Cruces",
+          "category": "BorrowerCity"
+        },
+        {
+          "text": "New Mexico",
+          "category": "BorrowerState"
+        },
+        {
+          "text": "Malik Barden",
+          "category": "LenderName"
+        },
+        {
+          "text": "3093 Keyser Ridge Road",
+          "category": "LenderAddress"
+        },
+        {
+          "text": "Greensboro",
+          "category": "LenderCity"
+        },
+        {
+          "text": "North Carolina",
+          "category": "LenderState"
+        },
+        {
+          "text": "eight two hundred thirty-eight thousand eight hundred sixty-nine Dollars",
+          "category": "LoanAmountWords"
+        },
+        {
+          "text": "$238,869.00",
+          "category": "LoanAmountNumbers"
+        },
+        {
+          "text": "7%",
+          "category": "Interest"
+        }
+      ]
+    }
+  ]
+}
+```
+
+For more details and example, see [Use full Lucene query syntax - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
 
 ## Automating deployment
 

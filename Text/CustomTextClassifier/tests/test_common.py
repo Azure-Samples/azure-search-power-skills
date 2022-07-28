@@ -1,18 +1,14 @@
 import json
-import os
-from unicodedata import category
 import unittest
+from urllib.request import urlopen
 
-import azure.functions as func
 import jsonschema
+from azure.ai.textanalytics import TextDocumentInput
+
 from customtextcla.main import (
     get_request_schema,
     map_dict_to_text_input,
-    result_to_json,
 )
-from urllib.request import urlopen
-
-from azure.ai.textanalytics import TextDocumentInput
 
 
 class TestFunction(unittest.TestCase):
@@ -22,7 +18,7 @@ class TestFunction(unittest.TestCase):
             jsonschema.validate(
                 instance=get_request_schema(), schema=json.load(urlopen(url))
             )
-        except:
+        except jsonschema.ValidationError:
             self.fail("Request schema validation failed")
 
     def test_no_text_field(self):

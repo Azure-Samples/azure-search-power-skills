@@ -38,7 +38,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         body = req.get_json()
     except ValueError as e:
-        logging.debug(e)
+        logging.info(e)
         return func.HttpResponse("Body is not valid JSON.", status_code=400)
 
     try:
@@ -71,18 +71,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(
             result_to_json(service_type, res), mimetype="application/json"
         )
-
     except HttpResponseError as e:
         logging.info(e)
-        if e.status_code == 400:
-            return func.HttpResponse(
-                "Received 400 response from Language services:\n{0}".format(e.message),
-                status_code=400,
-            )
-        else:
-            return func.HttpResponse(
-                "Error occured while contacting the language services.", status_code=500
-            )
+        return func.HttpResponse(
+            "Received {0} response from Language services:\n{1}".format(
+                e.status_code, e.message
+            ),
+            status_code=400,
+        )
 
 
 def result_to_json(service_type, res):
@@ -118,7 +114,7 @@ def result_to_json(service_type, res):
 
 
 def map_dict_to_text_input(body):
-    values = [
+    return [
         TextDocumentInput(
             id=v["recordId"],
             text=v["data"]["text"],
@@ -126,8 +122,6 @@ def map_dict_to_text_input(body):
         )
         for v in body["values"]
     ]
-
-    return values
 
 
 def get_request_schema():
