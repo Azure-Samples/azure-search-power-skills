@@ -152,11 +152,11 @@
                             "value": "[parameters('deploymentName')]"
                         },
                         {
-                            "name": "TA_KEY",
+                            "name": "LANG_KEY",
                             "value": "[parameters('languageKey')]"
                         },
                         {
-                            "name": "TA_ENDPOINT",
+                            "name": "LANG_ENDPOINT",
                             "value": "[parameters('languageEndpoint')]"
                         },
                         {

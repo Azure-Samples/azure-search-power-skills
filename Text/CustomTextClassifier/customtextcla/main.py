@@ -23,8 +23,8 @@ from azure.core.exceptions import HttpResponseError
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Python HTTP trigger function processed a request.")
 
-    endpoint = os.environ["TA_ENDPOINT"]
-    key = os.environ["TA_KEY"]
+    endpoint = os.environ["LANG_ENDPOINT"]
+    key = os.environ["LANG_KEY"]
     project_name = os.environ["PROJECT_NAME"]
     deployment_name = os.environ["DEPLOYMENT_NAME"]
     service_type = os.environ["CLASSIFICATION_TYPE"]

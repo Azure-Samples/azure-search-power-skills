@@ -62,8 +62,8 @@ After creating the resource, some app settings (visible inside Azure Functions a
 
 | App setting     | Description                                                     | Details                                                                                                      |
 | --------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| TA_ENDPOINT     | The Language resource endpoint.                                 | E.g. https://<language-resource-name>.cognitiveservices.azure.com/                                           |
-| TA_KEY          | The access key to be able to access the endpoint.               | Can be found under `Resource Management -> Keys and Endpoint` in the Language resource page in Azure Portal. |
+| LANG_ENDPOINT     | The Language resource endpoint.                                 | E.g. https://<language-resource-name>.cognitiveservices.azure.com/                                           |
+| LANG_KEY          | The access key to be able to access the endpoint.               | Can be found under `Resource Management -> Keys and Endpoint` in the Language resource page in Azure Portal. |
 | PROJECT_NAME    | The name of the created project in the previous step.           |                                                                                                              |
 | DEPLOYMENT_NAME | The name of the deployment of the project in the previous step. |                                                                                                              |
 
@@ -561,7 +561,7 @@ For more details and example, see [Use full Lucene query syntax - Azure Cognitiv
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FText%2FCustomNER%2Fazuredeploy.json)
 
-As an alternative to doing the previous steps, an ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. The ARM template requires that the Azure Functions project to be deployed is zipped and uploaded to an accessible location. The ARM template deploys the zip fle to the Function App resource it creates (see [Deploy the powerskill to Azure](#deploy-the-powerskill-to-Azure)). The zip can, for example, be uploaded to Azure Blob Storage, and its URL can be given to the ARM template. The ARM template also takes the app settings that the powerskill needs (`TA_ENDPOINT`, etc.).
+As an alternative to doing the previous steps, an ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. The ARM template requires that the Azure Functions project to be deployed is zipped and uploaded to an accessible location. The ARM template deploys the zip fle to the Function App resource it creates (see [Deploy the powerskill to Azure](#deploy-the-powerskill-to-Azure)). The zip can, for example, be uploaded to Azure Blob Storage, and its URL can be given to the ARM template. The ARM template also takes the app settings that the powerskill needs (`LANG_ENDPOINT`, etc.).
 
 ## Testing
 
@@ -570,8 +570,8 @@ A small test suite is provided in the `tests` directory. The tests assume a `.en
 ```
 PROJECT_NAME=<project-name>
 DEPLOYMENT_NAME=<deployment-name>
-TA_KEY=<language-resource-key>
-TA_ENDPOINT=https://<language-resource-name>.cognitiveservices.azure.com
+LANG_KEY=<language-resource-key>
+LANG_ENDPOINT=https://<language-resource-name>.cognitiveservices.azure.com
 ```
 
 The test cases assume that the model is trained to recognize load agreements like the example in [Quickstart - Custom named entity recognition (NER) - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio). Training and test data can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER).
