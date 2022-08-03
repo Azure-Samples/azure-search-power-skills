@@ -229,7 +229,7 @@ Finally, the indexer ties everything together. The indexer needs to be setup up 
 
 #### Query the index
 
-Now that we have a packed index, we can use the capabilities of the index to make useful queries. For example, using the sample data for scientific papers from the custom text classification documentation (found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification)), we can query the index to find all load agreements on a specific date. For example,
+Now that we have a populated index, we can use the capabilities of the index to make useful queries. For example, using the sample data for scientific papers from the custom text classification documentation (found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification)), we can query the index to find papers in specific fields. For example,
 
 ```
 $queryType=full&$searchMode=all&$count=true&$filter=class/any(c: c/category eq 'Computer_science')
@@ -356,7 +356,7 @@ will get all `Computer_science` research papers. The response should look like t
 }
 ```
 
-For more details and example, see [Use full Lucene query syntax - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
+For more details and examples, see [Use full Lucene query syntax - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
 
 ## Automating deployment
 
