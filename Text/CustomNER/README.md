@@ -22,8 +22,18 @@ Table of Contents:
 
 * [Steps](#steps)
   
-  * [Create or reuse a Custom NER project](#create-or-reuse-a-custom-ner-project)
-  - [Deploy the powerskill to Azure](#deploy-the-powerskill-to-azure)
+  - [Create or reuse a Custom NER project](#create-or-reuse-a-custom-ner-project)
+  - [Create a Function App resource and deploy the powerskill to Azure](#create-a-function-app-resource-and-deploy-the-powerskill-to-Azure)
+    
+    - [ARM Deployment](#arm-deployment)
+    
+    - [Manual Deployment](#manual-deployment)
+      
+      - [Create a Function App](#create-a-function-app)
+      
+      - [Deploy the powerskill](#deploy-the-powerskill)
+    
+    - [Additional details](#additional-details)
   
   - [Integrate with Azure Cognitive Search](integrate-with-azure-cognitive-search)
     
@@ -34,7 +44,6 @@ Table of Contents:
     - [Indexer](#indexer)
     
     - [Query the index](#query-the-index)
-- [Automating Deployment](#automating-deployment)
 
 - [Testing](#testing)
 
@@ -54,28 +63,78 @@ After this step you should have:
 
 * A deployment
 
-#### Deploy the powerskill to Azure
+#### Create a Function App resource and deploy the powerskill to Azure
 
-A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure Cognitive Search pipeline. To deploy a function, an Azure App resource is needed. Notice the difference between an Azure Function and an Azure App. If one is not already available, now is the time to create one. A good article that goes through all the steps of creating a simple Azure Function in Python is [Create a Python function using Visual Studio Code - Azure Functions | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python).
+A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure Cognitive Search pipeline. To deploy a function, an Azure App resource is needed. Notice the difference between a function (code that can be deployed, like the one in this subrepo) and an Azure Function App (the Azure resource that a function can be deployed to). An ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. Alternatively, one may choose to manually create a Function App resource (for example, from the Azure portal), clone the repository, and deploy the code from VSCode. Both options are explored below.
 
-After creating the resource, some app settings (visible inside Azure Functions as environment variables) need to be added for the powerskill to run correctly.
+##### ARM deployment
 
-| App setting     | Description                                                     | Details                                                                                                      |
-| --------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| LANG_ENDPOINT     | The Language resource endpoint.                                 | E.g. https://<language-resource-name>.cognitiveservices.azure.com/                                           |
-| LANG_KEY          | The access key to be able to access the endpoint.               | Can be found under `Resource Management -> Keys and Endpoint` in the Language resource page in Azure Portal. |
-| PROJECT_NAME    | The name of the created project in the previous step.           |                                                                                                              |
-| DEPLOYMENT_NAME | The name of the deployment of the project in the previous step. |                                                                                                              |
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FText%2FCustomNER%2Fazuredeploy.json)
 
-After creating an Azure App resource, the Custom NER powerskill can be deployed to the Azure App. This is commonly done in two ways. One approach is to create a local project in Visual Studio Code and deploy it using the Azure Functions extension (more details can be found at the previously linked article). Another approach is to do a __Zip Deploy__ i.e. upload a zipped file containing the function code and configuration (with a similar structure to [this](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python#folder-structure)). An app that is Zip-Deployed can be setup to either [run from a package file](https://docs.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package) or [do a remote build](https://docs.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package). Running from a package assumes that the project is ready to be run and skips doing any build steps (e.g. `npm install`, or in this case, `pip install`). Since this Python project needs to pull dependencies with pip, a remote build is the more appropriate choice. A simple command to zip the necessary files would be
+This ARM template provides a streamlined way to both create a Function App resource and deploy the powerskill. The template takes the following parameters
 
-```bash
- zip -r customner-powerskill.zip custom_ner host.json requirements.txt
-```
+| App setting          | Description                                                         | Details                                                                                                          |
+| -------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Function App Name    | The name of the created Function App resource                       | A default value of `nerfunc<a-generated-unique-id>` is provided, but can be set to any other unique name.        |
+| Storage Account Name | The name of the created Function App resource                       | A default value of `nerstor<the-same-generated-unique-id>` is provided, but can be set to any other unique name. |
+| Storage Account Type | The type of the storage account                                     | `Standard_LRS`, `Standard_GRS` or `Standard_RAGRS`                                                               |
+| Location             | The location of all created resources                               | `West US`, `Central US`, etc. Uses the resource group location by default.                                       |
+| Package Uri          | A link to the zipped function                                       | See below. By default, uses the zip file in the repository.                                                      |
+| Language Endpoint    | The endpoint of the Language resource created in the previous step. | Can be found under `Resource Management -> Keys and Endpoint` in the Language resource page in Azure Portal.     |
+| Language Key         | The key of the Language resource.                                   | Can be found under `Resource Management -> Keys and Endpoint` in the Language resource page in Azure Portal.     |
+| Project Name         | The name of the project in the Language resource.                   |                                                                                                                  |
+| Deployment Name      | The name of the deployment in the Language resource.                |                                                                                                                  |
 
-For more information on deployment methods, see [Deployment technologies in Azure Functions | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-deployment-technologies).
+Due to limitations in ARM templates, this ARM template cannot grab the source code for the function project automatically from Github. Instead, the user needs to package the project in a Zip format, upload it somewhere accessible to Azure, and provide a link to the uploaded Zip file to the template. A ready-to-deploy Zip file is available inside the repository and is used by default. Alternatively, one way to create the Zip file is
 
-At this point, you should have a working Azure Function. Depending on how you deployed the function, you may need to add a `x-functions-key` header to each request to the function endpoint. The value for the header can be found in `Functions -> App keys` in the Function App resource page in Azure Portal.
+* [Download](https://downgit.github.io/#/home?url=https:%2F%2Fgithub.com%2FAzure-Samples%2Fazure-search-power-skills%2Ftree%2Fmain%2FText%2FCustomNER) (and extract) the source code for this powerskill using the open-source utility [DownGit](https://downgit.github.io). More experienced users might prefer to clone the repository instead.
+* Zip the necessary folders/files. These are `custom_ner`, `host.json` and `requirements.txt`. On Windows, you can select the folders/files in File Explorer, right-click, and select `Compress to ZIP file` (or `Send to -> Compressed (zipped) folder` on older versions). On Linux, running `zip -r customner-powerskill.zip custom_ner host.json requirements.txt` inside the project directory should yield the same result.
+* Upload the created Zip file to any file hosting service. An obvious service is Azure Blob Storage. Instructions for Blob Storage can be found [here](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-portal). Make sure to make your file publicly accessible, so that the ARM template can access it.
+* Use the URL of the uploaded file in the ARM template.
+
+The template creates the following resources:
+
+* A Function App with the powerskill deployed on it.
+* A storage account to be used by the Function App.
+* A serverless Consumption hosting plan for the function app.
+* An Application Insights resource for the Function App. This is useful for monitoring the Function App.
+
+Generally, the Function App is the main resource, while the other resources are only occasionally interacted with.
+
+##### Manual Deployment
+
+###### Create a Function App
+
+From the Azure portal, select `Create a resource` and search for `Function App`. The creation page should appear, click `Create`. In the new page, in the `Basics` tab, select your subscription and resource group, give your Function App a globally unique name and select a suitable region. Fill the remaining parameters as follows:
+
+| App setting      | Value                      |
+| ---------------- | -------------------------- |
+| Publish          | `Code`                     |
+| Runtime Stack    | `Python`                   |
+| Version          | `3.9`                      |
+| Operating System | `Linux`                    |
+| Plan type        | `Consumption (Serverless)` |
+
+When done, click `Review + create` and wait a few seconds while the inputs are validated. If all goes well, a red warning telling you that `You will need to Agree to the terms of service below to create this resource successfully.` should appear. To accept the terms and deploy the template, click `Create`. You should now have a Function App resource.
+
+After creating the resource, some app settings (visible inside Azure Functions as environment variables) need to be added for the powerskill to run correctly. here's how to [change app settings in the Azure portal](https://docs.microsoft.com/en-us/azure/app-service/configure-common?tabs=portal#configure-app-settings).
+
+| App setting     | Description                                                         | Details                                                                                                      |
+| --------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| LANG_ENDPOINT   | The endpoint of the Language resource created in the previous step. | E.g. https://<language-resource-name>.cognitiveservices.azure.com/                                           |
+| LANG_KEY        | The access key to be able to access the endpoint.                   | Can be found under `Resource Management -> Keys and Endpoint` in the Language resource page in Azure Portal. |
+| PROJECT_NAME    | The key of the Language resource.                                   |                                                                                                              |
+| DEPLOYMENT_NAME | The name of the deployment in the Language resource.                |                                                                                                              |
+
+###### Deploy the powerskill
+
+In this set of instructions, VSCode is used to deploy the function following this [quickstart](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python). For more information on deployment methods, see [Deployment technologies in Azure Functions | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-functions/functions-deployment-technologies).
+
+First, we need to download the source code for the powerskill. [Download](https://downgit.github.io/#/home?url=https:%2F%2Fgithub.com%2FAzure-Samples%2Fazure-search-power-skills%2Ftree%2Fmain%2FText%2FCustomNER) (and extract) the source code for this powerskill using the open-source utility [DownGit](https://downgit.github.io). More experienced users might prefer to clone the repository instead.
+
+Afterwards, make sure you have [the following requirements](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python#configure-your-environment). If so, open the downloaded directory in VSCode (or its equivalent location in a cloned repo). [Sign into Azure](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python#sign-in-to-azure) and [deploy the project to Azure](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python#deploy-the-project-to-azure). Select the previously created Function App when prompted. The powerskill project should now be deployed and running.
+
+##### Additional details
 
 The function adheres to the input/output format specified by Azure Cognitive Search for custom skills. More information about custom skills and format, see [Custom skill interface - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-interface). Sample inputs and outputs for this powerskill are shown below. Notice that specifying the language is optional, and defaults to English.
 
@@ -206,6 +265,8 @@ The function adheres to the input/output format specified by Azure Cognitive Sea
 ```
 
 #### Integrate with Azure Cognitive Search
+
+To finally be able to use the deployed powerskill, an Azure Cognitive Search resource should be available. If not, now is the time to create one. For instructions, see [Create a search service in the portal - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-create-service-portal).
 
 ###### Skillset
 
@@ -556,12 +617,6 @@ will get all loan agreements on `6/28/2019` and only returns specific fields so 
 ```
 
 For more details and examples, see [Use full Lucene query syntax - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
-
-## Automating deployment
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-search-power-skills%2Fmain%2FText%2FCustomNER%2Fazuredeploy.json)
-
-As an alternative to doing the previous steps, an ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. The ARM template requires that the Azure Functions project to be deployed is zipped and uploaded to an accessible location. The ARM template deploys the zip fle to the Function App resource it creates (see [Deploy the powerskill to Azure](#deploy-the-powerskill-to-Azure)). The zip can, for example, be uploaded to Azure Blob Storage, and its URL can be given to the ARM template. The ARM template also takes the app settings that the powerskill needs (`LANG_ENDPOINT`, etc.). To make deployment easier, a zipped version of the powerskill is provided (`customner-powerskill.zip`) in the repository.
 
 ## Testing
 

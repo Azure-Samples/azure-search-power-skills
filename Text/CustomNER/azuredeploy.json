@@ -37,6 +37,7 @@
         },
         "packageUri": {
             "type": "string",
+            "defaultValue": "https://github.com/Azure-Samples/azure-search-power-skills/blob/main/Text/CustomNER/customner-powerskill.zip?raw=true",
             "metadata": {
                 "description": "Function zip URL"
             }
