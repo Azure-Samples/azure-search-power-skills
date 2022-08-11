@@ -37,6 +37,7 @@
         },
         "packageUri": {
             "type": "string",
+            "defaultValue": "https://github.com/Azure-Samples/azure-search-power-skills/blob/main/Text/CustomTextClassifier/customtextcla-powerskill.zip?raw=true",
             "metadata": {
                 "description": "Function zip URL"
             }
@@ -163,11 +164,11 @@
                             "value": "[parameters('deploymentName')]"
                         },
                         {
-                            "name": "TA_KEY",
+                            "name": "LANG_KEY",
                             "value": "[parameters('languageKey')]"
                         },
                         {
-                            "name": "TA_ENDPOINT",
+                            "name": "LANG_ENDPOINT",
                             "value": "[parameters('languageEndpoint')]"
                         },
                         {
