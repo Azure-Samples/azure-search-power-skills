@@ -56,17 +56,6 @@ def get_tables(result):
         tables.append(tab)
         return tables
 
-def get_entities(result):
-    entities = []
-    for entity in result.entities:
-        ent = {"content": format(entity.content),
-        "category": format(entity.category),
-        "sub_category": format(entity.sub_category),
-        "confidence": format(entity.confidence)
-        }
-        entities.append(ent)
-    return entities
-
 def get_key_value_pairs(result):
     kvp = {}
     for kv_pair in result.key_value_pairs:
@@ -111,8 +100,8 @@ def compose_response(json_data):
     # Prepare the Output before the loop
     results = {}
     results["values"] = []
-    endpoint = os.environ["FORMS_RECOGNIZER_ENDPOINT"]
-    key = os.environ["FORMS_RECOGNIZER_KEY"]
+    endpoint = os.environ["FORM_RECOGNIZER_ENDPOINT"]
+    key = os.environ["FORM_RECOGNIZER_KEY"]
     
     for value in values:
         output_record = analyze_document(endpoint=endpoint, key=key, recordId=value["recordId"], data=value["data"])        
@@ -142,7 +131,6 @@ def analyze_document(endpoint, key, recordId, data):
         elif model == "prebuilt-document":
             output_record_data = { 
                 "kvp": get_key_value_pairs(result),
-                "entities" : get_entities(result),
                 "tables": get_tables(result),
                 "pages": get_pages(result)
             }
@@ -166,7 +154,7 @@ def analyze_document(endpoint, key, recordId, data):
         }
         else:
             output_record_data = { 
-                "kvp": get_fields(result),
+                "documents": get_fields(result),
                 "tables": get_tables(result),
                 "pages": get_pages(result)
             }
