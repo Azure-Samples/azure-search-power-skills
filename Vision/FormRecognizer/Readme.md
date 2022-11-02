@@ -134,6 +134,10 @@ Here's a sample skill definition for this example (inputs and outputs should be 
         {
             "name": "tables",
             "targetName": "tables"
+        },
+        {
+            "name": "documents",
+            "targetName": "custom_model"
         }
     ]
 }

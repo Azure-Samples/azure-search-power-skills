@@ -3,4 +3,4 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
-azure-ai-formrecognizer==3.2.0b1
+azure-ai-formrecognizer==3.2.0
