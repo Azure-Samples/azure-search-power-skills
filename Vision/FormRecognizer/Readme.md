@@ -26,7 +26,7 @@ Supported models include:
 
 # Deployment    
 
-The analyze form skill enables you to use a pretrained model or a custom model to identify and extract key value pairs, entities and tables. The skill requires the `FORMS_RECOGNIZER_ENDPOINT` and `FORMS_RECOGNIZER_KEY` property set in the appsettings to the appropriate Form Recognizer resource endpoint and key.
+The analyze form skill enables you to use a pretrained model or a custom model to identify and extract key value pairs, entities and tables. The skill requires the `FORM_RECOGNIZER_ENDPOINT` and `FORM_RECOGNIZER_KEY` property set in the appsettings to the appropriate Form Recognizer resource endpoint and key.
 
 To deploy the skills:
 1. In the Azure portal, create a Forms Recognizer resource.
