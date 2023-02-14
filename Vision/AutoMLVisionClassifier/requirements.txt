@@ -13,7 +13,7 @@ azureml-defaults==1.22.0
 azureml-interpret==1.22.0
 azureml-train-automl-runtime==1.22.0
 azureml-train-automl==1.22.0
-torch==1.7.1
+torch==1.13.1
 torchvision==0.8.2
 
 
