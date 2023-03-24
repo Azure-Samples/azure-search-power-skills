@@ -5,5 +5,5 @@ ObjDict==0.4.4
 scikit-learn==0.23.2
 fastapi==0.65.2
 python-dotenv==0.14.0
-mlflow==1.23.1
+mlflow==2.2.1
 uvicorn==0.12.1
