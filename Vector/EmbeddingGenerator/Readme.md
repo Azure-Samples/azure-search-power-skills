@@ -9,7 +9,6 @@ products:
 - azure-openai
 name: Text chunker and embedding skill for Azure Cognitive Search
 description: The custom skill chunks content using the open source LangChain text chunker and then utilizes Azure Open AI service to generate vector embeddings for that content.
-azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vector/EmbeddingsGenerator/azuredeploy.json
 ---
 
 # Azure Open AI Embeddings Generator
@@ -67,13 +66,10 @@ Add a new file named `local.settings.json` inside this skill's working directory
 
 # Deploying the code as an Azure function
 
-There are multiple ways to deploy this custom skill as an Azure function.
+This code can be manually deployed to an Azure function app.
+Clone the repo locally and follow the [Azure functions guide to deploy the function](https://learn.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=python). The chunking parameters can be customized to suit the needs of the content and retrieval scenarios.
 
-1. Clone the repo locally and follow the [Azure functions guide to deploy the function](https://learn.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=python). This allows customization of the chunking parameters.
-
-2. Perform an ARM template deployment using the [template file](azuredeploy.json). This will deploy a pre-packaged version of the function app.
-
-Regardless of the method used, please make sure the required function application settings are filled in.
+Once the app has been published, make sure to [publish the application settings](https://learn.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=python#publish-application-settings) with the required setting valus filled in. Setting up the `local.settings.json` file from the previous section will make this fairly seamless.
 
 ## chunk-embed
 
