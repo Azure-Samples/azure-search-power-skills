@@ -15,7 +15,7 @@ class ChunkEmbeddingHelper():
             
             # A very crude way to introduce some delay between each embedding call
             # This is to avoid hitting the rate limit of the OpenAI API
-            time.sleep(3)
+            time.sleep(1)
         return chunk_embeddings
 
     def _generate_content_metadata(self, document_id, fieldname, index, content, offset):

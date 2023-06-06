@@ -7,3 +7,4 @@ tiktoken
 langchain==0.0.137
 openai
 azure-identity
+tenacity

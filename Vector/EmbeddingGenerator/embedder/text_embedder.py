@@ -2,6 +2,7 @@ import openai
 import os
 import re
 import logging
+from tenacity import retry, wait_random_exponential, stop_after_attempt  
 
 class TextEmbedder():
     openai.api_type = "azure"    
@@ -20,6 +21,7 @@ class TextEmbedder():
             text = text[:text_limit]
         return text
 
+    @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6))
     def embed_content(self, text, clean_text=True, use_single_precision=True):
         embedding_precision = 9 if use_single_precision else 18
         if clean_text:
