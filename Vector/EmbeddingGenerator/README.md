@@ -8,7 +8,7 @@ products:
 - azure-cognitive-search
 - azure-openai
 name: Text chunker and embedding skill for Azure Cognitive Search
-description: The custom skill chunks content using the open source LangChain text chunker and then utilizes Azure Open AI service to generate vector embeddings for that content.
+description: The custom skill chunks content using the open source LangChain text chunker and then utilizes the [Azure Open AI service](https://learn.microsoft.com/azure/cognitive-services/openai/how-to/embeddings?tabs=console) to generate vector embeddings for that content.
 ---
 
 # Azure Open AI Embeddings Generator
@@ -33,13 +33,17 @@ In addition to this, the following environment variables ("Application settings"
 
 ## Optional Chunking parameters
 
-The text chunker utilized in this skill exposes a few different parameters, which can be optionally set via inputs from Azure Cognitive Search's skillset execution pipeline. The code currently sets some primitive defaults and doesn't set them dynamically. These parameters are:
+The text chunker utilized in this skill exposes a few different parameters, which can be optionally set via inputs from Azure Cognitive Search's skillset execution pipeline. The code currently sets some primitive defaults (which can be changed via environment settings). These parameters are:
 
 1. `num_tokens`: The number of tokens that each chunk should have. Different embedding models have different context token length restrictions, and the code in this repository sets this to 2048. This number can be modified based on the type of content being chunked and the kinds of recall performance required for retrieval scenarios.
 
 2. `min_chunk_size`: The minimum size each chunk needs to be - this can be tweaked to exclude small chunks.
 
 3. `token_overlap`: How many tokens can overlap between subsequent chunks - this can have reasonable impact on relevance of results in retrieval scenarios.
+
+## Optional Embedding parameters
+
+1. `sleep_interval_seconds`: How many seconds to wait between successive attempts to generate embeddings. This can be configured if the existing (rudimentary) retry mechanism doesn't work around [Azure Open AI rate limits](https://learn.microsoft.com/azure/cognitive-services/openai/quotas-limits).
 
 ## Testing the functionality locally
 
@@ -59,7 +63,8 @@ Add a new file named `local.settings.json` inside this skill's working directory
     "AZURE_OPENAI_API_KEY": "<YOUR AZURE OPENAI API KEY>",
     "AZURE_OPENAI_API_VERSION": "<YOUR AZURE OPENAI API VERSION>",
     "AZURE_OPENAI_EMBEDDING_DEPLOYMENT": "<YOUR AZURE OPENAI EMBEDDING MODEL DEPLOYMENT>",
-    "AZURE_OPENAI_SERVICE_NAME": "<YOUR AZURE OPENAI SERVICE NAME>"
+    "AZURE_OPENAI_SERVICE_NAME": "<YOUR AZURE OPENAI SERVICE NAME>",
+    "AZURE_OPENAI_EMBEDDING_SLEEP_INTERVAL_SECONDS": "<Interval in seconds between embedding api calls>"
   }
 }
 ```
@@ -69,7 +74,7 @@ Add a new file named `local.settings.json` inside this skill's working directory
 This code can be manually deployed to an Azure function app.
 Clone the repo locally and follow the [Azure functions guide to deploy the function](https://learn.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=python). The chunking parameters can be customized to suit the needs of the content and retrieval scenarios.
 
-Once the app has been published, make sure to [publish the application settings](https://learn.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=python#publish-application-settings) with the required setting valus filled in. Setting up the `local.settings.json` file from the previous section will make this fairly seamless.
+Once the app has been published, make sure to [publish the application settings](https://learn.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=python#publish-application-settings) with the required setting values filled in. Setting up the `local.settings.json` file from the previous section will make this fairly seamless.
 
 ## chunk-embed
 

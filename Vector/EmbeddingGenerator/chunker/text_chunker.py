@@ -26,7 +26,7 @@ class TextChunker():
         "pdf": "pdf",
     }
     SENTENCE_ENDINGS = [".", "!", "?"]
-    WORDS_BREAKS = list(reversed([",", ";", ":", " ", "(", ")", "[", "]", "{", "}", "\t", "\n"]))
+    WORDS_BREAKS = ['\n', '\t', '}', '{', ']', '[', ')', '(', ' ', ':', ';', ',']
     TOKEN_ESTIMATOR = TokenEstimator()
 
     def _get_file_format(self, file_path: str) -> Optional[str]:
@@ -45,7 +45,7 @@ class TextChunker():
     def _chunk_content_helper(self,
             content: str, file_format: str, file_path: Optional[str],
             token_overlap: int,
-            num_tokens: int = 256
+            num_tokens: int
     ) -> Generator[Tuple[str, int, Document], None, None]:
 
         if file_format == "markdown":
