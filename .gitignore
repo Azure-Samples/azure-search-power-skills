@@ -32,6 +32,9 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
+# VS Code
+.vscode/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -333,7 +336,6 @@ ASALocalRun/
 Vision/ImageClusteringSkill/.DS_Store
 
 # Visual Studio Code
-.vscode
 
 # Azure Functions artifacts
 local.settings.json
