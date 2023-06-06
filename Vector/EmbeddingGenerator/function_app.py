@@ -31,7 +31,7 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     filepath = request['values'][0]['data']['filepath']
     fieldname = request['values'][0]['data']['fieldname']
 
-    # chunk documents into chunks of (by default) 256 tokens, and for each chunk, generate the vector embedding
+    # chunk documents into chunks of (by default) 1024 tokens, and for each chunk, generate the vector embedding
     chunking_result = TEXT_CHUNKER.chunk_content(text, file_path=filepath)
     content_chunk_metadata = CHUNK_METADATA_HELPER.generate_chunks_with_embedding(document_id, [c.content for c in chunking_result.chunks], fieldname)
 
@@ -48,6 +48,8 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
             }
         ]
     }
+
+    logging.info(f'Python HTTP trigger function created {len(chunking_result.chunks)} chunks.')
 
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
     response.headers['Content-Type'] = 'application/json'    

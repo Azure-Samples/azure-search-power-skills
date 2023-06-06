@@ -35,7 +35,7 @@ In addition to this, the following environment variables ("Application settings"
 
 The text chunker utilized in this skill exposes a few different parameters, which can be optionally set via inputs from Azure Cognitive Search's skillset execution pipeline. The code currently sets some primitive defaults and doesn't set them dynamically. These parameters are:
 
-1. `num_tokens`: The number of tokens that each chunk should have. Different embedding models have different context token length restrictions, and the code in this repository sets this to 256. This number can be modified based on the type of content being chunked and the kinds of recall performance required for retrieval scenarios.
+1. `num_tokens`: The number of tokens that each chunk should have. Different embedding models have different context token length restrictions, and the code in this repository sets this to 1024. This number can be modified based on the type of content being chunked and the kinds of recall performance required for retrieval scenarios.
 
 2. `min_chunk_size`: The minimum size each chunk needs to be - this can be tweaked to exclude small chunks.
 

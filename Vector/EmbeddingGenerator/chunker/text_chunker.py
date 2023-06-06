@@ -22,7 +22,8 @@ class TextChunker():
         "html": "html",
         "shtml": "html",
         "htm": "html",
-        "py": "python"
+        "py": "python",
+        "pdf": "pdf",
     }
     SENTENCE_ENDINGS = [".", "!", "?"]
     WORDS_BREAKS = list(reversed([",", ";", ":", " ", "(", ")", "[", "]", "{", "}", "\t", "\n"]))
@@ -67,7 +68,7 @@ class TextChunker():
         file_path: Optional[str] = None,
         url: Optional[str] = None,
         ignore_errors: bool = True,
-        num_tokens: int = 256,
+        num_tokens: int = 1024,
         min_chunk_size: int = 10,
         token_overlap: int = 0
     ) -> ChunkingResult:

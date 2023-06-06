@@ -1,3 +1,4 @@
+import time
 from embedder.text_embedder import TextEmbedder
 
 class ChunkEmbeddingHelper():
@@ -11,6 +12,10 @@ class ChunkEmbeddingHelper():
             metadata = self._generate_content_metadata(document_id, fieldname, index, content_chunk, offset)
             offset += metadata['length']
             chunk_embeddings.append(metadata)
+            
+            # A very crude way to introduce some delay between each embedding call
+            # This is to avoid hitting the rate limit of the OpenAI API
+            time.sleep(3)
         return chunk_embeddings
 
     def _generate_content_metadata(self, document_id, fieldname, index, content, offset):
