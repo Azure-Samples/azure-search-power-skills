@@ -8,7 +8,7 @@ products:
 - azure-cognitive-search
 - azure-openai
 name: Text chunker and embedding skill for Azure Cognitive Search
-description: The custom skill chunks content using the open source LangChain text chunker and then utilizes the [Azure Open AI service](https://learn.microsoft.com/azure/cognitive-services/openai/how-to/embeddings?tabs=console) to generate vector embeddings for that content.
+description: The custom skill chunks content using the open source LangChain text chunker and then utilizes the Azure Open AI service (https://learn.microsoft.com/azure/cognitive-services/openai/how-to/embeddings?tabs=console) to generate vector embeddings for that content.
 ---
 
 # Azure Open AI Embeddings Generator
