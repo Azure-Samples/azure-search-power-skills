@@ -68,7 +68,7 @@ class TextChunker():
         file_path: Optional[str] = None,
         url: Optional[str] = None,
         ignore_errors: bool = True,
-        num_tokens: int = 1024,
+        num_tokens: int = 512,
         min_chunk_size: int = 10,
         token_overlap: int = 0
     ) -> ChunkingResult:
