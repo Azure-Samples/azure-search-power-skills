@@ -24,30 +24,30 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     request = req.get_json()
+    values = []
+    for value in request['values']:
+        recordId = value['recordId']
+        document_id = value['data']['document_id']
+        text = value['data']['text']
+        filepath = value['data']['filepath']
+        fieldname = value['data']['fieldname']
     
-    recordId = request['values'][0]['recordId']
-    document_id = request['values'][0]['data']['document_id']
-    text = request['values'][0]['data']['text']
-    filepath = request['values'][0]['data']['filepath']
-    fieldname = request['values'][0]['data']['fieldname']
+        # chunk documents into chunks of (by default) 2048 tokens, and for each chunk, generate the vector embedding
+        chunking_result = TEXT_CHUNKER.chunk_content(text, file_path=filepath)
+        content_chunk_metadata = CHUNK_METADATA_HELPER.generate_chunks_with_embedding(document_id, [c.content for c in chunking_result.chunks], fieldname)
 
-    # chunk documents into chunks of (by default) 1024 tokens, and for each chunk, generate the vector embedding
-    chunking_result = TEXT_CHUNKER.chunk_content(text, file_path=filepath)
-    content_chunk_metadata = CHUNK_METADATA_HELPER.generate_chunks_with_embedding(document_id, [c.content for c in chunking_result.chunks], fieldname)
+        for document_chunk, embedding_metadata in zip(chunking_result.chunks, content_chunk_metadata):
+            document_chunk.embedding_metadata = embedding_metadata
 
-    for document_chunk, embedding_metadata in zip(chunking_result.chunks, content_chunk_metadata):
-        document_chunk.embedding_metadata = embedding_metadata
+        values.append({
+            "recordId": recordId,
+            "data": chunking_result,
+            "errors": None,
+            "warnings": None
+        })
 
-    response_body = {
-        "values": [
-            {
-                "recordId": recordId,
-                "data": chunking_result,
-                "errors": None,
-                "warnings": None            
-            }
-        ]
-    }
+
+    response_body = { "values": values }
 
     logging.info(f'Python HTTP trigger function created {len(chunking_result.chunks)} chunks.')
 
