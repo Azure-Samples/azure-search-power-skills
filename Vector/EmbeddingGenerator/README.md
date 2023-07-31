@@ -84,7 +84,7 @@ Once the app has been published, make sure to [publish the application settings]
 {
     "values": [
         {
-            "recordId": 1234,
+            "recordId": "1234",
             "data": {
                 "document_id": "12345ABC",
                 "text": "This is a test document and it is big enough to ensure that it meets the minimum chunk size.",
@@ -103,7 +103,7 @@ Once the app has been published, make sure to [publish the application settings]
 {
     "values": [
         {
-            "recordId": 1234,
+            "recordId": "1234",
             "data": {
                 "chunks": [
                     {
