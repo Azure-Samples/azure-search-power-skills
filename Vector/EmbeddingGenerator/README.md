@@ -8,12 +8,12 @@ products:
 - azure-cognitive-search
 - azure-openai
 name: Text chunker and embedding skill for Azure Cognitive Search
-description: The custom skill chunks content using the open source LangChain text chunker and then utilizes the Azure Open AI service (https://learn.microsoft.com/azure/cognitive-services/openai/how-to/embeddings?tabs=console) to generate vector embeddings for that content.
+description: The custom skill chunks content using the open source LangChain text chunker and then utilizes the Azure OpenAI service (https://learn.microsoft.com/azure/cognitive-services/openai/how-to/embeddings?tabs=console) to generate vector embeddings for that content.
 ---
 
-# Azure Open AI Embeddings Generator
+# Azure OpenAI Embeddings Generator
 
-This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure Cognitive Search pipeline. This skill requires users to have an [Azure Open AI service](https://learn.microsoft.com/azure/cognitive-services/openai/) provisioned and uses the specified embedding model of Azure Open AI to generate the vector embeddings for the content. Due to token length restrictions on these models, the skill offers a text chunker, which is built on top of [LangChain's text splitter](https://python.langchain.com/en/latest/reference/modules/text_splitter.html).
+This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure Cognitive Search pipeline. This skill requires users to have an [Azure OpenAI service](https://learn.microsoft.com/azure/cognitive-services/openai/) provisioned and uses the specified embedding model of Azure OpenAI to generate the vector embeddings for the content. Due to token length restrictions on these models, the skill offers a text chunker, which is built on top of [LangChain's text splitter](https://python.langchain.com/en/latest/reference/modules/text_splitter.html).
 
 Details about the various available embeddings model can be found on the [OpenAI concepts page](https://learn.microsoft.com/azure/cognitive-services/openai/concepts/models#embeddings-models). For a versatile model that can work with most search and retrieval applications, it is recommended to utilize the `ada-002` model.
 
@@ -23,11 +23,11 @@ The packages/references required for the code to be functional (if running local
 
 In addition to this, the following environment variables ("Application settings" when hosted as an Azure function) are required to be set:
 
-1. `AZURE_OPENAI_API_KEY`: This requires creating an Azure Open AI resource and a model to be deployed. Follow instructions in the [Azure Open AI tutorial](https://learn.microsoft.com/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) for more information on how to create the resource.
+1. `AZURE_OPENAI_API_KEY`: This requires creating an Azure OpenAI resource and a model to be deployed. Follow instructions in the [Azure OpenAI tutorial](https://learn.microsoft.com/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal) for more information on how to create the resource.
 
-2. `AZURE_OPENAI_API_VERSION`: The API version to use when calling the Azure Open AI service. More details are in the [reference](https://learn.microsoft.com/azure/cognitive-services/openai/reference#embeddings) page.
+2. `AZURE_OPENAI_API_VERSION`: The API version to use when calling the Azure OpenAI service. More details are in the [reference](https://learn.microsoft.com/azure/cognitive-services/openai/reference#embeddings) page.
 
-3. `AZURE_OPENAI_SERVICE_NAME`: The name of the Azure Open AI service that was created.
+3. `AZURE_OPENAI_SERVICE_NAME`: The name of the Azure OpenAI service that was created.
 
 4. `AZURE_OPENAI_EMBEDDING_DEPLOYMENT`: The deployed model to use for generating the embeddings.
 
@@ -43,7 +43,7 @@ The text chunker utilized in this skill exposes a few different parameters, whic
 
 ## Optional Embedding parameters
 
-1. `sleep_interval_seconds`: How many seconds to wait between successive attempts to generate embeddings. This can be configured if the existing (rudimentary) retry mechanism doesn't work around [Azure Open AI rate limits](https://learn.microsoft.com/azure/cognitive-services/openai/quotas-limits).
+1. `sleep_interval_seconds`: How many seconds to wait between successive attempts to generate embeddings. This can be configured if the existing (rudimentary) retry mechanism doesn't work around [Azure OpenAI rate limits](https://learn.microsoft.com/azure/cognitive-services/openai/quotas-limits).
 
 ## Testing the functionality locally
 
