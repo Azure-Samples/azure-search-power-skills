@@ -4,7 +4,6 @@ languages:
 - python
 products:
 - azure
-- azure-search
 - azure-cognitive-search
 - azure-openai
 name: Text chunker and embedding skill for Azure Cognitive Search
