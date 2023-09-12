@@ -5,8 +5,8 @@ languages:
 products:
 - azure
 - azure-cognitive-search
-- azure-cognitive-services
-- azure-form-recognizer
+- ai-services
+- document-intelligence
 name: Analyze document using the different Form Recognizer APIs
 urlFragment: azure-formrecognizer-sample
 description: This custom skill can extract OCR text, tables, key value pairs and custom fomr fields from a document. 
