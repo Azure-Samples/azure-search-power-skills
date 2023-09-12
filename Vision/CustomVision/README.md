@@ -4,8 +4,8 @@ languages:
 - csharp
 products:
 - azure
-- azure-search
-- azure-cognitive-services
+- azure-cognitive-search
+- ai-services
 name: Custom Vision integration sample skill for cognitive search
 urlFragment: azure-customvision-sample
 description: This custom skill extracts tags from a trained Custom Vision model (classification or object detection).
