@@ -4,8 +4,8 @@ languages:
 - csharp
 products:
 - azure
-- azure-search
-- azure-cognitive-services
+- azure-cognitive-search
+- ai-services
 name: Analyze form sample skill for cognitive search
 urlFragment: azure-analyzeform-sample
 description: This custom skill extracts specific fields from the results of a trained form recognition.
