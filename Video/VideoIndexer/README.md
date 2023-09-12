@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-search
+- azure-cognitive-search
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Video/VideoIndexer/azuredeploy.json
 name: "Sample skill for enabling video indexing"
 description: "This custom skill will invoke the Azure Video Indexer, placing a simplified insights model back into Blob Storage. You can then trigger another indexer to merge the insights back into your main search index."
