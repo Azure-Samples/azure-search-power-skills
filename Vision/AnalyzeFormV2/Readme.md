@@ -6,7 +6,7 @@ products:
 - azure
 - azure-cognitive-search
 - ai-services
-- azure-form-recognizer
+- document-intelligence
 name: Analyze form sample skill for cognitive search
 urlFragment: azure-analyzeform-v2-sample
 description: This custom skill extracts specific fields from the results of a trained form recognition.
