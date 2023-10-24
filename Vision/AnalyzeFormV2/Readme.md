@@ -5,10 +5,10 @@ languages:
 products:
 - azure
 - azure-cognitive-search
-- azure-cognitive-services
+- ai-services
 - azure-form-recognizer
 name: Analyze form sample skill for cognitive search
-urlFragment: azure-analyzeform-sample
+urlFragment: azure-analyzeform-v2-sample
 description: This custom skill extracts specific fields from the results of a trained form recognition.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/master/Vision/AnalyzeFormV2/azuredeploy.json
 ---
