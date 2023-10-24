@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-search
+- azure-cognitive-search
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/SplitImage/azuredeploy.json
 name: "Split Image sample skill for Azure Cognitive Search"
 description: "This Split Image skill can be used on images that are too long to process in the vanilla pipeline. This skill will break a large image up into several images small enough to be processed by OCR."
