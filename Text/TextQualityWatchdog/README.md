@@ -4,7 +4,6 @@ languages:
 - python
 products:
 - azure
-- azure-search
 - azure-cognitive-search
 name: Text Quality Watchdog Custom Skill for Cognitive Search
 description: This custom skill calls a pretrained language model to determine the quality of text extracted from the document cracking process.
