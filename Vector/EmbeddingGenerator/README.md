@@ -178,6 +178,3 @@ Here's a sample skill definition for this example (inputs and outputs should be 
 }
 ```
 
-## Full Sample (Python Notebook) of this custom skill applied 
-
-Here is [a sample](https://github.com/Azure/cognitive-search-vector-pr/blob/main/demo-python/code/azure-search-vector-ingestion-python-sample.ipynb) which utilizes this Power Skill and writes full document content to a first index and chunks and embeddings to a second index. However, the chunks can be added to the same index if needed. In the sample the chunks are sent to a separate index with the purpose of showing in an easier way how the skill works.
