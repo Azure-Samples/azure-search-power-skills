@@ -12,7 +12,7 @@ description: The custom skill chunks content using the open source LangChain tex
 
 # Azure OpenAI Embeddings Generator
 
-This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure Cognitive Search pipeline. This skill requires users to have an [Azure OpenAI service](https://learn.microsoft.com/azure/cognitive-services/openai/) provisioned and uses the specified embedding model of Azure OpenAI to generate the vector embeddings for the content. Due to token length restrictions on these models, the skill offers a text chunker, which is built on top of [LangChain's text splitter](https://python.langchain.com/en/latest/reference/modules/text_splitter.html).
+This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure Cognitive Search pipeline. This skill requires users to have an [Azure OpenAI service](https://learn.microsoft.com/azure/cognitive-services/openai/) provisioned and uses the specified embedding model of Azure OpenAI to generate the vector embeddings for the content. Due to token length restrictions on these models, the skill offers a text chunker, which is built on top of [LangChain's text splitter](https://api.python.langchain.com/en/latest/api_reference.html#module-langchain.text_splitter).
 
 Details about the various available embeddings model can be found on the [OpenAI concepts page](https://learn.microsoft.com/azure/cognitive-services/openai/concepts/models#embeddings-models). For a versatile model that can work with most search and retrieval applications, it is recommended to utilize the `ada-002` model.
 
