@@ -30,7 +30,7 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
         embedding = embeddings[index]
         values.append({
             "recordId": recordId,
-            "data": {"embedding": embedding.tolist()},
+            "data": {"vector": embedding.tolist()},
             "errors": None,
             "warnings": None
         })

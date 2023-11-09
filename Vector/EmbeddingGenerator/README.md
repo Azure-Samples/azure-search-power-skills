@@ -11,7 +11,7 @@ description: The custom skill generates vector embeddings for provided content w
 
 # HuggingFace Embeddings Generator
 
-This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure Cognitive Search pipeline, utilizing the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2).
+This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure Cognitive Search pipeline, utilizing the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2). This model returns embeddings with 384 dimensions. This endpoint can also be used as [a custom query vectorizer](https://learn.microsoft.com/azure/search/vector-search-how-to-configure-vectorizer) for this model.
 
 If you need your data to be chunked before being embedded by this custom skill, consider using the built in [SplitSkill](https://learn.microsoft.com/azure/search/cognitive-search-skill-textsplit). If you are interested in generating embeddings using the [Azure OpenAI service](https://learn.microsoft.com/azure/cognitive-services/openai/), please see the built in [AzureOpenAIEmbeddingSkill](https://learn.microsoft.com/azure/search/cognitive-search-skill-azure-openai-embedding).
 
@@ -66,7 +66,7 @@ This code can be manually deployed to an Azure function app. Clone the repo loca
         {
             "recordId": "1234",
             "data": {
-                "embedding": [
+                "vector": [
                     -0.03833850100636482,
                     0.1234646588563919,
                     -0.028642958030104637,
@@ -91,7 +91,6 @@ Here's a sample skill definition for this example (inputs and outputs should be 
     "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
     "description": "Custom embedding generator",
     "uri": "[AzureFunctionEndpointUrl]/api/embed?code=[AzureFunctionDefaultHostKey]",
-    "batchSize": 1,
     "context": "/document/content",
     "inputs": [
         {
@@ -101,8 +100,8 @@ Here's a sample skill definition for this example (inputs and outputs should be 
     ],
     "outputs": [
         {
-            "name": "embedding",
-            "targetName": "embedding"
+            "name": "vector",
+            "targetName": "vector"
         }
     ]
 }
