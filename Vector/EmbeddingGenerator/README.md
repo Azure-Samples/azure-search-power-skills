@@ -5,13 +5,13 @@ languages:
 products:
 - azure
 - azure-cognitive-search
-name: Custom embedding skill for Azure AI Search
+name: Custom embedding skill for Azure Cognitive Search
 description: The custom skill generates vector embeddings for provided content with the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2).
 ---
 
 # HuggingFace Embeddings Generator
 
-This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure Cognitive Search pipeline, utilizing the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2). This model returns embeddings with 384 dimensions. This endpoint can also be used as [a custom query vectorizer](https://learn.microsoft.com/azure/search/vector-search-how-to-configure-vectorizer) for this model.
+This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure Cognitive Search pipeline, utilizing the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2). This model returns embeddings with 384 dimensions. This endpoint can also be used as [a custom query vectorizer](https://learn.microsoft.com/azure/search/vector-search-how-to-configure-vectorizer) for data ingested with this model. An example notebook of how to use this endpoint end to end can be found at [Azure Cognitive Search Custom Vectorization Sample](https://github.com/Azure/cognitive-search-vector-pr/blob/main/demo-python/code/azure-search-custom-vectorization-sample.ipynb).
 
 If you need your data to be chunked before being embedded by this custom skill, consider using the built in [SplitSkill](https://learn.microsoft.com/azure/search/cognitive-search-skill-textsplit). If you are interested in generating embeddings using the [Azure OpenAI service](https://learn.microsoft.com/azure/cognitive-services/openai/), please see the built in [AzureOpenAIEmbeddingSkill](https://learn.microsoft.com/azure/search/cognitive-search-skill-azure-openai-embedding).
 
