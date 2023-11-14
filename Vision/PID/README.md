@@ -4,7 +4,7 @@ languages:
 - python
 products:
 - azure
-- azure-cognitive-search
+- azure-ai-search
 - azure-container-registry
 - azure-functions
 name: PID 
@@ -63,7 +63,7 @@ Your skill should now be configured and you can now navigate to the Functions me
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
