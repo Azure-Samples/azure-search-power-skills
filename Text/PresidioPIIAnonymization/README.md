@@ -18,7 +18,7 @@ Presidio could be customized for specific needs, either by [adding PII recognize
 To run this PowerSkill you will need:
 * Docker
 * An Azure Blob storage container
-* A provisioned Azure Cognitive Search (ACS) instance 
+* A provisioned Azure AI Search (ACS) instance 
 * A provisioned Azure Container Registry
 * A Cognitive Services key in the region you deploy ACS to
 
