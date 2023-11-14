@@ -3,7 +3,7 @@ topic: sample
 languages:
 - csharp
 products:
-- azure-cognitive-services
+- azure-ai-services
 - azure-ai-search
 name: Custom Entity Search sample skill for AI Search
 description: This custom skill finds user defined entities in given texts.
