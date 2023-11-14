@@ -32,8 +32,8 @@ This PowerSkill will use:
 * Azure Container Registry
 * Azure Blob storage container
 * Azure Web App Service - Linux Containers
-* Azure Cognitive Search (ACS) instance
-* Azure Cognitive Services
+* Azure AI Search instance
+* Azure AI Services
 
 ## High level Process
 
@@ -99,8 +99,8 @@ This section describes how to get the sample working in stages and how it can be
       ```
       At this point, Terraform has now created the following infrastructure and created a `base.env` file with the values.
       - Azure Container Registry to store our docker image
-      - Azure Cognitive Services to enrich the data
-      - Azure Cognitive Search
+      - Azure AI Services to enrich the data
+      - Azure AI Search
       - Azure Blob Storage to hold our data to seach
 
   1) ### Push the container to Azure Container Registry
