@@ -4,9 +4,9 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
+- azure-ai-search
 - ai-services
-name: Custom Vision integration sample skill for cognitive search
+name: Custom Vision integration sample skill for AI search
 urlFragment: azure-customvision-sample
 description: This custom skill extracts tags from a trained Custom Vision model (classification or object detection).
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/CustomVision/azuredeploy.json
@@ -76,7 +76,7 @@ Also, you can set `MIN_PROBABILITY_THRESHOLD` which will only return tags with a
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
