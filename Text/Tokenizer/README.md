@@ -4,8 +4,8 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
-name: Tokenizer sample skill for cognitive search
+- azure-ai-search
+name: Tokenizer sample skill for AI search
 description: This custom skill extracts normalized non-stop words from a text using the ML.NET library.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/Tokenizer/azuredeploy.json
 ---
@@ -88,7 +88,7 @@ This skills have no additional requirements than the ones described in [the root
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
