@@ -4,8 +4,8 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
-name: Distinct sample skill for cognitive search
+- azure-ai-search
+name: Distinct sample skill for AI search
 description: This custom skill removes duplicates from a list of terms.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/Distinct/azuredeploy.json
 ---
@@ -76,7 +76,7 @@ This function uses a JSON file called [`thesaurus.json`](./thesaurus.json) that 
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
