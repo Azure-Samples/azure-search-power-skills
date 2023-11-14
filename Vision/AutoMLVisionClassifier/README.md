@@ -26,9 +26,9 @@ To run this PowerSkill you will need:
 
 * docker
 * An Azure Blob storage container
-* A provisioned Azure Cognitive Search (ACS) instance
+* A provisioned Azure AI Search instance
 * A provisioned Azure Container Registry
-* A Cognitive Services key in the region you deploy ACS to
+* An AI Services key in the region you deploy ACS to
 * An AML Workspace with a [Data Labelling](https://docs.microsoft.com/en-us/azure/machine-learning/tutorial-labeling)
 project running
 
@@ -50,7 +50,7 @@ The sample model deployed with this solution has been trained on the [Stanford d
 * Afghan
 * African Wild Dog
 
-If you want to run the sample model, extract the data in the [dogs.zip](data/dogs.zip), we will need to upload this to a blob container as this will be the data source that we will use to run the Azure Cognitive Search Indexer on.
+If you want to run the sample model, extract the data in the [dogs.zip](data/dogs.zip), we will need to upload this to a blob container as this will be the data source that we will use to run the Azure AI Search Indexer on.
 
 ### Docker container
 
@@ -271,16 +271,16 @@ Run the cell [Create the index](notebooks/AML%20Classifier.ipynb#Now-we-create-t
 
 ### Skillset
 
-We will create two skillsets, one is the Custom Vision Cognitive Services service which will extract captions and
+We will create two skillsets, one is the Custom Vision AI Services service which will extract captions and
 run object detection, the other is our AML Classifier PowerSkill.
 
 Populate the following value and run the [Now we create the skill sets](notebooks/AML%20Classifier.ipynb#Now-we-create-the-skill-sets)
 
 ```bash
-COGSVC_KEY = ""  #  This is your Cognitive Services key that resides in the same region as ACS (used to compare custom vision captions and object detection)
+COGSVC_KEY = ""  #  This is your AI Services key that resides in the same region as ACS (used to compare custom vision captions and object detection)
 ```
 
-Note, you need an already deployed ACS instance in the same region as your cognitive services instance as we want to augment what we can extract using custom vision with our similarity model.
+Note, you need an already deployed AI search instance in the same region as your AI services instance as we want to augment what we can extract using custom vision with our similarity model.
 
 ### Indexer
 
