@@ -4,14 +4,14 @@ languages:
 - python
 products:
 - azure
-- azure-cognitive-search
+- azure-ai-search
 - ai-services
 - document-intelligence
 name: Analyze document using the different Form Recognizer APIs
 urlFragment: azure-formrecognizer-sample
 description: This custom skill can extract OCR text, tables, key value pairs and custom fomr fields from a document. 
 ---
-Invoking a Form Recognizer capability within the Cognitive Search pipeline is now merged into a single skill.
+Invoking a Form Recognizer capability within the AI Search pipeline is now merged into a single skill.
 * [Analyze Document](#AnalyzeDocument), using a pre built model or a custom model
 Supported models include:
 - Layout (No training required)
@@ -62,7 +62,7 @@ If running in an Azure function, this can be set in the application settings.
 
 ## Sample Input:
 
-This sample data is pointing to a file stored in this repository, but when the skill is integrated in a skillset, the URL and token will be provided by cognitive search.
+This sample data is pointing to a file stored in this repository, but when the skill is integrated in a skillset, the URL and token will be provided by AI search.
 
 ```json
 {
@@ -99,7 +99,7 @@ This sample data is pointing to a file stored in this repository, but when the s
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
