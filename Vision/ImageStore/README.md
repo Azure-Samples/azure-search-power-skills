@@ -4,8 +4,8 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
-name: Image store sample skills for cognitive search
+- azure-ai-search
+name: Image store sample skills for AI search
 urlFragment: azure-imagestore-sample
 description: These custom skills store or retrieve a base64-encoded image to or from blob storage.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/ImageStore/azuredeploy.json
@@ -13,7 +13,7 @@ azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-
 
 # ImageStore
 
-These custom skills store or retrieve a [base64](https://en.wikipedia.org/wiki/Base64)-encoded image to or from blob storage. This is useful to make images extracted from a cognitive search pipeline's data source available downstream as both blob URIs or raw base64 data, and to feed those into other skills.
+These custom skills store or retrieve a [base64](https://en.wikipedia.org/wiki/Base64)-encoded image to or from blob storage. This is useful to make images extracted from a AI search pipeline's data source available downstream as both blob URIs or raw base64 data, and to feed those into other skills.
 
 ## Requirements
 
@@ -72,7 +72,7 @@ The returned `imageStoreUri` points to the image and can be used in its stead.
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
@@ -140,7 +140,7 @@ This function is the reverse of `image-store`, and the inputs and outputs are id
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
