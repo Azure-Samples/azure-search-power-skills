@@ -5,20 +5,20 @@ Description:
 Within the Knowledge Mining ecosystem it helps greatly to discover assets in a more granular way, for example a technical document full of subimages that include OCRed text.
 Decomposing the page into several subimages help to render a more friendly UI and even further process those images (ie to classify a subimage into a fossile, a rock, etc)
  
-- image_segment_skill is an Azure Cognitive Search skill to break down one big image into its internal subimages, all within a Azure Cognitive Search skillset. 
+- image_segment_skill is an Azure AI Search skill to break down one big image into its internal subimages, all within a Azure AI Search skillset. 
 
 Languages:
 - ![python](https://img.shields.io/badge/language-python-orange)
 
 Products:
-- Azure Cognitive Search
+- Azure AI Search
 - Azure Functions
 ---
 
 # Settings
 This function requires two appsettings to save the extracted images on an Azure Blob Storage. -RECOMMENDED-
 
-If you want to save a base64 encoded image version in the Azure Cognitive Search index the settings are not required.
+If you want to save a base64 encoded image version in the Azure AI Search index the settings are not required.
 
 ```json
     "blob_storage_connection_string": "DefaultEndpointsProtocol=https;AccountName=YOUR_BLOB_ACCOUNT_NAME;AccountKey=YOUR_BLOB_ACCOUNT_KEY;EndpointSuffix=core.windows.net",
@@ -101,7 +101,7 @@ You can find a sample input for the skill [here](../main/custom_ner/sample.dat)
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
