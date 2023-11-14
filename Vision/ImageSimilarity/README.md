@@ -22,9 +22,9 @@ the captions and text extracted and its relevance to the topn similar images.
 To run this PowerSkill you will need:
 * docker
 * An Azure Blob storage container
-* A provisioned Azure Cognitive Search (ACS) instance 
+* A provisioned Azure AI Search instance 
 * A provisioned Azure Container Registry
-* A Cognitive Services key in the region you deploy ACS to
+* A AI Services key in the region you deploy AI Search to
 
 Below is a full working example that you can get working end to end on sample data.
 
@@ -230,7 +230,7 @@ and how it can be amended for your data.
    Add the endpoint to your [skillset file](deployment/azuresearch/create_skillset.json) using the 
    [deploy cell notebook](notebooks/Similarity%20Search%20dogs.ipynb#Now-we-create-the-skill-set)
       
-    Note, you need an already deployed ACS instance in the same region as your cognitive services
+    Note, you need an already deployed ACS instance in the same region as your AI services
     instance as we want to augment what we can extract using custom vision with our similarity
     model.
     
