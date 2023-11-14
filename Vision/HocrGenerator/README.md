@@ -4,9 +4,9 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
+- azure-ai-search
 urlFragment: azure-hocr-generator-sample
-name: hOCR generator sample skill for cognitive search
+name: hOCR generator sample skill for AI search
 description: This custom skill generates an hOCR document from the output of the OCR skill.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Vision/HocrGenerator/azuredeploy.json
 ---
@@ -129,7 +129,7 @@ This function doesn't require any application settings.
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
