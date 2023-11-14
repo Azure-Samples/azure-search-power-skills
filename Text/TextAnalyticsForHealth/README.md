@@ -4,9 +4,9 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
+- azure-ai-search
 - ai-services
-name: Text Analytics for Health Custom Skill for Cognitive Search
+name: Text Analytics for Health Custom Skill for AI Search
 description: This custom skill utilizes the Text Analytics for Health API to identify healthcare entities and relations.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/TextAnalyticsForHealth/azuredeploy.json
 ---
@@ -133,12 +133,12 @@ If running in an Azure function, this can be set in the application settings.
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset. **If you deploy using the ARM template you can copy the URI from the output of the template.**  
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset. **If you deploy using the ARM template you can copy the URI from the output of the template.**  
 The skill also accepts options which can be sent as headers in the request.
 
 | Header Name | Description | Default |
 | ----------- | ----------- | ------- |
-| `timeout` | Allows you to set a timeout (in seconds) which will cause the skill to return early, so it doesn't timeout in the Cognitive Search Pipeline. | `230` |
+| `timeout` | Allows you to set a timeout (in seconds) which will cause the skill to return early, so it doesn't timeout in the AI Search Pipeline. | `230` |
 | `defaultLanguageCode` | Allows you to set a default language across all documents in case a language is not provided in the input | `en` |
 
 **It is important to note** the difference between the timeout option in the header, and the timeout option/behavior when defining a skillset. If a request to a web skill takes longer than the timeout defined in the skillset, it will simply drop the request and move on. With the timeout header option, it allows users to define how long the function should wait before it returns the results it has so far, and returns errors for the documents it has not yet gotten to or not yet received results on.
