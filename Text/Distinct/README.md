@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 name: Distinct sample skill for AI search
 description: This custom skill removes duplicates from a list of terms.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/Distinct/azuredeploy.json
