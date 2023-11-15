@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 - ai-services
 name: Text Analytics for Health Custom Skill for AI Search
 description: This custom skill utilizes the Text Analytics for Health API to identify healthcare entities and relations.
