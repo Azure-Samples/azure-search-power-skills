@@ -1,31 +1,32 @@
-import openai
-import os
-import re
-import logging
-from tenacity import retry, wait_random_exponential, stop_after_attempt  
+# Code from https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+from transformers import AutoTokenizer, AutoModel
+import torch
+import torch.nn.functional as F
 
 class TextEmbedder():
-    openai.api_type = "azure"    
-    openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
-    openai.api_base = f"https://{os.getenv('AZURE_OPENAI_SERVICE_NAME')}.openai.azure.com/"
-    openai.api_version = os.getenv("AZURE_OPENAI_API_VERSION")
-    AZURE_OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT")
+    def __init__(self):
+        # Load model from HuggingFace Hub
+        model_path = 'sentence-transformers/all-MiniLM-L6-v2'
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.model = AutoModel.from_pretrained(model_path)
 
-    def clean_text(self, text, text_limit=7000):
-        # Clean up text (e.g. line breaks, )    
-        text = re.sub(r'\s+', ' ', text).strip()
-        text = re.sub(r'[\n\r]+', ' ', text).strip()
-        # Truncate text if necessary (e.g. for, ada-002, 4095 tokens ~ 7000 chracters)    
-        if len(text) > text_limit:
-            logging.warning("Token limit reached exceeded maximum length, truncating...")
-            text = text[:text_limit]
-        return text
+    # Mean Pooling - Take attention mask into account for correct averaging
+    def _mean_pooling(self, model_output, attention_mask):
+        token_embeddings = model_output[0]  # First element of model_output contains all token embeddings
+        input_mask_expanded = (attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float())
+        return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
-    @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6))
-    def embed_content(self, text, clean_text=True, use_single_precision=True):
-        embedding_precision = 9 if use_single_precision else 18
-        if clean_text:
-            text = self.clean_text(text)
-        response = openai.Embedding.create(input=text, engine=self.AZURE_OPENAI_EMBEDDING_DEPLOYMENT)
-        embedding = [round(x, embedding_precision) for x in response['data'][0]['embedding']]
-        return embedding
+    def generate_embeddings(self, sentences):
+        # # Tokenize sentences
+        encoded_input = self.tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
+
+        # Compute token embeddings
+        with torch.no_grad():
+            model_output = self.model(**encoded_input)
+
+        # Perform pooling
+        sentence_embeddings = self._mean_pooling(model_output, encoded_input['attention_mask'])
+
+        # Normalize embeddings
+        sentence_embeddings = F.normalize(sentence_embeddings, p=2, dim=1)
+        return sentence_embeddings

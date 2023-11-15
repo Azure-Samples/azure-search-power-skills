@@ -3,9 +3,6 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
-tiktoken
-langchain==0.0.329
-openai
-azure-identity
-tenacity
 jsonschema
+torch@https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp39-cp39-linux_x86_64.whl
+transformers==4.19.4

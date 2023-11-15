@@ -115,7 +115,7 @@ def analyze_document(endpoint, key, recordId, data):
         model = data["model"]
         logging.info("Model: " + model)
         document_analysis_client = DocumentAnalysisClient(
-            endpoint=endpoint, credential=AzureKeyCredential(key)
+            endpoint=endpoint, credential=AzureKeyCredential(key), headers={"x-ms-useragent": "azure-search-power-skills/1.0.0"}
         )
         poller = document_analysis_client.begin_analyze_document_from_url(
                 model, formUrl)
