@@ -4,7 +4,7 @@ languages:
 - python
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 - ai-services
 - document-intelligence
 name: Analyze document using the different Form Recognizer APIs
