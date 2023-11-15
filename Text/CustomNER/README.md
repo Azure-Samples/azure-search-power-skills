@@ -6,7 +6,7 @@ Description:
 
 - It is common to have custom entities along different texts that don't fit any of the predefined entities that can be extracted with the Named Entity Extraction service. Custom Named Entity Recognition provides the capability to ingest your training texts, label your set of custom entities and train a model to identify them. You can easily deploy the model in a secured fashion to later on run your inference along your texts. As an outcome you will get the detected custom entities, their position (inside the text) and the confidence level
 
-- custom_ner_skill is an Azure Cognitive Search skill to integrate Azure Text Analytics Custom Named Entity Recognition within a Azure Cognitive Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom entities. For example, show me the loan documents signed with the credit institution X between May and June 2021 with higher purchase amount than one million dollars. This filtering is possible because Text Analytics has identified all those fields along the skillset execution and exposes the ability to narrow the results within the ACS index.
+- custom_ner_skill is an Azure AI Search skill to integrate Azure Text Analytics Custom Named Entity Recognition within a Azure AI Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom entities. For example, show me the loan documents signed with the credit institution X between May and June 2021 with higher purchase amount than one million dollars. This filtering is possible because Text Analytics has identified all those fields along the skillset execution and exposes the ability to narrow the results within the ACS index.
 
 Languages:
 
@@ -14,8 +14,8 @@ Languages:
 
 Products:
 
-- Azure Cognitive Search
-- Azure Cognitive Services for Language (Text Analytics)
+- Azure AI Search
+- Azure AI Services for Language (Text Analytics)
 - Azure Functions
 
 Table of Contents:
@@ -35,7 +35,7 @@ Table of Contents:
     
     - [Additional details](#additional-details)
   
-  - [Integrate with Azure Cognitive Search](integrate-with-azure-cognitive-search)
+  - [Integrate with Azure AI Search](integrate-with-azure-cognitive-search)
     
     - [Skillset](#skillset)
     
@@ -53,7 +53,7 @@ Table of Contents:
 
 #### Create or reuse a Custom NER project
 
-In order to use Custom NER, we need a language resource and a trained (and deployed) project to be used in recognizing the custom entities. If they aren't previously created, now is the time to do that. A good place to start is [Quickstart - Custom named entity recognition (NER) - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio).
+In order to use Custom NER, we need a language resource and a trained (and deployed) project to be used in recognizing the custom entities. If they aren't previously created, now is the time to do that. A good place to start is [Quickstart - Custom named entity recognition (NER) - Azure AI Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio).
 
 After this step you should have:
 
@@ -65,7 +65,7 @@ After this step you should have:
 
 #### Create a Function App resource and deploy the powerskill to Azure
 
-A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure Cognitive Search pipeline. To deploy a function, an Azure App resource is needed. Notice the difference between a function (code that can be deployed, like the one in this subrepo) and an Azure Function App (the Azure resource that a function can be deployed to). An ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. Alternatively, one may choose to manually create a Function App resource (for example, from the Azure portal), clone the repository, and deploy the code from VSCode. Both options are explored below.
+A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure AI Search pipeline. To deploy a function, an Azure App resource is needed. Notice the difference between a function (code that can be deployed, like the one in this subrepo) and an Azure Function App (the Azure resource that a function can be deployed to). An ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. Alternatively, one may choose to manually create a Function App resource (for example, from the Azure portal), clone the repository, and deploy the code from VSCode. Both options are explored below.
 
 ##### ARM deployment
 
@@ -136,7 +136,7 @@ Afterwards, make sure you have [the following requirements](https://docs.microso
 
 ##### Additional details
 
-The function adheres to the input/output format specified by Azure Cognitive Search for custom skills. More information about custom skills and format, see [Custom skill interface - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-interface). Sample inputs and outputs for this powerskill are shown below. Notice that specifying the language is optional, and defaults to English.
+The function adheres to the input/output format specified by Azure AI Search for custom skills. More information about custom skills and format, see [Custom skill interface - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-interface). Sample inputs and outputs for this powerskill are shown below. Notice that specifying the language is optional, and defaults to English.
 
 ```json
 {
@@ -264,13 +264,13 @@ The function adheres to the input/output format specified by Azure Cognitive Sea
 }
 ```
 
-#### Integrate with Azure Cognitive Search
+#### Integrate with Azure AI Search
 
-To finally be able to use the deployed powerskill, an Azure Cognitive Search resource should be available. If not, now is the time to create one. For instructions, see [Create a search service in the portal - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-create-service-portal).
+To finally be able to use the deployed powerskill, an Azure AI Search resource should be available. If not, now is the time to create one. For instructions, see [Create a search service in the portal - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-create-service-portal).
 
 ###### Skillset
 
-An Azure Cognitive Search pipeline consists of an Index, an Indexer, a skillset and data source. This function can be used as a custom skill in a skillset (either as a singular custom skill in a skillset, or as a skill among many others in a skillset). To add this function as a custom skill, some parameters need to be specified, including the the endpoint URL of the Function App deployed in the previous steps, the `x-functions-key` header, what is needed as input, and what the output is named. An example is shown below. Here, the text of each document (`/document/content`) is sent to the api as a value for the key named `text` (as the function expects) and the output is the value of the key named `entities` in the response. An example of what a skillset may look like is shown below. For more information on skillsets, see [Skillset concepts - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-working-with-skillsets).
+An Azure AI Search pipeline consists of an Index, an Indexer, a skillset and data source. This function can be used as a custom skill in a skillset (either as a singular custom skill in a skillset, or as a skill among many others in a skillset). To add this function as a custom skill, some parameters need to be specified, including the the endpoint URL of the Function App deployed in the previous steps, the `x-functions-key` header, what is needed as input, and what the output is named. An example is shown below. Here, the text of each document (`/document/content`) is sent to the api as a value for the key named `text` (as the function expects) and the output is the value of the key named `entities` in the response. An example of what a skillset may look like is shown below. For more information on skillsets, see [Skillset concepts - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-working-with-skillsets).
 
 ```json
 {
@@ -308,7 +308,7 @@ An Azure Cognitive Search pipeline consists of an Index, an Indexer, a skillset 
 
 ###### Index
 
-Next, the output from the custom skill can be used as an input to yet another skill, or be part of the final output that is saved into the index. Assuming the latter, the index needs to have a field definition that matches the output it's given. An example for what the definition should look like is shown below. For more information on search indexes, see [Index overview - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-what-is-an-index).
+Next, the output from the custom skill can be used as an input to yet another skill, or be part of the final output that is saved into the index. Assuming the latter, the index needs to have a field definition that matches the output it's given. An example for what the definition should look like is shown below. For more information on search indexes, see [Index overview - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-what-is-an-index).
 
 ```json
 {
@@ -411,7 +411,7 @@ Next, the output from the custom skill can be used as an input to yet another sk
 
 ###### Indexer
 
-Finally, the indexer ties everything together. The indexer needs to be setup up such that the outputs from the custom skill are mapped to the field that was just defined. Notice the `outputFieldMappings` key in the example shown below, the content of each document is mapped to the a field named `textBody`, and the output from the powerskill (that was named `entities` in the skillset) is mapped to a field named `entities` in the index. For more information on output mappings, see [Map skill output fields - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-output-field-mapping) in addition to the previously linked article about skillsets.
+Finally, the indexer ties everything together. The indexer needs to be setup up such that the outputs from the custom skill are mapped to the field that was just defined. Notice the `outputFieldMappings` key in the example shown below, the content of each document is mapped to the a field named `textBody`, and the output from the powerskill (that was named `entities` in the skillset) is mapped to a field named `entities` in the index. For more information on output mappings, see [Map skill output fields - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-output-field-mapping) in addition to the previously linked article about skillsets.
 
 ```json
 {
@@ -616,7 +616,7 @@ will get all loan agreements on `6/28/2019` and only returns specific fields so 
 }
 ```
 
-For more details and examples, see [Use full Lucene query syntax - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
+For more details and examples, see [Use full Lucene query syntax - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
 
 ## Testing
 
@@ -629,7 +629,7 @@ LANG_KEY=<language-resource-key>
 LANG_ENDPOINT=https://<language-resource-name>.cognitiveservices.azure.com
 ```
 
-The test cases assume that the model is trained to recognize load agreements like the example in [Quickstart - Custom named entity recognition (NER) - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio). Training and test data can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER).
+The test cases assume that the model is trained to recognize load agreements like the example in [Quickstart - Custom named entity recognition (NER) - Azure AI Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/quickstart?pivots=language-studio). Training and test data can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20NER).
 
 To run the tests, `cd` into the root of the project and run `unittest`.
 

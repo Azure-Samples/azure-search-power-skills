@@ -4,8 +4,8 @@ languages:
 - python
 products:
 - azure
-- azure-cognitive-search
-name: Text Quality Watchdog Custom Skill for Cognitive Search
+- azure-ai-search
+name: Text Quality Watchdog Custom Skill for AI Search
 description: This custom skill calls a pretrained language model to determine the quality of text extracted from the document cracking process.
 ---
 
@@ -38,7 +38,7 @@ To deploy this skill:
 
 ## Sample Input:
 
-When this skill is integrated into a skillset, the extracted text from each document will be provided by cognitive search.
+When this skill is integrated into a skillset, the extracted text from each document will be provided by AI search.
 
 ```json
 {
@@ -74,7 +74,7 @@ Text that is corrupted/garbled text return a "text_quality_warning" value of 1.
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Details on how to configure this skill definition (including specific fields that need to be modified in the skillset, indexer, and index) can be found [here](https://docs.microsoft.com/en-us/azure/search/cognitive-search-defining-skillset).
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 

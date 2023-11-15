@@ -1,10 +1,12 @@
 ![python](https://img.shields.io/badge/language-python-orange)
 ![C#](https://img.shields.io/badge/language-C%23-brightgreen)
 
+> [!IMPORTANT]  
+> As of November 15, 2023, Azure Cognitive Search has been renamed to Azure AI Search.
 
-# Azure Search Power Skills
+# Azure AI Search Power Skills
 
-Power Skills are a collection of useful functions to be deployed as custom skills for Azure Cognitive Search. The skills can be used as [templates](Template/HelloWorld/README.md) or starting points for your own custom skills, or they can be deployed and used as they are if they happen to meet your requirements. We also invite you to contribute your own work by submitting a [pull request](https://github.com/Azure-Samples/azure-search-power-skills/compare).
+Power Skills are a collection of useful functions to be deployed as custom skills for Azure AI Search. The skills can be used as [templates](Template/HelloWorld/README.md) or starting points for your own custom skills, or they can be deployed and used as they are if they happen to meet your requirements. We also invite you to contribute your own work by submitting a [pull request](https://github.com/Azure-Samples/azure-search-power-skills/compare).
 
 ## Skills
 
@@ -47,7 +49,7 @@ This project provides the following custom skills:
 
 ### Prerequisites
 
-In order to use the functions in this project, you'll need an active Azure subscription. Most of the functions can be used on their own for quick evaluation and experimentation, but they are meant to be used as part of an [Azure Cognitive Search pipeline](https://docs.microsoft.com/azure/search/cognitive-search-quickstart-blob).
+In order to use the functions in this project, you'll need an active Azure subscription. Most of the functions can be used on their own for quick evaluation and experimentation, but they are meant to be used as part of an [Azure AI Search pipeline](https://docs.microsoft.com/azure/search/cognitive-search-quickstart-blob).
 Each function may also add its own specific requirements, such as API keys for services they leverage.
 
 [Visual Studio 2019](https://visualstudio.microsoft.com/) is recommended, but not required. You need a recent version of the C# compiler. [Postman](https://www.getpostman.com/) is highly recommended as a way to experiment and test skills.

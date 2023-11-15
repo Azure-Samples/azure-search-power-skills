@@ -3,8 +3,9 @@ topic: sample
 languages:
 - csharp
 products:
-- azure-cognitive-services
-name: Custom Entity Search sample skill for cognitive search
+- azure-ai-services
+- azure-ai-search
+name: Custom Entity Search sample skill for AI Search
 description: This custom skill finds user defined entities in given texts.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/CustomEntityLookup/azuredeploy.json
 ---
@@ -161,7 +162,7 @@ lastWordToFind
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI Search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json

@@ -32,9 +32,9 @@ it with cluster labels.
 To run this PowerSkill you will need:
 * docker
 * An Azure Blob storage container
-* A provisioned Azure Cognitive Search (ACS) instance 
+* A provisioned Azure AI Search instance 
 * A provisioned Azure Container Registry
-* A Cognitive Services key in the region you deploy ACS to
+* A AI Services key in the region you deploy AI Search to
 
 Below is a full working example that you can get working end
 to end on sample data.
@@ -50,7 +50,7 @@ to end on sample data.
 1. As with any (especially, unsupervised) machine learning solution, inspecting the clusters generated and playing with the algorithm hyperparameters will be required.
    * To explore generated clusters and generate labels dictionary required for the custom skill, you can use [3-create-label-file notebook](notebooks/3-create-label-file.ipynb). These labels are what will be indexed to retrieve the images.
    * Clusters report is also available under the registered model on the Azure Machine Learning Portal.  
-1. Build the skill as a container, deploy to Azure Web Apps and configure an Azure Cognitive Search indexer to use it - see [Deploying the solution](#deploying-the-solution)
+1. Build the skill as a container, deploy to Azure Web Apps and configure an Azure AI Search indexer to use it - see [Deploying the solution](#deploying-the-solution)
 1. Investigate your indexed data using [Azure Search notebook](notebooks/5-test-search-index.ipynb).
 
 ## How to implement
@@ -161,7 +161,7 @@ After issuing the request you should get the following response:
 > Alternatively you can also use Postman, see below:
 >
 > Use [Postman](https://www.postman.com/) to issue a test request to your local inference API.
-> As we are emulating what Azure Cognitive Search will send to a PowerSkill, we need to base64
+> As we are emulating what Azure AI Search will send to a PowerSkill, we need to base64
 > encode an image as a string.
 > 
 > Issue the request with the following include the contents of the file
@@ -184,7 +184,7 @@ To deploy the solution, this folder contains [Terraform scripts](deployment) tha
 2. Run `make deploy`. This will deploy Azure Search, Azure Storage (for uploading the images), Azure Container Registry (for the docker image of the skill) and Azure Web Apps (for hosting the skill API). If you prefer to use existing resources then create `notebooks/.env` using the example file in the same folder.
 
 
-### Testing the search labels in Azure Cognitive Search
+### Testing the search labels in Azure AI Search
 
 Now we are in a position to search on our cluster labelled data, open the [5-test-search-index notebook](notebooks/5-test-search-index.ipynb)
 to search on our clustered images.

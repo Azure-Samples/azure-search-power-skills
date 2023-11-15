@@ -4,8 +4,8 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
-name: Acronym Linker sample skills for cognitive search
+- azure-ai-search
+name: Acronym Linker sample skills for AI Search
 description: These two custom skills (link-acronyms and link-acronyms-list) give definitions for known acronyms.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/AcronymLinker/azuredeploy.json
 ---
@@ -126,7 +126,7 @@ This function uses a JSON file called `acronyms.json` that can be found at the r
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI Search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json

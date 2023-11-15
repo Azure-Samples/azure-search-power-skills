@@ -4,20 +4,20 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
+- azure-ai-search
 - azure-key-vault
 - azure-storage
-name: Decrypt blob file sample skill for cognitive search
+name: Decrypt blob file sample skill for AI search
 urlFragment: azure-decryptblob-sample
-description: This custom skill downloads and decrypts a file that was encrypted in Azure Blob Storage and returns it back to Azure Cognitive Search to be indexed.
+description: This custom skill downloads and decrypts a file that was encrypted in Azure Blob Storage and returns it back to Azure AI Search to be indexed.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Utils/DecryptBlobFile/azuredeploy.json
 ---
 
 # DecryptBlobFile
 
-This custom skill downloads and decrypts a file that was encrypted in Azure Blob Storage and returns it back to Azure Cognitive Search to be processed and indexed. It is meant to be used in combination with the built-in [DocumentExtractionSkill](https://docs.microsoft.com/azure/search/cognitive-search-skill-document-extraction) to allow you to index encrypted files without needing to worry about them being stored unecrypted at rest. For more details on how to encrypt files in blob storage, [see this tutorial](https://docs.microsoft.com/azure/storage/blobs/storage-encrypt-decrypt-blobs-key-vault).
+This custom skill downloads and decrypts a file that was encrypted in Azure Blob Storage and returns it back to Azure AI Search to be processed and indexed. It is meant to be used in combination with the built-in [DocumentExtractionSkill](https://docs.microsoft.com/azure/search/cognitive-search-skill-document-extraction) to allow you to index encrypted files without needing to worry about them being stored unecrypted at rest. For more details on how to encrypt files in blob storage, [see this tutorial](https://docs.microsoft.com/azure/storage/blobs/storage-encrypt-decrypt-blobs-key-vault).
 
-A [full example of this skill is available in the Azure Cognitive Seach documentation](https://docs.microsoft.com/azure/search/search-howto-index-encrypted-blobs).
+A [full example of this skill is available in the Azure AI Seach documentation](https://docs.microsoft.com/azure/search/search-howto-index-encrypted-blobs).
 
 ## Requirements
 
@@ -69,7 +69,7 @@ This function doesn't require any application settings.
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json

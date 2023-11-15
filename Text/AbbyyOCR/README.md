@@ -3,25 +3,25 @@ topic: sample
 languages:
 - csharp
 products:
-- azure-cognitive-search
+- azure-ai-search
 - ABBYY OCR
-name: ABBYY OCR Custom Skill for Azure Cognitive Search
+name: ABBYY OCR Custom Skill for Azure AI Search
 description: This custom skill leverages [ABBYY Cloud OCR](https://www.ocrsdk.com/) to extract text from images  and finds user defined entities in given texts.
 ---
 
-# ABBYY OCR Custom Skill for Azure Cognitive Search
+# ABBYY OCR Custom Skill for Azure AI Search
 
-This is a custom skill for Azure Cognitive Search that leverages [ABBYY Cloud OCR](https://www.ocrsdk.com/) to extract text from images.  It is code that leverages Azure Functions to receive input from Azure Cognitive Search to take an image which is passed to ABBYY OCR and returns text back to Azure Cognitive Search.
+This is a custom skill for Azure AI Search that leverages [ABBYY Cloud OCR](https://www.ocrsdk.com/) to extract text from images.  It is code that leverages Azure Functions to receive input from Azure AI Search to take an image which is passed to ABBYY OCR and returns text back to Azure AI Search.
 
 ## Requirements
-* Azure Cognitive Search Service: Please ensure you know how to setup and configure an [Azure Cognitive Search web api based custom skill](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-web-api)
+* Azure AI Search Service: Please ensure you know how to setup and configure an [Azure AI Search web api based custom skill](https://docs.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-web-api)
 * ABBYY Cloud OCR SDK: Register for [ABBYY Cloud OCR SDK](https://www.ocrsdk.com/) account, which comes with 500 free calls.  Once registered, you will need to create an OCR application and ensure you have an Application ID, Password, and ServiceUrl such as https://cloud-westus.ocrsdk.com.
 * Postman:  We will use [Postman](https://www.postman.com/downloads/) to test the Custom Skill
-* Azure Cognitive Search Power Skills: Download or Clone the [Power Skills](https://github.com/Azure-Samples/azure-search-power-skills) repo 
+* Azure AI Search Power Skills: Download or Clone the [Power Skills](https://github.com/Azure-Samples/azure-search-power-skills) repo 
 
 # Configuration
 
-Go to the location where you downloaded the Azure Cognitive Search Power Skills and find the Text directory.  Within this directory, copy the ABBYYOCR directory from this repo.
+Go to the location where you downloaded the Azure AI Search Power Skills and find the Text directory.  Within this directory, copy the ABBYYOCR directory from this repo.
 
 Open PowerSkills.sln in the root directory of this Power Skills directory in Visual Studio.  
 
@@ -105,7 +105,7 @@ At this point you can deploy this code to Azure Functions by right clicking on t
 
 Once deployed, test again.   You will likely need to open this function in the Azure Portal to get the full URL which will include a code for authentication such as https://my-test-abbyy.azurewebsites.net/api/AbbyyOCR?code=/gECNMreXdczJhGZKhziNiMnABC123==
 
-Test this once again in Postman before deploying to Azure Cognitive Search.
+Test this once again in Postman before deploying to Azure AI Search.
 
 # Example Skillset
 

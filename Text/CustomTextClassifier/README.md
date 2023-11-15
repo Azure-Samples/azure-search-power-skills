@@ -6,7 +6,7 @@ Description:
 
 - It is common to require a text classification along knowledge base scenarios, for example you might to want to classify a document as a RFI response, a contract, a letter of intent or just a BoM. Custom Text Classification (in preview as of Nov2021) provides the capability to ingest your training texts, label your set of custom labels (both single and multi class) and train a model to classify them. You can easily deploy the model in a secured fashion to later on run your inference along your texts. As an outcome you will get the detected custom classes and the confidence level
 
-- text_classification_skill is an Azure Cognitive Search skill to integrate [Azure Text Analytics Custom Text Classification](https://docs.microsoft.com/azure/cognitive-services/language-service/custom-classification/overview) within a Azure Cognitive Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom classes. For example, show me the RFI responses by X employee between May and June 2021. This filtering is possible because Text Analytics has identified all those classes along the skillset execution and exposes the ability to narrow the results within the ACS index.
+- text_classification_skill is an Azure AI Search skill to integrate [Azure Text Analytics Custom Text Classification](https://docs.microsoft.com/azure/cognitive-services/language-service/custom-classification/overview) within a Azure AI Search skillset. This will enable the cracking of documents in a programmatic way to enrich your search with different custom classes. For example, show me the RFI responses by X employee between May and June 2021. This filtering is possible because Text Analytics has identified all those classes along the skillset execution and exposes the ability to narrow the results within the ACS index.
 
 Languages:
 
@@ -14,8 +14,8 @@ Languages:
 
 Products:
 
-- Azure Cognitive Search
-- Azure Cognitive Services for Language (Text Analytics)
+- Azure AI Search
+- Azure AI Services for Language (Text Analytics)
 - Azure Functions
 
 Table of Contents:
@@ -35,7 +35,7 @@ Table of Contents:
     
     - [Additional details](#additional-details)
   
-  - [Integrate with Azure Cognitive Search](integrate-with-azure-cognitive-search)
+  - [Integrate with Azure AI Search](integrate-with-azure-cognitive-search)
     
     - [Skillset](#skillset)
     
@@ -53,7 +53,7 @@ Table of Contents:
 
 #### Create or reuse a Custom Text Classification project
 
-In order to use Custom Text Classification, we need a language resource and a trained (and deployed) project to be used in custom classification. If they aren't previously created, now is the time to do that. A good place to start is [Quickstart: Custom text classification - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-text-classification/quickstart).
+In order to use Custom Text Classification, we need a language resource and a trained (and deployed) project to be used in custom classification. If they aren't previously created, now is the time to do that. A good place to start is [Quickstart: Custom text classification - Azure AI Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-text-classification/quickstart).
 
 After this step you should have:
 
@@ -65,7 +65,7 @@ After this step you should have:
 
 #### Create a Function App resource and deploy the powerskill to Azure
 
-A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure Cognitive Search pipeline. To deploy a function, an Azure App resource is needed. Notice the difference between a function (code that can be deployed, like the one in this subrepo) and an Azure Function App (the Azure resource that a function can be deployed to). An ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. Alternatively, one may choose to manually create a Function App resource (for example, from the Azure portal), clone the repository, and deploy the code from VSCode. Both options are explored below.
+A powerskill is basically just an Azure Function written to be used as a custom skill in an Azure AI Search pipeline. To deploy a function, an Azure App resource is needed. Notice the difference between a function (code that can be deployed, like the one in this subrepo) and an Azure Function App (the Azure resource that a function can be deployed to). An ARM template (see [Templates overview - Azure Resource Manager | Microsoft Docs](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview)) is provided to automate creating the Function App resource and deploying this powerskill on the resource. Alternatively, one may choose to manually create a Function App resource (for example, from the Azure portal), clone the repository, and deploy the code from VSCode. Both options are explored below.
 
 ##### ARM deployment
 
@@ -176,13 +176,13 @@ Afterwards, make sure you have [the following requirements](https://docs.microso
 }
 ```
 
-#### Integrate with Azure Cognitive Search
+#### Integrate with Azure AI Search
 
-To finally be able to use the deployed powerskill, an Azure Cognitive Search resource should be available. If not, now is the time to create one. For instructions, see [Create a search service in the portal - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-create-service-portal).
+To finally be able to use the deployed powerskill, an Azure AI Search resource should be available. If not, now is the time to create one. For instructions, see [Create a search service in the portal - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-create-service-portal).
 
 ###### Skillset
 
-An Azure Cognitive Search pipeline consists of an Index, an Indexer, a skillset and data source. This function can be used as a custom skill in a skillset (either as a singular custom skill in a skillset, or as a skill among many others in a skillset). To add this function as a custom skill, some parameters need to be specified, including the the endpoint URL of the Function App deployed in the previous steps, the `x-functions-key` header, what is needed as input, and what the output is named. An example is shown below. Here, the text of each document (`/document/content`) is sent to the api as a value for the key named `text` (as the function expects) and the output is the value of the key named `class` in the response. An example of what a skillset may look like is shown below. For more information on skillsets, see [Skillset concepts - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-working-with-skillsets).
+An Azure AI Search pipeline consists of an Index, an Indexer, a skillset and data source. This function can be used as a custom skill in a skillset (either as a singular custom skill in a skillset, or as a skill among many others in a skillset). To add this function as a custom skill, some parameters need to be specified, including the the endpoint URL of the Function App deployed in the previous steps, the `x-functions-key` header, what is needed as input, and what the output is named. An example is shown below. Here, the text of each document (`/document/content`) is sent to the api as a value for the key named `text` (as the function expects) and the output is the value of the key named `class` in the response. An example of what a skillset may look like is shown below. For more information on skillsets, see [Skillset concepts - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-working-with-skillsets).
 
 ```json
 {
@@ -220,7 +220,7 @@ An Azure Cognitive Search pipeline consists of an Index, an Indexer, a skillset 
 
 ###### Index
 
-Next, the output from the custom skill can be used as an input to yet another skill, or be part of the final output that is saved into the index. Assuming the latter, the index needs to have a field definition that matches the output it's given. An example for what the definition should look like is shown below. For more information on search indexes, see [Index overview - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-what-is-an-index).
+Next, the output from the custom skill can be used as an input to yet another skill, or be part of the final output that is saved into the index. Assuming the latter, the index needs to have a field definition that matches the output it's given. An example for what the definition should look like is shown below. For more information on search indexes, see [Index overview - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-what-is-an-index).
 
 ```json
 {
@@ -263,7 +263,7 @@ Next, the output from the custom skill can be used as an input to yet another sk
 
 ###### Indexer
 
-Finally, the indexer ties everything together. The indexer needs to be setup up such that the outputs from the custom skill are mapped to the field that was just defined. Notice the `outputFieldMappings` key in the example shown below, the content of each document is mapped to the a field named `content`, and the output from the powerskill (that was named `class` in the skillset) is mapped to a field named `class` in the index. For more information on output mappings, see [Map skill output fields - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-output-field-mapping) in addition to the previously linked article about skillsets.
+Finally, the indexer ties everything together. The indexer needs to be setup up such that the outputs from the custom skill are mapped to the field that was just defined. Notice the `outputFieldMappings` key in the example shown below, the content of each document is mapped to the a field named `content`, and the output from the powerskill (that was named `class` in the skillset) is mapped to a field named `class` in the index. For more information on output mappings, see [Map skill output fields - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/cognitive-search-output-field-mapping) in addition to the previously linked article about skillsets.
 
 ```json
 {
@@ -416,7 +416,7 @@ will get all `Computer_science` research papers. The response should look like t
 }
 ```
 
-For more details and examples, see [Use full Lucene query syntax - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure Cognitive Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
+For more details and examples, see [Use full Lucene query syntax - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-query-lucene-examples) and [Filter on search results - Azure AI Search | Microsoft Docs](https://docs.microsoft.com/en-us/azure/search/search-filters).
 
 ## Testing
 
@@ -430,7 +430,7 @@ LANG_ENDPOINT=https://<language-resource-name>.cognitiveservices.azure.com
 CLASSIFICATION_TYPE=<multi-or-single>
 ```
 
-The test cases assume that the model (in both single and multi classification) is trained to recognise data like the example in [Quickstart: Custom text classification - Azure Cognitive Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-text-classification/quickstart). Training and test data for  can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification).
+The test cases assume that the model (in both single and multi classification) is trained to recognise data like the example in [Quickstart: Custom text classification - Azure AI Services | Microsoft Docs](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-text-classification/quickstart). Training and test data for  can be found [here](https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/language-service/Custom%20text%20classification).
 
 To run the tests, `cd` into the root of the project and run `unittest`.
 

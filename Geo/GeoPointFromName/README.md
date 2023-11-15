@@ -4,9 +4,9 @@ languages:
 - csharp
 products:
 - azure
-- azure-cognitive-search
+- azure-ai-search
 - azure-maps
-name: Get geo-point from name sample skill for cognitive search
+name: Get geo-point from name sample skill for AI Search
 description: "This custom skill takes a string input that represents a location (city, country, address or point of interest) and returns a geo-point."
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Geo/GeoPointFromName/azuredeploy.json
 ---
@@ -93,7 +93,7 @@ If running in an Azure function, this can be set in the application settings.
 
 ## Sample Skillset Integration
 
-In order to use this skill in a cognitive search pipeline, you'll need to add a skill definition to your skillset.
+In order to use this skill in a AI Search pipeline, you'll need to add a skill definition to your skillset.
 Here's a sample skill definition for this example (inputs and outputs should be updated to reflect your particular scenario and skillset environment):
 
 ```json
