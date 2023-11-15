@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 - ai-services
 name: Custom Vision integration sample skill for AI search
 urlFragment: azure-customvision-sample
