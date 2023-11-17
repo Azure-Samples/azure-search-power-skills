@@ -3,7 +3,7 @@ topic: sample
 languages:
 - csharp
 products:
-- azure-ai-search
+- azure-cognitive-search
 - azure-functions
 name: Get File Extension sample skill for AI search
 description: This custom skill returns the document's extension and file name without extension.
