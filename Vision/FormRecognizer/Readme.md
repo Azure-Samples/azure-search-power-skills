@@ -6,12 +6,12 @@ products:
 - azure
 - azure-cognitive-search
 - ai-services
-- document-intelligence
-name: Analyze document using the different Form Recognizer APIs
+- ai-document-intelligence
+name: Analyze document using the different Azure AI Document Intelligence (previously Form Recognizer) APIs
 urlFragment: azure-formrecognizer-sample
 description: This custom skill can extract OCR text, tables, key value pairs and custom fomr fields from a document. 
 ---
-Invoking a Form Recognizer capability within the AI Search pipeline is now merged into a single skill.
+Invoking a AI Document Intelligence capability within the AI Search pipeline is now merged into a single skill.
 * [Analyze Document](#AnalyzeDocument), using a pre built model or a custom model
 Supported models include:
 - Layout (No training required)
@@ -26,20 +26,20 @@ Supported models include:
 
 # Deployment    
 
-The analyze form skill enables you to use a pretrained model or a custom model to identify and extract key value pairs, entities and tables. The skill requires the `FORM_RECOGNIZER_ENDPOINT` and `FORM_RECOGNIZER_KEY` property set in the appsettings to the appropriate Form Recognizer resource endpoint and key.
+The analyze form skill enables you to use a pretrained model or a custom model to identify and extract key value pairs, entities and tables. The skill requires the `FORM_RECOGNIZER_ENDPOINT` and `FORM_RECOGNIZER_KEY` property set in the appsettings to the appropriate AI Document Intelligence resource endpoint and key.
 
 To deploy the skills:
 1. In the Azure portal, create a Forms Recognizer resource.
-2. Copy the form recognizer URL and key for use in the training and appsettings.
+2. Copy the AI Document Intelligence URL and key for use in the training and appsettings.
 3. Clone this repository
 4. Open the FormRecognizer folder in VS Code and deploy the function.
 5. Once the function is deployed, set the required appsettings (`FORMS_RECOGNIZER_ENDPOINT`, `FORMS_RECOGNIZER_KEY`).  On the Azure portal, these can be found in your Azure function in the "Configuration" page under the "Settings" section.  Add them as new Application settings.  See [here](https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings?tabs=portal#settings) for further description.  
-6. (Optional) To use a custom form, follow the [tutorial](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/quickstarts/try-v3-form-recognizer-studio) to train a custom model in the [Form Recognizer Studio](https://formrecognizer.appliedai.azure.com/studio)
+6. (Optional) To use a custom form, follow the [tutorial](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/quickstarts/try-v3-form-recognizer-studio) to train a custom model in the [AI Document Intelligence Studio](https://formrecognizer.appliedai.azure.com/studio)
 7. Add the skill to your skillset as [described below](#sample-skillset-integration)
 
 # AnalyzeDocument
 
-This custom skill can invoke any of the following Form Recognizer APIs
+This custom skill can invoke any of the following AI Document Intelligence APIs
 1. Layout
 2. Prebuilt invoice
 3. Prebuilt receipt
@@ -50,13 +50,13 @@ This custom skill can invoke any of the following Form Recognizer APIs
 
 ## Requirements
 
-In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure Form Recognizer](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. 
+In addition to the common requirements described in [the root `README.md` file](../../README.md), this function requires access to an [Azure AI Document Intelligence](https://azure.microsoft.com/en-us/services/cognitive-services/form-recognizer/) resource. 
 
 [Train a model with your forms](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/build-training-data-set) if you plan to use the custom model. For any of the prebuilt models or general document model, no additional setup is required. 
 
 ## Settings
 
-This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY` settings set to a valid Azure Forms Recognizer API key and to your custom Form Recognizer 2.1-preview endpoint. 
+This function requires a `FORMS_RECOGNIZER_ENDPOINT` and a `FORMS_RECOGNIZER_KEY` settings set to a valid Azure Forms Recognizer API key and to your custom AI Document Intelligence 2.1-preview endpoint. 
 If running locally, this can be set in your project's local environment variables. This ensures your key won't be accidentally checked in with your code.
 If running in an Azure function, this can be set in the application settings.
 
