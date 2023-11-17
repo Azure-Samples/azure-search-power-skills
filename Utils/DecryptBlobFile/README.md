@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 - azure-key-vault
 - azure-storage
 name: Decrypt blob file sample skill for AI search
