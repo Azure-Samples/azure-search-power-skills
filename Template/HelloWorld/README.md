@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Template/HelloWorld/azuredeploy.json
 name: "Hello World sample skill for AI search"
 description: "This Hello World custom skills can be used as a template to create your own skills."

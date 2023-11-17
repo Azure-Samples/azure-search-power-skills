@@ -1,4 +1,4 @@
-# custom_ner_skill
+# Custom NER Skill
 
 ---
 

@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 name: Tokenizer sample skill for AI search
 description: This custom skill extracts normalized non-stop words from a text using the ML.NET library.
 azureDeploy: https://raw.githubusercontent.com/Azure-Samples/azure-search-power-skills/main/Text/Tokenizer/azuredeploy.json

@@ -3,7 +3,7 @@ topic: sample
 languages:
 - csharp
 products:
-- azure-ai-search
+- azure-cognitive-search
 - ABBYY OCR
 name: ABBYY OCR Custom Skill for Azure AI Search
 description: This custom skill leverages [ABBYY Cloud OCR](https://www.ocrsdk.com/) to extract text from images  and finds user defined entities in given texts.

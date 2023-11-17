@@ -4,7 +4,7 @@ languages:
 - python
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 name: Custom embedding skill for Azure AI Search
 description: The custom skill generates vector embeddings for provided content with the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2).
 ---

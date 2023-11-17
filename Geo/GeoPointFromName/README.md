@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 - azure-maps
 name: Get geo-point from name sample skill for AI Search
 description: "This custom skill takes a string input that represents a location (city, country, address or point of interest) and returns a geo-point."

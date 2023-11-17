@@ -1,4 +1,4 @@
-# text_classification_skill
+# Text Classification Skill
 
 ---
 

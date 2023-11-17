@@ -4,7 +4,7 @@ languages:
 - python
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 - azure-container-registry
 - azure-functions
 name: PID 

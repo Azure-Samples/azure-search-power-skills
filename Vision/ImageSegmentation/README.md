@@ -11,8 +11,8 @@ Languages:
 - ![python](https://img.shields.io/badge/language-python-orange)
 
 Products:
-- Azure AI Search
-- Azure Functions
+- azure-cognitive-search
+- Azure-Functions
 ---
 
 # Settings

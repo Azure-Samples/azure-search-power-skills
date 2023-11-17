@@ -4,7 +4,7 @@ languages:
 - csharp
 products:
 - azure
-- azure-ai-search
+- azure-cognitive-search
 - ai-services
 name: Bing Entity Search sample skill for AI Search
 description: This custom skill finds rich and structured information about public figures, locations, or organizations.
