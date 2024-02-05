@@ -1,4 +1,4 @@
-fastapi==0.65.2
+fastapi==0.109.1
 python-dotenv==0.17.0
 uvicorn==0.13.4
 ObjDict==0.4.4
