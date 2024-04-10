@@ -5,4 +5,4 @@
 azure-functions
 jsonschema
 torch@https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp39-cp39-linux_x86_64.whl
-transformers==4.36.0
+transformers==4.38.0
