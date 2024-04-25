@@ -11,7 +11,7 @@ description: The custom skill generates vector embeddings for provided content w
 
 # HuggingFace Embeddings Generator
 
-This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure AI Search pipeline, utilizing the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2). This model returns embeddings with 384 dimensions. This endpoint can also be used as [a custom query vectorizer](https://learn.microsoft.com/azure/search/vector-search-how-to-configure-vectorizer) for data ingested with this model. An example notebook of how to use this endpoint end to end can be found at [Azure AI Search Custom Vectorization Sample](https://github.com/Azure/azure-search-vector-samples/blob/main/demo-python/code/custom-embeddings/azure-search-custom-vectorization-sample.ipynb).
+This custom skill enables generation of vector embeddings for text content which might be created/ingested as part of the Azure AI Search pipeline, utilizing the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2). This model returns embeddings with 384 dimensions. This endpoint can also be used as [a custom query vectorizer](https://learn.microsoft.com/azure/search/vector-search-how-to-configure-vectorizer) for data ingested with this model. An example notebook of how to use this endpoint end to end can be found at [Azure AI Search Custom Vectorization Sample](https://github.com/Azure/azure-search-vector-samples/blob/main/demo-python/code/custom-vectorizer/azure-search-custom-vectorization-sample.ipynb).
 
 If you need your data to be chunked before being embedded by this custom skill, consider using the built in [SplitSkill](https://learn.microsoft.com/azure/search/cognitive-search-skill-textsplit). If you are interested in generating embeddings using the [Azure OpenAI service](https://learn.microsoft.com/azure/cognitive-services/openai/), please see the built in [AzureOpenAIEmbeddingSkill](https://learn.microsoft.com/azure/search/cognitive-search-skill-azure-openai-embedding).
 
@@ -105,5 +105,21 @@ Here's a sample skill definition for this example (inputs and outputs should be 
         }
     ]
 }
+```
+
+## Sample index vectorizer Integration
+
+In order to use this endpoint as a custom web API vectorizer, you'll need to add a vectorizer definition to your index. Here's a sample vectorizer definition you can use:
+
+```json
+"vectorizers": [
+    {
+        "name": "my-custom-web-api-vectorizer",
+        "kind": "customWebApi",
+        "customWebApiParameters": {
+            "uri": "[AzureFunctionEndpointUrl]/api/embed?code=[AzureFunctionDefaultHostKey]",
+        },
+    }
+]
 ```
 
