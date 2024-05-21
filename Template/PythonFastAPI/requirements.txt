@@ -1,6 +1,6 @@
 Flask==2.3.2
 Flask-API==2.0
-requests==2.31.0
+requests==2.32.0
 ObjDict==0.4.4
 scikit-learn==1.0.1
 fastapi==0.109.1
