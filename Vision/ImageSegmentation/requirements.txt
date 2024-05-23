@@ -4,4 +4,4 @@
 
 azure-functions
 opencv-python==4.5.5.62
-azure-storage-blob==12.9.0
+azure-storage-blob==12.13.0
