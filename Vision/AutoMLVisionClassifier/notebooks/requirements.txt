@@ -2,7 +2,7 @@ azure==4.0.0
 azure-core==1.13.0
 azure-search==1.0.0b2
 azure-search-documents==11.1.0
-azure-storage-blob==1.5.0
+azure-storage-blob==12.13.0
 azure-storage-common==1.4.2
 matplotlib==3.4.1
 Pillow==10.3.0
