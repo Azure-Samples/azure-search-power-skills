@@ -4,7 +4,7 @@ uvicorn==0.12.1
 opencv-python==4.4.0.46
 tqdm==4.66.3
 ObjDict==0.4.4
-scikit-learn==1.0.1
+scikit-learn==1.5.0
 joblib
 Pillow
 ipykernel
