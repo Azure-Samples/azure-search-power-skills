@@ -1,0 +1,4 @@
+@githubSampleUrl = https://api.github.com/
+
+// just a simple example to show that it works
+GET {{githubSampleUrl}}
