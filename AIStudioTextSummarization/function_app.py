@@ -1,7 +1,7 @@
 import azure.functions as func
 import json
 import logging
-# import jsonschema only works on newer Python version for some reason...
+# import jsonschema # only works on newer Python version for some reason...
 
 app = func.FunctionApp()
 

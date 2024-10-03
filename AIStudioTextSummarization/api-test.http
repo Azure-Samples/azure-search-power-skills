@@ -18,9 +18,22 @@ Content-Type: application/json
 Scenario: summarization
 
 {
-    "date": "2023-05-10",
-    "temperatureC": 30,
-    "summary": "Warm"
+    "values": [
+      {
+        "recordId": "0",
+        "data":
+           {
+             "text": "SOME REALLY LONG TEXT OVER HERE",
+           }
+      },
+      {
+        "recordId": "1",
+        "data":
+           {
+             "text": "SOME REALLY LONG TEXT OVER HERE AS WELL",
+           }
+      },
+    ]
 }
 
 ###
