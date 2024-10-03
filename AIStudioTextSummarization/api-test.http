@@ -15,6 +15,7 @@ GET {{localHostBaseUrl}}/api/health
 
 POST {{localHostBaseUrl}}/api/summarize
 Content-Type: application/json
+Scenario: summarization
 
 {
     "date": "2023-05-10",

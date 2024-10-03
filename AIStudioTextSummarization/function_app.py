@@ -63,11 +63,14 @@ the sample payload for the summarization skill will look like this:
 def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Received a request to the summarize endpoint.')
     request_json = req.get_json()
-    logging.info(f'the request_json is: {request_json}')
-    #try:
-    #    jsonschema.validate(request_json, schema=get_summarization_request_schema())
-    #except jsonschema.exceptions.ValidationError as e:
-    #    return func.HttpResponse("Invalid request: {0}".format(e), status_code=400)
+    try:
+      headers_as_dict = dict(req.headers)
+      scenario = headers_as_dict.get("scenario")
+      if scenario != "summarization":
+          # throw an error here
+          raise ValueError(f"incorrect scenario in header. Expected 'summarization', but got {scenario}")
+    except ValueError as value_error:
+        return func.HttpResponse("Invalid request: {0}".format(value_error), status_code=400)
     values = []
     response_body = { "values": values }
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
