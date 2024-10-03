@@ -2,7 +2,7 @@
 
 // edit this url based on whatever you are using to test locally 
 // (usually localhost or another endpoiint)
-@localHostBaseUrl = https://glowing-guacamole-4w6vvjxj4743j9vp-7071.app.github.dev
+@localHostBaseUrl = https://friendly-giggle-jq977jxjwgpfj749-7071.app.github.dev
 
 // just a simple example to show that it works
 GET {{githubSampleUrl}}
@@ -19,20 +19,12 @@ Scenario: summarization
 
 {
     "values": [
-      {
-        "recordId": "0",
-        "data":
-           {
-             "text": "SOME REALLY LONG TEXT OVER HERE",
-           }
-      },
-      {
-        "recordId": "1",
-        "data":
-           {
-             "text": "SOME REALLY LONG TEXT OVER HERE AS WELL",
-           }
-      },
+        {
+            "recordId": "0",
+            "data": {
+                "text": "OpenAI just closed a historic funding round, taking in a $6.6 billion investment at a $157 billion valuation, to continue pursuing its mission to build artificial-general intelligence according to a company blog post. The funding round was led by Thrive Capital, which committed $1 billion, according to the Financial Times. It was also reported that Thrive got a special deal (not offered to other investors) that allows it to invest another $1 billion next year at the same valuation if the AI firm hits a revenue goal, Reuters reported. These funds are apparently contingent on OpenAI going through with a rumored restructure as a for-profit company. The company's for-profit wing is currently overseen by a nonprofit research body, and investor profits are capped at 100x. If OpenAI doesn't restructure itself as a for-profit company within two years, Axios reported, investors can ask for their money back. Last week, Reuters reported that the company is considering becoming a public benefit corporation (like Anthropic)."
+            }
+        }
     ]
 }
 
