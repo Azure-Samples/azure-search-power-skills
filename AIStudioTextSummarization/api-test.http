@@ -12,3 +12,14 @@ GET {{githubSampleUrl}}
 GET {{localHostBaseUrl}}/api/health
 
 ### 
+
+POST {{localHostBaseUrl}}/api/summarize
+Content-Type: application/json
+
+{
+    "date": "2023-05-10",
+    "temperatureC": 30,
+    "summary": "Warm"
+}
+
+###
