@@ -3,9 +3,11 @@ import json
 import logging
 import requests
 import os
+
 app = func.FunctionApp()
 
-# the healthcheck endpoint. Important to make sure that deployments are healthy
+# A healthcheck endpoint. Important to make sure that deployments are healthy.
+# It can be accessed via <base_url>/api/health
 @app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
 def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Calling the healthcheck endpoint')
@@ -14,53 +16,11 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     response.headers['Content-Type'] = 'application/json'   
     return response
 
-'''
-the sample payload for the summarization skill will look like this:
-{
-    "values": [
-      {
-        "recordId": "0",
-        "data":
-           {
-             "text": "Este es un contrato en Inglés",
-             "language": "es",
-             "phraseList": ["Este", "Inglés"]
-           }
-      },
-      {
-        "recordId": "1",
-        "data":
-           {
-             "text": "Hello world",
-             "language": "en",
-             "phraseList": ["Hi"]
-           }
-      },
-      {
-        "recordId": "2",
-        "data":
-           {
-             "text": "Hello world, Hi world",
-             "language": "en",
-             "phraseList": ["world"]
-           }
-      },
-      {
-        "recordId": "3",
-        "data":
-           {
-             "text": "Test",
-             "language": "es",
-             "phraseList": []
-           }
-      }
-    ]
-}
-'''
-
+# the text summarization endpoint. It can be accessed via <basu_url>/api/summarize
 @app.function_name(name="TextSummarizer")
 @app.route(route="summarize")
 def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info("calling the summarize endpoint")
     request_json = dict(req.get_json())
     input_values = []
     api_key = None
@@ -78,6 +38,7 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     except ValueError as value_error:
         return func.HttpResponse("Invalid request: {0}".format(value_error), status_code=400)
     response_values = []
+    # TODO: this should be parallelized in the future for performance improvements since we don't need the requests to occur serially
     for request_body in input_values:
       api_response = call_chat_completion_model(request_body, api_key) # pass in the actual payload later
       response_values.append(api_response)
@@ -86,24 +47,23 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     response.headers['Content-Type'] = 'application/json'
     return response
 
-# TODO: figure out how to add this into a different file later
+# TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
 def call_chat_completion_model(request_body: dict, api_key: str):
     headers = {
         "Content-Type": "application/json",
         "api-key": api_key,
     }
-    # get the exact user prompt message here
     user_prompt_content = {
             "type": "text",
             "text": request_body.get("data", {}).get("text", "")
     }
-
     messages = [
-        { # Note: this is a sample prompt which can be tweaked according to your exact needs
+        { 
         "role": "system",
         "content": [
             {
             "type": "text",
+            # Note: this is a sample prompt which can be tweaked according to your exact needs
             "text": "You are a useful AI assistant who is an expert at succinctly summarizing long form text into a simple summary. Summarize the text given to you in about 200 words or less."
             }
         ]
@@ -121,16 +81,14 @@ def call_chat_completion_model(request_body: dict, api_key: str):
     "max_tokens": 4096
     }
 
-    logging.info(f"the new request payload is: {request_payload}")
     ENDPOINT = "https://azs-grok-aoai.openai.azure.com/openai/deployments/azs-grok-gpt-4o/chat/completions?api-version=2024-02-15-preview"
-    # Send request
+    
     try:
         response = requests.post(ENDPOINT, headers=headers, json=request_payload)
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
     except requests.RequestException as e:
         raise SystemExit(f"Failed to make the request. Error: {e}")
 
-    # Handle the response as needed (e.g., print or process)
     response_json = response.json()
     top_response_text = response_json['choices'][0]['message']['content']
     response_body = {
