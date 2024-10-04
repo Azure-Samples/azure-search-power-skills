@@ -77,26 +77,29 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
           raise ValueError(f"expected an api key from env variable - AZURE_INFERENCE_CREDENTIAL, but got: {api_key}")
     except ValueError as value_error:
         return func.HttpResponse("Invalid request: {0}".format(value_error), status_code=400)
-    # print(f"the api_key is: {api_key}")
-    api_response = call_chat_completion_model(api_key) # pass in the actual payload later
-    logging.info(f"the api response is: {api_response}")
     response_values = []
+    for request_body in input_values:
+      api_response = call_chat_completion_model(request_body, api_key) # pass in the actual payload later
+      response_values.append(api_response)
     response_body = { "values": response_values }
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
     response.headers['Content-Type'] = 'application/json'
     return response
 
 # TODO: figure out how to add this into a different file later
-def call_chat_completion_model(api_key: str):
+def call_chat_completion_model(request_body: dict, api_key: str):
     headers = {
         "Content-Type": "application/json",
         "api-key": api_key,
     }
+    # get the exact user prompt message here
+    user_prompt_content = {
+            "type": "text",
+            "text": request_body.get("data", {}).get("text", "")
+    }
 
-    # Payload for the request
-    payload = {
-    "messages": [
-        {
+    messages = [
+        { # Note: this is a sample prompt which can be tweaked according to your exact needs
         "role": "system",
         "content": [
             {
@@ -107,30 +110,22 @@ def call_chat_completion_model(api_key: str):
         },
         {
         "role": "user",
-        "content": [
-            {
-            "type": "text",
-            "text": "OpenAI just closed a historic funding round, taking in a $6.6 billion investment at a $157 billion valuation, to continue pursuing its mission to build artificial-general intelligence according to a company blog post. The funding round was led by Thrive Capital, which committed $1 billion, according to the Financial Times. It was also reported that Thrive got a special deal (not offered to other investors) that allows it to invest another $1 billion next year at the same valuation if the AI firm hits a revenue goal, Reuters reported. These funds are apparently contingent on OpenAI going through with a rumored restructure as a for-profit company. The company's for-profit wing is currently overseen by a nonprofit research body, and investor profits are capped at 100x. If OpenAI doesn't restructure itself as a for-profit company within two years, Axios reported, investors can ask for their money back. Last week, Reuters reported that the company is considering becoming a public benefit corporation (like Anthropic). In a rare move, OpenAI also asked investors to avoid backing rival start-ups such as Anthropic and Elon Musk's xAI, the Financial Times reported. It's worth noting that OpenAI's latest funding round just barely surpasses xAI, which raised $6 billion in May.These billions will go toward the incredibly expensive task of training AI frontier models. Anthropic CEO Dario Amodei has said AI models that cost $1 billion to train are in development and $100 billion models are not far behind. For OpenAI, which wants to build a series of “reasoning” models, those costs are only expected to balloon — making fresh funding rounds like this one critical."
-            }
-        ]
+        "content": [user_prompt_content]
         }
-    ],
+    ]
+
+    request_payload = {
+    "messages": messages,
     "temperature": 0.7,
     "top_p": 0.95,
     "max_tokens": 4096
     }
 
+    logging.info(f"the new request payload is: {request_payload}")
     ENDPOINT = "https://azs-grok-aoai.openai.azure.com/openai/deployments/azs-grok-gpt-4o/chat/completions?api-version=2024-02-15-preview"
-
-    response_body = {
-        'warnings': None,
-        'errors': [],
-        'recordId': 0, # TODO: get the record id from the input payload here
-        'data': None
-    }
     # Send request
     try:
-        response = requests.post(ENDPOINT, headers=headers, json=payload)
+        response = requests.post(ENDPOINT, headers=headers, json=request_payload)
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
     except requests.RequestException as e:
         raise SystemExit(f"Failed to make the request. Error: {e}")
@@ -138,6 +133,11 @@ def call_chat_completion_model(api_key: str):
     # Handle the response as needed (e.g., print or process)
     response_json = response.json()
     top_response_text = response_json['choices'][0]['message']['content']
-    # print(f"the top response is: {top_response_text}")
+    response_body = {
+        'warnings': None,
+        'errors': [],
+        'recordId': request_body.get('recordId'),
+        'data': None
+    }
     response_body["data"] = {"generative-summary": top_response_text}
     return response_body
