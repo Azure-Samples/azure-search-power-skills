@@ -9,8 +9,6 @@ app = func.FunctionApp()
 @app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
 def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Calling the healthcheck endpoint')
-    functions_worker_runtime = os.getenv("FUNCTIONS_WORKER_RUNTIME", "couldnt find the key")
-    logging.info(f'the functions_worker_runtime is: {functions_worker_runtime}')
     response_body = { "status": "Healthy" }
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
     response.headers['Content-Type'] = 'application/json'   
@@ -79,13 +77,13 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
           raise ValueError(f"expected an api key from env variable - AZURE_INFERENCE_CREDENTIAL, but got: {api_key}")
     except ValueError as value_error:
         return func.HttpResponse("Invalid request: {0}".format(value_error), status_code=400)
-    print(f"the api_key is: {api_key}")
+    # print(f"the api_key is: {api_key}")
+    api_response = call_chat_completion_model(api_key) # pass in the actual payload later
+    logging.info(f"the api response is: {api_response}")
     response_values = []
     response_body = { "values": response_values }
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
     response.headers['Content-Type'] = 'application/json'
-    call_chat_completion_model(api_key) # pass in the actual payload later
-    logging.info("Sucessfully returned the response body!")
     return response
 
 # TODO: figure out how to add this into a different file later
@@ -124,6 +122,12 @@ def call_chat_completion_model(api_key: str):
 
     ENDPOINT = "https://azs-grok-aoai.openai.azure.com/openai/deployments/azs-grok-gpt-4o/chat/completions?api-version=2024-02-15-preview"
 
+    response_body = {
+        'warnings': None,
+        'errors': [],
+        'recordId': 0, # TODO: get the record id from the input payload here
+        'data': None
+    }
     # Send request
     try:
         response = requests.post(ENDPOINT, headers=headers, json=payload)
@@ -132,4 +136,8 @@ def call_chat_completion_model(api_key: str):
         raise SystemExit(f"Failed to make the request. Error: {e}")
 
     # Handle the response as needed (e.g., print or process)
-    print(response.json())
+    response_json = response.json()
+    top_response_text = response_json['choices'][0]['message']['content']
+    # print(f"the top response is: {top_response_text}")
+    response_body["data"] = {"generative-summary": top_response_text}
+    return response_body
