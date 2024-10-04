@@ -2,6 +2,6 @@ fastapi==0.109.1
 python-dotenv==0.14.0
 uvicorn==0.12.1
 ObjDict==0.4.4
-keras==2.4.3
+keras==2.13.1
 joblib==1.2.0
 Pillow
