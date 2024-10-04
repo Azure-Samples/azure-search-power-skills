@@ -81,43 +81,9 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Sucessfully returned the response body!")
     return response
 
-
-# this function describes the expected schema of the json payload
-# for more information, go here: https://learn.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-web-api
-'''
-def get_summarization_request_schema() -> dict:
-    return {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "type": "object",
-        "properties": {
-            "values": {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "recordId": {"type": "string"},
-                        "data": {
-                            "type": "object",
-                            "properties": {
-                                "text": {"type": "string", "minLength": 1}
-                            },
-                            "required": ["text"],
-                        },
-                    },
-                    "required": ["recordId", "data"],
-                },
-            }
-        },
-        "required": ["values"],
-    }
-'''
 # TODO: figure out how to add this into a different file later
 def call_chat_completion_model():
-    # Configuration
-    API_KEY = "YOUR_API_KEY"
-    # IMAGE_PATH = "YOUR_IMAGE_PATH"
-    # encoded_image = base64.b64encode(open(IMAGE_PATH, 'rb').read()).decode('ascii')
+    API_KEY = "YOUR_API_KEY" # figure out how to get this from environment variables
     headers = {
         "Content-Type": "application/json",
         "api-key": API_KEY,
