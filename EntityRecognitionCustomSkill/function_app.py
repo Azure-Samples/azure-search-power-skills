@@ -103,29 +103,25 @@ def call_chat_completion_model(request_body: dict, api_key: str):
 
     request_payload = {
         "messages": messages,
-        "temperature": 0.7,
-        "top_p": 0.95,
-        "max_tokens": 4096,
+        "temperature": 0,
+        "top_p": 1,
+        "max_tokens": 2048,
     }
 
-    # this stuff should be different
-    ENDPOINT = "https://azs-grok-aoai.openai.azure.com/openai/deployments/azs-grok-gpt-4o/chat/completions?api-version=2024-02-15-preview"
+    # try:
+    response = client.complete(request_payload)
+    # except requests.RequestException as e:
+    #    raise SystemExit(f"Failed to make the request. Error: {e}")
 
-    try:
-        response = requests.post(ENDPOINT, headers=headers, json=request_payload)
-        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
-    except requests.RequestException as e:
-        raise SystemExit(f"Failed to make the request. Error: {e}")
-
-    response_json = response.json()
-    top_response_text = response_json["choices"][0]["message"]["content"]
+    # response_json = response.json()
+    top_response_text = response.choices[0].message.content
     response_body = {
         "warnings": None,
         "errors": [],
         "recordId": request_body.get("recordId"),
         "data": None,
     }
-    response_body["data"] = {"generative-summary": top_response_text}
+    response_body["data"] = {"entities": top_response_text}
     return response_body
 
 
