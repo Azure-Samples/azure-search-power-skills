@@ -342,3 +342,4 @@ local.settings.json
 
 # Environments
 .venv
+Vision/LLMChunker/.env

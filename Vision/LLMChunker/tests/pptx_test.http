@@ -1,0 +1,13 @@
+POST http://0.0.0.0:5000/process
+Content-Type: application/json
+
+{
+    "values": [
+        {
+            "data": {
+                "blobUrl": "https://andreaiaccount.blob.core.windows.net/pdf-mix-text-images/MicrosoftSlidesFY24Q3.pptx"
+            },
+            "recordId": "0"
+        }
+    ]
+}
