@@ -1,0 +1,29 @@
+{
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"ms-python.black-formatter",
+				"humao.rest-client"
+			],
+			"settings": {
+				"[python]": {
+    				"editor.defaultFormatter": "ms-python.black-formatter",
+    				"editor.formatOnSave": true
+  				},
+				"notebook.formatOnSave.enabled": true,
+				"workbench.colorTheme": "Default Dark Modern"
+			}
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"version": "3.11"
+		}
+	}
+}
