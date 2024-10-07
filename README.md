@@ -15,6 +15,7 @@ This project provides the following custom skills:
 
 | Skill | Description | Type |Language | Environment |Deployment|
 | --- | ----------- | -------| ----------- | ----------- | ----------- |
+| [AI Studio Text Summarization](AIStudioTextSummarization/README.md) | summarizes provided text via an API call to model hosted in Azure AI Studio | Text | ![python](https://img.shields.io/badge/language-python-orange) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 | [GeoPointFromName](Geo/GeoPointFromName/README.md) | retrieves coordinates from place names and addresses. | Geography | ![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 | [AcronymLinker](Text/AcronymLinker/README.md) | provides definitions for known acronyms. | Text | ![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 | [Anonymizer](Text/PresidioPIIAnonymization/README.md)  | Uses [Presidio](https://github.com/microsoft/presidio) to analyze and anonymize PII entities.  | Text | ![python](https://img.shields.io/badge/language-python-orange) | ![docker](https://img.shields.io/badge/deploy-Docker-blueviolet) | Manual |
@@ -52,7 +53,7 @@ This project provides the following custom skills:
 In order to use the functions in this project, you'll need an active Azure subscription. Most of the functions can be used on their own for quick evaluation and experimentation, but they are meant to be used as part of an [Azure AI Search pipeline](https://docs.microsoft.com/azure/search/cognitive-search-quickstart-blob).
 Each function may also add its own specific requirements, such as API keys for services they leverage.
 
-[Visual Studio 2019](https://visualstudio.microsoft.com/) is recommended, but not required. You need a recent version of the C# compiler. [Postman](https://www.getpostman.com/) is highly recommended as a way to experiment and test skills.
+[Visual Studio](https://visualstudio.microsoft.com/) is recommended, but not required. You need a recent version of the C# compiler. [Postman](https://www.getpostman.com/) is highly recommended as a way to experiment and test skills.
 
 ### Installation and deployment
 
