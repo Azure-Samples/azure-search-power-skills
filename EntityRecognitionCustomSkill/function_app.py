@@ -24,7 +24,7 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
 @app.function_name(name="EntityRecognition")
 @app.route(route="entity_recognition")
 def entity_recognition(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("calling the summarize endpoint")
+    logging.info("calling the entity recognition endpoint")
     request_json = dict(req.get_json())
     input_values = []
     api_key = None
@@ -57,7 +57,7 @@ def entity_recognition(req: func.HttpRequest) -> func.HttpResponse:
     for request_body in input_values:
         api_response = call_chat_completion_model(
             request_body, api_key
-        )  # pass in the actual payload later
+        )
         response_values.append(api_response)
     response_body = {"values": response_values}
     response = func.HttpResponse(
@@ -74,15 +74,6 @@ def call_chat_completion_model(request_body: dict, api_key: str):
         credential=AzureKeyCredential(api_key)
     )
 
-    model_info = client.get_model_info()
-    print("Model name:", model_info.model_name)
-    print("Model type:", model_info.model_type)
-    print("Model provider name:", model_info.model_provider_name)
-
-    headers = {
-        "Content-Type": "application/json",
-        "api-key": api_key,
-    }
     user_prompt_content = {
         "type": "text",
         "text": request_body.get("data", {}).get("text", ""),
@@ -107,13 +98,7 @@ def call_chat_completion_model(request_body: dict, api_key: str):
         "top_p": 1,
         "max_tokens": 2048,
     }
-
-    # try:
     response = client.complete(request_payload)
-    # except requests.RequestException as e:
-    #    raise SystemExit(f"Failed to make the request. Error: {e}")
-
-    # response_json = response.json()
     top_response_text = response.choices[0].message.content
     response_body = {
         "warnings": None,
