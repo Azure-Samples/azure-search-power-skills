@@ -4,3 +4,4 @@
 
 azure-functions
 jsonschema
+azure-ai-inference

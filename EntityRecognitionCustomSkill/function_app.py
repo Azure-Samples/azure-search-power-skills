@@ -3,6 +3,8 @@ import azure.functions as func
 import logging
 import json
 import jsonschema
+from azure.ai.inference import ChatCompletionsClient
+from azure.core.credentials import AzureKeyCredential
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
@@ -67,6 +69,16 @@ def entity_recognition(req: func.HttpRequest) -> func.HttpResponse:
 
 # TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
 def call_chat_completion_model(request_body: dict, api_key: str):
+    client = ChatCompletionsClient(
+        endpoint='https://azs-grok-phi-3-5-vision.eastus.models.ai.azure.com',
+        credential=AzureKeyCredential(api_key)
+    )
+
+    model_info = client.get_model_info()
+    print("Model name:", model_info.model_name)
+    print("Model type:", model_info.model_type)
+    print("Model provider name:", model_info.model_provider_name)
+
     headers = {
         "Content-Type": "application/json",
         "api-key": api_key,
