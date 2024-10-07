@@ -1,25 +1,20 @@
 import azure.functions as func
 import logging
+import json
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
-@app.route(route="http_trigger")
-def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+# A healthcheck endpoint. Important to make sure that deployments are healthy.
+# It can be accessed via <base_url>/api/health
+@app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
+def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info("Calling the healthcheck endpoint")
+    response_body = {"status": "Healthy"}
+    response = func.HttpResponse(
+        json.dumps(response_body, default=lambda obj: obj.__dict__)
+    )
+    response.headers["Content-Type"] = "application/json"
+    return response
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+
