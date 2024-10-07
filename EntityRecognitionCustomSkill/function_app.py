@@ -4,9 +4,7 @@ import logging
 import json
 import jsonschema
 
-
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
-
 
 # A healthcheck endpoint. Important to make sure that deployments are healthy.
 # It can be accessed via <base_url>/api/health
@@ -20,6 +18,7 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     response.headers["Content-Type"] = "application/json"
     return response
 
+
 @app.function_name(name="EntityRecognition")
 @app.route(route="entity_recognition")
 def entity_recognition(req: func.HttpRequest) -> func.HttpResponse:
@@ -28,6 +27,7 @@ def entity_recognition(req: func.HttpRequest) -> func.HttpResponse:
     input_values = []
     api_key = None
     try:
+        jsonschema.validate(request_json, schema=get_request_schema())
         headers_as_dict = dict(req.headers)
         scenario = headers_as_dict.get("scenario")
         if scenario != "entity-recognition":
@@ -44,6 +44,8 @@ def entity_recognition(req: func.HttpRequest) -> func.HttpResponse:
             raise ValueError(
                 f"expected an api key from env variable - AZURE_INFERENCE_CREDENTIAL, but got: {api_key}"
             )
+    except jsonschema.exceptions.ValidationError as e:
+        return func.HttpResponse("Invalid request: {0}".format(e), status_code=400)
     except ValueError as value_error:
         return func.HttpResponse(
             "Invalid request: {0}".format(value_error), status_code=400
@@ -62,6 +64,7 @@ def entity_recognition(req: func.HttpRequest) -> func.HttpResponse:
     response.headers["Content-Type"] = "application/json"
     return response
 
+
 # TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
 def call_chat_completion_model(request_body: dict, api_key: str):
     headers = {
@@ -79,7 +82,7 @@ def call_chat_completion_model(request_body: dict, api_key: str):
                 {
                     "type": "text",
                     # Note: this is a sample prompt which can be tweaked according to your exact needs
-                    "text": "You are a useful AI assistant who is an expert at succinctly summarizing long form text into a simple summary. Summarize the text given to you in about 200 words or less.",
+                    "text": "You are a useful AI assistant. I need you to help me recognize entities in JSON format. From the text given to you, identity all people names, addresses, email addresses, engineering job titles and present them as individual lists in a JSON object.",
                 }
             ],
         },
@@ -93,6 +96,7 @@ def call_chat_completion_model(request_body: dict, api_key: str):
         "max_tokens": 4096,
     }
 
+    # this stuff should be different
     ENDPOINT = "https://azs-grok-aoai.openai.azure.com/openai/deployments/azs-grok-gpt-4o/chat/completions?api-version=2024-02-15-preview"
 
     try:
@@ -127,9 +131,7 @@ def get_request_schema():
                         "recordId": {"type": "string"},
                         "data": {
                             "type": "object",
-                            "properties": {
-                                "text": {"type": "string", "minLength": 1}
-                            },
+                            "properties": {"text": {"type": "string", "minLength": 1}},
                             "required": ["text"],
                         },
                     },
