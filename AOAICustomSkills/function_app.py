@@ -60,9 +60,9 @@ def call_chat_completion_model(request_body: dict):
             "text": request_body.get("data", {}).get("text", "")
     }
     messages = [
-        { 
+        {
         "role": "system",
-        "content": [
+        "content": [ # this context has to be dynamic according to the request header
             {
             "type": "text",
             # Note: this is a sample prompt which can be tweaked according to your exact needs
@@ -84,7 +84,7 @@ def call_chat_completion_model(request_body: dict):
     }
 
     # this should be an environment variable
-    ENDPOINT = "https://azs-grok-aoai.openai.azure.com/openai/deployments/azs-grok-gpt-4o/chat/completions?api-version=2024-02-15-preview"
+    ENDPOINT = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
     
     try:
         response = requests.post(ENDPOINT, headers=headers, json=request_payload)
