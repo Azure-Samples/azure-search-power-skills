@@ -49,6 +49,8 @@ def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
 def call_chat_completion_model(request_body: dict, scenario: str):
     SUMMARIZATION_HEADER = "summarization"
     ENTITY_RECOGNITION_HEADER = "entity-recognition"
+    IMAGE_CAPTIONING_HEADER = "image-captioning"
+
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     logging.info(f'the api key is: {api_key}')
     headers = {
@@ -104,6 +106,31 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [user_prompt_content]
         }
     ]
+    elif scenario == IMAGE_CAPTIONING_HEADER:
+        logging.info("calling into the image captioning capability")
+        chat_completion_system_context = {
+        "role": "system",
+        "content": [
+            {
+                    "type": "text",
+                    # Note: this is a sample prompt which can be tweaked according to your exact needs
+                    "text": "You are a useful AI assistant who has knowledge about celebrities and landmarks. For the image sent to you, identify all the celebrities and landmarks and present them as individual lists in a JSON object"}
+            ]
+        }
+
+        # TODO: adapt this for images
+        user_prompt_content = {
+            "type": "text",
+            "text": request_body.get("data", {}).get("text", "")
+        }
+        messages = [
+        chat_completion_system_context,
+        {
+        "role": "user",
+        "content": [user_prompt_content]
+        }
+        ]
+
     request_payload = {
     "messages": messages,
     "temperature": 0.7,
