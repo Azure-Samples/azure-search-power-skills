@@ -17,10 +17,10 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     return response
 
 # the text summarization endpoint. It can be accessed via <basu_url>/api/summarize
-@app.function_name(name="TextSummarizer")
-@app.route(route="summarize")
-def text_summarization(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("calling the summarize endpoint")
+@app.function_name(name="AOAICustomSkill")
+@app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
+def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info("calling the custom skill endpoint")
     request_json = dict(req.get_json())
     input_values = []
     api_key = None
@@ -40,7 +40,7 @@ def text_summarization(req: func.HttpRequest) -> func.HttpResponse:
     response_values = []
     # TODO: this can be parallelized in the future for performance improvements since we don't need requests to occur serially
     for request_body in input_values:
-      api_response = call_chat_completion_model(request_body)
+      api_response = call_chat_completion_model(request_body=request_body, scenario=scenario)
       response_values.append(api_response)
     response_body = { "values": response_values }
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
@@ -48,7 +48,7 @@ def text_summarization(req: func.HttpRequest) -> func.HttpResponse:
     return response
 
 # TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
-def call_chat_completion_model(request_body: dict):
+def call_chat_completion_model(request_body: dict, scenario: str):
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     logging.info(f'the api key is: {api_key}')
     headers = {

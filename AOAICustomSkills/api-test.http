@@ -7,7 +7,7 @@ GET {{localHostBaseUrl}}/api/health
 
 ### 
 
-POST {{localHostBaseUrl}}/api/summarize
+POST {{localHostBaseUrl}}/api/custom_skill
 Content-Type: application/json
 Scenario: summarization
 
