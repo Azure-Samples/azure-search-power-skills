@@ -114,7 +114,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
                 {
                     "type": "text",
                     # Note: this is a sample prompt which can be tweaked according to your exact needs
-                    "text": "You are a useful AI assistant who can recognize celebrities. For the image sent to you as a base64 encoded string, I want yo to decode the image, identify all the celebrities in there, and then present them as a list in a JSON object" 
+                    "text": "You are a useful AI assistant who can recognize celebrities. For the image sent to you as a base64 encoded string, I want you to decode the image, identify all the celebrities in there, and then present them as a list in a JSON object" 
                 }
             ]
         }
