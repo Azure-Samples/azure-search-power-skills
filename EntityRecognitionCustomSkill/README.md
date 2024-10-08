@@ -6,7 +6,7 @@ Quickstart Guide:
 
 - This folder illustrates how to leverage Azure AI Studio to recognize entities from some text using [custom web api skills](https://learn.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-web-api).
 
-- As a prerequisite to running this custom skill, you must first deploy an LLM to Azure. See [this guide](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-openai) for reference.
+- As a prerequisite to running this custom skill, you must first deploy a model that has chat completion as an inference task into Azure AI Studio. See [this guide](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-openai) for reference.
 
 - in the *local.settings.json* file, set your "AZURE_INFERENCE_CREDENTIAL" value to the API key of your deployed LLM.
 
