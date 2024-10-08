@@ -41,3 +41,11 @@ Scenario: entity-recognition
 }
 
 ###
+
+POST {{localHostBaseUrl}}{{customSkillPath}}
+Content-Type: application/json
+Scenario: image-captioning
+
+# add the image stuff over here
+
+###
