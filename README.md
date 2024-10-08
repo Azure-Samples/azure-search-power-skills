@@ -15,7 +15,7 @@ This project provides the following custom skills:
 
 | Skill | Description | Type |Language | Environment |Deployment|
 | --- | ----------- | -------| ----------- | ----------- | ----------- |
-| [Azure AI Studio Text Summarization](AIStudioTextSummarization/README.md) | summarizes provided text via an API call to model hosted in Azure AI Studio | Text | ![python](https://img.shields.io/badge/language-python-orange) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
+| [Azure Open AI Custom Skills](AOAICustomSkills/README.md) | calls custom skills to do things in AOAI deployments like text summarization and entity recognition via an API call to model hosted in Azure AI Studio | Text | ![python](https://img.shields.io/badge/language-python-orange) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 | [Azure AI Studio Entity Recognition](EntityRecognitionCustomSkill/README.md) | summarizes provided text via an API call to model hosted in Azure AI Studio | Text | ![python](https://img.shields.io/badge/language-python-orange) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 | [GeoPointFromName](Geo/GeoPointFromName/README.md) | retrieves coordinates from place names and addresses. | Geography | ![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 | [AcronymLinker](Text/AcronymLinker/README.md) | provides definitions for known acronyms. | Text | ![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
