@@ -81,6 +81,7 @@ def call_chat_completion_model(request_body: dict, api_key: str):
     "max_tokens": 4096
     }
 
+    # this should be an environment variable
     ENDPOINT = "https://azs-grok-aoai.openai.azure.com/openai/deployments/azs-grok-gpt-4o/chat/completions?api-version=2024-02-15-preview"
     
     try:
