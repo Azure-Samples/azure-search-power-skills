@@ -19,7 +19,7 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
 # the text summarization endpoint. It can be accessed via <basu_url>/api/summarize
 @app.function_name(name="TextSummarizer")
 @app.route(route="summarize")
-def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
+def text_summarization(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("calling the summarize endpoint")
     request_json = dict(req.get_json())
     input_values = []
@@ -38,9 +38,9 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     except ValueError as value_error:
         return func.HttpResponse("Invalid request: {0}".format(value_error), status_code=400)
     response_values = []
-    # TODO: this should be parallelized in the future for performance improvements since we don't need the requests to occur serially
+    # TODO: this can be parallelized in the future for performance improvements since we don't need requests to occur serially
     for request_body in input_values:
-      api_response = call_chat_completion_model(request_body, api_key) # pass in the actual payload later
+      api_response = call_chat_completion_model(request_body)
       response_values.append(api_response)
     response_body = { "values": response_values }
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
@@ -48,7 +48,9 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     return response
 
 # TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
-def call_chat_completion_model(request_body: dict, api_key: str):
+def call_chat_completion_model(request_body: dict):
+    api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
+    logging.info(f'the api key is: {api_key}')
     headers = {
         "Content-Type": "application/json",
         "api-key": api_key,

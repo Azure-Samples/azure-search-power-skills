@@ -1,12 +1,6 @@
-@githubSampleUrl = https://api.github.com/
-
 // edit this url based on whatever you are using to test locally 
 // (usually localhost or another endpoiint)
-@localHostBaseUrl = https://friendly-giggle-jq977jxjwgpfj749-7071.app.github.dev
-
-// just a simple example to show that it works
-GET {{githubSampleUrl}}
-###
+@localHostBaseUrl = https://shiny-enigma-5x5rrgwgwxx3p776-7071.app.github.dev
 
 // healthcheck endpoint
 GET {{localHostBaseUrl}}/api/health
