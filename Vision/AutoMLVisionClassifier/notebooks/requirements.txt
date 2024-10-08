@@ -7,4 +7,4 @@ azure-storage-common==1.4.2
 matplotlib==3.4.1
 Pillow==10.3.0
 requests==2.32.0
-opencv-python==4.5.1.48
+opencv-python==4.8.1.78
