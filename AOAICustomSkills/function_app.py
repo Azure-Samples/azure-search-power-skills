@@ -48,6 +48,7 @@ def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
 # TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
 def call_chat_completion_model(request_body: dict, scenario: str):
     SUMMARIZATION_HEADER = "summarization"
+    ENTITY_RECOGNITION_HEADER = "entity-recognition"
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     logging.info(f'the api key is: {api_key}')
     headers = {
@@ -67,6 +68,29 @@ def call_chat_completion_model(request_body: dict, scenario: str):
                 # Note: this is a sample summarization prompt which can be tweaked according to your exact needs
                 "text": "You are a useful AI assistant who is an expert at succinctly summarizing long form text into a simple summary. Summarize the text given to you in about 200 words or less."
             }
+            ]
+        }
+        user_prompt_content = {
+            "type": "text",
+            "text": request_body.get("data", {}).get("text", "")
+        }
+        messages = [
+        chat_completion_system_context,
+        {
+        "role": "user",
+        "content": [user_prompt_content]
+        }
+    ]
+    elif scenario == ENTITY_RECOGNITION_HEADER:
+        logging.info("calling into the entity recognition capability")
+        chat_completion_system_context = {
+        "role": "system",
+        "content": [
+            {
+                    "type": "text",
+                    # Note: this is a sample prompt which can be tweaked according to your exact needs
+                    "text": "You are a useful AI assistant. I need you to help me recognize entities in this piece of text. From the text given to you, identity all people names, addresses, email addresses, engineering job titles and present them as individual lists in a JSON object.",
+                }
             ]
         }
         user_prompt_content = {
@@ -105,4 +129,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     }
     if scenario == SUMMARIZATION_HEADER:
         response_body["data"] = {"generative-summary": top_response_text}
+    elif scenario == ENTITY_RECOGNITION_HEADER:
+        response_body["data"] = {"entities": top_response_text}
     return response_body
