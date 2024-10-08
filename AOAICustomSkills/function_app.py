@@ -109,19 +109,20 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     elif scenario == IMAGE_CAPTIONING_HEADER:
         logging.info("calling into the image captioning capability")
         chat_completion_system_context = {
-        "role": "system",
-        "content": [
-            {
+            "role": "system",
+            "content": [
+                {
                     "type": "text",
                     # Note: this is a sample prompt which can be tweaked according to your exact needs
-                    "text": "You are a useful AI assistant who has knowledge about celebrities and landmarks. For the image sent to you, identify all the celebrities and landmarks and present them as individual lists in a JSON object"}
+                    "text": "You are a useful AI assistant who can recognize celebrities. For the image sent to you as a base64 encoded string, I want yo to decode the image, identify all the celebrities in there, and then present them as a list in a JSON object" 
+                }
             ]
         }
 
         # TODO: adapt this for images
         user_prompt_content = {
             "type": "text",
-            "text": request_body.get("data", {}).get("text", "")
+            "text": request_body.get("data", {}).get("image", "")
         }
         messages = [
         chat_completion_system_context,
@@ -158,4 +159,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         response_body["data"] = {"generative-summary": top_response_text}
     elif scenario == ENTITY_RECOGNITION_HEADER:
         response_body["data"] = {"entities": top_response_text}
+    elif scenario == IMAGE_CAPTIONING_HEADER:
+        response_body["data"] = {"generative-caption": top_response_text}
     return response_body
