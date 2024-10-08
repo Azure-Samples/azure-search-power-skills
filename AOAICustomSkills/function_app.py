@@ -16,19 +16,17 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     response.headers['Content-Type'] = 'application/json'   
     return response
 
-# the text summarization endpoint. It can be accessed via <basu_url>/api/summarize
-@app.function_name(name="TextSummarizer")
-@app.route(route="summarize")
-def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("calling the summarize endpoint")
+# the custom skill endpoint. It can be accessed via <base_url>/api/custom_skill
+@app.function_name(name="AOAICustomSkill")
+@app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
+def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info("calling the custom skill endpoint")
     request_json = dict(req.get_json())
     input_values = []
     api_key = None
     try:
       headers_as_dict = dict(req.headers)
       scenario = headers_as_dict.get("scenario")
-      if scenario != "summarization":
-          raise ValueError(f"incorrect scenario in header. Expected 'summarization', but got {scenario}")
       input_values = request_json.get("values")
       if not input_values:
           raise ValueError(f"expected values in the request body, but got {input_values}")
@@ -38,9 +36,9 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     except ValueError as value_error:
         return func.HttpResponse("Invalid request: {0}".format(value_error), status_code=400)
     response_values = []
-    # TODO: this should be parallelized in the future for performance improvements since we don't need the requests to occur serially
+    # TODO: this can be parallelized in the future for performance improvements since we don't need requests to occur serially
     for request_body in input_values:
-      api_response = call_chat_completion_model(request_body, api_key) # pass in the actual payload later
+      api_response = call_chat_completion_model(request_body=request_body, scenario=scenario)
       response_values.append(api_response)
     response_body = { "values": response_values }
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
@@ -48,32 +46,64 @@ def text_chunking(req: func.HttpRequest) -> func.HttpResponse:
     return response
 
 # TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
-def call_chat_completion_model(request_body: dict, api_key: str):
+def call_chat_completion_model(request_body: dict, scenario: str):
+    SUMMARIZATION_HEADER = "summarization"
+    ENTITY_RECOGNITION_HEADER = "entity-recognition"
+    api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
+    logging.info(f'the api key is: {api_key}')
     headers = {
         "Content-Type": "application/json",
         "api-key": api_key,
     }
-    user_prompt_content = {
+    # default our chat completion context to be for summarization
+    chat_completion_system_context = {}
+    messages = []
+    if scenario == SUMMARIZATION_HEADER:
+        logging.info("calling into the summarization capability")
+        chat_completion_system_context = {
+        "role": "system",
+        "content": [ # this context has to be dynamic according to the request header
+            {
+                "type": "text",
+                # Note: this is a sample summarization prompt which can be tweaked according to your exact needs
+                "text": "You are a useful AI assistant who is an expert at succinctly summarizing long form text into a simple summary. Summarize the text given to you in about 200 words or less."
+            }
+            ]
+        }
+        user_prompt_content = {
             "type": "text",
             "text": request_body.get("data", {}).get("text", "")
-    }
-    messages = [
-        { 
-        "role": "system",
-        "content": [
-            {
-            "type": "text",
-            # Note: this is a sample prompt which can be tweaked according to your exact needs
-            "text": "You are a useful AI assistant who is an expert at succinctly summarizing long form text into a simple summary. Summarize the text given to you in about 200 words or less."
-            }
-        ]
-        },
+        }
+        messages = [
+        chat_completion_system_context,
         {
         "role": "user",
         "content": [user_prompt_content]
         }
     ]
-
+    elif scenario == ENTITY_RECOGNITION_HEADER:
+        logging.info("calling into the entity recognition capability")
+        chat_completion_system_context = {
+        "role": "system",
+        "content": [
+            {
+                    "type": "text",
+                    # Note: this is a sample prompt which can be tweaked according to your exact needs
+                    "text": "You are a useful AI assistant. I need you to help me recognize entities in this piece of text. From the text given to you, identity all people names, addresses, email addresses, engineering job titles and present them as individual lists in a JSON object.",
+                }
+            ]
+        }
+        user_prompt_content = {
+            "type": "text",
+            "text": request_body.get("data", {}).get("text", "")
+        }
+        messages = [
+        chat_completion_system_context,
+        {
+        "role": "user",
+        "content": [user_prompt_content]
+        }
+    ]
     request_payload = {
     "messages": messages,
     "temperature": 0.7,
@@ -81,7 +111,7 @@ def call_chat_completion_model(request_body: dict, api_key: str):
     "max_tokens": 4096
     }
 
-    ENDPOINT = "https://azs-grok-aoai.openai.azure.com/openai/deployments/azs-grok-gpt-4o/chat/completions?api-version=2024-02-15-preview"
+    ENDPOINT = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
     
     try:
         response = requests.post(ENDPOINT, headers=headers, json=request_payload)
@@ -97,5 +127,8 @@ def call_chat_completion_model(request_body: dict, api_key: str):
         'recordId': request_body.get('recordId'),
         'data': None
     }
-    response_body["data"] = {"generative-summary": top_response_text}
+    if scenario == SUMMARIZATION_HEADER:
+        response_body["data"] = {"generative-summary": top_response_text}
+    elif scenario == ENTITY_RECOGNITION_HEADER:
+        response_body["data"] = {"entities": top_response_text}
     return response_body
