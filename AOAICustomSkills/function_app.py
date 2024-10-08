@@ -16,7 +16,7 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     response.headers['Content-Type'] = 'application/json'   
     return response
 
-# the text summarization endpoint. It can be accessed via <basu_url>/api/summarize
+# the custom skill endpoint. It can be accessed via <base_url>/api/custom_skill
 @app.function_name(name="AOAICustomSkill")
 @app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
 def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
@@ -27,8 +27,6 @@ def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
     try:
       headers_as_dict = dict(req.headers)
       scenario = headers_as_dict.get("scenario")
-      if scenario != "summarization":
-          raise ValueError(f"incorrect scenario in header. Expected 'summarization', but got {scenario}")
       input_values = request_json.get("values")
       if not input_values:
           raise ValueError(f"expected values in the request body, but got {input_values}")
@@ -49,33 +47,39 @@ def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
 
 # TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
 def call_chat_completion_model(request_body: dict, scenario: str):
+    SUMMARIZATION_HEADER = "summarization"
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     logging.info(f'the api key is: {api_key}')
     headers = {
         "Content-Type": "application/json",
         "api-key": api_key,
     }
-    user_prompt_content = {
-            "type": "text",
-            "text": request_body.get("data", {}).get("text", "")
-    }
-    messages = [
-        {
+    # default our chat completion context to be for summarization
+    chat_completion_system_context = {}
+    messages = []
+    if scenario == SUMMARIZATION_HEADER:
+        logging.info("calling into the summarization capability")
+        chat_completion_system_context = {
         "role": "system",
         "content": [ # this context has to be dynamic according to the request header
             {
-            "type": "text",
-            # Note: this is a sample prompt which can be tweaked according to your exact needs
-            "text": "You are a useful AI assistant who is an expert at succinctly summarizing long form text into a simple summary. Summarize the text given to you in about 200 words or less."
+                "type": "text",
+                # Note: this is a sample summarization prompt which can be tweaked according to your exact needs
+                "text": "You are a useful AI assistant who is an expert at succinctly summarizing long form text into a simple summary. Summarize the text given to you in about 200 words or less."
             }
-        ]
-        },
+            ]
+        }
+        user_prompt_content = {
+            "type": "text",
+            "text": request_body.get("data", {}).get("text", "")
+        }
+        messages = [
+        chat_completion_system_context,
         {
         "role": "user",
         "content": [user_prompt_content]
         }
     ]
-
     request_payload = {
     "messages": messages,
     "temperature": 0.7,
@@ -83,7 +87,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     "max_tokens": 4096
     }
 
-    # this should be an environment variable
     ENDPOINT = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
     
     try:
@@ -100,5 +103,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         'recordId': request_body.get('recordId'),
         'data': None
     }
-    response_body["data"] = {"generative-summary": top_response_text}
+    if scenario == SUMMARIZATION_HEADER:
+        response_body["data"] = {"generative-summary": top_response_text}
     return response_body
