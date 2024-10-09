@@ -45,7 +45,6 @@ def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
     response.headers['Content-Type'] = 'application/json'
     return response
 
-# TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
 def call_chat_completion_model(request_body: dict, scenario: str):
     SUMMARIZATION_HEADER = "summarization"
     ENTITY_RECOGNITION_HEADER = "entity-recognition"
@@ -146,12 +145,11 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     
     try:
         response = requests.post(ENDPOINT, headers=headers, json=request_payload)
-        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+        response.raise_for_status()
     except requests.RequestException as e:
         raise SystemExit(f"Failed to make the request. Error: {e}")
 
     response_json = response.json()
-    print(f"the response json is: {response_json}")
     top_response_text = response_json['choices'][0]['message']['content']
     response_body = {
         'warnings': None,
