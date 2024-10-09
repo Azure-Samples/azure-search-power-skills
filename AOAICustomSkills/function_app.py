@@ -108,29 +108,33 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     ]
     elif scenario == IMAGE_CAPTIONING_HEADER:
         logging.info("calling into the image captioning capability")
-        chat_completion_system_context = {
+        image_base64encoded = request_body.get("data", {}).get("image", "")
+        image_url = f'data:image/jpg;base64,{image_base64encoded}'
+        messages = [ {
             "role": "system",
-            "content": [
+            "content": 
+            [
                 {
                     "type": "text",
-                    # Note: this is a sample prompt which can be tweaked according to your exact needs
-                    "text": "You are a useful AI assistant who can recognize celebrities. For the image sent to you as a base64 encoded string, I want you to decode the image, identify all the celebrities in there, and then present them as a list in a JSON object" 
+                    "text": "You are an AI assistant that can recognize celebrities in images."
                 }
             ]
-        }
-
-        # TODO: adapt this for images
-        user_prompt_content = {
-            "type": "text",
-            "text": request_body.get("data", {}).get("image", "")
-        }
-        messages = [
-        chat_completion_system_context,
-        {
-        "role": "user",
-        "content": [user_prompt_content]
-        }
-        ]
+            },
+            {
+                "role": "user",
+                "content": [
+                {
+                    "type": "text",
+                    "text": "Can you tell me who is in here?"
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": image_url}
+                }
+                ]
+            }
+            ]
+        # logging.info(f"the full message contents are: {messages}")
 
     request_payload = {
     "messages": messages,
