@@ -8,6 +8,7 @@ GET {{localHostBaseUrl}}/api/health
 
 ### 
 
+# summarization example request
 POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: summarization
@@ -25,6 +26,7 @@ Scenario: summarization
 
 ###
 
+# entity recognition example request
 POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: entity-recognition
@@ -46,8 +48,7 @@ POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: image-captioning
 
-# Gonna show a photo of a Tesla car here
-
+# image captioning example request with a Tesla car passed in as a base64encoded image
 {
     "values": [
         {

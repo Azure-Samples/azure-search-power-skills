@@ -58,6 +58,11 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     # default our chat completion context to be for summarization
     chat_completion_system_context = {}
     messages = []
+    custom_prompts = {}
+    # read from a json file called custom_prmopts.json to read the prompts for the different scenarios
+    with open('custom_prompts.json', 'r') as file:
+        custom_prompts = json.load(file)
+
     if scenario == SUMMARIZATION_HEADER:
         logging.info("calling into the summarization capability")
         chat_completion_system_context = {
@@ -66,7 +71,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
             {
                 "type": "text",
                 # Note: this is a sample summarization prompt which can be tweaked according to your exact needs
-                "text": "You are a useful AI assistant who is an expert at succinctly summarizing long form text into a simple summary. Summarize the text given to you in about 200 words or less."
+                "text": custom_prompts.get("summarize-default-system-prompt")
             }
             ]
         }
@@ -89,7 +94,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
             {
                     "type": "text",
                     # Note: this is a sample prompt which can be tweaked according to your exact needs
-                    "text": "You are a useful AI assistant. I need you to help me recognize entities in this piece of text. From the text given to you, identity all people names, addresses, email addresses, engineering job titles and present them as individual lists in a JSON object.",
+                    "text": custom_prompts.get("entity-recognition-default-system-prompt")
                 }
             ]
         }
@@ -113,7 +118,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
             [
                 {
                     "type": "text",
-                    "text": "You are a useful AI assistant who is an expert in machines. You will identify all the parts for the machines in the image sent to you and will formulate the response as a list in JSON."
+                    "text": custom_prompts.get("image-captioning-machine-info-default-prompt")
                 }
             ]
             },
