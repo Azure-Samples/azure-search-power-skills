@@ -14,6 +14,8 @@ Quickstart Guide:
 
 - A sample payload is provided in the *api-test.http* file. Replace the localhostBaseUrl variable with the base url of your container/local http environment. Once you install the Visual Studio REST Client extension, you can hit the Send Request button from that file.
 
+- The currently demonstrateded set of custom skills in this repo are about using chat completion models to do entity recognition, summarization and image-captioning.
+
 Languages:
 
 - ![python](https://img.shields.io/badge/language-python-orange)

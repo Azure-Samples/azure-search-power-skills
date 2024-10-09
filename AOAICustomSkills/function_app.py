@@ -108,7 +108,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     elif scenario == IMAGE_CAPTIONING_HEADER:
         logging.info("calling into the image captioning capability")
         image_base64encoded = request_body.get("data", {}).get("image", "")
-        #logging.info(f'the image data is: {image_base64encoded}')
         messages = [ {
             "role": "system",
             "content": 
