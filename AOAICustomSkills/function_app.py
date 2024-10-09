@@ -51,7 +51,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     IMAGE_CAPTIONING_HEADER = "image-captioning"
 
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
-    logging.info(f'the api key is: {api_key}')
     headers = {
         "Content-Type": "application/json",
         "api-key": api_key,
