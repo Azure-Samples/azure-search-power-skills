@@ -134,7 +134,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
                 ]
             }
             ]
-        # logging.info(f"the full message contents are: {messages}")
 
     request_payload = {
     "messages": messages,
