@@ -109,14 +109,14 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     elif scenario == IMAGE_CAPTIONING_HEADER:
         logging.info("calling into the image captioning capability")
         image_base64encoded = request_body.get("data", {}).get("image", "")
-        image_url = f'data:image/jpg;base64,{image_base64encoded}'
+        #logging.info(f'the image data is: {image_base64encoded}')
         messages = [ {
             "role": "system",
             "content": 
             [
                 {
                     "type": "text",
-                    "text": "You are an AI assistant that can recognize celebrities in images."
+                    "text": "You are a useful AI assistant who is an expert in machines. You will identify all the parts for the machines in the image sent to you and will formulate the response as a list in JSON."
                 }
             ]
             },
@@ -124,13 +124,13 @@ def call_chat_completion_model(request_body: dict, scenario: str):
                 "role": "user",
                 "content": [
                 {
-                    "type": "text",
-                    "text": "Can you tell me who is in here?"
+                    "type": "image_url",
+                    "image_url": {"url": image_base64encoded}
                 },
                 {
-                    "type": "image_url",
-                    "image_url": {"url": image_url}
-                }
+                    "type": "text",
+                    "text": "Tell me what this is and what's required to make this."
+                },
                 ]
             }
             ]
@@ -151,6 +151,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         raise SystemExit(f"Failed to make the request. Error: {e}")
 
     response_json = response.json()
+    print(f"the response json is: {response_json}")
     top_response_text = response_json['choices'][0]['message']['content']
     response_body = {
         'warnings': None,
