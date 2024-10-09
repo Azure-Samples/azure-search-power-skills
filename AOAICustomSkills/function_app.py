@@ -45,12 +45,12 @@ def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
     response.headers['Content-Type'] = 'application/json'
     return response
 
-# TODO: figure out how to add this into a different file later. It's currently causing interpreter errors when running locally.
 def call_chat_completion_model(request_body: dict, scenario: str):
     SUMMARIZATION_HEADER = "summarization"
     ENTITY_RECOGNITION_HEADER = "entity-recognition"
+    IMAGE_CAPTIONING_HEADER = "image-captioning"
+
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
-    logging.info(f'the api key is: {api_key}')
     headers = {
         "Content-Type": "application/json",
         "api-key": api_key,
@@ -104,6 +104,34 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [user_prompt_content]
         }
     ]
+    elif scenario == IMAGE_CAPTIONING_HEADER:
+        logging.info("calling into the image captioning capability")
+        image_base64encoded = request_body.get("data", {}).get("image", "")
+        messages = [ {
+            "role": "system",
+            "content": 
+            [
+                {
+                    "type": "text",
+                    "text": "You are a useful AI assistant who is an expert in machines. You will identify all the parts for the machines in the image sent to you and will formulate the response as a list in JSON."
+                }
+            ]
+            },
+            {
+                "role": "user",
+                "content": [
+                {
+                    "type": "image_url",
+                    "image_url": {"url": image_base64encoded}
+                },
+                {
+                    "type": "text",
+                    "text": "Tell me what this is and what's required to make this."
+                },
+                ]
+            }
+            ]
+
     request_payload = {
     "messages": messages,
     "temperature": 0.7,
@@ -115,7 +143,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     
     try:
         response = requests.post(ENDPOINT, headers=headers, json=request_payload)
-        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+        response.raise_for_status()
     except requests.RequestException as e:
         raise SystemExit(f"Failed to make the request. Error: {e}")
 
@@ -131,4 +159,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         response_body["data"] = {"generative-summary": top_response_text}
     elif scenario == ENTITY_RECOGNITION_HEADER:
         response_body["data"] = {"entities": top_response_text}
+    elif scenario == IMAGE_CAPTIONING_HEADER:
+        response_body["data"] = {"generative-caption": top_response_text}
     return response_body
