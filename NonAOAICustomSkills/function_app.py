@@ -55,12 +55,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
 
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     ENDPOINT = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
-    client = ChatCompletionsClient( endpoint=ENDPOINT, credential=AzureKeyCredential(api_key))
-    model_info = client.get_model_info()
-    print("Model name:", model_info.model_name)
-    print("Model type:", model_info.model_type)
-    print("Model provider name:", model_info.model_provider_name)
-    # default our chat completion context to be for summarization
+    client = ChatCompletionsClient(endpoint=ENDPOINT, credential=AzureKeyCredential(api_key))
     chat_completion_system_context = {}
     messages = []
     custom_prompts = {}
