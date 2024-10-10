@@ -3,6 +3,8 @@ import json
 import logging
 import requests
 import os
+from azure.ai.inference import ChatCompletionsClient
+from azure.core.credentials import AzureKeyCredential
 
 app = func.FunctionApp()
 
@@ -21,7 +23,7 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
 @app.function_name(name="NonAOAICustomSkill")
 @app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
 def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("calling the custom skill endpoint")
+    logging.info("calling the NON-AOAI custom skill endpoint")
     request_json = dict(req.get_json())
     input_values = []
     api_key = None
@@ -52,10 +54,12 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     IMAGE_CAPTIONING_HEADER = "image-captioning"
 
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
-    headers = {
-        "Content-Type": "application/json",
-        "api-key": api_key,
-    }
+    ENDPOINT = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
+    client = ChatCompletionsClient( endpoint=ENDPOINT, credential=AzureKeyCredential(api_key))
+    model_info = client.get_model_info()
+    print("Model name:", model_info.model_name)
+    print("Model type:", model_info.model_type)
+    print("Model provider name:", model_info.model_provider_name)
     # default our chat completion context to be for summarization
     chat_completion_system_context = {}
     messages = []
@@ -144,17 +148,9 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     "top_p": 0.95,
     "max_tokens": 4096
     }
-
-    ENDPOINT = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
     
-    try:
-        response = requests.post(ENDPOINT, headers=headers, json=request_payload)
-        response.raise_for_status()
-    except requests.RequestException as e:
-        raise SystemExit(f"Failed to make the request. Error: {e}")
-
-    response_json = response.json()
-    top_response_text = response_json['choices'][0]['message']['content']
+    response = client.complete(request_payload)
+    top_response_text = response.choices[0].message.content
     response_body = {
         'warnings': None,
         'errors': [],
