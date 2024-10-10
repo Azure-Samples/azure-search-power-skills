@@ -33,6 +33,7 @@ bld/
 Generated\ Files/
 
 # VS Code
+.vscode/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
