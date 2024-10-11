@@ -1,9 +1,0 @@
-{
-  "IsEncrypted": false,
-  "Values": {
-  "FUNCTIONS_WORKER_RUNTIME": "python",
-  "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
-  "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-  "AZURE_INFERENCE_CREDENTIAL": "<ENTER_API_KEY_HERE>"
-  }
-}
