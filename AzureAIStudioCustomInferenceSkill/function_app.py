@@ -1,7 +1,6 @@
 import azure.functions as func
 import json
 import logging
-import requests
 import os
 from azure.ai.inference import ChatCompletionsClient
 from azure.core.credentials import AzureKeyCredential
