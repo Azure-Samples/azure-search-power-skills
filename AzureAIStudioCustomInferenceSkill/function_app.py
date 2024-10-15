@@ -1,7 +1,6 @@
 import azure.functions as func
 import json
 import logging
-import requests
 import os
 from azure.ai.inference import ChatCompletionsClient
 from azure.core.credentials import AzureKeyCredential
@@ -10,6 +9,7 @@ app = func.FunctionApp()
 
 # A healthcheck endpoint. Important to make sure that deployments are healthy.
 # It can be accessed via <base_url>/api/health
+@app.function_name(name="NonAOAIHealthCheck")
 @app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
 def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Calling the healthcheck endpoint')
@@ -19,7 +19,6 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     return response
 
 # the custom skill endpoint. It can be accessed via <base_url>/api/custom_skill
-# TODO: tailor this to work for the phi language model
 @app.function_name(name="NonAOAICustomSkill")
 @app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
 def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
