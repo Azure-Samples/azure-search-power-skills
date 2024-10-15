@@ -4,4 +4,3 @@
 
 azure-functions
 azure-ai-inference
-requests
