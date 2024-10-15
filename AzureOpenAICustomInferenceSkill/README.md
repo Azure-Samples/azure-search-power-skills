@@ -16,6 +16,8 @@ Quickstart Guide:
 
 - The currently demonstrated set of custom skills in this repository are about using chat completion models to do entity recognition, summarization and image-captioning.
 
+- When it comes time to deploy your code in Azure, you can follow [this guide for setting up your Python function](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=windows%2Cbash%2Cazure-cli%2Cbrowser#create-supporting-azure-resources-for-your-function)
+
 Languages:
 
 - ![python](https://img.shields.io/badge/language-python-orange)
