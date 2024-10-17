@@ -118,7 +118,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
             [
                 {
                     "type": "text",
-                    "text": custom_prompts.get("image-captioning-machine-info-default-prompt")
+                    "text": custom_prompts.get("image-captioning-simple-description-prompt")
                 }
             ]
             },
@@ -131,7 +131,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
                 },
                 {
                     "type": "text",
-                    "text": "Tell me what this is and what's required to make this."
+                    "text": "I want you to describe this image in 1-2 simple sentences."
                 },
                 ]
             }
