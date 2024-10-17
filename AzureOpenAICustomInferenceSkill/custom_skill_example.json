@@ -1,0 +1,21 @@
+{
+    "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+    "uri": "https://shiny-enigma-5x5rrgwgwxx3p776-7071.app.github.dev/api/custom_skill",
+    "httpHeaders": {"scenario": "image-captioning"},
+    "httpMethod": "POST",
+    "name": "Image Captioning Custom Skill",
+    "description": "The skill which calls a local or deployed Azure function to describe the image",
+    "context": "/document/normalized_images/*",
+    "inputs": [
+        {
+            "name": "image",
+            "source": "/document/normalized_images/*"
+        }
+    ],
+    "outputs": [
+      {
+        "name": "generative-caption",
+        "targetName": "caption"
+      }
+    ]
+}
