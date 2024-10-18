@@ -20,8 +20,7 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
 @app.function_name(name="AOAICustomSkill")
 @app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
 def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("calling the custom skill endpoint")
-    logging.info(f'the entire request looks like: {req}')
+    logging.info("calling the aoai custom skill endpoint")
     request_json = dict(req.get_json())
     input_values = []
     api_key = None
