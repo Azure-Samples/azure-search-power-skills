@@ -22,6 +22,7 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
 def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("calling the aoai custom skill endpoint")
     request_json = dict(req.get_json())
+    logging.info(f"the request json is: {request_json}")
     input_values = []
     api_key = None
     try:
@@ -111,7 +112,13 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     ]
     elif scenario == IMAGE_CAPTIONING_HEADER:
         logging.info("calling into the image captioning capability")
-        image_base64encoded = request_body.get("data", {}).get("image", "")
+        raw_image_data = request_body.get("data", {}).get("image", "")
+        # need to contruct this prefix - data:image/jpeg;base64,
+        #TODO: we can get the EXACT image type from the raw image data
+        image_data = raw_image_data.get("data")
+        image_base64encoded = f'data:image/jpeg;base64,{image_data}'
+        # image_base64encoded = request_body.get("data", {}).get("image", "")
+        # logging.info(f"the image base64 encoded is: {image_base64encoded}")
         messages = [ {
             "role": "system",
             "content": 
@@ -166,4 +173,5 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         response_body["data"] = {"entities": top_response_text}
     elif scenario == IMAGE_CAPTIONING_HEADER:
         response_body["data"] = {"generative-caption": top_response_text}
+    logging.info(f"the response body is: {response_body}")
     return response_body
