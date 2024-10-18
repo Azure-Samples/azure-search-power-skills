@@ -1,0 +1,29 @@
+POST {{$dotenv API_URL}}/process
+Content-Type: application/json
+
+{
+    "values": [
+        {
+            "data": {
+                "blobUrl": "https://youraccount.blob.core.windows.net/docs/modelcard.pdf"
+            },
+            "recordId": "0"
+        }
+    ]
+}
+
+###
+
+POST {{$dotenv API_URL}}/process
+Content-Type: application/json
+
+{
+    "values": [
+        {
+            "data": {
+                "blobUrl": "https://youraccount.blob.core.windows.net/docs/Healthcare-decision-making-process-flow-chart-1.pdf"
+            },
+            "recordId": "0"
+        }
+    ]
+}

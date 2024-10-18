@@ -1,5 +1,7 @@
 import os
 
+from models.skill_input import RequestData
+
 class AppConfig():
     openai_url: str
     openai_deployment: str
@@ -32,12 +34,23 @@ class AppConfig():
         self.image_quality = self.ReadVariable('IMAGE_QUALITY', required=True)
 
         if self.extraction_prompt is None:
-            self.extraction_prompt = """Extract everything you see in these images to raw markdown. Do NOT include the markdown code block in the beginning of your response. Respect the following rules for each visual element:
-            - Charts such as line, pie, bar charts and tables: convert to markdown tables.
-            - Diagrams and flowcharts: describe in text in details."""
+            self.extraction_prompt = """Extract everything you see in these images to raw markdown. All images belong to a single document (its pages). Do NOT include the markdown code block in the beginning of your response. Do NOT summarize. Respect the following rules for each visual element:
+            - Charts such as line, pie, bar charts: convert to markdown tables keeping all data.
+            - Diagrams, flow charts: describe all process in details, do NOT simplify. Use bullet lists with identation to describe the process.
+            - Tables: keep all data, do NOT summarize or change the original information, even if the table is large. If the same table breaks into multiple images, keep the data in the same table in the markdown output."""
 
     def ReadVariable(self, env_var_name: str, required: bool) -> str:
         value = os.getenv(env_var_name)
         if required and value is None:
             raise EnvironmentError(f"Required environment variable '{env_var_name}' not found.")
         return value.strip() if value is not None else None
+    
+    def LoadFromRequest(self, request_data: RequestData):
+        if request_data.chunk_size is not None:
+            self.chunk_size = request_data.chunk_size
+        if request_data.chunk_overlap is not None:
+            self.chunk_overlap = request_data.chunk_overlap
+        if request_data.extraction_prompt is not None:
+            self.extraction_prompt = request_data.extraction_prompt
+        if request_data.image_quality is not None:
+            self.image_quality = request_data.image_quality

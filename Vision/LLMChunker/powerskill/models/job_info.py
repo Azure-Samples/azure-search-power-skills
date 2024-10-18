@@ -4,7 +4,7 @@ from models.skill_output import ResponseChunk
 
 class JobInfo:
     def __init__(self, 
-                 id: str = str(uuid.uuid4()), 
+                 id: str = '', 
                  root_folder: str = None, 
                  original_doc_path: str = '', 
                  original_doc_extension: str = '', 
@@ -17,7 +17,7 @@ class JobInfo:
                  markdown_merged: str = '', 
                  responseChunks: list[ResponseChunk] = None, 
                  appConfig: AppConfig = None):
-        self.id = id
+        self.id = str(uuid.uuid4())
         self.root_folder = root_folder
         self.original_doc_path = original_doc_path
         self.original_doc_extension = original_doc_extension

@@ -2,7 +2,7 @@ from models.skill_input import RequestProcess
 
 class ValidationUtils:
 
-    VALID_EXTENSIONS = ['.pptx', '.ppt', '.docx', '.doc', '.xlsx', '.xls', '.png', '.jpg', '.pdf']
+    VALID_EXTENSIONS = ['.pptx', '.ppt', '.docx', '.doc', '.pdf']
 
     @staticmethod
     def validate_process_request(input: RequestProcess):  

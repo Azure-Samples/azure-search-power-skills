@@ -6,7 +6,6 @@ import fitz
 import shutil
 import re
 import subprocess
-from langchain_community.document_loaders import AzureAIDocumentIntelligenceLoader
 from langchain.text_splitter import MarkdownHeaderTextSplitter
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from utils.image_utils import ImageUtils
@@ -22,6 +21,7 @@ async def process(input: RequestData) -> ResponseData:
     try:
         job = JobInfo()
         job.appConfig = AppConfig()
+        job.appConfig.LoadFromRequest(input)
 
         setup_directories(job)
         await download_file(job, input)
@@ -76,7 +76,7 @@ def convert_to_pdf(job: JobInfo):
     if (job.original_doc_extension == 'pdf'):
         job.pdf_doc_path = job.original_doc_path
         print(f"Original document is already a PDF, no conversion needed")
-    elif (job.original_doc_extension in ['pptx', 'ppt', 'docx', 'doc', 'xlsx', 'xls']):  
+    elif (job.original_doc_extension in ['pptx', 'ppt', 'docx', 'doc']):  
         print(f"Converting file extension {job.original_doc_extension} to pdf...")
         start_time = time.time()
         command = [  
@@ -181,15 +181,12 @@ async def extract_markdown_from_images(job: JobInfo, image_paths: list) -> list:
             elif str(ex.code) == "content_filter":  
                 print('Content Filter Error', ex.code)  
                 return ["Content could not be extracted due to Azure OpenAI content filter." + ex.code] * len(image_paths)
+            elif str(ex.code) == "PermissionDenied":  
+                raise Exception(f"Permission error accessing OpenAI. Please assign 'Cognitive Services OpenAI User' role to the identity {await FileUtils.get_identity_id()} in the OpenAI account {job.appConfig.openai_url}")
             else:  
-                print('API Error:', ex, ex.code)  
-                incremental_backoff = min(job.appConfig.openai_max_backoff, incremental_backoff * 1.5)  
-                counter += 1  
-                await asyncio.sleep(incremental_backoff)  
+                raise ex
         except Exception as ex:  
-            counter += 1  
-            print('Error - Retry count:', counter, ex)  
-            return [""] * len(image_paths)
+            raise ex
         
 async def convert_images_to_markdown(job: JobInfo) -> str:
     semaphore = asyncio.Semaphore(job.appConfig.openai_max_concurrent_requests)
@@ -232,7 +229,8 @@ def merge_markdown_files(job: JobInfo) -> str:
 def chunk_markdown(job: JobInfo):  
     headers_to_split_on = [
         ("#", "Header 1"),
-        ("##", "Header 2")
+        ("##", "Header 2"),
+        ("###", "Header 3")
     ]
 
     markdown_splitter = MarkdownHeaderTextSplitter(
@@ -257,7 +255,7 @@ def chunk_markdown(job: JobInfo):
         # Add the page number to start of chunk 
         text = s.page_content
 
-        find_heading = find_last_heading_level_1(text)  
+        find_heading = find_last_heading(text)  
         if find_heading != None:
             last_heading = find_heading
         
@@ -276,12 +274,16 @@ def chunk_markdown(job: JobInfo):
 
         chunk_id += 1    
 
-def find_last_heading_level_1(markdown_text):  
+def find_last_heading(markdown_text):  
     lines = markdown_text.split('\n')  
     last_heading = None  
       
-    for line in lines:  
-        if line.startswith('# '):  
+    for line in lines:
+        if line.startswith('### '):    
+            last_heading = line
+        elif line.startswith('## '):  
+            last_heading = line
+        elif line.startswith('# '):  
             last_heading = line  
       
     return last_heading  

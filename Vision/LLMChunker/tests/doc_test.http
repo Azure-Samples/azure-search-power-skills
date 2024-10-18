@@ -5,7 +5,7 @@ Content-Type: application/json
     "values": [
         {
             "data": {
-                "blobUrl": "https://youraccount.blob.core.windows.net/docs/Transforming-Content-with-GPT4o.pptx"
+                "blobUrl": "https://youraccount.blob.core.windows.net/docs/different-roles-in-azure-portal.doc"
             },
             "recordId": "0"
         }
