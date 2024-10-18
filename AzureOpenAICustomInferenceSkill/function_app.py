@@ -128,7 +128,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
                 },
                 {
                     "type": "text",
-                    "text": "I want you to describe this image in 1-2 simple sentences."
+                    "text": "I want you to describe this image in a few simple sentences. If there are people or places in the image that you recognize, please mention them."
                 },
                 ]
             }
@@ -163,5 +163,4 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         response_body["data"] = {"entities": top_response_text}
     elif scenario == IMAGE_CAPTIONING_HEADER:
         response_body["data"] = {"generative-caption": top_response_text}
-    logging.info(f"the response body is: {response_body}")
     return response_body
