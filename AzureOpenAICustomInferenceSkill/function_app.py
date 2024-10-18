@@ -60,10 +60,8 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     chat_completion_system_context = {}
     messages = []
     custom_prompts = {}
-    # read from a json file called custom_prmopts.json to read the prompts for the different scenarios
     with open('custom_prompts.json', 'r') as file:
         custom_prompts = json.load(file)
-
     if scenario == SUMMARIZATION_HEADER:
         logging.info("calling into the summarization capability")
         chat_completion_system_context = {
@@ -111,16 +109,11 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         }
     ]
     elif scenario == IMAGE_CAPTIONING_HEADER:
-        logging.info("calling into the image captioning capability")
+        logging.info("calling the image captioning capability")
         raw_image_data = request_body.get("data", {}).get("image", "")
-        # logging.info(f"the raw image data is: {raw_image_data}")
-        # need to contruct this prefix - data:image/jpeg;base64,
-        #TODO: we can get the EXACT image type from the raw image data
         image_data = raw_image_data.get("data")
         image_type = raw_image_data.get("contentType")
         image_base64encoded = f'data:{image_type};base64,{image_data}'
-        # image_base64encoded = request_body.get("data", {}).get("image", "")
-        logging.info(f"the image base64 encoded is: {image_base64encoded}")
         messages = [ {
             "role": "system",
             "content": 
