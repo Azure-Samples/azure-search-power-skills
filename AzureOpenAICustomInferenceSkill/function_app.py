@@ -6,8 +6,7 @@ import os
 
 app = func.FunctionApp()
 
-# A healthcheck endpoint. Important to make sure that deployments are healthy.
-# It can be accessed via <base_url>/api/health
+# A healthcheck endpoint.It can be accessed via <base_url>/api/health
 @app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
 def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Calling the healthcheck endpoint')
@@ -22,7 +21,6 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
 def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("calling the aoai custom skill endpoint")
     request_json = dict(req.get_json())
-    # logging.info(f"the request json is: {request_json}")
     input_values = []
     api_key = None
     try:
@@ -56,7 +54,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "Content-Type": "application/json",
         "api-key": api_key,
     }
-    # default our chat completion context to be for summarization
     chat_completion_system_context = {}
     messages = []
     custom_prompts = {}
@@ -66,10 +63,9 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         logging.info("calling into the summarization capability")
         chat_completion_system_context = {
         "role": "system",
-        "content": [ # this context has to be dynamic according to the request header
+        "content": [
             {
                 "type": "text",
-                # Note: this is a sample summarization prompt which can be tweaked according to your exact needs
                 "text": custom_prompts.get("summarize-default-system-prompt")
             }
             ]
@@ -92,7 +88,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [
             {
                     "type": "text",
-                    # Note: this is a sample prompt which can be tweaked according to your exact needs
                     "text": custom_prompts.get("entity-recognition-default-system-prompt")
                 }
             ]
