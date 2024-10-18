@@ -29,17 +29,20 @@ This PowerSkill will use:
 
 ```mermaid
 sequenceDiagram
+    participant aisearch as "AI Search"
     participant PowerSkill
     participant OpenAI
 
+    aisearch->>+PowerSkill: Send document URL
     PowerSkill->>PowerSkill: Convert document to PDF
     PowerSkill->>PowerSkill: Create PNG images for each PDF page
     loop Images
-      PowerSkill->>OpenAI: Send PNG images
-      OpenAI->>PowerSkill: Return markdown
+      PowerSkill->>+OpenAI: Send PNG images
+      OpenAI-->>-PowerSkill: Return markdown
     end
     PowerSkill->>PowerSkill: Merge responses into a final markdown
     PowerSkill->>PowerSkill: Create context-aware text chunks
+    PowerSkill-->>-aisearch: Markdown chunks
 ```
 
 ## Quick deployment
