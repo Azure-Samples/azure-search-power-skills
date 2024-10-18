@@ -29,7 +29,7 @@ This PowerSkill will use:
 
 ```mermaid
 sequenceDiagram
-    participant aisearch as "AI Search"
+    participant aisearch as AI Search
     participant PowerSkill
     participant OpenAI
 
