@@ -1,0 +1,68 @@
+{
+    "@odata.context": "https://amitabh-basic-canary.search.windows.net/$metadata#skillsets/$entity",
+    "@odata.etag": "\"0x8DCEFB4EAF1115B\"",
+    "name": "ignite-demo-skillset",
+    "description": "Customized Ignite Demo Skillset using a custom skill to describe an image and then merge its text",
+    "skills": [
+      {
+        "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+        "name": "Image Captioning Custom Skill",
+        "description": "The skill which calls a local or deployed Azure function to describe the image",
+        "context": "/document/normalized_images/*",
+        "uri": "https://shiny-enigma-5x5rrgwgwxx3p776-7071.app.github.dev/api/custom_skill",
+        "httpMethod": "POST",
+        "timeout": "PT30S",
+        "batchSize": 1000,
+        "degreeOfParallelism": null,
+        "authResourceId": null,
+        "inputs": [
+          {
+            "name": "image",
+            "source": "/document/normalized_images/*"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "generative-caption",
+            "targetName": "caption"
+          }
+        ],
+        "httpHeaders": {
+          "scenario": "image-captioning"
+        },
+        "authIdentity": null
+      },
+      {
+        "@odata.type": "#Microsoft.Skills.Text.MergeSkill",
+        "name": "MSFT Text Merge Skill",
+        "description": "this is the text merging skill provided by Microsoft",
+        "context": "/document",
+        "insertPreTag": " ",
+        "insertPostTag": " ",
+        "inputs": [
+          {
+            "name": "text",
+            "source": "/document/content"
+          },
+          {
+            "name": "itemsToInsert",
+            "source": "/document/normalized_images/*/text"
+          },
+          {
+            "name": "offsets",
+            "source": "/document/normalized_images/*/contentOffset"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "mergedText",
+            "targetName": "merged_content"
+          }
+        ]
+      }
+    ],
+    "cognitiveServices": null,
+    "knowledgeStore": null,
+    "indexProjections": null,
+    "encryptionKey": null
+}
