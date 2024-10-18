@@ -32,8 +32,11 @@ sequenceDiagram
     participant aisearch as AI Search
     participant PowerSkill
     participant OpenAI
+    participant storage as Storage Account
 
     aisearch->>+PowerSkill: Send document URL
+    PowerSkill->>+storage: Download file
+    storage-->>-PowerSkill: File
     PowerSkill->>PowerSkill: Convert document to PDF
     PowerSkill->>PowerSkill: Create PNG images for each PDF page
     loop Images
@@ -143,3 +146,96 @@ More settings are set in the application-level environment settings:
 | openai_max_backoff            | The maximum number of seconds to wait before retrying a request to the OpenAI API in case of rate limiting responses (HTTP status code 429). Default value = 60                                                                                                                                                                                                                       |
 | openai_max_tokens_response    | The maximum number of tokens to expect in the OpenAI response per image. If your parameter 'openai_max_images_per_request' is set to 15 and 'openai_max_tokens_response' is set to 1024, that means your total max_tokens in the response will be 15 * 1024 = 15360. Do not set this value above 16000, which is GPT4o/mini max tokens response. Default value = 1024
       
+## Samples
+
+### Sample input
+
+```json
+{
+    "values": [
+        {
+            "data": {
+                "blobUrl": "https://youraccount.blob.core.windows.net/docs/Flow-chart-Process-Flow.pdf"
+                 /* Add here other settings as described in the Configuration section above */
+            },
+            "recordId": "0"
+        }
+    ]
+}
+```
+
+### Sample output
+<details>
+  <summary>Show</summary>
+
+```json
+{
+  "values": [
+    {
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "10c7864f-8dfa-47d9-a9e7-283cf6de8dfc-1",
+            "file_name": "Flow-chart-Process-Flow.pdf",
+            "content": "## Flow Chart/Process Flow Diagram  \nA Flow Chart (also known as a Process Flow Diagram or Process Map) is a diagram of the steps in a process and their sequence. There are two types of flow charts:  \n- **High-level flowchart:** Outlines 6-10 major steps, offering a high-level view of a process.\n- Useful in early project phases.\n- Helps set priorities for improvement.  \n- **Detailed flowchart:** Offers a close-up view, usually with dozens of steps.\n- Identifies complexity and excessive steps.\n- Aids in process standardization and changes.",
+            "title": "Flow Chart/Process Flow Diagram"
+          },
+          {
+            "chunk_id": "10c7864f-8dfa-47d9-a9e7-283cf6de8dfc-2",
+            "file_name": "Flow-chart-Process-Flow.pdf",
+            "content": "### Types of Flow Charts/Process Maps\n- Swim lane\n- Value stream\n- Cross-functional\n- Workflow",
+            "title": "Types of Flow Charts/Process Maps"
+          },
+          {
+            "chunk_id": "10c7864f-8dfa-47d9-a9e7-283cf6de8dfc-3",
+            "file_name": "Flow-chart-Process-Flow.pdf",
+            "content": "### When to Use a Flow Chart\n- To define or analyze an existing process.\n- To standardize or redesign a process.\n- To identify areas for improvement (e.g., unnecessary steps, gaps, barriers).",
+            "title": "When to Use a Flow Chart"
+          },
+          {
+            "chunk_id": "10c7864f-8dfa-47d9-a9e7-283cf6de8dfc-4",
+            "file_name": "Flow-chart-Process-Flow.pdf",
+            "content": "### How Flow Charts Are Constructed\n1. **Identify the goal** for creating the flowchart and the required level of detail.\n2. **Assemble knowledgeable individuals** to outline the process steps.\n3. **Define the first and last steps** in the process.\n4. **Document process steps** in sequence (recognize parallel actions).\n- Use symbols such as:\n- Elongated circles (start or end)\n- Rectangles/squares (instructions/actions)\n- Diamonds (decisions)\n5. **Link actions and decisions** with arrows to show flow.\n- Use self-adhesive notes for flexibility.\n6. **At decision points**, select the most natural branch.\n7. **Use notes for unfamiliar steps** and continue.\n8. After reaching the last step, **review to fill any branches**.\n9. **Follow up on unfamiliar steps** and update.\n10. **Validate the flow chart** through step-by-step review.\n11. **Identify areas for improvement** and redesign as necessary.  \nA video on flow charts can be viewed at [link](http://www.ihi.org/education/IHIOpenSchool/resources/Pages/BobLloydWhiteboard.aspx#FC)  \n---  \nChristine M. Walsh-Kelly MD\n8-26-2015",
+            "title": "How Flow Charts Are Constructed"
+          }
+        ],
+        "markdown": "## Flow Chart/Process Flow Diagram\n\nA Flow Chart (also known as a Process Flow Diagram or Process Map) is a diagram of the steps in a process and their sequence. There are two types of flow charts:\n\n- **High-level flowchart:** Outlines 6-10 major steps, offering a high-level view of a process.\n  - Useful in early project phases.\n  - Helps set priorities for improvement.\n\n- **Detailed flowchart:** Offers a close-up view, usually with dozens of steps.\n  - Identifies complexity and excessive steps.\n  - Aids in process standardization and changes.\n\n### Types of Flow Charts/Process Maps\n- Swim lane\n- Value stream\n- Cross-functional\n- Workflow\n\n### When to Use a Flow Chart\n- To define or analyze an existing process.\n- To standardize or redesign a process.\n- To identify areas for improvement (e.g., unnecessary steps, gaps, barriers).\n\n### How Flow Charts Are Constructed\n1. **Identify the goal** for creating the flowchart and the required level of detail.\n2. **Assemble knowledgeable individuals** to outline the process steps.\n3. **Define the first and last steps** in the process.\n4. **Document process steps** in sequence (recognize parallel actions).\n   - Use symbols such as:\n     - Elongated circles (start or end)\n     - Rectangles/squares (instructions/actions)\n     - Diamonds (decisions)\n5. **Link actions and decisions** with arrows to show flow.\n   - Use self-adhesive notes for flexibility.\n6. **At decision points**, select the most natural branch.\n7. **Use notes for unfamiliar steps** and continue.\n8. After reaching the last step, **review to fill any branches**.\n9. **Follow up on unfamiliar steps** and update.\n10. **Validate the flow chart** through step-by-step review.\n11. **Identify areas for improvement** and redesign as necessary.\n\nA video on flow charts can be viewed at [link](http://www.ihi.org/education/IHIOpenSchool/resources/Pages/BobLloydWhiteboard.aspx#FC)\n\n---\n\nChristine M. Walsh-Kelly MD  \n8-26-2015\n"
+      },
+      "recordId": "0",
+      "errors": null,
+      "warnings": null
+    }
+  ]
+}
+```
+
+</details>
+
+### Sample Skillset Integration
+
+```json
+"@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+            "description": "A custom skill that extract document contents using LLM and return markdown context-aware chunks",
+            "uri": "https://{{hostname}}/process",
+            "timeout": "PT230S",
+            "batchSize": 1,
+            "context": "/document",
+            "httpHeaders": {
+                "api-key": "{{api-key}}"
+            },
+            "httpMethod": "POST",
+            "inputs": [
+                {
+                    "name": "blobUrl",
+                    "source": "/document/metadata_storage_path"
+                }
+                /* Add here other settings as described in the Configuration section above */
+            ],
+            "outputs": [
+                {
+                    "name": "chunks",
+                    "targetName": "chunks"
+                }
+            ]
+        }
+```
