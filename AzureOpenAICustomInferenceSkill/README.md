@@ -1,4 +1,4 @@
-# Azure Open AI Custom Skill
+# Azure Open AI Custom Inference Skill
 
 ---
 
@@ -15,6 +15,8 @@ Quickstart Guide:
 - A sample payload is provided in the *api-test.http* file. Replace the localhostBaseUrl variable with the base url of your container/local http environment. Once you install the Visual Studio REST Client extension, you can hit the Send Request button from that file.
 
 - The currently demonstrated set of custom skills in this repository are about using chat completion models to do entity recognition, summarization and image-captioning.
+
+- When it comes time to deploy your code in Azure, you can follow [this guide for setting up your Python function](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=windows%2Cbash%2Cazure-cli%2Cbrowser#create-supporting-azure-resources-for-your-function)
 
 Languages:
 
