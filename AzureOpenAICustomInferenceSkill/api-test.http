@@ -44,11 +44,11 @@ Scenario: entity-recognition
 
 ###
 
+# image captioning example request with Satya giving a presentation about Linux
 POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: image-captioning
 
-# image captioning example request with Satya giving a presentation about Linux
 {
     "values": [
         {
