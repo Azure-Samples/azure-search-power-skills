@@ -6,8 +6,7 @@ import os
 
 app = func.FunctionApp()
 
-# A healthcheck endpoint. Important to make sure that deployments are healthy.
-# It can be accessed via <base_url>/api/health
+# A healthcheck endpoint.It can be accessed via <base_url>/api/health
 @app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
 def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Calling the healthcheck endpoint')
@@ -20,7 +19,7 @@ def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
 @app.function_name(name="AOAICustomSkill")
 @app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
 def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("calling the custom skill endpoint")
+    logging.info("calling the aoai custom skill endpoint")
     request_json = dict(req.get_json())
     input_values = []
     api_key = None
@@ -55,22 +54,18 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "Content-Type": "application/json",
         "api-key": api_key,
     }
-    # default our chat completion context to be for summarization
     chat_completion_system_context = {}
     messages = []
     custom_prompts = {}
-    # read from a json file called custom_prmopts.json to read the prompts for the different scenarios
     with open('custom_prompts.json', 'r') as file:
         custom_prompts = json.load(file)
-
     if scenario == SUMMARIZATION_HEADER:
         logging.info("calling into the summarization capability")
         chat_completion_system_context = {
         "role": "system",
-        "content": [ # this context has to be dynamic according to the request header
+        "content": [
             {
                 "type": "text",
-                # Note: this is a sample summarization prompt which can be tweaked according to your exact needs
                 "text": custom_prompts.get("summarize-default-system-prompt")
             }
             ]
@@ -93,7 +88,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [
             {
                     "type": "text",
-                    # Note: this is a sample prompt which can be tweaked according to your exact needs
                     "text": custom_prompts.get("entity-recognition-default-system-prompt")
                 }
             ]
@@ -110,15 +104,18 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         }
     ]
     elif scenario == IMAGE_CAPTIONING_HEADER:
-        logging.info("calling into the image captioning capability")
-        image_base64encoded = request_body.get("data", {}).get("image", "")
+        logging.info("calling the image captioning capability")
+        raw_image_data = request_body.get("data", {}).get("image", "")
+        image_data = raw_image_data.get("data")
+        image_type = raw_image_data.get("contentType")
+        image_base64encoded = f'data:{image_type};base64,{image_data}'
         messages = [ {
             "role": "system",
             "content": 
             [
                 {
                     "type": "text",
-                    "text": custom_prompts.get("image-captioning-machine-info-default-prompt")
+                    "text": custom_prompts.get("image-captioning-simple-description-prompt")
                 }
             ]
             },
@@ -131,7 +128,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
                 },
                 {
                     "type": "text",
-                    "text": "Tell me what this is and what's required to make this."
+                    "text": "I want you to describe this image in a few simple sentences. If there are people or places in the image that you recognize, please mention them."
                 },
                 ]
             }
