@@ -25,7 +25,7 @@ This PowerSkill will use:
 * Azure AI Search instance
 * Azure OpenAI
 
-## High level Process
+## Sequence diagram
 
 ```mermaid
 sequenceDiagram
@@ -48,7 +48,7 @@ sequenceDiagram
     PowerSkill-->>-aisearch: Markdown chunks
 ```
 
-## Quick deployment
+## Quick Azure deployment
 In order to deploy everything, you can simply use bash and type
 ```bash
 make deploy
@@ -62,8 +62,8 @@ This section describes how to get the sample working in stages and how it can be
 1) ### Data
    The first step is to view the sample data files [here](data/). 
 1) ### Run with Visual Studio Code
-   1) The next step is to run the API locally and test the model against a test record. Make sure you rename the file [.env.example file to .env](../powerskill/.env.example) and populate it with the relevant values.
-   1) Run VsCode and connect to your WSL locally. If you do not know what is it, check [here](https://code.visualstudio.com/docs/remote/wsl#_from-vs-code). Open the LLMChunker folder in VsCode (avoid opening the root 'azure-search-power-skills').
+   1) The next step is to run the API locally. Make sure you rename the file [.env.example file to .env](powerskill/.env.example) and populate it with the relevant values.
+   1) Run VsCode and connect to your WSL (Linux) locally. If you do not know what WSL is, check [here](https://code.visualstudio.com/docs/remote/wsl#_from-vs-code). Open the LLMChunker folder in VsCode (avoid opening the root 'azure-search-power-skills').
    1) Running the app in a Linux distro is required because the document conversion libraries to convert incoming files to PDF requires LibreOffice's Linux libraries. Open your WSL bash terminal in VsCode and then run the command to install it:
       ```bash
       apt-get update
@@ -165,8 +165,6 @@ More settings are set in the application-level environment settings:
 ```
 
 ### Sample output
-<details>
-  <summary>Show</summary>
 
 ```json
 {
@@ -208,8 +206,6 @@ More settings are set in the application-level environment settings:
   ]
 }
 ```
-
-</details>
 
 ### Sample Skillset Integration
 
