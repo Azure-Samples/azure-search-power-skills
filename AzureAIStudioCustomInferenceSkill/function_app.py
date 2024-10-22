@@ -109,15 +109,18 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         }
     ]
     elif scenario == IMAGE_CAPTIONING_HEADER:
-        logging.info("calling into the image captioning capability")
-        image_base64encoded = request_body.get("data", {}).get("image", "")
+        logging.info("calling the image captioning capability")
+        raw_image_data = request_body.get("data", {}).get("image", "")
+        image_data = raw_image_data.get("data")
+        image_type = raw_image_data.get("contentType")
+        image_base64encoded = f'data:{image_type};base64,{image_data}'
         messages = [ {
             "role": "system",
-            "content": 
+            "content":
             [
                 {
                     "type": "text",
-                    "text": custom_prompts.get("image-captioning-machine-info-default-prompt")
+                    "text": custom_prompts.get("image-captioning-simple-description-prompt")
                 }
             ]
             },
@@ -130,12 +133,12 @@ def call_chat_completion_model(request_body: dict, scenario: str):
                 },
                 {
                     "type": "text",
-                    "text": "Tell me what this is and what's required to make this."
+                    "text": "I want you to describe this image in a few simple sentences. If there are people or places in the image that you recognize, please mention them."
                 },
                 ]
             }
-            ]
-
+        ]
+        
     request_payload = {
     "messages": messages,
     "temperature": 0.7,
