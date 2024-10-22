@@ -55,14 +55,15 @@ make deploy
 ```
 and type 'yes' when prompted. You can test your deployment by running the [test scripts](tests/). You need to install Visual Studio Code [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension.
 
-## Run locally
+At this point, Terraform has now created the following infrastructure and created a `base.env` file with the values.
+- Azure Container Registry to store our docker image
+- Azure AI Search
+- Azure OpenAI
+- Azure Blob Storage to hold our data to seach
 
-This section describes how to get the sample working in stages and how it can be amended for your data.
+## Run locally with Visual Studio Code
  
-1) Data
-   The first step is to view the sample data files [here](data/). 
-1) Run with Visual Studio Code
-  1) The next step is to run the API locally. Make sure you rename the file [.env.example file to .env](powerskill/.env.example) and populate it with the relevant values.
+  1) Make sure you rename the file [.env.example file to .env](powerskill/.env.example) and populate it with the relevant values.
   1) Run VsCode and connect to your WSL (Linux) locally. If you do not know what WSL is, check [here](https://code.visualstudio.com/docs/remote/wsl#_from-vs-code). 
   1) Open the LLMChunker folder in VsCode WSL (avoid opening the root 'azure-search-power-skills' where all other power skills are).
   1) Running the app in a Linux distro is required because the document conversion libraries to convert incoming files to PDF requires LibreOffice's Linux libraries. Open your WSL bash terminal in VsCode and then run the command to install it:
@@ -80,42 +81,6 @@ This section describes how to get the sample working in stages and how it can be
   1) Press F5 to start debugging in Visual Studio Code. Select Python Debugger -> Python File as the interpreter. If it asks what Python path to use, select the binaries under your .venv folder as the interpreter.
   1) Your application should be running in debug mode at this point, listening to requests in http://localhost:5000
   1) You can test your local API by exploring the HTTP request files in [tests](tests/).
-
-## Run in Azure
-  In order to deploy this into Azure, we need some to build some shared infrastructure - you may already have this from another PowerSkill. If you do, you can simply rename [base.env.example](base.env.example) to be `base.env` and fill in the values.
-
-  1) ### Deploy shared infrastructure
-      If not, you can deploy the foundation simple by running the following in bash
-      ```bash
-      make deploy-base
-      ```
-      At this point, Terraform has now created the following infrastructure and created a `base.env` file with the values.
-      - Azure Container Registry to store our docker image
-      - Azure AI Search
-      - Azure OpenAI
-      - Azure Blob Storage to hold our data to seach
-
-  1) ### Push the container to Azure Container Registry
-      We can now push our container that we built earlier to the cloud. Type the following command in your bash terminal.
-      ```bash
-      make push-skill
-      ```
-
-  1) ### Deploy the container to an Azure Web App.
-      We will deploy this as to an [Azure App Service Web App](https://docs.microsoft.com/en-us/azure/app-service/configure-custom-container?pivots=container-linux) running a container. Run the following command:
-      ```bash
-      make deploy-skill
-      ```
-      You will be prompted with:
-      ```bash
-      Do you want to perform these actions?
-        Terraform will perform the actions described above.
-        Only 'yes' will be accepted to approve.
-      ```
-      Type 
-      ```bash
-      yes
-      ```
   
 ### Note about authentication
 The application uses [managed identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) to authenticate itself to storage account and OpenAI. When you deploy this sample to Azure using the provided Terraform scripts, the required permissions and identities are automatically created at the resource group level and are transparent for you.

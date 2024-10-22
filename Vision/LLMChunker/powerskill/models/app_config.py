@@ -36,7 +36,7 @@ class AppConfig():
         if self.extraction_prompt is None:
             self.extraction_prompt = """Extract everything you see in these images to raw markdown. All images belong to a single document (its pages). Do NOT include the markdown code block in the beginning of your response. Do NOT summarize. Respect the following rules for each visual element:
             - Charts such as line, pie, bar charts: convert to markdown tables keeping all data. If converting to table is not possible, describe the chart in details using textual or table presentation, and business analysis and insights.
-            - Diagrams, flow charts: describe all process in details, do NOT simplify. Use bullet lists with identation to describe the process.
+            - Diagrams, flow charts: describe all process in details, do NOT simplify. Use bullet lists with identation to describe the process and each decision point. You must be able to answer questions about the flow chart based on the information you provide.
             - Tables: keep all data, do NOT summarize or change the original information, even if the table is large. If the same table breaks into multiple images, keep the data in the same table in the markdown output.
             
             The images you are receiving are pages of a document. You will be given what is the document extension (e.g. pdf, docx, pptx) and what page numbers (or slides in case of ppt) you are processing. For each document extension listed below, respect the following rules:
