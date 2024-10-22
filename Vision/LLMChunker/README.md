@@ -122,7 +122,7 @@ More settings are set in the application-level environment settings:
     "values": [
         {
             "data": {
-                "blobUrl": "https://youraccount.blob.core.windows.net/docs/Flow-chart-Process-Flow.pdf"
+                "blobUrl": "https://youraccount.blob.core.windows.net/docs/Healthcare-decision-making-process-flow-chart-1.pdf"
                  /* Add here other settings as described in the Configuration section above */
             },
             "recordId": "0"
@@ -140,31 +140,25 @@ More settings are set in the application-level environment settings:
       "data": {
         "chunks": [
           {
-            "chunk_id": "10c7864f-8dfa-47d9-a9e7-283cf6de8dfc-1",
-            "file_name": "Flow-chart-Process-Flow.pdf",
-            "content": "## Flow Chart/Process Flow Diagram  \nA Flow Chart (also known as a Process Flow Diagram or Process Map) is a diagram of the steps in a process and their sequence. There are two types of flow charts:  \n- **High-level flowchart:** Outlines 6-10 major steps, offering a high-level view of a process.\n- Useful in early project phases.\n- Helps set priorities for improvement.  \n- **Detailed flowchart:** Offers a close-up view, usually with dozens of steps.\n- Identifies complexity and excessive steps.\n- Aids in process standardization and changes.",
-            "title": "Flow Chart/Process Flow Diagram"
+            "chunk_id": "be61ebe4-ee35-421d-a73b-4f227795c0c9-1",
+            "file_name": "Healthcare-decision-making-process-flow-chart-1.pdf",
+            "content": "# Healthcare Decision Making in Queensland Process  \n## Presumption of Capacity & Consent  \n- **Is it an emergency?**\n- **Yes:** Consent not required\n- **No:** Consent required  \n- **Can the person validly consent or refuse?**\n- **Yes:** The person makes decision\n- **No/Unsure:** Is the person’s capacity in question?  \n- **Is the person’s capacity in question?**\n- **No:** The person makes decision\n- **Yes:** Supported Decision-Making & Capacity Assessment",
+            "title": "Presumption of Capacity & Consent"
           },
           {
-            "chunk_id": "10c7864f-8dfa-47d9-a9e7-283cf6de8dfc-2",
-            "file_name": "Flow-chart-Process-Flow.pdf",
-            "content": "### Types of Flow Charts/Process Maps\n- Swim lane\n- Value stream\n- Cross-functional\n- Workflow",
-            "title": "Types of Flow Charts/Process Maps"
+            "chunk_id": "be61ebe4-ee35-421d-a73b-4f227795c0c9-2",
+            "file_name": "Healthcare-decision-making-process-flow-chart-1.pdf",
+            "content": "## Supported Decision-Making & Capacity Assessment  \n- **QLD capacity assessment guidelines** and **Capacity Assessment**\n- **Has capacity?** Adequate for consent/refusal\n- Implement Supported Decision-Making Strategies\n- **Still unsure about capacity:**\n- Inadequate for consent/refusal\n- Substitute Decision-Making  \n- **General capacity test:**\n1. Understands the nature and effect of the decision\n2. Freely & voluntarily making the decision\n3. Can communicate the decision in some way\n4. Assessed at the time decision is required",
+            "title": "Supported Decision-Making & Capacity Assessment"
           },
           {
-            "chunk_id": "10c7864f-8dfa-47d9-a9e7-283cf6de8dfc-3",
-            "file_name": "Flow-chart-Process-Flow.pdf",
-            "content": "### When to Use a Flow Chart\n- To define or analyze an existing process.\n- To standardize or redesign a process.\n- To identify areas for improvement (e.g., unnecessary steps, gaps, barriers).",
-            "title": "When to Use a Flow Chart"
-          },
-          {
-            "chunk_id": "10c7864f-8dfa-47d9-a9e7-283cf6de8dfc-4",
-            "file_name": "Flow-chart-Process-Flow.pdf",
-            "content": "### How Flow Charts Are Constructed\n1. **Identify the goal** for creating the flowchart and the required level of detail.\n2. **Assemble knowledgeable individuals** to outline the process steps.\n3. **Define the first and last steps** in the process.\n4. **Document process steps** in sequence (recognize parallel actions).\n- Use symbols such as:\n- Elongated circles (start or end)\n- Rectangles/squares (instructions/actions)\n- Diamonds (decisions)\n5. **Link actions and decisions** with arrows to show flow.\n- Use self-adhesive notes for flexibility.\n6. **At decision points**, select the most natural branch.\n7. **Use notes for unfamiliar steps** and continue.\n8. After reaching the last step, **review to fill any branches**.\n9. **Follow up on unfamiliar steps** and update.\n10. **Validate the flow chart** through step-by-step review.\n11. **Identify areas for improvement** and redesign as necessary.  \nA video on flow charts can be viewed at [link](http://www.ihi.org/education/IHIOpenSchool/resources/Pages/BobLloydWhiteboard.aspx#FC)  \n---  \nChristine M. Walsh-Kelly MD\n8-26-2015",
-            "title": "How Flow Charts Are Constructed"
+            "chunk_id": "be61ebe4-ee35-421d-a73b-4f227795c0c9-3",
+            "file_name": "Healthcare-decision-making-process-flow-chart-1.pdf",
+            "content": "## Substitute Decision-Making  \n- **Include the adult by including their views, wishes, and preferences in the decision making**\n- **Is there Advance Health Directive?**\n- **Yes:** Advance Health Directive applies\n- **No:** Is a Healthcare Guardian appointed?\n- **Yes:** Healthcare Guardian makes decision\n- **No:** Is there an enduring power of attorney for health matters?\n- **Yes:** EPOA makes decision\n- **No:** Statutory Health Attorney\n- **No:** eg. family members, close friends, unpaid carer, Public Guardian  \n- **QCAT Order** appoints Guardian if necessary.  \n---  \nContact ADA Law: Phone: 1800 232 529, Email: info@adalaw.com.au, Website: www.adalaw.com.au  \nThis is general information only and does not constitute legal advice. If you have a specific legal problem, please consult your legal advisor.",
+            "title": "Substitute Decision-Making"
           }
         ],
-        "markdown": "## Flow Chart/Process Flow Diagram\n\nA Flow Chart (also known as a Process Flow Diagram or Process Map) is a diagram of the steps in a process and their sequence. There are two types of flow charts:\n\n- **High-level flowchart:** Outlines 6-10 major steps, offering a high-level view of a process.\n  - Useful in early project phases.\n  - Helps set priorities for improvement.\n\n- **Detailed flowchart:** Offers a close-up view, usually with dozens of steps.\n  - Identifies complexity and excessive steps.\n  - Aids in process standardization and changes.\n\n### Types of Flow Charts/Process Maps\n- Swim lane\n- Value stream\n- Cross-functional\n- Workflow\n\n### When to Use a Flow Chart\n- To define or analyze an existing process.\n- To standardize or redesign a process.\n- To identify areas for improvement (e.g., unnecessary steps, gaps, barriers).\n\n### How Flow Charts Are Constructed\n1. **Identify the goal** for creating the flowchart and the required level of detail.\n2. **Assemble knowledgeable individuals** to outline the process steps.\n3. **Define the first and last steps** in the process.\n4. **Document process steps** in sequence (recognize parallel actions).\n   - Use symbols such as:\n     - Elongated circles (start or end)\n     - Rectangles/squares (instructions/actions)\n     - Diamonds (decisions)\n5. **Link actions and decisions** with arrows to show flow.\n   - Use self-adhesive notes for flexibility.\n6. **At decision points**, select the most natural branch.\n7. **Use notes for unfamiliar steps** and continue.\n8. After reaching the last step, **review to fill any branches**.\n9. **Follow up on unfamiliar steps** and update.\n10. **Validate the flow chart** through step-by-step review.\n11. **Identify areas for improvement** and redesign as necessary.\n\nA video on flow charts can be viewed at [link](http://www.ihi.org/education/IHIOpenSchool/resources/Pages/BobLloydWhiteboard.aspx#FC)\n\n---\n\nChristine M. Walsh-Kelly MD  \n8-26-2015\n"
+        "markdown": "# Healthcare Decision Making in Queensland Process\n\n## Presumption of Capacity & Consent\n\n- **Is it an emergency?**\n  - **Yes:** Consent not required\n  - **No:** Consent required\n\n- **Can the person validly consent or refuse?**\n  - **Yes:** The person makes decision\n  - **No/Unsure:** Is the person’s capacity in question?\n\n- **Is the person’s capacity in question?**\n  - **No:** The person makes decision\n  - **Yes:** Supported Decision-Making & Capacity Assessment\n\n## Supported Decision-Making & Capacity Assessment\n\n- **QLD capacity assessment guidelines** and **Capacity Assessment**\n  - **Has capacity?** Adequate for consent/refusal\n    - Implement Supported Decision-Making Strategies\n  - **Still unsure about capacity:**\n    - Inadequate for consent/refusal\n    - Substitute Decision-Making\n\n- **General capacity test:**\n  1. Understands the nature and effect of the decision\n  2. Freely & voluntarily making the decision\n  3. Can communicate the decision in some way\n  4. Assessed at the time decision is required\n\n## Substitute Decision-Making\n\n- **Include the adult by including their views, wishes, and preferences in the decision making**\n  - **Is there Advance Health Directive?**\n    - **Yes:** Advance Health Directive applies\n    - **No:** Is a Healthcare Guardian appointed?\n      - **Yes:** Healthcare Guardian makes decision\n      - **No:** Is there an enduring power of attorney for health matters?\n        - **Yes:** EPOA makes decision\n        - **No:** Statutory Health Attorney\n          - **No:** eg. family members, close friends, unpaid carer, Public Guardian\n\n- **QCAT Order** appoints Guardian if necessary.\n\n---\n\nContact ADA Law: Phone: 1800 232 529, Email: info@adalaw.com.au, Website: www.adalaw.com.au\n\nThis is general information only and does not constitute legal advice. If you have a specific legal problem, please consult your legal advisor.\n"
       },
       "recordId": "0",
       "errors": null,
