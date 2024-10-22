@@ -64,23 +64,23 @@ At this point, Terraform has now created the following infrastructure and create
 ## Run locally with Visual Studio Code
  
 1) Make sure you rename the file [.env.example file to .env](powerskill/.env.example) and populate it with the relevant values.
-1) Run VsCode and connect to your WSL (Linux) locally. If you do not know what WSL is, check [here](https://code.visualstudio.com/docs/remote/wsl#_from-vs-code). 
-1) Open the LLMChunker folder in VsCode WSL (avoid opening the root 'azure-search-power-skills' where all other power skills are).
-1) Running the app in a Linux distro is required because the document conversion libraries to convert incoming files to PDF requires LibreOffice's Linux libraries. Open your WSL bash terminal in VsCode and then run the command to install it:
+2) Run VsCode and connect to your WSL (Linux) locally. If you do not know what WSL is, check [here](https://code.visualstudio.com/docs/remote/wsl#_from-vs-code). 
+3) Open the LLMChunker folder in VsCode WSL (avoid opening the root 'azure-search-power-skills' where all other power skills are).
+4) Running the app in a Linux distro is required because the document conversion libraries to convert incoming files to PDF requires LibreOffice's Linux libraries. Open your WSL bash terminal in VsCode and then run the command to install it:
   ```bash
   apt-get update
   apt-get -y install libreoffice-nogui
   apt-get -y install wkhtmltopdf
   ```
-1) Create a Python virtual environment and install dependencies:
+5) Create a Python virtual environment and install dependencies:
   ```bash
   python -m venv .venv
   pip install -r powerskill/requirements.txt
   ```  
-1) Open the file [app.py](powerskill/app.py) in the VsCode editor.
-1) Press F5 to start debugging in Visual Studio Code. Select Python Debugger -> Python File as the interpreter. If it asks what Python path to use, select the binaries under your .venv folder as the interpreter.
-1) Your application should be running in debug mode at this point, listening to requests in http://localhost:5000
-1) You can test your local API by exploring the HTTP request files in [tests](tests/).
+6) Open the file [app.py](powerskill/app.py) in the VsCode editor.
+7) Press F5 to start debugging in Visual Studio Code. Select Python Debugger -> Python File as the interpreter. If it asks what Python path to use, select the binaries under your .venv folder as the interpreter.
+8) Your application should be running in debug mode at this point, listening to requests in http://localhost:5000
+9) You can test your local API by exploring the HTTP request files in [tests](tests/).
   
 ### Note about authentication
 The application uses [managed identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) to authenticate itself to storage account and OpenAI. When you deploy this sample to Azure using the provided Terraform scripts, the required permissions and identities are automatically created at the resource group level and are transparent for you.
