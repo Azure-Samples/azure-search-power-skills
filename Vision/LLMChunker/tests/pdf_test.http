@@ -1,4 +1,4 @@
-POST {{$dotenv API_URL}}/process
+POST http://localhost:5000/process
 Content-Type: application/json
 
 {

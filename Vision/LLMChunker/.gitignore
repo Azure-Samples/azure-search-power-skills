@@ -144,3 +144,5 @@ cython_debug/
 
 # Test output 
 mlruns/*
+
+!.vscode/

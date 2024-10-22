@@ -62,6 +62,8 @@ class FileUtils:
             except Exception as e:
                 if e.status_code == 403:
                     raise Exception(f"Permission error accessing the storage account. Please assign at least 'Storage Blob Data Reader' role to the identity {identity_id} in the storage account {account_url}") from e
+                else:
+                    raise e
 
         end_time = time.time() 
         elapsed_time = (end_time - start_time) * 1000  # Calculate elapsed time in milliseconds

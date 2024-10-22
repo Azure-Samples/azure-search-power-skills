@@ -158,9 +158,13 @@ async def extract_markdown_from_images(job: JobInfo, image_paths: list) -> list:
                 azure_ad_token_provider=token_provider
             )  
 
+            firstPageNumber = FileUtils.extract_filename_without_extension(image_paths[0]).lstrip('0')
+            lastPageNumber = FileUtils.extract_filename_without_extension(image_paths[-1]).lstrip('0')
+
             while True and counter < job.appConfig.openai_max_retries:  
                 messages = [
-                    {"role": "system", "content": job.appConfig.extraction_prompt}
+                    {"role": "system", "content": job.appConfig.extraction_prompt},
+                    {"role": "user", "content": f"Document type: {job.original_doc_extension}. Page numbers: {firstPageNumber} to {lastPageNumber}"},
                 ]
                 for base64_image in base64_images:
                     messages.append({"role": "user", "content": [{"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}", "detail": f"{detail}"}}]})

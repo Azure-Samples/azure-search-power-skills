@@ -59,12 +59,13 @@ and type 'yes' when prompted. You can test your deployment by running the [test 
 
 This section describes how to get the sample working in stages and how it can be amended for your data.
  
-1) ### Data
+1) Data
    The first step is to view the sample data files [here](data/). 
-1) ### Run with Visual Studio Code
-   1) The next step is to run the API locally. Make sure you rename the file [.env.example file to .env](powerskill/.env.example) and populate it with the relevant values.
-   1) Run VsCode and connect to your WSL (Linux) locally. If you do not know what WSL is, check [here](https://code.visualstudio.com/docs/remote/wsl#_from-vs-code). Open the LLMChunker folder in VsCode (avoid opening the root 'azure-search-power-skills').
-   1) Running the app in a Linux distro is required because the document conversion libraries to convert incoming files to PDF requires LibreOffice's Linux libraries. Open your WSL bash terminal in VsCode and then run the command to install it:
+1) Run with Visual Studio Code
+  1) The next step is to run the API locally. Make sure you rename the file [.env.example file to .env](powerskill/.env.example) and populate it with the relevant values.
+  1) Run VsCode and connect to your WSL (Linux) locally. If you do not know what WSL is, check [here](https://code.visualstudio.com/docs/remote/wsl#_from-vs-code). 
+  1) Open the LLMChunker folder in VsCode WSL (avoid opening the root 'azure-search-power-skills' where all other power skills are).
+  1) Running the app in a Linux distro is required because the document conversion libraries to convert incoming files to PDF requires LibreOffice's Linux libraries. Open your WSL bash terminal in VsCode and then run the command to install it:
       ```bash
       apt-get update
       apt-get -y install libreoffice-nogui
@@ -75,9 +76,10 @@ This section describes how to get the sample working in stages and how it can be
   python -m venv .venv
   pip install -r powerskill/requirements.txt
   ```  
-  1) Press F5 to start debugging in Visual Studio Code.
-
-   You can test your local API by exploring the HTTP request files in [tests](tests/).
+  1) Open the file [app.py](powerskill/app.py) in the VsCode editor.
+  1) Press F5 to start debugging in Visual Studio Code. Select Python Debugger -> Python File as the interpreter. If it asks what Python path to use, select the binaries under your .venv folder as the interpreter.
+  1) Your application should be running in debug mode at this point, listening to requests in http://localhost:5000
+  1) You can test your local API by exploring the HTTP request files in [tests](tests/).
 
 ## Run in Azure
   In order to deploy this into Azure, we need some to build some shared infrastructure - you may already have this from another PowerSkill. If you do, you can simply rename [base.env.example](base.env.example) to be `base.env` and fill in the values.
@@ -128,7 +130,7 @@ The available [tests](tests/) scripts only contains the required input parameter
 
 | Name                          | Description                                                                                                                                                                                                                                                                                                                                                       |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| image_quality                 | The quality of the images to be sent to OpenAI. The higher the quality, the more tokens it will consume. The available options are: low, high_720p, high_1024p, high_1920p. If your source documents have small text, increase this value until you get satisfactory results. For more details, refer to OpenAI Vision Guide. Default value = 'high_1024p' |
+| image_quality                 | The quality of the images to be sent to OpenAI. The higher the quality, the more tokens it will consume. The available options are: low, high_720p, high_1024p, high_1920p. If your source documents have small text, increase this value until you get satisfactory results. For more details, refer to [OpenAI Vision Guide](https://platform.openai.com/docs/guides/vision/low-or-high-fidelity-image-understanding). Default value = 'high_1024p' |
 | chunk_size                    | The size (in tokens) to split the markdown sections in case they go over this value. If a markdown section of heading 3 (###) goes over this value, it will be split into multiple chunks. If the markdown section is below that token size, it will be returned as a single chunk. Default value = 512                                                                                   |
 | chunk_overlap                 | The percentage of overlap between chunks. This parameter is used to avoid splitting sentences between chunks. Default value = 25   
 | extraction_prompt                 | The prompt used in OpenAI to perform the conversion from images to markdown. Default value can be checked [here](powerskill/models/app_config.py)                  
