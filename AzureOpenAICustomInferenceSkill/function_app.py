@@ -160,7 +160,10 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     if scenario == SUMMARIZATION_HEADER:
         response_body["data"] = {"generative-summary": top_response_text}
     elif scenario == ENTITY_RECOGNITION_HEADER:
-        response_body["data"] = {"entities": top_response_text}
+        top_response_text = top_response_text.replace("[", "")
+        top_response_text = top_response_text.replace("]", "")
+        entity_response_array = top_response_text.split(",")
+        response_body["data"] = {"entities": entity_response_array}
     elif scenario == IMAGE_CAPTIONING_HEADER:
         response_body["data"] = {"generative-caption": top_response_text}
     return response_body
