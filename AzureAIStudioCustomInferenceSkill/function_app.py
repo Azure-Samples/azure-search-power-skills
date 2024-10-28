@@ -69,7 +69,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [ # this context has to be dynamic according to the request header
             {
                 "type": "text",
-                # Note: this is a sample summarization prompt which can be tweaked according to your exact needs
                 "text": custom_prompts.get("summarize-default-system-prompt")
             }
             ]
@@ -92,7 +91,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [
             {
                     "type": "text",
-                    # Note: this is a sample prompt which can be tweaked according to your exact needs
                     "text": custom_prompts.get("entity-recognition-default-system-prompt")
                 }
             ]
@@ -148,6 +146,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     
     response = client.complete(request_payload)
     top_response_text = response.choices[0].message.content
+    print(f'top message is: {response.choices[0].message}')
     response_body = {
         'warnings': None,
         'errors': [],
@@ -157,7 +156,10 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     if scenario == SUMMARIZATION_HEADER:
         response_body["data"] = {"generative-summary": top_response_text}
     elif scenario == ENTITY_RECOGNITION_HEADER:
-        response_body["data"] = {"entities": top_response_text}
+        top_response_text = top_response_text.replace("[", "")
+        top_response_text = top_response_text.replace("]", "")
+        entity_response_array = top_response_text.split(",")
+        response_body["data"] = {"entities": entity_response_array}
     elif scenario == IMAGE_CAPTIONING_HEADER:
         response_body["data"] = {"generative-caption": top_response_text}
     return response_body
