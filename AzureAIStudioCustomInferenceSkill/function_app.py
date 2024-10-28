@@ -146,7 +146,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     
     response = client.complete(request_payload)
     top_response_text = response.choices[0].message.content
-    print(f'top message is: {response.choices[0].message}')
     response_body = {
         'warnings': None,
         'errors': [],
