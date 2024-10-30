@@ -7,11 +7,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL", '')
+endpoint = os.getenv("CHAT_COMPLETION_ENDPOINT", '')
 if not api_key:
   raise Exception("A key should be provided to invoke the endpoint")
 
 client = ChatCompletionsClient(
-    endpoint='https://azs-grok-phi-3-5-vision.eastus.models.ai.azure.com',
+    endpoint=endpoint,
     credential=AzureKeyCredential(api_key)
 )
 
