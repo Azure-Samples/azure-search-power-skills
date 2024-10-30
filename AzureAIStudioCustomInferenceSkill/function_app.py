@@ -12,7 +12,7 @@ app = func.FunctionApp()
 @app.function_name(name="NonAOAIHealthCheck")
 @app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
 def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Calling the healthcheck endpoint')
+    logging.info('Calling the custom language model healthcheck endpoint')
     response_body = { "status": "Healthy" }
     response = func.HttpResponse(json.dumps(response_body, default=lambda obj: obj.__dict__))
     response.headers['Content-Type'] = 'application/json'   
@@ -51,7 +51,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     SUMMARIZATION_HEADER = "summarization"
     ENTITY_RECOGNITION_HEADER = "entity-recognition"
     IMAGE_CAPTIONING_HEADER = "image-captioning"
-
+    # print(f'the request body is: {request_body}')
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     ENDPOINT = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
     client = ChatCompletionsClient(endpoint=ENDPOINT, credential=AzureKeyCredential(api_key))
@@ -65,25 +65,18 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     if scenario == SUMMARIZATION_HEADER:
         logging.info("calling into the summarization capability")
         chat_completion_system_context = {
-        "role": "system",
-        "content": [ # this context has to be dynamic according to the request header
-            {
-                "type": "text",
-                "text": custom_prompts.get("summarize-default-system-prompt")
-            }
-            ]
+            "role": "user",
+            "content": custom_prompts.get("summarize-default-system-prompt")
         }
         user_prompt_content = {
-            "type": "text",
-            "text": request_body.get("data", {}).get("text", "")
+            "role": "user",
+            "content": request_body.get("data", {}).get("text", "")
         }
         messages = [
-        chat_completion_system_context,
-        {
-        "role": "user",
-        "content": [user_prompt_content]
-        }
-    ]
+            chat_completion_system_context,
+            user_prompt_content
+        ]
+        # logging.info(f'the messages are: {messages}')
     elif scenario == ENTITY_RECOGNITION_HEADER:
         logging.info("calling into the entity recognition capability")
         chat_completion_system_context = {
@@ -137,14 +130,38 @@ def call_chat_completion_model(request_body: dict, scenario: str):
             }
         ]
         
-    request_payload = {
+    payload = {
     "messages": messages,
-    "temperature": 0.7,
+    "max_tokens": 4096,
+    "temperature": 0.8,
     "top_p": 0.95,
-    "max_tokens": 4096
+    "presence_penalty": 0,
+    "frequency_penalty": 0
     }
-    
-    response = client.complete(request_payload)
+
+    logging.info(f'the request payload is: {payload}')
+    hardcoded_payload = {
+    "messages": [
+    {
+      "role": "user",
+      "content": "I am going to Paris, what should I see?"
+    },
+    {
+      "role": "assistant",
+      "content": "Paris, the capital of France, is known for its stunning architecture, art museums, historical landmarks, and romantic atmosphere. Here are some of the top attractions to see in Paris:\n\n1. The Eiffel Tower: The iconic Eiffel Tower is one of the most recognizable landmarks in the world and offers breathtaking views of the city.\n2. The Louvre Museum: The Louvre is one of the world's largest and most famous museums, housing an impressive collection of art and artifacts, including the Mona Lisa.\n3. Notre-Dame Cathedral: This beautiful cathedral is one of the most famous landmarks in Paris and is known for its Gothic architecture and stunning stained glass windows.\n\nThese are just a few of the many attractions that Paris has to offer. With so much to see and do, it's no wonder that Paris is one of the most popular tourist destinations in the world."
+    },
+    {
+      "role": "user",
+      "content": "What is so great about #1?"
+    }
+  ],
+  "max_tokens": 2048,
+  "temperature": 0.8,
+  "top_p": 0.1,
+  "presence_penalty": 0,
+  "frequency_penalty": 0
+    }
+    response = client.complete(hardcoded_payload)
     top_response_text = response.choices[0].message.content
     response_body = {
         'warnings': None,
