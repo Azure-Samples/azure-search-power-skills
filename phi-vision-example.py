@@ -30,7 +30,7 @@ from azure.core.credentials import AzureKeyCredential
 
 def sample_chat_completions():
     try:
-        endpoint = os.environ["CHAT_COMPLETION_ENDPOINT"]
+        endpoint = os.environ["AZURE_CHAT_COMPLETION_ENDPOINT"]
         key = os.environ["AZURE_INFERENCE_CREDENTIAL"]
     except KeyError:
         print("Missing environment variable 'AZURE_AI_CHAT_ENDPOINT' or 'AZURE_AI_CHAT_KEY'")
@@ -44,10 +44,10 @@ def sample_chat_completions():
         "Authorization": key,
     }
     # THIS ONE WORKS!!
-    response_via_http = requests.post(endpoint, headers=headers, json=hardcoded_payload)
+    # response_via_http = requests.post(endpoint, headers=headers, json=hardcoded_payload)
     
     try:
-      # THIS ONE FAILS
+      # THIS ONE FAILED initially.
       response = client.complete(
           messages=[
               SystemMessage(content="You are a helpful assistant."),
