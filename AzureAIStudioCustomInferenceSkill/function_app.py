@@ -69,7 +69,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [ # this context has to be dynamic according to the request header
             {
                 "type": "text",
-                "text": custom_prompts.get("summarize-default-system-prompt")
+                "text": custom_prompts.get("summarize-system-prompt")
             }
             ]
         }
@@ -91,7 +91,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [
             {
                     "type": "text",
-                    "text": custom_prompts.get("entity-recognition-default-system-prompt")
+                    "text": custom_prompts.get("entity-recognition-system-prompt")
                 }
             ]
         }
@@ -118,7 +118,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
             [
                 {
                     "type": "text",
-                    "text": custom_prompts.get("image-captioning-simple-description-prompt")
+                    "text": custom_prompts.get("image-captioning-system-prompt")
                 }
             ]
             },
