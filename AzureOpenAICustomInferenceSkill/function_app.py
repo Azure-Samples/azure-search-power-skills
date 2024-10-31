@@ -66,7 +66,7 @@ def call_chat_completion_model(request_body: dict, scenario: str):
         "content": [
             {
                 "type": "text",
-                "text": custom_prompts.get("summarize-default-system-prompt")
+                "text": custom_prompts.get("summarize-system-prompt")
             }
             ]
         }
