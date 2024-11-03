@@ -1,0 +1,37 @@
+inputs:
+  question:
+    type: string
+    default: What hardware support is required to run ONNX?
+outputs:
+  answer:
+    type: string
+    reference: ${aoai_gen_result.output}
+nodes:
+- name: question_embedding
+  type: python
+  source:
+    type: package
+    tool: promptflow.tools.embedding.embedding
+  inputs:
+    connection: AOAIConnection
+    input: ${inputs.question}
+- name: search_azure_ai_search
+  type: python
+  source:
+    type: code
+    path: search_azure_ai_search.py
+  inputs:
+    vector: ${question_embedding.output}
+    aisearchconn: AzureAISearchConn
+- name: aoai_gen_result
+  type: llm
+  source:
+    type: code
+    path: aoai_gen_result.jinja2
+  inputs:
+    deployment_name: GPT4OModel
+    temperature: 0.6
+    max_tokens: 500
+    question: ${search_azure_ai_search.output}
+  connection: AOAIConnection
+  api: chat

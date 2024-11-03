@@ -1,0 +1,14 @@
+{
+  "chat_list": [
+    {
+      "name": "default",
+      "inputs": {
+        "file_path": "./files/pdf/modelcard.pdf"
+      }
+    }
+  ],
+  "prompty_chat_list": [],
+  "init": {
+    "flow.dag.yaml": {}
+  }
+}

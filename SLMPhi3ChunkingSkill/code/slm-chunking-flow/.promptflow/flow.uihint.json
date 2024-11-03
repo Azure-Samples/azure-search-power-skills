@@ -1,0 +1,91 @@
+{
+  "nodes": {
+    "chunking_text": {
+      "variant_0": {
+        "inputs": {
+          "file_path": []
+        }
+      }
+    },
+    "get_pdf_text": {
+      "variant_0": {
+        "inputs": {
+          "file_path": []
+        }
+      }
+    },
+    "chunking_text_with_phi3": {
+      "variant_0": {
+        "inputs": {
+          "content": []
+        }
+      }
+    },
+    "get_pdf_table": {
+      "variant_0": {
+        "inputs": {
+          "file_path": []
+        }
+      }
+    },
+    "chunking_table_with_phi3": {
+      "variant_0": {
+        "inputs": {
+          "tables": []
+        }
+      }
+    },
+    "set_content": {
+      "variant_0": {
+        "inputs": {
+          "content": [],
+          "table": [],
+          "img": []
+        }
+      }
+    },
+    "save_to_azure_search": {
+      "variant_0": {
+        "inputs": {
+          "chunking_list": []
+        }
+      }
+    },
+    "embedding_with_aoai": {
+      "variant_0": {
+        "inputs": {
+          "content": [],
+          "contents": []
+        }
+      }
+    },
+    "save_to_ai_search_vectordb": {
+      "variant_0": {
+        "inputs": {
+          "vector_json": []
+        }
+      }
+    },
+    "get_pdf_img": {
+      "variant_0": {
+        "inputs": {
+          "file_path": []
+        }
+      }
+    },
+    "chunking_img_with_phi3": {
+      "variant_0": {
+        "inputs": {
+          "imgs": []
+        }
+      }
+    },
+    "check_json": {
+      "variant_0": {
+        "inputs": {
+          "content": []
+        }
+      }
+    }
+  }
+}
