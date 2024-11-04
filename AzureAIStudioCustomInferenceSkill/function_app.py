@@ -4,6 +4,10 @@ import logging
 import os
 from azure.ai.inference import ChatCompletionsClient
 from azure.core.credentials import AzureKeyCredential
+from azure.ai.inference.models import (
+        SystemMessage,
+        UserMessage,
+    )
 
 app = func.FunctionApp()
 
@@ -55,7 +59,6 @@ def call_chat_completion_model(request_body: dict, scenario: str):
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     ENDPOINT = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
     client = ChatCompletionsClient(endpoint=ENDPOINT, credential=AzureKeyCredential(api_key))
-    chat_completion_system_context = {}
     messages = []
     custom_prompts = {}
     # read from a json file called custom_prmopts.json to read the prompts for the different scenarios
@@ -64,78 +67,36 @@ def call_chat_completion_model(request_body: dict, scenario: str):
 
     if scenario == SUMMARIZATION_HEADER:
         logging.info("calling into the summarization capability")
-        chat_completion_system_context = {
-        "role": "system",
-        "content": [ # this context has to be dynamic according to the request header
-            {
-                "type": "text",
-                "text": custom_prompts.get("summarize-default-system-prompt")
-            }
-            ]
-        }
-        user_prompt_content = {
-            "type": "text",
-            "text": request_body.get("data", {}).get("text", "")
-        }
-        messages = [
-        chat_completion_system_context,
-        {
-        "role": "user",
-        "content": [user_prompt_content]
-        }
-    ]
+        system_message = SystemMessage(content=custom_prompts.get("summarize-system-prompt"))
+        user_message = UserMessage(content = request_body.get("data", {}).get("text", ""))
+        messages = [ system_message, user_message ]
     elif scenario == ENTITY_RECOGNITION_HEADER:
         logging.info("calling into the entity recognition capability")
-        chat_completion_system_context = {
-        "role": "system",
-        "content": [
-            {
-                    "type": "text",
-                    "text": custom_prompts.get("entity-recognition-default-system-prompt")
-                }
-            ]
-        }
-        user_prompt_content = {
-            "type": "text",
-            "text": request_body.get("data", {}).get("text", "")
-        }
-        messages = [
-        chat_completion_system_context,
-        {
-        "role": "user",
-        "content": [user_prompt_content]
-        }
-    ]
+        system_message = SystemMessage(content=custom_prompts.get("entity-recognition-system-prompt"))
+        user_message = UserMessage(content = request_body.get("data", {}).get("text", ""))
+        messages = [ system_message, user_message ]
     elif scenario == IMAGE_CAPTIONING_HEADER:
         logging.info("calling the image captioning capability")
         raw_image_data = request_body.get("data", {}).get("image", "")
         image_data = raw_image_data.get("data")
         image_type = raw_image_data.get("contentType")
         image_base64encoded = f'data:{image_type};base64,{image_data}'
-        messages = [ {
-            "role": "system",
-            "content":
-            [
-                {
-                    "type": "text",
-                    "text": custom_prompts.get("image-captioning-simple-description-prompt")
-                }
-            ]
-            },
-            {
-                "role": "user",
-                "content": [
-                {
-                    "type": "image_url",
-                    "image_url": {"url": image_base64encoded}
-                },
-                {
-                    "type": "text",
-                    "text": "I want you to describe this image in a few simple sentences. If there are people or places in the image that you recognize, please mention them."
-                },
-                ]
-            }
-        ]
+        system_message = SystemMessage(content=custom_prompts.get("image-captioning-system-prompt"))
+        messages = [ system_message,
+                        { # left this one as-is because there was no support for creating user messages with a raw base 64 encoded image
+                            "role": "user",
+                            "content": [
+                            {
+                                "type": "image_url",
+                                "image_url": {"url": image_base64encoded}
+                            },
+                            {
+                                "type": "text",
+                                "text": "I want you to describe this image in a few simple sentences. If there are people or places in the image that you recognize, please mention them."
+                            },
+                            ]
+                        }
+                    ]
         
     request_payload = {
     "messages": messages,

@@ -1,6 +1,6 @@
 // edit this url based on whatever you are using to test locally 
 // (usually localhost or another endpoiint)
-@localHostBaseUrl = https://shiny-enigma-5x5rrgwgwxx3p776-7071.app.github.dev
+@localHostBaseUrl = https://noxious-crematorium-vqwrr6x6xgvfxx5j-7071.app.github.dev
 @deployedMiniModelHostBaseUrl = https://amitkalay-mini-model-aoai-app.azurewebsites.net
 @customSkillPath = /api/custom_skill
 
