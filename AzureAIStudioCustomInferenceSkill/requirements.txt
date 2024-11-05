@@ -4,3 +4,4 @@
 
 azure-functions
 azure-ai-inference
+aiohttp
