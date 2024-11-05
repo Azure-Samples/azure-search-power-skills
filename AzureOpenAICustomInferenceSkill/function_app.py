@@ -12,7 +12,7 @@ import time
 from functools import lru_cache
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)  # Set to DEBUG for more verbosity
 logger = logging.getLogger(__name__)
 
 class ScenarioType(Enum):
@@ -33,64 +33,77 @@ class CustomSkillException(Exception):
     def __init__(self, message: str, status_code: int = 500):
         self.message = message
         self.status_code = status_code
+        logger.error(f"CustomSkillException raised: {self.message}")  # Log exception on creation
         super().__init__(self.message)
 
 app = func.FunctionApp()
 
 @lru_cache(maxsize=1)
 def load_custom_prompts() -> Dict[str, str]:
-    """Load and cache custom prompts from JSON file"""
+    """Load and cache custom prompts from JSON file."""
     try:
         with open('custom_prompts.json', 'r') as file:
-            return json.load(file)
+            prompts = json.load(file)
+            logger.info("Custom prompts loaded successfully.")
+            return prompts
     except Exception as e:
         logger.error(f"Failed to load custom prompts: {e}")
         raise CustomSkillException("Failed to load custom prompts", 500)
 
 def validate_environment() -> tuple[str, str]:
-    """Validate required environment variables"""
+    """Validate required environment variables."""
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     endpoint = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
     
     if not api_key or not endpoint:
+        logger.error("Missing required environment variables.")
         raise CustomSkillException("Missing required environment variables", 500)
     
+    logger.info("Environment variables validated successfully.")
     return api_key, endpoint
 
 async def call_azure_openai(session: aiohttp.ClientSession, 
-                           endpoint: str,
-                           headers: Dict[str, str],
-                           payload: Dict[str, Any],
-                           config: ModelConfig) -> Dict[str, Any]:
-    """Make HTTP request to Azure OpenAI with retry logic"""
+                             endpoint: str,
+                             headers: Dict[str, str],
+                             payload: Dict[str, Any],
+                             config: ModelConfig) -> Dict[str, Any]:
+    """Make HTTP request to Azure OpenAI with retry logic."""
     for attempt in range(config.retry_attempts):
         try:
             async with asyncio.timeout(config.timeout):
+                logger.info(f"Sending request to Azure OpenAI: {payload}")
                 async with session.post(endpoint, headers=headers, json=payload) as response:
                     if response.status == 429:  # Rate limit
                         retry_after = float(response.headers.get('Retry-After', config.retry_delay))
+                        logger.warning(f"Rate limit exceeded. Retrying after {retry_after} seconds.")
                         await asyncio.sleep(retry_after)
                         continue
                         
                     response.raise_for_status()
-                    return await response.json()
+                    response_data = await response.json()
+                    logger.info("Successfully received response from Azure OpenAI.")
+                    return response_data
                     
         except asyncio.TimeoutError:
+            logger.error("Request timeout.")
             if attempt == config.retry_attempts - 1:
                 raise CustomSkillException("Request timeout", 408)
             await asyncio.sleep(config.retry_delay * (attempt + 1))
             
         except aiohttp.ClientError as e:
+            logger.error(f"Client error: {str(e)}")
             if attempt == config.retry_attempts - 1:
                 raise CustomSkillException(f"Request failed: {str(e)}", 500)
             await asyncio.sleep(config.retry_delay * (attempt + 1))
     
+    logger.error("Max retry attempts reached.")
     raise CustomSkillException("Max retry attempts reached", 500)
 
 def prepare_messages(request_body: Dict[str, Any], scenario: str,
-                    custom_prompts: Dict[str, str]) -> List[Dict[str, Any]]:
-    """Prepare messages based on scenario"""
+                     custom_prompts: Dict[str, str]) -> List[Dict[str, Any]]:
+    """Prepare messages based on scenario."""
     try:
+        logger.debug(f"Preparing messages for scenario: {scenario}")
         if scenario == ScenarioType.SUMMARIZATION.value:
             text = request_body.get("data", {}).get("text", "")
             if not text:
@@ -126,6 +139,7 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
             try:
                 base64.b64decode(image_data)
             except Exception as e:
+                logger.error(f"Invalid base64 encoding: {e}")
                 raise CustomSkillException("Invalid base64 encoding", 400)
                 
             image_base64encoded = f"data:{image_type};base64,{image_data}"
@@ -154,8 +168,8 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
         raise CustomSkillException(f"Failed to prepare messages: {str(e)}", 500)
 
 def format_response(request_body: Dict[str, Any], response_text: str,
-                   scenario: str) -> Dict[str, Any]:
-    """Format response based on scenario"""
+                    scenario: str) -> Dict[str, Any]:
+    """Format response based on scenario."""
     try:
         response_body = {
             "recordId": request_body.get("recordId"),
@@ -172,6 +186,7 @@ def format_response(request_body: Dict[str, Any], response_text: str,
         elif scenario == ScenarioType.IMAGE_CAPTIONING.value:
             response_body["data"] = {"generative-caption": response_text}
             
+        logger.debug(f"Formatted response: {response_body}")
         return response_body
     except Exception as e:
         logger.error(f"Error formatting response: {e}")
@@ -185,7 +200,7 @@ def format_response(request_body: Dict[str, Any], response_text: str,
 @app.function_name(name="AOAIHealthCheck")
 @app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
 async def health_check(req: func.HttpRequest) -> func.HttpResponse:
-    """Enhanced health check endpoint"""
+    """Enhanced health check endpoint."""
     try:
         api_key, endpoint = validate_environment()
         custom_prompts = load_custom_prompts()
@@ -198,8 +213,10 @@ async def health_check(req: func.HttpRequest) -> func.HttpResponse:
                 "prompts": "OK"
             }
         }
+        logger.info("Health check successful.")
         return func.HttpResponse(json.dumps(response_body), mimetype="application/json")
     except Exception as e:
+        logger.error(f"Health check failed: {e}")
         return func.HttpResponse(
             json.dumps({"status": "Unhealthy", "error": str(e)}),
             mimetype="application/json",
@@ -209,18 +226,21 @@ async def health_check(req: func.HttpRequest) -> func.HttpResponse:
 @app.function_name(name="AOAICustomSkill")
 @app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
 async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
-    """Main custom skill endpoint with improved error handling and performance"""
+    """Main custom skill endpoint with improved error handling and performance."""
     start_time = time.time()
     
     try:
         # Validate request
         request_json = req.get_json()
+        logger.debug(f"Received request JSON: {request_json}")
         scenario = req.headers.get("scenario")
         if not scenario:
+            logger.error("Missing scenario in headers.")
             raise CustomSkillException("Missing scenario in headers", 400)
             
         input_values = request_json.get("values", [])
         if not input_values:
+            logger.error("Missing 'values' in request body.")
             raise CustomSkillException("Missing 'values' in request body", 400)
 
         # Initialize configurations
@@ -247,7 +267,8 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
                         "top_p": config.top_p,
                         "max_tokens": config.max_tokens
                     }
-                    
+                    logger.debug(f"Request payload: {request_payload}")
+
                     # Call Azure OpenAI
                     response_json = await call_azure_openai(
                         session=session,
@@ -258,6 +279,7 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
                     )
                     
                     response_text = response_json['choices'][0]['message']['content']
+                    logger.debug(f"Response text received: {response_text}")
                     response_values.append(format_response(request_body, response_text, scenario))
                     
                 except Exception as e:
@@ -271,7 +293,7 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
 
         # Log processing time
         processing_time = time.time() - start_time
-        logger.info(f"Processed {len(input_values)} records in {processing_time:.2f} seconds")
+        logger.info(f"Processed {len(input_values)} records in {processing_time:.2f} seconds.")
         
         # Return response
         return func.HttpResponse(
@@ -283,7 +305,7 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
         logger.error(f"Custom skill error: {e}")
         return func.HttpResponse(str(e), status_code=e.status_code)
     except json.JSONDecodeError:
-        logger.error("Invalid JSON in request body")
+        logger.error("Invalid JSON in request body.")
         return func.HttpResponse("Invalid JSON in request body", status_code=400)
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
