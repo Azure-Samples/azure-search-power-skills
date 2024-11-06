@@ -1,28 +1,73 @@
 # Azure Open AI Custom Inference Skill
 
+Welcome to the Azure Open AI Custom Inference Skill repository! This guide helps you understand how to leverage Azure OpenAI services using Azure Functions to create a custom inference skill that performs tasks like summarization, entity recognition, and image captioning.
+
+## 🚀 Quickstart Guide
+
+### Prerequisites
+
+- An **Azure OpenAI Deployed Model**, either `gpt-4o` or `gpt-4o-mini`. You can follow [this guide](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-openai) to deploy your model.
+
+### Setup Steps
+
+1. **Clone the Repository**
+   - Clone this repository to your local environment to get started.
+
+2. **Configure Environment Variables**
+   - In the `local.settings.json` file, set the following:
+     - `AZURE_INFERENCE_CREDENTIAL`: Set this value to the API key of your deployed model.
+     - `AZURE_CHAT_COMPLETION_ENDPOINT`: Set this to the URL where your model is hosted.
+
+3. **Install Azure Functions Core Tools**
+   - To run this function locally, install the Azure Functions Visual Studio extension and update the core tools. Follow the [Azure Functions Python Quickstart Guide](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=windows%2Cbash%2Cazure-cli%2Cbrowser) to set up your environment.
+
+4. **Start the Azure Function**
+   - Navigate to the folder and run `func start` to initiate the function locally.
+
+5. **Test the API Locally**
+   - Use the `api-test.http` file to test the function locally. Replace the `localHostBaseUrl` variable with the base URL of your local environment. Install the Visual Studio REST Client extension to make testing easier by clicking the **Send Request** button.
+
+### 🛠️ Current Custom Skills
+- **Summarization**: Generates a concise summary from the input text.
+- **Entity Recognition**: Identifies entities such as people, places, and organizations from the input text.
+- **Image Captioning**: Provides a descriptive caption for an image provided either via a URL or as base64-encoded data.
+
+### 🖥️ Running in Azure
+When ready to deploy, you can follow [this guide](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=windows%2Cbash%2Cazure-cli%2Cbrowser#create-supporting-azure-resources-for-your-function) to set up your Azure Function resources.
+
+## 🌟 Use Cases
+This function demonstrates how to extend Azure OpenAI models for various natural language processing tasks. It can be used to:
+
+- 📝 **Automate Content Creation**: Summarize long texts for automated content creation.
+- 🔍 **Data Extraction**: Extract useful information from unstructured data.
+- 🖼️ **Visual Content Analysis**: Automatically generate captions for images, useful in content management systems.
+
+## 🔧 Extending the Function
+You can modify this function to add more scenarios or support other Large Language Models (LLMs). For example:
+
+- **Add New Skills**: Add more scenarios like **text classification** or **sentiment analysis** by modifying the `ScenarioType` and adding new handling logic in the `prepare_messages` function.
+- **Swap Models**: Replace the deployed model with another capable model from Azure AI Studio that fits your use case.
+
+## ❓ FAQ
+
+### How do I add a new skill to the function?
+To add a new skill, update the `ScenarioType` enumeration with a new value and extend the `prepare_messages()` function to handle the new scenario appropriately.
+
+### Can I use models other than `gpt-4o`?
+Yes, you can replace the deployed model with any suitable model from Azure AI Studio. Make sure to update the endpoint and model name in your `local.settings.json` file.
+
+### How do I use Azure AI Studio models?
+For other models that Azure AI Studio offers, simply change the **deployment name** and **endpoint URL** in the configuration to the desired model, ensuring compatibility with the tasks.
+
+## 📚 Documentation
+- [Azure OpenAI Service Documentation](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/)
+- [Azure Functions Documentation](https://learn.microsoft.com/en-us/azure/azure-functions/)
+
+## 🛠️ Technologies Used
+- **Python**
+- **Azure Functions**
+- **Azure AI Studio**
+
 ---
 
-Quickstart Guide:
-
-- This folder illustrates how to leverage Azure AI Studio to summarize a large piece of text using [custom web api skills](https://learn.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-web-api).
-
-- As a prerequisite to running this custom skill, you must first deploy a model to Azure. See [this guide](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-openai) for reference.
-
-- in the *local.settings.json* file, set your "AZURE_INFERENCE_CREDENTIAL" value to the API key of your deployed model. Set the "AZURE_CHAT_COMPLETION_ENDPOINT" environment variable to the url where your model is hosted
-
-- Once you are in this folder, you need to install the Azure functions Visual Studio extension and update the core tools. After that, you should run func start as descibed in this [python quickstart for Azure functions](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=windows%2Cbash%2Cazure-cli%2Cbrowser).
-
-- A sample payload is provided in the *api-test.http* file. Replace the localhostBaseUrl variable with the base url of your container/local http environment. Once you install the Visual Studio REST Client extension, you can hit the Send Request button from that file.
-
-- The currently demonstrated set of custom skills in this repository are about using chat completion models to do entity recognition, summarization and image-captioning.
-
-- When it comes time to deploy your code in Azure, you can follow [this guide for setting up your Python function](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=windows%2Cbash%2Cazure-cli%2Cbrowser#create-supporting-azure-resources-for-your-function)
-
-Languages:
-
-- ![python](https://img.shields.io/badge/language-python-orange)
-
-Products:
-
-- Azure AI Studio
-- Azure Functions
+Feel free to explore, modify, and extend the functionality as needed for your use case. If you have questions or suggestions, don't hesitate to open an issue or contribute to the repository!

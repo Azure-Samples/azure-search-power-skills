@@ -1,8 +1,6 @@
 import azure.functions as func
 import json
 import logging
-import aiohttp
-import asyncio
 import os
 from typing import Dict, Any, List
 from dataclasses import dataclass
@@ -10,6 +8,9 @@ from enum import Enum
 import base64
 import time
 from functools import lru_cache
+from openai import AzureOpenAI
+
+# Load environment variables
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)  # Set to DEBUG for more verbosity
@@ -38,69 +39,21 @@ class CustomSkillException(Exception):
 
 app = func.FunctionApp()
 
-@lru_cache(maxsize=1)
-def load_custom_prompts() -> Dict[str, str]:
-    """Load and cache custom prompts from JSON file."""
-    try:
-        with open('custom_prompts.json', 'r') as file:
-            prompts = json.load(file)
-            logger.info("Custom prompts loaded successfully.")
-            return prompts
-    except Exception as e:
-        logger.error(f"Failed to load custom prompts: {e}")
-        raise CustomSkillException("Failed to load custom prompts", 500)
-
-def validate_environment() -> tuple[str, str]:
+def validate_environment() -> tuple[str, str, str, str]:
     """Validate required environment variables."""
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     endpoint = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
+    deployment_name = "gpt-4o-mini"
+    api_version = "2024-08-01-preview"
     
-    if not api_key or not endpoint:
+    if not api_key or not endpoint or not deployment_name or not api_version:
         logger.error("Missing required environment variables.")
         raise CustomSkillException("Missing required environment variables", 500)
     
     logger.info("Environment variables validated successfully.")
-    return api_key, endpoint
+    return api_key, endpoint, deployment_name, api_version
 
-async def call_azure_openai(session: aiohttp.ClientSession, 
-                             endpoint: str,
-                             headers: Dict[str, str],
-                             payload: Dict[str, Any],
-                             config: ModelConfig) -> Dict[str, Any]:
-    """Make HTTP request to Azure OpenAI with retry logic."""
-    for attempt in range(config.retry_attempts):
-        try:
-            async with asyncio.timeout(config.timeout):
-                logger.info(f"Sending request to Azure OpenAI: {payload}")
-                async with session.post(endpoint, headers=headers, json=payload) as response:
-                    if response.status == 429:  # Rate limit
-                        retry_after = float(response.headers.get('Retry-After', config.retry_delay))
-                        logger.warning(f"Rate limit exceeded. Retrying after {retry_after} seconds.")
-                        await asyncio.sleep(retry_after)
-                        continue
-                        
-                    response.raise_for_status()
-                    response_data = await response.json()
-                    logger.info("Successfully received response from Azure OpenAI.")
-                    return response_data
-                    
-        except asyncio.TimeoutError:
-            logger.error("Request timeout.")
-            if attempt == config.retry_attempts - 1:
-                raise CustomSkillException("Request timeout", 408)
-            await asyncio.sleep(config.retry_delay * (attempt + 1))
-            
-        except aiohttp.ClientError as e:
-            logger.error(f"Client error: {str(e)}")
-            if attempt == config.retry_attempts - 1:
-                raise CustomSkillException(f"Request failed: {str(e)}", 500)
-            await asyncio.sleep(config.retry_delay * (attempt + 1))
-    
-    logger.error("Max retry attempts reached.")
-    raise CustomSkillException("Max retry attempts reached", 500)
-
-def prepare_messages(request_body: Dict[str, Any], scenario: str,
-                     custom_prompts: Dict[str, str]) -> List[Dict[str, Any]]:
+def prepare_messages(request_body: Dict[str, Any], scenario: str) -> List[Dict[str, Any]]:
     """Prepare messages based on scenario."""
     try:
         logger.debug(f"Preparing messages for scenario: {scenario}")
@@ -110,7 +63,7 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
                 raise CustomSkillException("Missing text for summarization", 400)
                 
             return [
-                {"role": "system", "content": custom_prompts.get("summarize-default-system-prompt")},
+                {"role": "system", "content": "You are an expert summarizer. Succinctly summarize the following text into no more than 200 words.###"},
                 {"role": "user", "content": text}
             ]
             
@@ -120,43 +73,56 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
                 raise CustomSkillException("Missing text for entity recognition", 400)
                 
             return [
-                {"role": "system", "content": custom_prompts.get("entity-recognition-default-system-prompt")},
+                {"role": "system", "content": "You are an expert in extracting entities from text. Identify all the named entities (e.g., people, places, organizations, dates, etc.) in the text below. Return them in a comma-separated list.###"},
                 {"role": "user", "content": text}
             ]
             
         elif scenario == ScenarioType.IMAGE_CAPTIONING.value:
             raw_image_data = request_body.get("data", {}).get("image", {})
-            if not raw_image_data:
-                raise CustomSkillException("Missing image data", 400)
-                
+            image_url = raw_image_data.get("url")
             image_data = raw_image_data.get("data")
             image_type = raw_image_data.get("contentType")
             
-            if not image_data or not image_type:
-                raise CustomSkillException("Invalid image data format", 400)
-
-            # Ensure base64 encoding compatibility
-            try:
-                base64.b64decode(image_data)
-            except Exception as e:
-                logger.error(f"Invalid base64 encoding: {e}")
-                raise CustomSkillException("Invalid base64 encoding", 400)
+            if image_url:
+                # If an image URL is provided, use it directly
+                return [
+                    {"role": "system", "content": "You are an AI assistant that provides detailed and accurate captions for images. Please review the image provided and generate a caption that best describes its content.###"},
+                    {"role": "user", "content": [
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": image_url}
+                        },
+                        {
+                            "type": "text",
+                            "text": "Provide a descriptive caption for this image."
+                        }
+                    ]}
+                ]
+            elif image_data and image_type:
+                # If base64 encoded image data is provided
+                try:
+                    base64.b64decode(image_data)
+                except Exception as e:
+                    logger.error(f"Invalid base64 encoding: {e}")
+                    raise CustomSkillException("Invalid base64 encoding", 400)
                 
-            image_base64encoded = f"data:{image_type};base64,{image_data}"
-            
-            return [
-                {"role": "system", "content": custom_prompts.get("image-captioning-simple-description-prompt")},
-                {"role": "user", "content": [
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": image_base64encoded}
-                    },
-                    {
-                        "type": "text",
-                        "text": "Please provide a caption for this image."
-                    }
-                ]}
-            ]
+                image_base64encoded = f"data:{image_type};base64,{image_data}"
+                
+                return [
+                    {"role": "system", "content": "You are an AI assistant that provides detailed and accurate captions for images. Please review the image provided and generate a caption that best describes its content.###"},
+                    {"role": "user", "content": [
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": image_base64encoded}
+                        },
+                        {
+                            "type": "text",
+                            "text": "Provide a descriptive caption for this image."
+                        }
+                    ]}
+                ]
+            else:
+                raise CustomSkillException("Invalid image data format. Please provide either an image URL or base64 encoded image data.", 400)
             
         else:
             raise CustomSkillException(f"Unknown scenario: {scenario}", 400)
@@ -202,15 +168,13 @@ def format_response(request_body: Dict[str, Any], response_text: str,
 async def health_check(req: func.HttpRequest) -> func.HttpResponse:
     """Enhanced health check endpoint."""
     try:
-        api_key, endpoint = validate_environment()
-        custom_prompts = load_custom_prompts()
+        api_key, endpoint, deployment_name, api_version = validate_environment()
         
         response_body = {
             "status": "Healthy",
             "timestamp": time.time(),
             "checks": {
-                "environment": "OK",
-                "prompts": "OK"
+                "environment": "OK"
             }
         }
         logger.info("Health check successful.")
@@ -244,52 +208,43 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
             raise CustomSkillException("Missing 'values' in request body", 400)
 
         # Initialize configurations
-        api_key, endpoint = validate_environment()
-        custom_prompts = load_custom_prompts()
+        api_key, endpoint, deployment_name, api_version = validate_environment()
         config = ModelConfig()
-        
-        headers = {
-            "Content-Type": "application/json",
-            "api-key": api_key
-        }
 
-        async with aiohttp.ClientSession() as session:
-            response_values = []
-            for request_body in input_values:
-                try:
-                    # Prepare messages
-                    messages = prepare_messages(request_body, scenario, custom_prompts)
-                    
-                    # Prepare request payload
-                    request_payload = {
-                        "messages": messages,
-                        "temperature": config.temperature,
-                        "top_p": config.top_p,
-                        "max_tokens": config.max_tokens
-                    }
-                    logger.debug(f"Request payload: {request_payload}")
+        # Set up the Azure OpenAI client
+        client = AzureOpenAI(
+            api_key=api_key,
+            azure_endpoint=endpoint,
+            api_version=api_version
+        )
 
-                    # Call Azure OpenAI
-                    response_json = await call_azure_openai(
-                        session=session,
-                        endpoint=endpoint,
-                        headers=headers,
-                        payload=request_payload,
-                        config=config
-                    )
-                    
-                    response_text = response_json['choices'][0]['message']['content']
-                    logger.debug(f"Response text received: {response_text}")
-                    response_values.append(format_response(request_body, response_text, scenario))
-                    
-                except Exception as e:
-                    logger.error(f"Error processing record {request_body.get('recordId')}: {e}")
-                    response_values.append({
-                        "recordId": request_body.get("recordId"),
-                        "errors": [str(e)],
-                        "warnings": None,
-                        "data": None
-                    })
+        response_values = []
+        for request_body in input_values:
+            try:
+                # Prepare messages
+                messages = prepare_messages(request_body, scenario)
+                
+                # Call Azure OpenAI
+                response = client.chat.completions.create(
+                    model=deployment_name,
+                    messages=messages,
+                    temperature=config.temperature,
+                    top_p=config.top_p,
+                    max_tokens=config.max_tokens
+                )
+                
+                response_text = response.choices[0].message.content
+                logger.debug(f"Response text received: {response_text}")
+                response_values.append(format_response(request_body, response_text, scenario))
+                
+            except Exception as e:
+                logger.error(f"Error processing record {request_body.get('recordId')}: {e}")
+                response_values.append({
+                    "recordId": request_body.get("recordId"),
+                    "errors": [str(e)],
+                    "warnings": None,
+                    "data": None
+                })
 
         # Log processing time
         processing_time = time.time() - start_time

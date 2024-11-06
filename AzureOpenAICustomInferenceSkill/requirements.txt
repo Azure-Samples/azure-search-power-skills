@@ -5,3 +5,4 @@
 azure-functions
 requests
 aiohttp
+openai

@@ -5,12 +5,12 @@
 @customSkillPath = /api/custom_skill
 
 // healthcheck endpoint
-GET {{deployedMiniModelHostBaseUrl}}/api/health
+GET {{localHostBaseUrl}}/api/health
 
 ### 
 
 # summarization example request
-POST {{deployedMiniModelHostBaseUrl}}{{customSkillPath}}
+POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: summarization
 
@@ -28,7 +28,7 @@ Scenario: summarization
 ###
 
 # entity recognition example request
-POST {{deployedMiniModelHostBaseUrl}}{{customSkillPath}}
+POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: entity-recognition
 
@@ -46,7 +46,7 @@ Scenario: entity-recognition
 ###
 
 # image captioning example request with Satya giving a presentation about Linux
-POST {{deployedMiniModelHostBaseUrl}}{{customSkillPath}}
+POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: image-captioning
 
@@ -65,3 +65,22 @@ Scenario: image-captioning
 }
 
 ###
+
+# image captioning example request with an image url of a man on skateboard
+POST {{localHostBaseUrl}}{{customSkillPath}}
+Content-Type: application/json
+Scenario: image-captioning
+
+{
+  "values": [
+    {
+      "recordId": "24",
+      "data": {
+        "image": {
+          "contentType": "image/jpeg",
+          "url": "https://portal.vision.cognitive.azure.com/dist/assets/ImageCaptioningSample5-14b26724.png"
+        }
+      }
+    }
+  ]
+}
