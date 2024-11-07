@@ -75,7 +75,7 @@ def validate_environment() -> tuple[str, str, str, str]:
     """Validate required environment variables."""
     api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
     endpoint = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
-    deployment_name = "gpt-4o"  # Make sure this is your GPT-4 Turbo deployment
+    deployment_name = "gpt-4o"  # Make sure this is your GPT-4o deployment name
     api_version = "2024-08-01-preview"
 
     if not api_key or not endpoint or not deployment_name or not api_version:

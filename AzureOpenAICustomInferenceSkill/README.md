@@ -6,7 +6,15 @@ Welcome to the Azure Open AI Custom Inference Skill repository! This guide helps
 
 ### Prerequisites
 
-- An **Azure OpenAI Deployed Model**, either `gpt-4o` or `gpt-4o-mini`. You can follow [this guide](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-openai) to deploy your model.
+- An **Azure OpenAI Deployed Model**, either `gpt-4o` or `gpt-4o-mini`. You can follow [this guide](https://learn.microsoft.com/azure/ai-studio/how-to/deploy-models-openai) to deploy your model. Note, at this time the code will only work with structured outputs as Azure OpenAI only supports `gpt-4o`.
+
+### Important Note on Structured Outputs
+
+As of **11/7/2024**, only the following applies:
+
+- **Supported Models**: Currently, only `gpt-4o` version `2024-08-06` supports structured outputs. However, you can modify the code to remove structured outputs if you want to use it with an older model version or `gpt-4o-mini`.
+
+- **API Support**: Support for structured outputs was first added in API version `2024-08-01-preview`.
 
 ### Setup Steps
 
@@ -54,7 +62,7 @@ You can modify this function to add more scenarios or support other Large Langua
 To add a new skill, update the `ScenarioType` enumeration with a new value and extend the `prepare_messages()` function to handle the new scenario appropriately.
 
 ### Can I use models other than `gpt-4o`?
-Yes, you can replace the deployed model with any suitable model from Azure AI Studio. Make sure to update the endpoint and model name in your `local.settings.json` file.
+Yes, you can replace the deployed model with any suitable model from Azure AI Studio. Make sure to update the endpoint and model name in your `local.settings.json` file. If using an older model version or `gpt-4o-mini`, consider modifying the code to disable structured outputs.
 
 ### How do I use Azure AI Studio models?
 For other models that Azure AI Studio offers, simply change the **deployment name** and **endpoint URL** in the configuration to the desired model, ensuring compatibility with the tasks.
