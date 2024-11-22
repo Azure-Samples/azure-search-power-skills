@@ -28,7 +28,7 @@ Scenario: summarization
 ###
 
 # entity recognition example request
-POST {{deployedMiniModelHostBaseUrl}}{{customSkillPath}}
+POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: entity-recognition
 
@@ -46,7 +46,7 @@ Scenario: entity-recognition
 ###
 
 # image captioning example request with Satya giving a presentation about Linux
-POST {{deployedMiniModelHostBaseUrl}}{{customSkillPath}}
+POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: image-captioning
 
