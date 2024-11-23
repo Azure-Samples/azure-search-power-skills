@@ -1,16 +1,16 @@
 // edit this url based on whatever you are using to test locally 
 // (usually localhost or another endpoiint)
 @localHostBaseUrl = http://localhost:7071
-@deployedMiniModelHostBaseUrl = https://YOUR-DEPLOYED-FUNNCTION-URL.azurewebsites.net
+@deployedMiniModelHostBaseUrl = <https://YOUR-DEPLOYED-FUNCTION-URL.azurewebsites.net>
 @customSkillPath = /api/custom_skill
 
 // healthcheck endpoint
-GET {{deployedMiniModelHostBaseUrl}}/api/health
+GET {{localHostBaseUrl}}/api/health
 
 ### 
 
 # summarization example request
-POST {{deployedMiniModelHostBaseUrl}}{{customSkillPath}}
+POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: summarization
 
@@ -28,7 +28,7 @@ Scenario: summarization
 ###
 
 # entity recognition example request
-POST {{deployedMiniModelHostBaseUrl}}{{customSkillPath}}
+POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: entity-recognition
 
@@ -46,7 +46,7 @@ Scenario: entity-recognition
 ###
 
 # image captioning example request with Satya giving a presentation about Linux
-POST {{deployedMiniModelHostBaseUrl}}{{customSkillPath}}
+POST {{localHostBaseUrl}}{{customSkillPath}}
 Content-Type: application/json
 Scenario: image-captioning
 
