@@ -9,6 +9,10 @@ import base64
 import time
 from openai import AzureOpenAI
 from pydantic import BaseModel, Field
+from azure.ai.inference.models import (
+        SystemMessage,
+        UserMessage,
+    )
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -94,39 +98,27 @@ def prepare_messages(
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for summarization", 400)
-
-            return [
-                {
-                    "role": "system",
-                    "content": "You are an expert summarizer. Create a structured summary of the following text.",
-                },
-                {"role": "user", "content": text},
-            ]
+            system_message = SystemMessage(content="You are an expert summarizer. Create a structured summary of the following text.")
+            user_message = UserMessage(content=text)
+            return [ system_message, user_message ]
 
         elif scenario == ScenarioType.ENTITY_RECOGNITION.value:
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for entity recognition", 400)
-
-            return [
-                {
-                    "role": "system",
-                    "content": "Extract and classify all named entities from the text with confidence scores.",
-                },
-                {"role": "user", "content": text},
-            ]
+            system_message = SystemMessage(content="Extract and classify all named entities from the text with confidence scores.")
+            user_message = UserMessage(content=text)
+            return [ system_message, user_message ]
 
         elif scenario == ScenarioType.IMAGE_CAPTIONING.value:
             raw_image_data = request_body.get("data", {}).get("image", {})
             image_url = raw_image_data.get("url")
             image_data = raw_image_data.get("data")
             image_type = raw_image_data.get("contentType")
-
-            system_message = "You are an AI assistant that provides structured image descriptions with tags and confidence scores."
-
+            system_image_verbalization_message = "You are an AI assistant that provides structured image descriptions with tags and confidence scores."
             if image_url:
                 return [
-                    {"role": "system", "content": system_message},
+                    {"role": "system", "content": system_image_verbalization_message},
                     {
                         "role": "user",
                         "content": [
@@ -146,7 +138,7 @@ def prepare_messages(
 
                 image_base64encoded = f"data:{image_type};base64,{image_data}"
                 return [
-                    {"role": "system", "content": system_message},
+                    {"role": "system", "content": system_image_verbalization_message},
                     {
                         "role": "user",
                         "content": [
