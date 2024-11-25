@@ -3,5 +3,5 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
-opencv-python==4.5.5.62
+opencv-python==4.8.1.78
 azure-storage-blob==12.13.0
