@@ -5,11 +5,15 @@ import os
 import asyncio
 from azure.ai.inference.aio import ChatCompletionsClient
 from azure.core.credentials import AzureKeyCredential
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from dataclasses import dataclass
 from enum import Enum
 import base64
 import time
+from azure.ai.inference.models import (
+        SystemMessage,
+        UserMessage,
+    )
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -69,33 +73,17 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for summarization", 400)
-                
-            return [
-                {
-                    "role": "system",
-                    "content": [{"type": "text", "text": custom_prompts.get("summarize-default-system-prompt")}]
-                },
-                {
-                    "role": "user",
-                    "content": [{"type": "text", "text": text}]
-                }
-            ]
+            system_message = SystemMessage(content=custom_prompts.get("summarize-default-system-prompt"))
+            user_message = UserMessage(content=text)
+            return [ system_message, user_message]
             
         elif scenario == ScenarioType.ENTITY_RECOGNITION.value:
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for entity recognition", 400)
-                
-            return [
-                {
-                    "role": "system",
-                    "content": [{"type": "text", "text": custom_prompts.get("entity-recognition-default-system-prompt")}]
-                },
-                {
-                    "role": "user",
-                    "content": [{"type": "text", "text": text}]
-                }
-            ]
+            system_message = SystemMessage(content=custom_prompts.get("entity-recognition-default-system-prompt"))
+            user_message = UserMessage(content=text)
+            return [ system_message, user_message ]
             
         elif scenario == ScenarioType.IMAGE_CAPTIONING.value:
             raw_image_data = request_body.get("data", {}).get("image", {})
@@ -115,17 +103,9 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
                 raise CustomSkillException("Invalid base64 encoding", 400)
                 
             image_base64encoded = f"data:{image_type};base64,{image_data}"
-            
+            system_message = SystemMessage(content=custom_prompts.get("image-captioning-default-system-prompt"))
             return [
-                {
-                    "role": "system",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": custom_prompts.get("image-captioning-simple-description-prompt")
-                        }
-                    ]
-                },
+                system_message,
                 {
                     "role": "user",
                     "content": [

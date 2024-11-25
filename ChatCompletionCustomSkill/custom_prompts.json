@@ -1,0 +1,5 @@
+{
+    "summarize-default-system-prompt": "You are an expert summarizer. Create a structured summary of the following text.",
+    "entity-recognition-default-system-prompt": "Extract and classify all named entities from the text with confidence scores.",
+    "image-captioning-default-system-prompt": "You are an AI assistant that provides structured image descriptions with tags and confidence scores."
+}
