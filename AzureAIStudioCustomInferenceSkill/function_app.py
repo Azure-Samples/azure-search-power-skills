@@ -122,7 +122,7 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
                     "content": [
                         {
                             "type": "text",
-                            "text": custom_prompts.get("image-captioning-simple-description-prompt")
+                            "text": custom_prompts.get("image-captioning-default-system-prompt")
                         }
                     ]
                 },
