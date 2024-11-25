@@ -1,4 +1,4 @@
-# Azure Studio Custom Model Custom Skill
+# Azure Studio Chat Completion Custom Skill for User-Chosen Language Models
 
 ---
 
