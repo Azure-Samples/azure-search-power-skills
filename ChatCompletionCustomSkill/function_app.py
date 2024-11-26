@@ -139,7 +139,15 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
                 raise CustomSkillException("Invalid base64 encoding", 400)
                 
             image_base64encoded = f"data:{image_type};base64,{image_data}"
-            system_message = SystemMessage(content=custom_prompts.get("image-captioning-default-system-prompt"))
+            system_message = {
+            "role": "system",
+            "content": [
+                    {
+                        "type": "text",
+                        "text": custom_prompts.get("image-captioning-default-system-prompt")
+                    }
+                ]
+            }
             return [
                 system_message,
                 {
