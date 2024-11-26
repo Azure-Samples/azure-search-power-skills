@@ -1,0 +1,64 @@
+{
+    "name": "llm-chunker-skillset",
+    "description": "Extract and chunk documents using LLM.",
+    "skills": [
+        {
+            "@odata.type": "#Microsoft.Skills.Custom.WebApiSkill",
+            "description": "A custom skill that extract document contents using LLM and return markdown context-aware chunks",
+            "uri": "https://$TF_VAR_skill_api_hostname/process",
+            "timeout": "PT230S",
+            "batchSize": 1,
+            "context": "/document",
+            "httpHeaders": {
+                "api-key": "$TF_VAR_skill_api_key"
+            },
+            "httpMethod": "POST",
+            "inputs": [
+                {
+                    "name": "blobUrl",
+                    "source": "/document/metadata_storage_path"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "chunks",
+                    "targetName": "chunks"
+                }
+            ]
+        }
+    ],
+    "knowledgeStore": null,
+    "indexProjections": {
+        "selectors": [
+            {
+                "targetIndexName": "llm-chunker-index",
+                "parentKeyFieldName": "parent_id",
+                "sourceContext": "/document/chunks/*",
+                "mappings": [
+                    {
+                        "name": "content",
+                        "source": "/document/chunks/*/content",
+                        "sourceContext": null,
+                        "inputs": []
+                    },
+                    {
+                        "name": "file_name",
+                        "source": "/document/metadata_storage_path",
+                        "sourceContext": null,
+                        "inputs": []
+                    },
+                    {
+                        "name": "title",
+                        "source": "/document/chunks/*/title",
+                        "sourceContext": null,
+                        "inputs": []
+                    }
+                ]
+            }
+        ],
+        "parameters": {
+            "projectionMode": "skipIndexingParentDocuments"
+        }
+    },
+    "encryptionKey": null
+}
