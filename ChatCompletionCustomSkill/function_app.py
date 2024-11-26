@@ -246,18 +246,25 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
 
                     # print(f'request_payload: {request_payload}')
                     print(f'The headers are : {headers}')
-                    vanilla_response = requests.post(endpoint, headers=headers, json=request_payload)
-                    print(f'the vanilla response is : {vanilla_response}')
-                    vanilla_response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
-                    vanilla_response_json = vanilla_response.json()
+                    # vanilla_response = requests.post(endpoint, headers=headers, json=request_payload)
+                    # print(f'the vanilla response is : {vanilla_response}')
+                    # vanilla_response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+                    # vanilla_response_json = vanilla_response.json()
                     # TODO: this WORKED! Now I just need to massage this requests.post() response into the same format as the ChatCompletionsClient response
-                    print(f'vanilla_response_json: {vanilla_response_json}')
+                    
                     
                     # Call model with timeout
                     async with asyncio.timeout(config.timeout):
                         # just use requests.post() here instead
-                        response = await client.complete(request_payload)
-                        response_text = response.choices[0].message.content
+                        # response = await client.complete(request_payload)
+                        # response_text = response.choices[0].message.content
+
+                        vanilla_response = requests.post(endpoint, headers=headers, json=request_payload)
+                        # print(f'the vanilla response is : {vanilla_response}')
+                        vanilla_response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+                        vanilla_response_json = vanilla_response.json()
+                        print(f'vanilla_response_json: {vanilla_response_json}')
+                        response_text = vanilla_response_json['choices'][0]['message']['content']
                         
                     # Format response
                     response_values.append(format_response(request_body, response_text, scenario))
