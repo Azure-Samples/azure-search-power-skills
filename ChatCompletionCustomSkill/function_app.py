@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from enum import Enum
 import base64
 import time
+import requests
 from azure.ai.inference.models import (
         SystemMessage,
         UserMessage,
@@ -57,6 +58,7 @@ async def create_chat_client() -> ChatCompletionsClient:
         if not api_key or not endpoint:
             raise CustomSkillException("Missing required environment variables", 500)
             
+        print(f"Creating chat client with endpoint: {endpoint} and api_key: {api_key}")
         return ChatCompletionsClient(
             endpoint=endpoint,
             credential=AzureKeyCredential(api_key)
@@ -73,8 +75,26 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for summarization", 400)
-            system_message = SystemMessage(content=custom_prompts.get("summarize-default-system-prompt"))
-            user_message = UserMessage(content=text)
+            # system_message = SystemMessage(content=custom_prompts.get("summarize-default-system-prompt"))
+            system_message = {
+            "role": "system",
+            "content": [
+                    {
+                        "type": "text",
+                        "text": custom_prompts.get("summarize-default-system-prompt")
+                    }
+                ]
+            }
+            # user_message = UserMessage(content=text)
+            user_message = {
+            "role": "user",
+            "content": [
+                    {
+                    "type": "text",
+                    "text": text
+                    }
+                ]
+            }
             return [ system_message, user_message]
             
         elif scenario == ScenarioType.ENTITY_RECOGNITION.value:
@@ -203,6 +223,13 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
         config = ModelConfig()
         
         response_values = []
+        api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
+        endpoint = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
+        headers = {
+        "Content-Type": "application/json",
+        "api-key": api_key,
+        "Authorization": f"Bearer {api_key}"
+        }
         async with await create_chat_client() as client:
             for request_body in input_values:
                 try:
@@ -216,9 +243,19 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
                         "top_p": config.top_p,
                         "max_tokens": config.max_tokens
                     }
+
+                    # print(f'request_payload: {request_payload}')
+                    print(f'The headers are : {headers}')
+                    vanilla_response = requests.post(endpoint, headers=headers, json=request_payload)
+                    print(f'the vanilla response is : {vanilla_response}')
+                    vanilla_response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+                    vanilla_response_json = vanilla_response.json()
+                    # TODO: this WORKED! Now I just need to massage this requests.post() response into the same format as the ChatCompletionsClient response
+                    print(f'vanilla_response_json: {vanilla_response_json}')
                     
                     # Call model with timeout
                     async with asyncio.timeout(config.timeout):
+                        # just use requests.post() here instead
                         response = await client.complete(request_payload)
                         response_text = response.choices[0].message.content
                         
