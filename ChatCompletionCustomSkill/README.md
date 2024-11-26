@@ -4,7 +4,7 @@
 
 Quickstart Guide:
 
-- This folder illustrates how to leverage Azure AI Studio to summarize a large piece of text using [custom web api skills](https://learn.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-web-api).
+- This folder illustrates how to leverage Azure AI Studio with a deployed language model of your choice to do a chat-completion skill using [custom web api skills](https://learn.microsoft.com/en-us/azure/search/cognitive-search-custom-skill-web-api).
 
 - As a prerequisite to running this custom skill, you must first deploy a model to Azure. See [this guide](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-openai) for reference.
 
