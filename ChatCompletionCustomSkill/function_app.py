@@ -10,10 +10,7 @@ from dataclasses import dataclass
 from enum import Enum
 import base64
 import time
-from azure.ai.inference.models import (
-        SystemMessage,
-        UserMessage,
-    )
+import requests
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -48,23 +45,6 @@ def load_custom_prompts() -> Dict[str, str]:
         logger.error(f"Failed to load custom prompts: {e}")
         raise CustomSkillException("Failed to load custom prompts", 500)
 
-async def create_chat_client() -> ChatCompletionsClient:
-    """Create and configure chat client"""
-    try:
-        api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
-        endpoint = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
-        
-        if not api_key or not endpoint:
-            raise CustomSkillException("Missing required environment variables", 500)
-            
-        return ChatCompletionsClient(
-            endpoint=endpoint,
-            credential=AzureKeyCredential(api_key)
-        )
-    except Exception as e:
-        logger.error(f"Failed to create chat client: {e}")
-        raise CustomSkillException("Failed to initialize chat client", 500)
-
 def prepare_messages(request_body: Dict[str, Any], scenario: str, 
                     custom_prompts: Dict[str, str]) -> List[Dict[str, Any]]:
     """Prepare messages based on scenario"""
@@ -73,16 +53,48 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for summarization", 400)
-            system_message = SystemMessage(content=custom_prompts.get("summarize-default-system-prompt"))
-            user_message = UserMessage(content=text)
+            system_message = {
+            "role": "system",
+            "content": [
+                    {
+                        "type": "text",
+                        "text": custom_prompts.get("summarize-default-system-prompt")
+                    }
+                ]
+            }
+            user_message = {
+            "role": "user",
+            "content": [
+                    {
+                    "type": "text",
+                    "text": text
+                    }
+                ]
+            }
             return [ system_message, user_message]
             
         elif scenario == ScenarioType.ENTITY_RECOGNITION.value:
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for entity recognition", 400)
-            system_message = SystemMessage(content=custom_prompts.get("entity-recognition-default-system-prompt"))
-            user_message = UserMessage(content=text)
+            system_message = {
+            "role": "system",
+            "content": [
+                    {
+                        "type": "text",
+                        "text": custom_prompts.get("entity-recognition-default-system-prompt")
+                    }
+                ]
+            }
+            user_message = {
+            "role": "user",
+            "content": [
+                    {
+                    "type": "text",
+                    "text": text
+                    }
+                ]
+            }
             return [ system_message, user_message ]
             
         elif scenario == ScenarioType.IMAGE_CAPTIONING.value:
@@ -103,7 +115,15 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
                 raise CustomSkillException("Invalid base64 encoding", 400)
                 
             image_base64encoded = f"data:{image_type};base64,{image_data}"
-            system_message = SystemMessage(content=custom_prompts.get("image-captioning-default-system-prompt"))
+            system_message = {
+            "role": "system",
+            "content": [
+                    {
+                        "type": "text",
+                        "text": custom_prompts.get("image-captioning-default-system-prompt")
+                    }
+                ]
+            }
             return [
                 system_message,
                 {
@@ -162,24 +182,8 @@ def format_response(request_body: Dict[str, Any], response_text: str,
 @app.route(route="health", auth_level=func.AuthLevel.ANONYMOUS)
 async def health_check(req: func.HttpRequest) -> func.HttpResponse:
     """Health check endpoint"""
-    try:
-        custom_prompts = load_custom_prompts()
-        async with await create_chat_client() as client:
-            response_body = {
-                "status": "Healthy",
-                "timestamp": time.time(),
-                "checks": {
-                    "prompts": "OK",
-                    "client": "OK"
-                }
-            }
-            return func.HttpResponse(json.dumps(response_body), mimetype="application/json")
-    except Exception as e:
-        return func.HttpResponse(
-            json.dumps({"status": "Unhealthy", "error": str(e)}),
-            mimetype="application/json",
-            status_code=500
-        )
+    response_body = {"status": "Healthy"}
+    return func.HttpResponse(json.dumps(response_body), mimetype="application/json")
 
 @app.function_name(name="AIStudioModelCatalogSkill")
 @app.route(route="custom_skill", auth_level=func.AuthLevel.ANONYMOUS)
@@ -203,44 +207,47 @@ async def custom_skill(req: func.HttpRequest) -> func.HttpResponse:
         config = ModelConfig()
         
         response_values = []
-        async with await create_chat_client() as client:
-            for request_body in input_values:
-                try:
-                    # Prepare messages
-                    messages = prepare_messages(request_body, scenario, custom_prompts)
-                    
-                    # Prepare request payload
-                    request_payload = {
-                        "messages": messages,
-                        "temperature": config.temperature,
-                        "top_p": config.top_p,
-                        "max_tokens": config.max_tokens
-                    }
-                    
-                    # Call model with timeout
-                    async with asyncio.timeout(config.timeout):
-                        response = await client.complete(request_payload)
-                        response_text = response.choices[0].message.content
-                        
-                    # Format response
-                    response_values.append(format_response(request_body, response_text, scenario))
-                    
-                except asyncio.TimeoutError:
-                    logger.error(f"Timeout processing record {request_body.get('recordId')}")
-                    response_values.append({
-                        "recordId": request_body.get("recordId"),
-                        "errors": ["Request timeout"],
-                        "warnings": None,
-                        "data": None
-                    })
-                except Exception as e:
-                    logger.error(f"Error processing record {request_body.get('recordId')}: {e}")
-                    response_values.append({
-                        "recordId": request_body.get("recordId"),
-                        "errors": [str(e)],
-                        "warnings": None,
-                        "data": None
-                    })
+        api_key = os.getenv("AZURE_INFERENCE_CREDENTIAL")
+        endpoint = os.getenv("AZURE_CHAT_COMPLETION_ENDPOINT")
+        headers = {
+        "Content-Type": "application/json",
+        "api-key": api_key,
+        "Authorization": f"Bearer {api_key}"
+        }
+        for request_body in input_values:
+            try:
+                messages = prepare_messages(request_body, scenario, custom_prompts)
+                request_payload = {
+                    "messages": messages,
+                    "temperature": config.temperature,
+                    "top_p": config.top_p,
+                    "max_tokens": config.max_tokens
+                }
+                # Call model with timeout
+                async with asyncio.timeout(config.timeout):
+                    vanilla_response = requests.post(endpoint, headers=headers, json=request_payload)
+                    vanilla_response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+                    vanilla_response_json = vanilla_response.json()
+                    response_text = vanilla_response_json['choices'][0]['message']['content']
+                # Format response
+                response_values.append(format_response(request_body, response_text, scenario))
+                
+            except asyncio.TimeoutError:
+                logger.error(f"Timeout processing record {request_body.get('recordId')}")
+                response_values.append({
+                    "recordId": request_body.get("recordId"),
+                    "errors": ["Request timeout"],
+                    "warnings": None,
+                    "data": None
+                })
+            except Exception as e:
+                logger.error(f"Error processing record {request_body.get('recordId')}: {e}")
+                response_values.append({
+                    "recordId": request_body.get("recordId"),
+                    "errors": [str(e)],
+                    "warnings": None,
+                    "data": None
+                })
 
         # Log processing time
         processing_time = time.time() - start_time
