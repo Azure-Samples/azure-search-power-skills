@@ -75,7 +75,6 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for summarization", 400)
-            # system_message = SystemMessage(content=custom_prompts.get("summarize-default-system-prompt"))
             system_message = {
             "role": "system",
             "content": [
@@ -85,7 +84,6 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
                     }
                 ]
             }
-            # user_message = UserMessage(content=text)
             user_message = {
             "role": "user",
             "content": [
@@ -101,8 +99,26 @@ def prepare_messages(request_body: Dict[str, Any], scenario: str,
             text = request_body.get("data", {}).get("text", "")
             if not text:
                 raise CustomSkillException("Missing text for entity recognition", 400)
-            system_message = SystemMessage(content=custom_prompts.get("entity-recognition-default-system-prompt"))
-            user_message = UserMessage(content=text)
+            # system_message = SystemMessage(content=custom_prompts.get("entity-recognition-default-system-prompt"))
+            system_message = {
+            "role": "system",
+            "content": [
+                    {
+                        "type": "text",
+                        "text": custom_prompts.get("entity-recognition-default-system-prompt")
+                    }
+                ]
+            }
+            # user_message = UserMessage(content=text)
+            user_message = {
+            "role": "user",
+            "content": [
+                    {
+                    "type": "text",
+                    "text": text
+                    }
+                ]
+            }
             return [ system_message, user_message ]
             
         elif scenario == ScenarioType.IMAGE_CAPTIONING.value:
