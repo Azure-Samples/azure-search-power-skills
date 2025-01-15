@@ -1,7 +1,6 @@
-
 import os  
 import base64
-from openai import AzureOpenAI  
+from openai import AzureOpenAI
 
 endpoint = os.getenv("ENDPOINT_URL", "https://azs-grok-aoai.openai.azure.com/")  
 deployment = os.getenv("DEPLOYMENT_NAME", "azs-grok-gpt-4o")  
