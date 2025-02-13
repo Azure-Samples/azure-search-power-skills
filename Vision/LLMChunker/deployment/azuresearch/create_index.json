@@ -1,0 +1,49 @@
+{
+    "name": "llm-chunker-index",
+    "fields": [
+        {
+            "name": "chunk_id",
+            "type": "Edm.String",
+            "key": true,
+            "searchable": true,
+            "filterable": true,
+            "retrievable": true,
+            "stored": true,
+            "sortable": false,
+            "facetable": false,
+            "analyzer": "keyword"
+        },
+        {
+            "name": "file_name",
+            "type": "Edm.String",
+            "searchable": false
+        },
+        {
+            "name": "content",
+            "type": "Edm.String",
+            "searchable": true,
+            "filterable": false,
+            "sortable": false,
+            "facetable": false
+        },
+        {
+            "name": "title",
+            "type": "Edm.String",
+            "searchable": true,
+            "filterable": false,
+            "sortable": false,
+            "facetable": false
+        },
+        {
+            "name": "parent_id",
+            "type": "Edm.String",
+            "searchable": true,
+            "filterable": true,
+            "retrievable": true,
+            "stored": true,
+            "sortable": true,
+            "facetable": true,
+            "key": false
+          }
+    ]
+}
