@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.2" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.10" />
     <PackageReference Include="TiffLibrary.ImageSharpAdapter" Version="0.5.252" />
   </ItemGroup>
   <ItemGroup>
