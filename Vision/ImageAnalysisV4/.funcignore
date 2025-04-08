@@ -1,0 +1,7 @@
+azuredeploy.json
+*.md
+.vscode
+.venv
+.python_packages
+*.zip
+test/*
