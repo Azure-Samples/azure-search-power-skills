@@ -45,7 +45,8 @@
     "functionAppName": "[concat(parameters('resourcePrefix'), '-fn-', uniqueString(resourceGroup().id))]",
     "appServicePlanName": "[concat(parameters('resourcePrefix'), '-plan-', uniqueString(resourceGroup().id))]",
     "applicationInsightsName": "[concat(parameters('resourcePrefix'), '-ai-', uniqueString(resourceGroup().id))]",
-    "deploymentStorageContainerName": "deployments", // Name for the container storing code packages
+    "logAnalyticsWorkspaceName": "[concat(parameters('resourcePrefix'), '-la-', uniqueString(resourceGroup().id))]",
+    "deploymentStorageContainerName": "deployments",
 
     // --- Function Config ---
     "functionWorkerRuntime": "python",
@@ -95,6 +96,24 @@
         "publicAccess": "None"
       }
     },
+    // --- 1b. Log Analytics Workspace ---
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018" // Standard Pay-As-You-Go SKU
+        },
+        "retentionInDays": 30,
+        "features": {
+          "searchVersion": 1
+        },
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
     // --- 2. Flex Consumption App Service Plan ---
     {
       "type": "Microsoft.Web/serverfarms",
@@ -119,10 +138,14 @@
       "name": "[variables('applicationInsightsName')]",
       "location": "[resourceGroup().location]",
       "kind": "web",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
       "properties": {
         "Application_Type": "web",
-        "IngestionMode": "ApplicationInsights"
-        // Consider adding: "DisableLocalAuth": true for better security
+        "IngestionMode": "ApplicationInsights",
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "DisableLocalAuth": true
       }
     },
     // --- 4. Function App ---
@@ -278,6 +301,10 @@
     "deploymentNote": {
       "type": "string",
       "value": "ACTION REQUIRED: Deploy function code separately (e.g., 'az functionapp deploy')."
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "value": "[variables('logAnalyticsWorkspaceName')]"
     }
   }
 }
