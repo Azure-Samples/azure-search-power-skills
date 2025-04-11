@@ -131,7 +131,7 @@
         "reserved": true
       }
     },
-    // --- 3. Application Insights ---
+    // --- 3. Application Insights (Workspace-Based) ---
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
@@ -143,9 +143,8 @@
       ],
       "properties": {
         "Application_Type": "web",
-        "IngestionMode": "ApplicationInsights",
-        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
-        "DisableLocalAuth": true
+        "IngestionMode": "LogAnalytics",
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
       }
     },
     // --- 4. Function App ---
