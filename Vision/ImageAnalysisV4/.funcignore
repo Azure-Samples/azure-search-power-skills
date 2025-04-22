@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+azuredeploy.json
+*.md
+.vscode
+.venv
+.python_packages
+*.zip
+sample_request.py
+.env
+*.png
