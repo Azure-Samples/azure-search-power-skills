@@ -4,6 +4,6 @@ uvicorn==0.12.1
 ObjDict==0.4.4
 joblib==1.2.0
 transformers==4.50.0
-torch==2.2.0
+torch==2.7.0
 azure-core==1.12.0
 azure-search-documents==11.1.0
