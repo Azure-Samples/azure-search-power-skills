@@ -1,0 +1,6 @@
+{
+    "name" : "llm-chunker-datasource",
+    "type" : "azureblob",
+    "credentials" : { "connectionString" : "$TF_VAR_storage_account_connection_string"},
+    "container" : { "name" : "$TF_VAR_storage_container_name" }
+}
