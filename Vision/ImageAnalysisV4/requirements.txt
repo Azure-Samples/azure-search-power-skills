@@ -52,5 +52,5 @@ typing-extensions==4.13.1
     #   azure-ai-vision-imageanalysis
     #   azure-core
     #   azure-identity
-urllib3==2.3.0
+urllib3==2.5.0
     # via requests
