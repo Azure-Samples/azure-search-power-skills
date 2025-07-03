@@ -1,0 +1,13 @@
+POST http://localhost:5000/process
+Content-Type: application/json
+
+{
+    "values": [
+        {
+            "data": {
+                "blobUrl": "https://youraccount.blob.core.windows.net/docs/different-roles-in-azure-portal.doc"
+            },
+            "recordId": "0"
+        }
+    ]
+}
