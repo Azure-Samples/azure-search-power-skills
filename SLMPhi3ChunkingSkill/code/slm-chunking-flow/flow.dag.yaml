@@ -1,0 +1,84 @@
+inputs:
+  file_path:
+    type: string
+    default: ./files/pdf/sk.pdf
+outputs:
+  output:
+    type: string
+    reference: ${save_to_ai_search_vectordb.output}
+nodes:
+- name: get_pdf_text
+  type: python
+  source:
+    type: code
+    path: get_pdf_text.py
+  inputs:
+    file_path: ${inputs.file_path}
+- name: get_pdf_table
+  type: python
+  source:
+    type: code
+    path: get_pdf_table.py
+  inputs:
+    file_path: ${inputs.file_path}
+- name: chunking_text_with_phi3
+  type: python
+  source:
+    type: code
+    path: chunking_text_with_phi3.py
+  inputs:
+    content: ${get_pdf_text.output}
+- name: chunking_table_with_phi3
+  type: python
+  source:
+    type: code
+    path: chunking_table_with_phi3.py
+  inputs:
+    tables: ${get_pdf_table.output}
+- name: set_content
+  type: python
+  source:
+    type: code
+    path: set_content.py
+  inputs:
+    content: ${check_json.output}
+    table: ${chunking_table_with_phi3.output}
+    img: ${chunking_img_with_phi3.output}
+- name: embedding_with_aoai
+  type: python
+  source:
+    type: code
+    path: embedding_with_aoai.py
+  inputs:
+    aoai_conn: AOAIConnection
+    contents: ${set_content.output}
+- name: save_to_ai_search_vectordb
+  type: python
+  source:
+    type: code
+    path: save_to_ai_search_vectordb.py
+  inputs:
+    cogconn: AzureAISearchConn
+    vector_json: ${embedding_with_aoai.output}
+    aoaiconn: AOAIConnection
+- name: get_pdf_img
+  type: python
+  source:
+    type: code
+    path: get_pdf_img.py
+  inputs:
+    file_path: ${inputs.file_path}
+- name: chunking_img_with_phi3
+  type: python
+  source:
+    type: code
+    path: chunking_img_with_phi3.py
+  inputs:
+    imgs: ${get_pdf_img.output}
+- name: check_json
+  type: python
+  source:
+    type: code
+    path: check_json.py
+  inputs:
+    content: ${chunking_text_with_phi3.output}

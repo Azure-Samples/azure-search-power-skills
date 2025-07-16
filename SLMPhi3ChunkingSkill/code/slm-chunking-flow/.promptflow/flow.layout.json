@@ -1,0 +1,70 @@
+{
+  "nodeLayouts": {
+    "inputs": {
+      "x": 620,
+      "y": 42,
+      "index": -1
+    },
+    "outputs": {
+      "x": 550,
+      "y": 980,
+      "index": -1
+    },
+    "chunking_text_with_phi3": {
+      "x": 140,
+      "y": 310,
+      "index": 2
+    },
+    "get_pdf_text": {
+      "x": 140,
+      "y": 176,
+      "index": 0
+    },
+    "get_pdf_table": {
+      "x": 470,
+      "y": 310,
+      "index": 1
+    },
+    "chunking_table_with_phi3": {
+      "x": 470,
+      "y": 444,
+      "index": 3
+    },
+    "set_content": {
+      "x": 470,
+      "y": 578,
+      "index": 4
+    },
+    "save_to_azure_search": {
+      "x": 305,
+      "y": 578,
+      "index": -1
+    },
+    "embedding_with_aoai": {
+      "x": 470,
+      "y": 712,
+      "index": 5
+    },
+    "save_to_ai_search_vectordb": {
+      "x": 470,
+      "y": 846,
+      "index": 6
+    },
+    "get_pdf_img": {
+      "x": 800,
+      "y": 310,
+      "index": 7
+    },
+    "chunking_img_with_phi3": {
+      "x": 800,
+      "y": 444,
+      "index": 8
+    },
+    "check_json": {
+      "x": 140,
+      "y": 444,
+      "index": 9
+    }
+  },
+  "orientation": "Vertical"
+}
