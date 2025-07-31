@@ -44,6 +44,7 @@ This project provides the following custom skills:
 | [Embeddings](Vector/EmbeddingGenerator/README.md) | Generates vector embeddings with the [HuggingFace all-MiniLM-L6-v2 model](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Vector | ![python](https://img.shields.io/badge/language-python-orange) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | Manual | 
 | [HelloWorld](Template/HelloWorld/README.md) | A minimal skill that can be used as a starting point or template for your own skills. | Template | ![C#](https://img.shields.io/badge/language-C%23-brightgreen) | ![functions](https://img.shields.io/badge/deploy-Functions-blue) | ARM Template |
 | [PythonFastAPI](Template/PythonFastAPI/README.md) | A production web server and api scaffold for a python power skill | Template | ![python](https://img.shields.io/badge/language-python-orange) | ![docker](https://img.shields.io/badge/deploy-Docker-blueviolet) | Terraform template |
+| [LLM Chunker](Vision/LLMChunker/README.md) | This Power Skill facilitates the conversion of document pages and slides (.pdf, .ppt, .pptx, .doc, .docx) into PNG images, which are then processed by GPT-4o or GPT-4o mini to produce high-quality markdown output. | Vision | ![python](https://img.shields.io/badge/language-python-orange) | ![docker](https://img.shields.io/badge/deploy-Docker-blueviolet) | Terraform template |
 
 
 
