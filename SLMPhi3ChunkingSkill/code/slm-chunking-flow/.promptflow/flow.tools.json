@@ -1,0 +1,185 @@
+{
+  "package": {},
+  "code": {
+    "chunking_text.py": {
+      "type": "python",
+      "inputs": {
+        "file_path": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "chunking_text.py",
+      "function": "my_python_tool"
+    },
+    "chunking_text_with_phi3.py": {
+      "type": "python",
+      "inputs": {
+        "content": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "chunking_text_with_phi3.py",
+      "function": "chunking_text"
+    },
+    "get_pdf_text.py": {
+      "type": "python",
+      "inputs": {
+        "file_path": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "get_pdf_text.py",
+      "function": "extract_pdf_text"
+    },
+    "get_pdf_table.py": {
+      "type": "python",
+      "inputs": {
+        "file_path": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "get_pdf_table.py",
+      "function": "extract_pdf_table"
+    },
+    "chunking_table_with_phi3.py": {
+      "type": "python",
+      "inputs": {
+        "tables": {
+          "type": [
+            "list"
+          ]
+        }
+      },
+      "source": "chunking_table_with_phi3.py",
+      "function": "chunking_table"
+    },
+    "set_content.py": {
+      "type": "python",
+      "inputs": {
+        "content": {
+          "type": [
+            "string"
+          ]
+        },
+        "table": {
+          "type": [
+            "list"
+          ]
+        },
+        "img": {
+          "type": [
+            "list"
+          ]
+        }
+      },
+      "source": "set_content.py",
+      "function": "set_content"
+    },
+    "save_to_azure_search.py": {
+      "type": "python",
+      "inputs": {
+        "chunking_list": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "save_to_azure_search.py",
+      "function": "save_to_ai_search"
+    },
+    "embedding_with_aoai.py": {
+      "type": "python",
+      "inputs": {
+        "contents": {
+          "type": [
+            "list"
+          ]
+        },
+        "aoai_conn": {
+          "type": [
+            "AzureOpenAIConnection"
+          ]
+        }
+      },
+      "source": "embedding_with_aoai.py",
+      "function": "embedding_with_aoai"
+    },
+    "save_to_ai_search_vectordb.py": {
+      "type": "python",
+      "inputs": {
+        "vector_json": {
+          "type": [
+            "list"
+          ]
+        },
+        "cogconn": {
+          "type": [
+            "CognitiveSearchConnection"
+          ]
+        },
+        "aoaiconn": {
+          "type": [
+            "AzureOpenAIConnection"
+          ]
+        }
+      },
+      "source": "save_to_ai_search_vectordb.py",
+      "function": "save_data_embeddings"
+    },
+    "get_pdf_image.jinja2": {
+      "type": "prompt",
+      "inputs": {
+        "text": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "get_pdf_image.jinja2"
+    },
+    "get_pdf_img.py": {
+      "type": "python",
+      "inputs": {
+        "file_path": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "get_pdf_img.py",
+      "function": "extract_pdf_table"
+    },
+    "chunking_img_with_phi3.py": {
+      "type": "python",
+      "inputs": {
+        "imgs": {
+          "type": [
+            "object"
+          ]
+        }
+      },
+      "source": "chunking_img_with_phi3.py",
+      "function": "chunking_img_with_phi3"
+    },
+    "check_json.py": {
+      "type": "python",
+      "inputs": {
+        "content": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "check_json.py",
+      "function": "check_json"
+    }
+  }
+}
