@@ -1,0 +1,11 @@
+{
+    "name": "llm-chunker-indexer",
+    "dataSourceName": "llm-chunker-datasource",
+    "targetIndexName": "llm-chunker-index",
+    "skillsetName": "llm-chunker-skillset",
+    "parameters": {
+        "configuration": {
+            "allowSkillsetToReadFileData": true
+        }
+    }
+}
