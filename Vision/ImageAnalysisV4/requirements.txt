@@ -6,7 +6,7 @@
 #
 azure-ai-vision-imageanalysis==1.0.0
     # via -r .\requirements.in
-azure-core==1.33.0
+azure-core==1.38.0
     # via
     #   azure-ai-vision-imageanalysis
     #   azure-identity
