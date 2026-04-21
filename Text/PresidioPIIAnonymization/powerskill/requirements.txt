@@ -1,5 +1,5 @@
 fastapi==0.109.1
-python-dotenv==0.17.0
+python-dotenv==1.2.2
 uvicorn==0.13.4
 ObjDict==0.4.4
 azure-core==1.38.0
