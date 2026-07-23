@@ -1,3 +1,0 @@
-This folder is where we will cache the files from 
-https://huggingface.co/facebook/bart-large-cnn. This
-file just ensures that it's here for docker to copy across

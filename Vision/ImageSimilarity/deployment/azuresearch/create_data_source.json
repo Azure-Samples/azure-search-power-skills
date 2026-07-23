@@ -1,6 +1,0 @@
-{
-    "name" : "image-similarity-data-source",
-    "type" : "azureblob",
-    "credentials" : { "connectionString" : ""},
-    "container" : { "name" : "" }
-}

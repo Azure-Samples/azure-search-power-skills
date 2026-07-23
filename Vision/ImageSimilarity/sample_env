@@ -1,6 +1,0 @@
-KEY = YourSecretKeyCanBeAnything
-DEBUG = True
-FLASK_DEBUG = false
-FLASK_ENV = development
-TOPN = 3
-IMAGE_FEATURES_FILE=stanford_dogs.pkl

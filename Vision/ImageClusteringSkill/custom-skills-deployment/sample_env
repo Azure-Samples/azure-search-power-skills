@@ -1,4 +1,0 @@
-KEY=[YourSecretKeyCanBeAnything]
-DEBUG=True
-DBSCAN_MODEL=books.pkl
-CLUSTER_LABELS=

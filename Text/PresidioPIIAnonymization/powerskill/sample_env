@@ -1,5 +1,0 @@
-KEY=[your secret key]
-TR_REGION = westeurope
-DEBUG = True
-FLASK_DEBUG = false
-FLASK_ENV = development
